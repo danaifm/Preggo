@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "3982098128",
+    "project_id": "preggo-8eb31",
+    "storage_bucket": "preggo-8eb31.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:3982098128:android:6b981a0031f04fe11ae8d5",
+        "android_client_info": {
+          "package_name": "com.example.preggo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "3982098128-l0frndbv8vfcqftj03f3l9l14h8mj0t5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDR-7uz9Ngjzdn9pfdV23STJlmoiEEHoCE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "3982098128-l0frndbv8vfcqftj03f3l9l14h8mj0t5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

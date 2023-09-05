@@ -1,0 +1,13 @@
+com.example.preggo.app-jetified-window-java-1.0.0-beta04-0 /Users/dana/.gradle/caches/transforms-3/234cf6cab2ae0df1de11d520bd41701d/transformed/jetified-window-java-1.0.0-beta04/res
+com.example.preggo.app-jetified-window-1.0.0-beta04-1 /Users/dana/.gradle/caches/transforms-3/2f632d8dec5aedcc344894ac2d746d3d/transformed/jetified-window-1.0.0-beta04/res
+com.example.preggo.app-jetified-annotation-experimental-1.1.0-2 /Users/dana/.gradle/caches/transforms-3/63de43c2f1d406e95d47893f129ee7b9/transformed/jetified-annotation-experimental-1.1.0/res
+com.example.preggo.app-core-1.6.0-3 /Users/dana/.gradle/caches/transforms-3/72d701307b1115688b608c7110be19e8/transformed/core-1.6.0/res
+com.example.preggo.app-debug-4 /Users/dana/Documents/GitHub/Preggo/android/app/src/debug/res
+com.example.preggo.app-main-5 /Users/dana/Documents/GitHub/Preggo/android/app/src/main/res
+com.example.preggo.app-google-services-6 /Users/dana/Documents/GitHub/Preggo/build/app/generated/res/google-services/debug
+com.example.preggo.app-pngs-7 /Users/dana/Documents/GitHub/Preggo/build/app/generated/res/pngs/debug
+com.example.preggo.app-resValues-8 /Users/dana/Documents/GitHub/Preggo/build/app/generated/res/resValues/debug
+com.example.preggo.app-rs-9 /Users/dana/Documents/GitHub/Preggo/build/app/generated/res/rs/debug
+com.example.preggo.app-mergeDebugResources-10 /Users/dana/Documents/GitHub/Preggo/build/app/intermediates/incremental/debug/mergeDebugResources/merged.dir
+com.example.preggo.app-mergeDebugResources-11 /Users/dana/Documents/GitHub/Preggo/build/app/intermediates/incremental/debug/mergeDebugResources/stripped.dir
+com.example.preggo.app-merged_res-12 /Users/dana/Documents/GitHub/Preggo/build/app/intermediates/merged_res/debug
