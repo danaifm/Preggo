@@ -1,5 +1,5 @@
 //SIGNUP.DART
-// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_literals_to_create_immutables, no_logic_in_create_state
+// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_literals_to_create_immutables, no_logic_in_create_state, avoid_print
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:preggo/main.dart';
@@ -9,6 +9,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:email_validator/email_validator.dart';
 
 class SignUp extends StatefulWidget {
   //const SignUp({Key? key}) : super(key: key);
@@ -25,13 +26,49 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  final GlobalKey<FormFieldState> _usernameKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> _emailKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> _phoneKey = GlobalKey<FormFieldState>();
   final CollectionReference ref =
       FirebaseFirestore.instance.collection('users');
+  bool usernameTaken = false;
+  bool emailTaken = false;
+  bool phoneTaken = false;
+  bool _passwordVisible = false;
+  @override
+  void initState() {
+    _passwordVisible = false;
+  }
+
   @override
   Widget build(BuildContext context) {
 //sign up UI
 
     final validCharacters = RegExp(r'^[a-zA-Z0-9]+$'); //alphamumerical
+
+    Future<bool> uniqueUsername(String username) async {
+      QuerySnapshot query = await FirebaseFirestore.instance
+          .collection('users')
+          .where('username', isEqualTo: username)
+          .get();
+      return query.docs.isNotEmpty;
+    }
+
+    Future<bool> uniqueEmail(String email) async {
+      QuerySnapshot query = await FirebaseFirestore.instance
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .get();
+      return query.docs.isNotEmpty;
+    }
+
+    Future<bool> uniquePhone(String phone) async {
+      QuerySnapshot query = await FirebaseFirestore.instance
+          .collection('users')
+          .where('phone', isEqualTo: phone)
+          .get();
+      return query.docs.isNotEmpty;
+    }
 
     return Scaffold(
       body: Container(
@@ -69,6 +106,7 @@ class _SignUpState extends State<SignUp> {
                       padding: const EdgeInsets.symmetric(vertical: 10.0),
                       child: TextFormField(
                         controller: _usernameController,
+                        key: _usernameKey,
                         validator: (value) {
                           /*
                               username validations:
@@ -79,10 +117,13 @@ class _SignUpState extends State<SignUp> {
                               --BACK END--
                               4- unique
                               */
+
                           if (value!.isEmpty == true) {
                             return "Field cannot be empty.";
                           } else if (!validCharacters.hasMatch(value)) {
                             return "Only alphanumerical values allowed."; //maybe change error message
+                          } else if (usernameTaken) {
+                            return 'Username is already taken!';
                           } else {
                             return null;
                           }
@@ -132,6 +173,18 @@ class _SignUpState extends State<SignUp> {
                       padding: const EdgeInsets.symmetric(vertical: 10.0),
                       child: TextFormField(
                         controller: _emailController,
+                        key: _emailKey,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Field cannot be empty.";
+                          } else if (!EmailValidator.validate(value)) {
+                            return "Please enter a valid email.";
+                          } else if (emailTaken) {
+                            return 'Email is already taken!';
+                          } else {
+                            return null;
+                          }
+                        },
                         /*
                               email validations:
                               --FRONT END--
@@ -188,6 +241,7 @@ class _SignUpState extends State<SignUp> {
                       padding: const EdgeInsets.symmetric(vertical: 10.0),
                       child: TextFormField(
                         controller: _phoneController,
+                        key: _phoneKey,
                         /*
                               phone number validations
                               --FRONT END--
@@ -196,7 +250,29 @@ class _SignUpState extends State<SignUp> {
                               --BACK END--
                               3- unique (???)
                               */
-                        keyboardType: TextInputType.number,
+                        validator: (phone) {
+                          bool hasLetter = false;
+                          int i = 0;
+                          while (i < phone!.length) {
+                            if (!isNumeric(phone[i])) {
+                              hasLetter = true;
+                            }
+                            i++;
+                          }
+                          if (hasLetter) {
+                            return 'Field must contain only digits.';
+                          }
+                          if (phone.isEmpty) {
+                            return 'Field cannot be blank.';
+                          } else if (phone.length != 10) {
+                            return 'Phone number must be 10 digits.';
+                          } else if (phoneTaken) {
+                            return 'Phone number is already taken!';
+                          } else {
+                            return null;
+                          }
+                        },
+                        keyboardType: TextInputType.phone,
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.symmetric(
                               vertical: 15.0, horizontal: 15),
@@ -248,6 +324,21 @@ class _SignUpState extends State<SignUp> {
                               3- at least one number
                               */
                           decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                // Based on passwordVisible state choose the icon
+                                _passwordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: Colors.grey,
+                              ),
+                              onPressed: () {
+                                // Update the state i.e. toogle the state of passwordVisible variable
+                                setState(() {
+                                  _passwordVisible = !_passwordVisible;
+                                });
+                              },
+                            ),
                             contentPadding: EdgeInsets.symmetric(
                                 vertical: 15.0, horizontal: 15),
                             focusedErrorBorder: OutlineInputBorder(
@@ -286,7 +377,7 @@ class _SignUpState extends State<SignUp> {
                             filled: true,
                             fillColor: Color(0xFFF7F8F9),
                           ),
-                          obscureText: true,
+                          obscureText: !_passwordVisible,
                           autocorrect: false,
                           validator: (pass) {
                             if (pass!.isEmpty == true) {
@@ -315,17 +406,30 @@ class _SignUpState extends State<SignUp> {
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),
                       child: ElevatedButton(
-                        onPressed: () {
-                          Map<String, String> dataToSave = {
-                            'username': _usernameController.text,
-                            'email': _emailController.text,
-                            'password': _passwordController.text,
-                            'phone': _phoneController.text,
-                            'admin': '0'
-                          };
-                          FirebaseFirestore.instance
-                              .collection('users')
-                              .add(dataToSave);
+                        onPressed: () async {
+                          usernameTaken = await uniqueUsername(
+                              _usernameKey.currentState!.value);
+                          setState(() {});
+                          emailTaken =
+                              await uniqueEmail(_emailKey.currentState!.value);
+                          setState(() {});
+                          phoneTaken =
+                              await uniquePhone(_phoneKey.currentState!.value);
+                          setState(() {});
+                          if (_formKey.currentState!.validate()) {
+                            _formKey.currentState?.save();
+                            Map<String, String> dataToSave = {
+                              'username': _usernameController.text,
+                              'email': _emailController.text,
+                              'password': _passwordController.text,
+                              'phone': _phoneController.text,
+                              'admin': '0'
+                            };
+                            FirebaseFirestore.instance
+                                .collection('users')
+                                .add(dataToSave);
+                            print('Registration successful');
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
