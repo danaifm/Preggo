@@ -1,4 +1,10 @@
-#Wed Sep 06 12:11:01 AST 2023
-base.0=C\:\\Users\\Bdoor\\Documents\\GitHub\\Preggo\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
+#Wed Sep 06 13:02:30 AST 2023
+base.0=/Users/dana/Documents/GitHub/Preggo/build/app/intermediates/dex/debug/mergeDexDebug/classes.dex
+base.1=/Users/dana/Documents/GitHub/Preggo/build/app/intermediates/dex/debug/mergeDexDebug/classes2.dex
+base.2=/Users/dana/Documents/GitHub/Preggo/build/app/intermediates/dex/debug/mergeDexDebug/classes3.dex
 path.0=classes.dex
+path.1=classes2.dex
+path.2=classes3.dex
 renamed.0=classes.dex
+renamed.1=classes2.dex
+renamed.2=classes3.dex
