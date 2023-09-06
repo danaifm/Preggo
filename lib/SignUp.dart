@@ -426,8 +426,9 @@ class _SignUpState extends State<SignUp> {
                                 'admin': '0'
                               };
                               FirebaseFirestore.instance
-                                  .collection('users')
-                                  .add(dataToSave);
+                                  .collection('users/')
+                                  .doc(_usernameController.text)
+                                  .set(dataToSave);
                               print('Registration successful');
                             }
                           },
