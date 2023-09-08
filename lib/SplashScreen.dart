@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:preggo/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -14,29 +15,29 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+    Future.delayed(const Duration(seconds: 3), () {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (_) =>
+              LoginScreen() // => the next page after the splashscreen
+          ));
+    });
   }
 
   @override
   void dispose() {
-    super.dispose();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: SystemUiOverlay.values);
-
-    Future.delayed(const Duration(seconds: 2), () {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (_) =>
-            SplashScreen(), // => the next page after the splashscreen
-      ));
-    });
+    super.dispose();
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         width: 412,
         height: 860,
         clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(color: Colors.white),
+        decoration: const BoxDecoration(color: Colors.white),
         child: Stack(
           children: [
             Positioned(
@@ -45,16 +46,16 @@ class _SplashScreenState extends State<SplashScreen>
               child: Container(
                 width: 475,
                 height: 526,
-                decoration: BoxDecoration(color: Color(0xFFF9DCDE)),
+                decoration: const BoxDecoration(color: Color(0xFFF9DCDE)),
               ),
             ),
-            Positioned(
+            const Positioned(
               left: 100,
               top: 215,
               child: SizedBox(
                 width: 160,
                 height: 51,
-                child: const Text(
+                child: Text(
                   'Preggo',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -72,7 +73,7 @@ class _SplashScreenState extends State<SplashScreen>
               child: Container(
                 width: 78,
                 height: 80,
-                decoration: ShapeDecoration(
+                decoration: const ShapeDecoration(
                   color: Colors.white,
                   shape: OvalBorder(),
                 ),
@@ -84,7 +85,7 @@ class _SplashScreenState extends State<SplashScreen>
               child: Container(
                 width: 100,
                 height: 100,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                     image: DecorationImage(
                   image: AssetImage('assets/images/logoNoName.png'),
                   fit: BoxFit.fill,
@@ -95,7 +96,7 @@ class _SplashScreenState extends State<SplashScreen>
                 left: 54,
                 top: 615,
                 child: RichText(
-                  text: TextSpan(
+                  text: const TextSpan(
                       style: TextStyle(
                         fontSize: 20,
                         fontFamily: 'Signika',

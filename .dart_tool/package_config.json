@@ -32,6 +32,24 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "cloud_firestore",
+      "rootUri": "file:///Users/aliah/.pub-cache/hosted/pub.dev/cloud_firestore-4.9.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "cloud_firestore_platform_interface",
+      "rootUri": "file:///Users/aliah/.pub-cache/hosted/pub.dev/cloud_firestore_platform_interface-5.16.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "cloud_firestore_web",
+      "rootUri": "file:///Users/aliah/.pub-cache/hosted/pub.dev/cloud_firestore_web-3.7.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
       "name": "collection",
       "rootUri": "file:///Users/aliah/.pub-cache/hosted/pub.dev/collection-1.17.2",
       "packageUri": "lib/",
@@ -224,7 +242,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2023-09-06T12:02:53.396394Z",
+  "generated": "2023-09-08T18:43:57.946741Z",
   "generator": "pub",
   "generatorVersion": "3.1.0"
 }

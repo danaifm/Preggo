@@ -1,4 +1,6 @@
 # This is a generated file; do not edit or check into version control.
+cloud_firestore=/Users/aliah/.pub-cache/hosted/pub.dev/cloud_firestore-4.9.1/
+cloud_firestore_web=/Users/aliah/.pub-cache/hosted/pub.dev/cloud_firestore_web-3.7.0/
 firebase_auth=/Users/aliah/.pub-cache/hosted/pub.dev/firebase_auth-4.9.0/
 firebase_auth_web=/Users/aliah/.pub-cache/hosted/pub.dev/firebase_auth_web-5.8.0/
 firebase_core=/Users/aliah/.pub-cache/hosted/pub.dev/firebase_core-2.15.1/

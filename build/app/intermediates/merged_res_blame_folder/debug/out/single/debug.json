@@ -1,7 +1,15 @@
 [
     {
+        "merged": "com.example.preggo.app-merged_res-16:/mipmap-mdpi_ic_launcher_monochrome.png.flat",
+        "source": "com.example.preggo.app-main-9:/mipmap-mdpi/ic_launcher_monochrome.png"
+    },
+    {
         "merged": "com.example.preggo.app-merged_res-16:/mipmap-mdpi_ic_launcher.png.flat",
         "source": "com.example.preggo.app-main-9:/mipmap-mdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.example.preggo.app-merged_res-16:/mipmap-hdpi_ic_launcher_monochrome.png.flat",
+        "source": "com.example.preggo.app-main-9:/mipmap-hdpi/ic_launcher_monochrome.png"
     },
     {
         "merged": "com.example.preggo.app-merged_res-16:/mipmap-xxxhdpi_ic_launcher.png.flat",
@@ -12,12 +20,40 @@
         "source": "com.example.preggo.app-main-9:/drawable/launch_background.xml"
     },
     {
+        "merged": "com.example.preggo.app-merged_res-16:/mipmap-hdpi_ic_launcher_background.png.flat",
+        "source": "com.example.preggo.app-main-9:/mipmap-hdpi/ic_launcher_background.png"
+    },
+    {
+        "merged": "com.example.preggo.app-merged_res-16:/mipmap-mdpi_ic_launcher_background.png.flat",
+        "source": "com.example.preggo.app-main-9:/mipmap-mdpi/ic_launcher_background.png"
+    },
+    {
+        "merged": "com.example.preggo.app-merged_res-16:/mipmap-xxhdpi_ic_launcher_foreground.png.flat",
+        "source": "com.example.preggo.app-main-9:/mipmap-xxhdpi/ic_launcher_foreground.png"
+    },
+    {
         "merged": "com.example.preggo.app-merged_res-16:/mipmap-xxhdpi_ic_launcher.png.flat",
         "source": "com.example.preggo.app-main-9:/mipmap-xxhdpi/ic_launcher.png"
     },
     {
+        "merged": "com.example.preggo.app-merged_res-16:/mipmap-xhdpi_ic_launcher_background.png.flat",
+        "source": "com.example.preggo.app-main-9:/mipmap-xhdpi/ic_launcher_background.png"
+    },
+    {
+        "merged": "com.example.preggo.app-merged_res-16:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.example.preggo.app-main-9:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.example.preggo.app-merged_res-16:/mipmap-xxhdpi_ic_launcher_monochrome.png.flat",
+        "source": "com.example.preggo.app-main-9:/mipmap-xxhdpi/ic_launcher_monochrome.png"
+    },
+    {
         "merged": "com.example.preggo.app-merged_res-16:/drawable-v21_launch_background.xml.flat",
         "source": "com.example.preggo.app-main-9:/drawable-v21/launch_background.xml"
+    },
+    {
+        "merged": "com.example.preggo.app-merged_res-16:/mipmap-xhdpi_ic_launcher_foreground.png.flat",
+        "source": "com.example.preggo.app-main-9:/mipmap-xhdpi/ic_launcher_foreground.png"
     },
     {
         "merged": "com.example.preggo.app-merged_res-16:/mipmap-xhdpi_ic_launcher.png.flat",
@@ -26,5 +62,33 @@
     {
         "merged": "com.example.preggo.app-merged_res-16:/mipmap-hdpi_ic_launcher.png.flat",
         "source": "com.example.preggo.app-main-9:/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.example.preggo.app-merged_res-16:/mipmap-xxhdpi_ic_launcher_background.png.flat",
+        "source": "com.example.preggo.app-main-9:/mipmap-xxhdpi/ic_launcher_background.png"
+    },
+    {
+        "merged": "com.example.preggo.app-merged_res-16:/mipmap-mdpi_ic_launcher_foreground.png.flat",
+        "source": "com.example.preggo.app-main-9:/mipmap-mdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.example.preggo.app-merged_res-16:/mipmap-xhdpi_ic_launcher_monochrome.png.flat",
+        "source": "com.example.preggo.app-main-9:/mipmap-xhdpi/ic_launcher_monochrome.png"
+    },
+    {
+        "merged": "com.example.preggo.app-merged_res-16:/mipmap-hdpi_ic_launcher_foreground.png.flat",
+        "source": "com.example.preggo.app-main-9:/mipmap-hdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.example.preggo.app-merged_res-16:/mipmap-xxxhdpi_ic_launcher_monochrome.png.flat",
+        "source": "com.example.preggo.app-main-9:/mipmap-xxxhdpi/ic_launcher_monochrome.png"
+    },
+    {
+        "merged": "com.example.preggo.app-merged_res-16:/mipmap-xxxhdpi_ic_launcher_foreground.png.flat",
+        "source": "com.example.preggo.app-main-9:/mipmap-xxxhdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.example.preggo.app-merged_res-16:/mipmap-xxxhdpi_ic_launcher_background.png.flat",
+        "source": "com.example.preggo.app-main-9:/mipmap-xxxhdpi/ic_launcher_background.png"
     }
 ]
