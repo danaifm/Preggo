@@ -277,7 +277,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         )
                       : const Text(
-                          'Login',
+                          'Sign in',
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
@@ -307,7 +307,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ), (route) => false);
                       },
                       child: Text(
-                        'register now!',
+                        'sign up now!',
                         // style: TextStyle(
                         //   fontSize: 15,
                         //   fontWeight: FontWeight.w700,
