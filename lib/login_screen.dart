@@ -17,8 +17,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameFieldController =
       TextEditingController();
 
-  final TextEditingController _emailFieldController = TextEditingController();
-
   final TextEditingController _passwordFieldController =
       TextEditingController();
 
@@ -81,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
           isUserdataValide = true;
         }
 
-        print("User data from firestore is:: ${userData.docs.length} #");
+        debugPrint("User data from firestore is:: ${userData.docs.length} #");
       } else {
         isUserdataValide = false;
       }
