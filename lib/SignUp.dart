@@ -2,14 +2,14 @@
 // ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_literals_to_create_immutables, no_logic_in_create_state, avoid_print
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-//import 'package:preggo/login_screen.dart';
+import 'package:preggo/login_screen.dart';
 import 'package:string_validator/string_validator.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:preggo/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'SplashScreen.dart';
-import 'homeScreen.dart';
+//import 'homeScreen.dart';
 
 class SignUp extends StatefulWidget {
   //const SignUp({Key? key}) : super(key: key);
@@ -34,13 +34,8 @@ class _SignUpState extends State<SignUp> {
   bool usernameTaken = false;
   bool emailTaken = false;
   bool phoneTaken = false;
-  bool _passwordVisible = false;
+  bool hidePassword = true;
   FirebaseAuth auth = FirebaseAuth.instance;
-  @override
-  void initState() {
-    super.initState();
-    _passwordVisible = false;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +71,8 @@ class _SignUpState extends State<SignUp> {
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.symmetric(vertical: 70, horizontal: 20),
+          margin: EdgeInsets.symmetric(vertical: 70),
+          padding: const EdgeInsets.symmetric(horizontal: 22.0), //from aliyah
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -133,48 +129,32 @@ class _SignUpState extends State<SignUp> {
                             }
                           },
                           decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 15.0, horizontal: 15),
-                            focusedErrorBorder: OutlineInputBorder(
-                              gapPadding: 0.5,
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide: BorderSide(
-                                width: 0.50,
-                                color: Color.fromRGBO(255, 100, 100, 1),
-                              ),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              gapPadding: 0.5,
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide: BorderSide(
-                                width: 0.50,
-                                color: Color.fromRGBO(255, 100, 100, 1),
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              gapPadding: 0.5,
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide: BorderSide(
-                                width: 0.50,
-                                color: Color.fromARGB(255, 221, 225, 232),
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              // gapPadding: 100,
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide: BorderSide(
-                                width: 0.50,
-                                color: Color.fromARGB(255, 221, 225, 232),
-                              ),
-                            ),
-                            labelText: "Enter your username",
+                            hintText: "Enter your username",
                             labelStyle: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w500,
                               color: grayColor,
                             ),
+                            prefixIcon: const Icon(
+                              Icons.person,
+                              color: Colors.grey,
+                            ),
                             filled: true,
-                            fillColor: Color(0xFFF7F8F9),
+                            fillColor: textFieldBackgroundColor,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            enabledBorder: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12.0)),
+                              borderSide:
+                                  BorderSide(color: textFieldBorderColor),
+                            ),
+                            focusedBorder: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12.0)),
+                              borderSide: BorderSide(color: darkGrayColor),
+                            ),
                           ),
                         ),
                       ),
@@ -206,48 +186,32 @@ class _SignUpState extends State<SignUp> {
                                 */
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 15.0, horizontal: 15),
-                            focusedErrorBorder: OutlineInputBorder(
-                              gapPadding: 0.5,
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide: BorderSide(
-                                width: 0.50,
-                                color: Color.fromRGBO(255, 100, 100, 1),
-                              ),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              gapPadding: 0.5,
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide: BorderSide(
-                                width: 0.50,
-                                color: Color.fromRGBO(255, 100, 100, 1),
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              gapPadding: 0.5,
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide: BorderSide(
-                                width: 0.50,
-                                color: Color.fromARGB(255, 221, 225, 232),
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              // gapPadding: 100,
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide: BorderSide(
-                                width: 0.50,
-                                color: Color.fromARGB(255, 221, 225, 232),
-                              ),
-                            ),
-                            labelText: "Enter your email",
+                            hintText: "Enter your email",
                             labelStyle: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w500,
                               color: grayColor,
                             ),
+                            prefixIcon: const Icon(
+                              Icons.email,
+                              color: Colors.grey,
+                            ),
                             filled: true,
-                            fillColor: Color(0xFFF7F8F9),
+                            fillColor: textFieldBackgroundColor,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            enabledBorder: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12.0)),
+                              borderSide:
+                                  BorderSide(color: textFieldBorderColor),
+                            ),
+                            focusedBorder: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12.0)),
+                              borderSide: BorderSide(color: darkGrayColor),
+                            ),
                           ),
                         ),
                       ),
@@ -288,47 +252,32 @@ class _SignUpState extends State<SignUp> {
                           },
                           keyboardType: TextInputType.phone,
                           decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 15.0, horizontal: 15),
-                            focusedErrorBorder: OutlineInputBorder(
-                              gapPadding: 0.5,
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide: BorderSide(
-                                width: 0.50,
-                                color: Color.fromRGBO(255, 100, 100, 1),
-                              ),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              gapPadding: 0.5,
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide: BorderSide(
-                                width: 0.50,
-                                color: Color.fromRGBO(255, 100, 100, 1),
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              gapPadding: 0.5,
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide: BorderSide(
-                                width: 0.50,
-                                color: Color.fromARGB(255, 221, 225, 232),
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide: BorderSide(
-                                width: 0.50,
-                                color: Color.fromARGB(255, 221, 225, 232),
-                              ),
-                            ),
-                            labelText: "Enter your phone number",
+                            hintText: "Enter your phone number",
                             labelStyle: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w500,
                               color: grayColor,
                             ),
+                            prefixIcon: const Icon(
+                              Icons.phone,
+                              color: Colors.grey,
+                            ),
                             filled: true,
-                            fillColor: Color(0xFFF7F8F9),
+                            fillColor: textFieldBackgroundColor,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            enabledBorder: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12.0)),
+                              borderSide:
+                                  BorderSide(color: textFieldBorderColor),
+                            ),
+                            focusedBorder: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12.0)),
+                              borderSide: BorderSide(color: darkGrayColor),
+                            ),
                           ),
                         ),
                       ),
@@ -343,67 +292,51 @@ class _SignUpState extends State<SignUp> {
                                 3- at least one number
                                 */
                           decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                // Based on passwordVisible state choose the icon
-                                _passwordVisible
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                                color: Colors.grey,
-                              ),
-                              onPressed: () {
-                                // Update the state i.e. toogle the state of passwordVisible variable
-                                setState(
-                                  () {
-                                    _passwordVisible = !_passwordVisible;
-                                  },
-                                );
-                              },
+                            prefixIcon: const Icon(
+                              Icons.lock,
+                              color: Colors.grey,
                             ),
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 15.0, horizontal: 15),
-                            focusedErrorBorder: OutlineInputBorder(
-                              gapPadding: 0.5,
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide: BorderSide(
-                                width: 0.50,
-                                color: Color.fromRGBO(255, 100, 100, 1),
-                              ),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              gapPadding: 0.5,
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide: BorderSide(
-                                width: 0.50,
-                                color: Color.fromRGBO(255, 100, 100, 1),
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              gapPadding: 0.5,
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide: BorderSide(
-                                width: 0.50,
-                                color: Color.fromARGB(255, 221, 225, 232),
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              // gapPadding: 100,
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide: BorderSide(
-                                width: 0.50,
-                                color: Color.fromARGB(255, 221, 225, 232),
-                              ),
-                            ),
-                            labelText: "Enter your password",
+                            hintText: 'Enter your password',
                             labelStyle: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w500,
                               color: grayColor,
                             ),
                             filled: true,
-                            fillColor: Color(0xFFF7F8F9),
+                            fillColor: textFieldBackgroundColor,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            enabledBorder: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12.0)),
+                              borderSide:
+                                  BorderSide(color: textFieldBorderColor),
+                            ),
+                            focusedBorder: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12.0)),
+                              borderSide: BorderSide(color: darkGrayColor),
+                              // borderSide: BorderSide(color: darkGrayColor),
+                            ),
+                            suffixIcon: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  hidePassword = !hidePassword;
+                                });
+                              },
+                              child: hidePassword
+                                  ? const Icon(
+                                      Icons.visibility_off,
+                                      color: Colors.grey,
+                                    )
+                                  : const Icon(
+                                      Icons.visibility,
+                                      color: Colors.grey,
+                                    ),
+                            ),
                           ),
-                          obscureText: !_passwordVisible,
+                          obscureText: hidePassword ? true : false,
                           autocorrect: false,
                           validator: (pass) {
                             if (pass!.isEmpty == true) {
@@ -505,7 +438,7 @@ class _SignUpState extends State<SignUp> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => SplashScreen()),
+                              builder: (context) => LoginScreen()),
                         );
                       },
                       child: Text(
