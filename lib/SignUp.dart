@@ -363,61 +363,114 @@ class _SignUpState extends State<SignUp> {
                           },
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            usernameTaken = await uniqueUsername(
-                                _usernameKey.currentState!.value);
-                            setState(() {});
-                            emailTaken = await uniqueEmail(
-                                _emailKey.currentState!.value);
-                            setState(() {});
-                            phoneTaken = await uniquePhone(
-                                _phoneKey.currentState!.value);
-                            setState(() {});
-                            if (_formKey.currentState!.validate()) {
-                              UserCredential userCredential = await FirebaseAuth
-                                  .instance
-                                  .createUserWithEmailAndPassword(
-                                      email: _emailController.text,
-                                      password: _passwordController.text);
-                              _formKey.currentState?.save();
-                              Map<String, String> dataToSave = {
-                                'username':
-                                    _usernameController.text.toLowerCase(),
-                                'email': _emailController.text.toLowerCase(),
-                                'password': _passwordController.text,
-                                'phone': _phoneController.text,
-                                'admin': '0'
-                              };
-                              FirebaseFirestore.instance
-                                  .collection('users/')
-                                  .doc(userCredential.user!.uid)
-                                  .set(dataToSave);
-                              print('Registration successful');
-
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SplashScreen()));
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black,
+                      // Padding(
+                      //padding: const EdgeInsets.only(top: 10.0),
+                      // child:
+                      Container(
+                        margin: EdgeInsets.only(top: 20, bottom: 20),
+                        child: SizedBox(
+                          height: 45.0,
+                          child: MaterialButton(
+                            color: darkBlackColor,
+                            minWidth: double.infinity,
+                            height: 48,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(40)),
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 132, vertical: 15),
+                              borderRadius: BorderRadius.circular(40.0),
+                            ),
+                            onPressed: () async {
+                              usernameTaken = await uniqueUsername(
+                                  _usernameKey.currentState!.value);
+                              setState(() {});
+                              emailTaken = await uniqueEmail(
+                                  _emailKey.currentState!.value);
+                              setState(() {});
+                              phoneTaken = await uniquePhone(
+                                  _phoneKey.currentState!.value);
+                              setState(() {});
+                              if (_formKey.currentState!.validate()) {
+                                UserCredential userCredential =
+                                    await FirebaseAuth.instance
+                                        .createUserWithEmailAndPassword(
+                                            email: _emailController.text,
+                                            password: _passwordController.text);
+                                _formKey.currentState?.save();
+                                Map<String, String> dataToSave = {
+                                  'username':
+                                      _usernameController.text.toLowerCase(),
+                                  'email': _emailController.text.toLowerCase(),
+                                  'password': _passwordController.text,
+                                  'phone': _phoneController.text,
+                                  'admin': '0'
+                                };
+                                FirebaseFirestore.instance
+                                    .collection('users/')
+                                    .doc(userCredential.user!.uid)
+                                    .set(dataToSave);
+                                print('Registration successful');
+
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SplashScreen()));
+                              }
+                            },
+                            child: Text(
+                              "Register",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: whiteColor,
+                              ),
+                            ),
                           ),
-                          child: Text("Register"),
                         ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Already have an account?  ',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 15,
+                                  color: blackColor,
+                                ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                builder: (context) {
+                                  return const LoginScreen();
+                                },
+                              ), (route) => false);
+                            },
+                            child: Text(
+                              'Log In',
+                              // style: TextStyle(
+                              //   fontSize: 15,
+                              //   fontWeight: FontWeight.w700,
+                              //   color: pinkColor,
+                              // ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                    color: pinkColor,
+                                  ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-              ),
-              Center(
+                /* Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -455,6 +508,8 @@ class _SignUpState extends State<SignUp> {
                     ),
                   ],
                 ),
+              ),
+            ],*/
               ),
             ],
           ),
