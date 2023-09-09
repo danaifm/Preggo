@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:preggo/SplashScreen.dart';
 import 'package:preggo/colors.dart';
+import 'package:preggo/forget_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -30,30 +31,30 @@ class _LoginScreenState extends State<LoginScreen> {
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  // _loginWithEmailAndPassword() async {
-  //   setState(() {
-  //     isLoading = true;
-  //   });
-  //   UserCredential user = await auth
-  //       .signInWithEmailAndPassword(
-  //           email: _emailFieldController.text,
-  //           password: _passwordFieldController.text)
-  //       .whenComplete(
-  //     () {
-  //       setState(() {
-  //         isLoading = false;
-  //       });
+  _loginWithEmailAndPassword() async {
+    setState(() {
+      isLoading = true;
+    });
+    UserCredential user = await auth
+        .signInWithEmailAndPassword(
+            email: _usernameFieldController.text,
+            password: _passwordFieldController.text)
+        .whenComplete(
+      () {
+        setState(() {
+          isLoading = false;
+        });
 
-  //       /// Check if
-  //       // Navigator.push(
-  //       //   context,
-  //       //   MaterialPageRoute(
-  //       //     builder: (context) => LoginScreen(),
-  //       //   ),
-  //       // );
-  //     },
-  //   );
-  // }
+        /// Check if
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => LoginScreen(),
+        //   ),
+        // );
+      },
+    );
+  }
 
   Future<bool> _validateUsernameAndPassword() async {
     try {
@@ -248,7 +249,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ForgetPasswordScreen(),
+                          ));
+                    },
                     child: const Text(
                       'Forgot Password?',
                       style: TextStyle(
@@ -267,7 +274,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(40.0),
                   ),
-                  onPressed: _validateUserAndLogin,
+                  onPressed: () => _loginWithEmailAndPassword(),
                   child: isLoading
                       ? const SizedBox(
                           height: 20,
