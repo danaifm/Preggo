@@ -415,7 +415,7 @@ class _SignUpState extends State<SignUp> {
                               }
                             },
                             child: Text(
-                              "Register",
+                              "Sign Up",
                               style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
