@@ -2,8 +2,14 @@
 // ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_literals_to_create_immutables, no_logic_in_create_state, avoid_print
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+//import 'package:preggo/login_screen.dart';
 import 'package:string_validator/string_validator.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:preggo/colors.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import 'SplashScreen.dart';
+import 'homeScreen.dart';
 
 class SignUp extends StatefulWidget {
   //const SignUp({Key? key}) : super(key: key);
@@ -29,6 +35,7 @@ class _SignUpState extends State<SignUp> {
   bool emailTaken = false;
   bool phoneTaken = false;
   bool _passwordVisible = false;
+  FirebaseAuth auth = FirebaseAuth.instance;
   @override
   void initState() {
     super.initState();
@@ -44,7 +51,7 @@ class _SignUpState extends State<SignUp> {
     Future<bool> uniqueUsername(String username) async {
       QuerySnapshot query = await FirebaseFirestore.instance
           .collection('users')
-          .where('username', isEqualTo: username)
+          .where('username', isEqualTo: username.toLowerCase())
           .get();
       return query.docs.isNotEmpty;
     }
@@ -52,7 +59,7 @@ class _SignUpState extends State<SignUp> {
     Future<bool> uniqueEmail(String email) async {
       QuerySnapshot query = await FirebaseFirestore.instance
           .collection('users')
-          .where('email', isEqualTo: email)
+          .where('email', isEqualTo: email.toLowerCase())
           .get();
       return query.docs.isNotEmpty;
     }
@@ -160,7 +167,12 @@ class _SignUpState extends State<SignUp> {
                                 color: Color.fromARGB(255, 221, 225, 232),
                               ),
                             ),
-                            hintText: "Enter your Username",
+                            labelText: "Enter your username",
+                            labelStyle: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                              color: grayColor,
+                            ),
                             filled: true,
                             fillColor: Color(0xFFF7F8F9),
                           ),
@@ -228,7 +240,12 @@ class _SignUpState extends State<SignUp> {
                                 color: Color.fromARGB(255, 221, 225, 232),
                               ),
                             ),
-                            hintText: "Enter your Email",
+                            labelText: "Enter your email",
+                            labelStyle: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                              color: grayColor,
+                            ),
                             filled: true,
                             fillColor: Color(0xFFF7F8F9),
                           ),
@@ -304,7 +321,12 @@ class _SignUpState extends State<SignUp> {
                                 color: Color.fromARGB(255, 221, 225, 232),
                               ),
                             ),
-                            hintText: "Enter your Phone Number",
+                            labelText: "Enter your phone number",
+                            labelStyle: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                              color: grayColor,
+                            ),
                             filled: true,
                             fillColor: Color(0xFFF7F8F9),
                           ),
@@ -372,7 +394,12 @@ class _SignUpState extends State<SignUp> {
                                 color: Color.fromARGB(255, 221, 225, 232),
                               ),
                             ),
-                            hintText: "Enter your Password",
+                            labelText: "Enter your password",
+                            labelStyle: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                              color: grayColor,
+                            ),
                             filled: true,
                             fillColor: Color(0xFFF7F8F9),
                           ),
@@ -417,19 +444,30 @@ class _SignUpState extends State<SignUp> {
                                 _phoneKey.currentState!.value);
                             setState(() {});
                             if (_formKey.currentState!.validate()) {
+                              UserCredential userCredential = await FirebaseAuth
+                                  .instance
+                                  .createUserWithEmailAndPassword(
+                                      email: _emailController.text,
+                                      password: _passwordController.text);
                               _formKey.currentState?.save();
                               Map<String, String> dataToSave = {
-                                'username': _usernameController.text,
-                                'email': _emailController.text,
+                                'username':
+                                    _usernameController.text.toLowerCase(),
+                                'email': _emailController.text.toLowerCase(),
                                 'password': _passwordController.text,
                                 'phone': _phoneController.text,
                                 'admin': '0'
                               };
                               FirebaseFirestore.instance
                                   .collection('users/')
-                                  .doc(_usernameController.text)
+                                  .doc(userCredential.user!.uid)
                                   .set(dataToSave);
                               print('Registration successful');
+
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SplashScreen()));
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -466,7 +504,8 @@ class _SignUpState extends State<SignUp> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => SignUp()),
+                          MaterialPageRoute(
+                              builder: (context) => SplashScreen()),
                         );
                       },
                       child: Text(
