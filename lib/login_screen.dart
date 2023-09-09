@@ -26,89 +26,87 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool hidePassword = true;
   bool isLoading = false;
-  bool isUserdataValide = true;
-  String validateUserMessage = "";
+  bool isUserValid = true;
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  _loginWithEmailAndPassword() async {
-    setState(() {
-      isLoading = true;
-    });
-    UserCredential user = await auth
-        .signInWithEmailAndPassword(
-            email: _usernameFieldController.text,
-            password: _passwordFieldController.text)
-        .whenComplete(
-      () {
-        setState(() {
-          isLoading = false;
-        });
-
-        /// Check if
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => LoginScreen(),
-        //   ),
-        // );
-      },
-    );
-  }
-
-  Future<bool> _validateUsernameAndPassword() async {
+  Future<UserCredential?> _loginWithEmailAndPassword({
+    required String email,
+    required String password,
+  }) async {
     try {
-      if (_usernameFieldController.text.isNotEmpty &&
-          _passwordFieldController.text.isNotEmpty) {
-        FirebaseFirestore firestore = FirebaseFirestore.instance;
-        final userData = await firestore
-            .collection("users")
-            .where(
-              "username",
-              isEqualTo: _usernameFieldController.text.trim(),
-            )
-            .where(
-              "password",
-              isEqualTo: _passwordFieldController.text.trim(),
-            )
-            .limit(1)
-            .get();
-        if (userData.docs.isEmpty) {
-          isUserdataValide = false;
-          // validateUserMessage = "";
-        } else {
-          isUserdataValide = true;
-        }
-
-        debugPrint("User data from firestore is:: ${userData.docs.length} #");
-      } else {
-        isUserdataValide = false;
-      }
-      if (mounted) setState(() {});
+      UserCredential user = await auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return user;
     } catch (error) {
-      isUserdataValide = false;
-      if (mounted) setState(() {});
+      return null;
     }
-    return isUserdataValide;
   }
 
-  _validateUserAndLogin() async {
-    final isValideUser = await _validateUsernameAndPassword();
-    if (_formKey.currentState!.validate()) {
-      if (isValideUser) {
-        if (mounted) {
-          /// User valid
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) {
-              return const SplashScreen();
-            },
-          ));
-        }
+  Future<String> _fetchEmailFromFirestore() async {
+    String email = "";
+
+    if (_usernameFieldController.text.isNotEmpty &&
+        _passwordFieldController.text.isNotEmpty) {
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      final userData = await firestore
+          .collection("users")
+          .where(
+            "username",
+            isEqualTo: _usernameFieldController.text.trim().toLowerCase(),
+          )
+          .where(
+            "password",
+            isEqualTo: _passwordFieldController.text.trim(),
+          )
+          .limit(1)
+          .get();
+      if (userData.docs.isNotEmpty) {
+        email = userData.docs.first.data()['email'];
       }
-      // _loginWithEmailAndPassword();
+    }
+    return email;
+  }
+
+  Future<void> login() async {
+    setState(() {
+      isUserValid = true;
+    });
+    if (_formKey.currentState!.validate()) {
+      final String userEmail = await _fetchEmailFromFirestore();
+      if (userEmail.isNotEmpty) {
+        final UserCredential? credential = await _loginWithEmailAndPassword(
+          email: userEmail,
+          password: _passwordFieldController.text,
+        );
+
+        if (credential?.user != null) {
+          setState(() {
+            isUserValid = true;
+            if (mounted) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SplashScreen(),
+                  ));
+            }
+          });
+        } else {
+          setState(() {
+            isUserValid = false;
+          });
+        }
+      } else {
+        setState(() {
+          isUserValid = false;
+        });
+      }
     } else {
-      isUserdataValide = true;
-      setState(() {});
+      setState(() {
+        isUserValid = true;
+      });
     }
   }
 
@@ -235,7 +233,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     return null;
                   },
                 ),
-                if (isUserdataValide == false) ...[
+                if (isUserValid == false) ...[
                   const SizedBox(height: 20.0),
                   Text(
                     "Incorrect username/password!",
@@ -274,7 +272,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(40.0),
                   ),
-                  onPressed: () => _loginWithEmailAndPassword(),
+                  onPressed: login,
                   child: isLoading
                       ? const SizedBox(
                           height: 20,
