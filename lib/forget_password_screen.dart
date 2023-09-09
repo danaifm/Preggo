@@ -65,6 +65,11 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: whiteColor,
+        appBar: AppBar(
+          backgroundColor:Colors.white,
+          elevation: 0,
+          leading: IconButton(icon: Icon(Icons.arrow_back, color: Colors.black,),onPressed: () => Navigator.pop(context),),),
+        
         body: Form(
           key: _formKey,
           child: Padding(
@@ -85,7 +90,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                     ),
                   ),
                   const Text(
-                    'Forget password?',
+                    'Forgot password?',
                     style: TextStyle(
                       color: darkBlackColor,
                       fontSize: 22,
@@ -94,10 +99,10 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   ),
                   const SizedBox(height: 10.0),
                   const Text(
-                    'Don\'t worry we will send you link to your email to change your password',
+                    ' A link will be send to your email to reset it',
                     style: TextStyle(
                       color: darkBlackColor,
-                      fontSize: 22,
+                      fontSize: 16,
                     ),
                   ),
                   const SizedBox(height: 30.0),
