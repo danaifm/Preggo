@@ -119,7 +119,7 @@ class _SignUpState extends State<SignUp> {
                                 */
 
                             if (value!.isEmpty == true) {
-                              return "Field cannot be empty.";
+                              return "This field cannot be empty.";
                             } else if (!validCharacters.hasMatch(value)) {
                               return "Only alphanumerical values allowed."; //maybe change error message
                             } else if (usernameTaken) {
@@ -165,7 +165,7 @@ class _SignUpState extends State<SignUp> {
                           key: _emailKey,
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return "Field cannot be empty.";
+                              return "This field cannot be empty.";
                             } else if (!EmailValidator.validate(value)) {
                               return "Please enter a valid email.";
                             } else if (emailTaken) {
@@ -241,7 +241,7 @@ class _SignUpState extends State<SignUp> {
                               return 'Field must contain only digits.';
                             }
                             if (phone.isEmpty) {
-                              return 'Field cannot be empty.';
+                              return 'This field cannot be empty.';
                             } else if (phone.length != 10) {
                               return 'Phone number must be 10 digits.';
                             } else if (phoneTaken) {
@@ -340,7 +340,7 @@ class _SignUpState extends State<SignUp> {
                           autocorrect: false,
                           validator: (pass) {
                             if (pass!.isEmpty == true) {
-                              return "Field cannot be empty.";
+                              return "This field cannot be empty.";
                             } else if (pass.length < 8) {
                               return "Password must be at least 8 characters.";
                             } else {
