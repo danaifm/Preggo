@@ -145,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     setState(() {});
                   },
                   decoration: InputDecoration(
-                    hintText: "Enter your username",
+                    hintText: "Username",
                     labelStyle: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
@@ -189,7 +189,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Icons.lock,
                       color: Colors.grey,
                     ),
-                    hintText: 'Enter your password',
+                    hintText: 'Password',
                     labelStyle: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
