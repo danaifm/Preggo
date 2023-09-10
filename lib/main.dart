@@ -9,6 +9,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(unselectedWidgetColor: Colors.black),
+
       // the root widget
       home:
           SplashScreen(), // each class representes a page or a screen, if you want to display the login class(page) you just call it form here
