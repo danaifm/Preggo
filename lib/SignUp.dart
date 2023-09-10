@@ -7,6 +7,7 @@ import 'package:string_validator/string_validator.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:preggo/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:phone_form_field/phone_form_field.dart';
 
 import 'SplashScreen.dart';
 //import 'homeScreen.dart';
@@ -25,7 +26,7 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
+  final PhoneController _phoneController = PhoneController(null);
   final GlobalKey<FormFieldState> _usernameKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> _emailKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> _phoneKey = GlobalKey<FormFieldState>();
@@ -129,7 +130,7 @@ class _SignUpState extends State<SignUp> {
                             }
                           },
                           decoration: InputDecoration(
-                            hintText: "Enter your username",
+                            hintText: "Username",
                             labelStyle: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w500,
@@ -217,7 +218,7 @@ class _SignUpState extends State<SignUp> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10.0),
-                        child: TextFormField(
+                        child: PhoneFormField(
                           controller: _phoneController,
                           key: _phoneKey,
                           /*
@@ -228,11 +229,18 @@ class _SignUpState extends State<SignUp> {
                                 --BACK END--
                                 3- unique (???)
                                 */
-                          validator: (phone) {
+                          validator: PhoneValidator.compose([
+                            // list of validators to use
+                            PhoneValidator.required(
+                                errorText: "This field cannot be empty."),
+                            PhoneValidator.validMobile(),
+                            // ..
+                          ]),
+                          /* (phone) {
                             bool hasLetter = false;
                             int i = 0;
-                            while (i < phone!.length) {
-                              if (!isNumeric(phone[i])) {
+                            while (i < phone!.toString().length) {
+                              if (!isNumeric(phone.toString().[i])) {
                                 hasLetter = true;
                               }
                               i++;
@@ -240,16 +248,16 @@ class _SignUpState extends State<SignUp> {
                             if (hasLetter) {
                               return 'Field must contain only digits.';
                             }
-                            if (phone.isEmpty) {
+                            if (phone.toString().isEmpty) {
                               return 'This field cannot be empty.';
-                            } else if (phone.length != 10) {
+                            } else if (phone.toString().length != 10) {
                               return 'Phone number must be 10 digits.';
                             } else if (phoneTaken) {
                               return 'Phone number is already taken!';
                             } else {
                               return null;
                             }
-                          },
+                          },*/
                           keyboardType: TextInputType.phone,
                           decoration: InputDecoration(
                             hintText: "Enter your phone number",
@@ -385,7 +393,7 @@ class _SignUpState extends State<SignUp> {
                                   _emailKey.currentState!.value);
                               setState(() {});
                               phoneTaken = await uniquePhone(
-                                  _phoneKey.currentState!.value);
+                                  _phoneKey.currentState!.toString());
                               setState(() {});
                               if (_formKey.currentState!.validate()) {
                                 UserCredential userCredential =
@@ -399,7 +407,7 @@ class _SignUpState extends State<SignUp> {
                                       _usernameController.text.toLowerCase(),
                                   'email': _emailController.text.toLowerCase(),
                                   'password': _passwordController.text,
-                                  'phone': _phoneController.text,
+                                  'phone': _phoneController.toString(),
                                   'admin': '0'
                                 };
                                 FirebaseFirestore.instance
