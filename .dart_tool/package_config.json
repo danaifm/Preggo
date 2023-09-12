@@ -218,6 +218,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "intl_phone_field",
+      "rootUri": "file:///Users/dana/.pub-cache/hosted/pub.dev/intl_phone_field-3.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "js",
       "rootUri": "file:///Users/dana/.pub-cache/hosted/pub.dev/js-0.6.7",
       "packageUri": "lib/",
@@ -374,7 +380,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2023-09-10T10:51:23.760361Z",
+  "generated": "2023-09-11T15:21:35.215973Z",
   "generator": "pub",
   "generatorVersion": "3.0.6"
 }
