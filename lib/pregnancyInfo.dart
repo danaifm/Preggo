@@ -4,11 +4,15 @@
 import 'package:flutter/material.dart';
 import 'package:preggo/main.dart';
 import 'package:dropdown_search/dropdown_search.dart'; 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 
 
 class pregnancyInfo extends StatefulWidget {
   //const SignUp({Key? key}) : super(key: key);
+  late final String userId  ;
   @override
   State<StatefulWidget> createState() {
     return _fillPregnancyInfo();
@@ -17,11 +21,38 @@ class pregnancyInfo extends StatefulWidget {
   class _fillPregnancyInfo extends State<pregnancyInfo> {
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     final GlobalKey<FormFieldState> _nameKey = GlobalKey<FormFieldState>();
-    //final GlobalKey<FormFieldState> _radioKey = GlobalKey<FormFieldState>();
+    final TextEditingController _babynameController = TextEditingController();
+    //CollectionReference pregnancyInfo = FirebaseFirestore .instance.collection("pregnancyInfo");
 
     String? gender;
     var selectedWeek = null; 
     bool showError = false; 
+
+    String getUserId(){
+      User? user = FirebaseAuth.instance.currentUser;
+      return user!.uid;
+    }
+
+    void addPregnancyInfo(String name, String gender, String week){
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      String userUid = getUserId();
+
+      CollectionReference subCollectionRef = firestore.collection('users').doc(userUid).collection('pregnancyInfo');
+      subCollectionRef.add({
+        'babys name': name,
+        'gender': gender,
+        'week': week,
+      }).then((value) => print('info added successfully')).catchError((error) => print('failed to add info:$error'));
+    }
+
+    /*addPegnancyInfo() async{
+      CollectionReference pregnancyInfo = 
+      FirebaseFirestore.instance.collection('users').doc(widget.userId).collection('pregnancyInfo'); 
+
+      if (_formKey.currentState!.validate()),
+    }*/ 
+
+
   @override
   Widget build(BuildContext context) {
     
@@ -73,6 +104,7 @@ class pregnancyInfo extends StatefulWidget {
                         padding: const EdgeInsets.symmetric(vertical: 10.0),
                         child: TextFormField(
                           key: _nameKey,
+                          controller: _babynameController,
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 15),
                             focusedErrorBorder: OutlineInputBorder(
@@ -249,7 +281,11 @@ class pregnancyInfo extends StatefulWidget {
                               ),
                               ),
                             ),
-                            onChanged: print,
+                            onChanged: (week){
+                              setState(() {
+                                selectedWeek = week; 
+                              });
+                            },
                             selectedItem: selectedWeek,
                             validator: (String? item){
                               if (item == null)
@@ -276,7 +312,12 @@ class pregnancyInfo extends StatefulWidget {
                               
                             });
                             
-                            if (_formKey.currentState!.validate()){}
+                            if (_formKey.currentState!.validate()){
+                              String babyName = _babynameController.text;
+                              String? babyGender = gender; 
+                              String currentWeek = selectedWeek;
+                              addPregnancyInfo(babyName, babyGender!, currentWeek);
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.black,

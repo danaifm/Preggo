@@ -15,5 +15,7 @@ com.example.preggo.app-rs-13 C:\Users\ranaa\OneDrive\Documents\GitHub\Preggo\bui
 com.example.preggo.app-mergeDebugResources-14 C:\Users\ranaa\OneDrive\Documents\GitHub\Preggo\build\app\intermediates\incremental\debug\mergeDebugResources\merged.dir
 com.example.preggo.app-mergeDebugResources-15 C:\Users\ranaa\OneDrive\Documents\GitHub\Preggo\build\app\intermediates\incremental\debug\mergeDebugResources\stripped.dir
 com.example.preggo.app-merged_res-16 C:\Users\ranaa\OneDrive\Documents\GitHub\Preggo\build\app\intermediates\merged_res\debug
-com.example.preggo.app-packaged_res-17 C:\Users\ranaa\OneDrive\Documents\GitHub\Preggo\build\firebase_auth\intermediates\packaged_res\debug
-com.example.preggo.app-packaged_res-18 C:\Users\ranaa\OneDrive\Documents\GitHub\Preggo\build\firebase_core\intermediates\packaged_res\debug
+com.example.preggo.app-packaged_res-17 C:\Users\ranaa\OneDrive\Documents\GitHub\Preggo\build\cloud_firestore\intermediates\packaged_res\debug
+com.example.preggo.app-packaged_res-18 C:\Users\ranaa\OneDrive\Documents\GitHub\Preggo\build\firebase_auth\intermediates\packaged_res\debug
+com.example.preggo.app-packaged_res-19 C:\Users\ranaa\OneDrive\Documents\GitHub\Preggo\build\firebase_core\intermediates\packaged_res\debug
+com.example.preggo.app-packaged_res-20 C:\Users\ranaa\OneDrive\Documents\GitHub\Preggo\build\firebase_storage\intermediates\packaged_res\debug

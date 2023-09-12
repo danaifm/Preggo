@@ -32,6 +32,24 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "cloud_firestore",
+      "rootUri": "file:///C:/Users/ranaa/AppData/Local/Pub/Cache/hosted/pub.dev/cloud_firestore-4.9.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "cloud_firestore_platform_interface",
+      "rootUri": "file:///C:/Users/ranaa/AppData/Local/Pub/Cache/hosted/pub.dev/cloud_firestore_platform_interface-5.16.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "cloud_firestore_web",
+      "rootUri": "file:///C:/Users/ranaa/AppData/Local/Pub/Cache/hosted/pub.dev/cloud_firestore_web-3.7.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
       "name": "collection",
       "rootUri": "file:///C:/Users/ranaa/AppData/Local/Pub/Cache/hosted/pub.dev/collection-1.17.2",
       "packageUri": "lib/",
@@ -92,6 +110,24 @@
       "languageVersion": "2.18"
     },
     {
+      "name": "firebase_storage",
+      "rootUri": "file:///C:/Users/ranaa/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_storage-11.2.6",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "firebase_storage_platform_interface",
+      "rootUri": "file:///C:/Users/ranaa/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_storage_platform_interface-4.4.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "firebase_storage_web",
+      "rootUri": "file:///C:/Users/ranaa/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_storage_web-3.6.6",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
       "name": "flutter",
       "rootUri": "file:///C:/Flutter/flutter/packages/flutter",
       "packageUri": "lib/",
@@ -112,6 +148,12 @@
     {
       "name": "flutter_web_plugins",
       "rootUri": "file:///C:/Flutter/flutter/packages/flutter_web_plugins",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "http",
+      "rootUri": "file:///C:/Users/ranaa/AppData/Local/Pub/Cache/hosted/pub.dev/http-1.1.0",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -230,7 +272,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2023-09-11T21:41:22.629093Z",
+  "generated": "2023-09-12T14:07:10.075910Z",
   "generator": "pub",
   "generatorVersion": "3.1.1"
 }

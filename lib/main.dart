@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:preggo/SplashScreen.dart';
+import 'package:preggo/login_screen.dart';
 import 'package:preggo/pregnancyInfo.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -17,7 +21,7 @@ class MyApp extends StatelessWidget {
 
       // the root widget
       home:
-          pregnancyInfo(), // each class representes a page or a screen, if you want to display the login class(page) you just call it form here
+          const LoginScreen(), // each class representes a page or a screen, if you want to display the login class(page) you just call it form here
     );
   }
 }
