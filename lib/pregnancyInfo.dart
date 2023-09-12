@@ -276,17 +276,7 @@ class pregnancyInfo extends StatefulWidget {
                               
                             });
                             
-                            if (_formKey.currentState!.validate()){
-                              if (gender == null){
-                                setState(() {
-                                  showError=true;
-                                });
-                              }
-                              else{
-                                //actions to do when form is validated 
-
-                              }
-                            }
+                            if (_formKey.currentState!.validate()){}
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.black,
