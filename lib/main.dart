@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:preggo/SplashScreen.dart';
 
+
+
 void main() {
   runApp(MyApp());
 }
@@ -10,6 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(unselectedWidgetColor: Colors.black),
+      debugShowCheckedModeBanner: false,
 
       // the root widget
       home:

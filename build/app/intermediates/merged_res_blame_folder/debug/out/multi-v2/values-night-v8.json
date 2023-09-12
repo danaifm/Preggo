@@ -4,7 +4,7 @@
             "outputFile": "com.example.preggo.app-mergeDebugResources-14:/values-night-v8/values-night-v8.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Bdoor\\Documents\\GitHub\\Preggo\\android\\app\\src\\main\\res\\values-night\\styles.xml",
+                    "source": "C:\\Users\\ranaa\\OneDrive\\Documents\\GitHub\\Preggo\\android\\app\\src\\main\\res\\values-night\\styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",
