@@ -35,7 +35,7 @@ class _NavBar extends State<NavBar> {
 
       // the profile page
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0xFFD77D7C),
+        backgroundColor: currentTab == 2 ? Color(0xFFD77D7C) : Colors.grey,
         onPressed: () {
           setState(() {
             currentScreen = ProfilePage();
@@ -48,7 +48,7 @@ class _NavBar extends State<NavBar> {
             Icon(
               Icons.pregnant_woman_rounded,
               size: 35,
-              color: currentTab == 2 ? Colors.white : Colors.white,
+              color: Colors.white,
             ),
           ],
         ),
@@ -90,7 +90,7 @@ class _NavBar extends State<NavBar> {
                               color: currentTab == 0
                                   ? Color(0xFFD77D7C)
                                   : Colors.grey,
-                              fontFamily: 'Signika'),
+                              fontFamily: 'Urbanist'),
                         )
                       ],
                     ),
@@ -120,7 +120,7 @@ class _NavBar extends State<NavBar> {
                               color: currentTab == 1
                                   ? Color(0xFFD77D7C)
                                   : Colors.grey,
-                              fontFamily: 'Signika'),
+                              fontFamily: 'Urbanist'),
                         )
                       ],
                     ),
@@ -154,7 +154,7 @@ class _NavBar extends State<NavBar> {
                         Text(
                           "Tools",
                           style: TextStyle(
-                            fontFamily: 'Signika',
+                            fontFamily: 'Urbanist',
                             color: currentTab == 3
                                 ? Color(0xFFD77D7C)
                                 : Colors.grey,
@@ -188,7 +188,7 @@ class _NavBar extends State<NavBar> {
                               color: currentTab == 4
                                   ? Color(0xFFD77D7C)
                                   : Colors.grey,
-                              fontFamily: 'Signika'),
+                              fontFamily: 'Urbanist'),
                         )
                       ],
                     ),
