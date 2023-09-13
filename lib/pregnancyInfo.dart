@@ -58,7 +58,7 @@ class pregnancyInfo extends StatefulWidget {
         children: [
           SizedBox(height: 55,),
           Text(
-            "Fill pregnancy details",
+            "Add pregnancy details",
             style: TextStyle(
               color: Color(0xFFD77D7C),
               fontSize: 32,
