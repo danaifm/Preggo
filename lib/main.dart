@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
 
       // the root widget
       home:
-          const LoginScreen(), // each class representes a page or a screen, if you want to display the login class(page) you just call it form here
+          pregnancyInfo(), // each class representes a page or a screen, if you want to display the login class(page) you just call it form here
     );
   }
 }
