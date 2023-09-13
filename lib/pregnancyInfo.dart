@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, use_key_in_widget_constructors, camel_case_types, prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_init_to_null, unused_import, avoid_print
+// ignore_for_file: file_names, use_key_in_widget_constructors, camel_case_types, prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_init_to_null, unused_import, avoid_print, unused_element
 
 
 import 'package:flutter/material.dart';
@@ -32,15 +32,15 @@ class pregnancyInfo extends StatefulWidget {
       return user!.uid;
     }
 
-    void addPregnancyInfo(String name, String gender, String week){
+    void addPregnancyInfo(String name, String gender, DateTime due){
       FirebaseFirestore firestore = FirebaseFirestore.instance;
       String userUid = getUserId();
 
       CollectionReference subCollectionRef = firestore.collection('users').doc(userUid).collection('pregnancyInfo');
       subCollectionRef.add({
-        'babys name': name,
-        'gender': gender,
-        'week': week,
+        'Baby\'s name': name,
+        'Gender': gender,
+        'DueDate': due,
       }).then((value) => print('info added successfully')).catchError((error) => print('failed to add info:$error'));
     }
 
@@ -83,7 +83,7 @@ class pregnancyInfo extends StatefulWidget {
                             textAlign: TextAlign.left,
                             style: TextStyle(
                             color: Color.fromARGB(255, 0, 0, 0),
-                            fontSize: 21,
+                            fontSize: 20,
                             fontFamily: 'Urbanist',
                             fontWeight: FontWeight.w700,
                             height: 1.30,
@@ -158,7 +158,7 @@ class pregnancyInfo extends StatefulWidget {
                             textAlign: TextAlign.left,
                             style: TextStyle(
                             color: Color.fromARGB(255, 0, 0, 0),
-                            fontSize: 21,
+                            fontSize: 20,
                             fontFamily: 'Urbanist',
                             fontWeight: FontWeight.w700,
                             height: 1.30,
@@ -230,7 +230,7 @@ class pregnancyInfo extends StatefulWidget {
                             textAlign: TextAlign.left,
                             style: TextStyle(
                             color: Color.fromARGB(255, 0, 0, 0),
-                            fontSize: 21,
+                            fontSize: 20,
                             fontFamily: 'Urbanist',
                             fontWeight: FontWeight.w700,
                             height: 1.30,
@@ -309,7 +309,18 @@ class pregnancyInfo extends StatefulWidget {
                               String babyName = _babynameController.text;
                               String? babyGender = gender; 
                               String currentWeek = selectedWeek;
-                              addPregnancyInfo(babyName, babyGender!, currentWeek);
+                              String weekNum = currentWeek.substring(5); 
+                              int weekNo = int.parse(weekNum); 
+
+                              calculateDueDate(int week){
+                                const fullTerm = 40; 
+                                int daysToAdd = (fullTerm-week)*7;
+                                DateTime currentDate = DateTime.now();
+                                DateTime calculatedDueDate = currentDate.add(Duration(days: daysToAdd));
+                                return calculatedDueDate;
+                              }
+                              DateTime dueDate = calculateDueDate(weekNo);
+                              addPregnancyInfo(babyName, babyGender!, dueDate);
                             }
                           },
                           style: ElevatedButton.styleFrom(
