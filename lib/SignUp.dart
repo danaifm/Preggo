@@ -4,6 +4,7 @@
 // ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_literals_to_create_immutables, no_logic_in_create_state, avoid_print
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:preggo/login_screen.dart';
 //import 'package:preggo/login_screen.dart';
 import 'package:string_validator/string_validator.dart';
 import 'package:email_validator/email_validator.dart';
@@ -497,7 +498,7 @@ class _SignUpState extends State<SignUp> {
                               Navigator.of(context).pushAndRemoveUntil(
                                   MaterialPageRoute(
                                 builder: (context) {
-                                  return const SplashScreen();
+                                  return const LoginScreen();
                                 },
                               ), (route) => false);
                             },
