@@ -451,7 +451,7 @@ class _SignUpState extends State<SignUp> {
                                   'username':
                                       _usernameController.text.toLowerCase(),
                                   'email': _emailController.text.toLowerCase(),
-                                  'password': _passwordController.text,
+                                  //'password': _passwordController.text,
                                   'phone': _phoneController.text,
                                   'admin': '0'
                                 };
