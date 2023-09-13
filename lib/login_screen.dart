@@ -57,10 +57,10 @@ class _LoginScreenState extends State<LoginScreen> {
             "username",
             isEqualTo: _usernameFieldController.text.trim().toLowerCase(),
           )
-          .where(
-            "password",
-            isEqualTo: _passwordFieldController.text.trim(),
-          )
+          //.where(
+          //  "password",
+          // isEqualTo: _passwordFieldController.text.trim(),
+          //)
           .limit(1)
           .get();
       if (userData.docs.isNotEmpty) {
