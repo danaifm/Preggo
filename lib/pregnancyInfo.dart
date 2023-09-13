@@ -2,6 +2,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:preggo/SplashScreen.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/main.dart';
 import 'package:dropdown_search/dropdown_search.dart'; 
@@ -62,7 +63,7 @@ class pregnancyInfo extends StatefulWidget {
               color: Color(0xFFD77D7C),
               fontSize: 32,
               fontFamily: 'Urbanist',
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w600,
               height: 1.30,
               letterSpacing: -0.28,
             ),
@@ -83,7 +84,7 @@ class pregnancyInfo extends StatefulWidget {
                   ),
               ),
               child: SingleChildScrollView(
-                //physics: NeverScrollableScrollPhysics(),
+              //physics: NeverScrollableScrollPhysics(),
 
               child: Container(
               margin: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
@@ -124,7 +125,7 @@ class pregnancyInfo extends StatefulWidget {
                                 contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 15),
                                 focusedErrorBorder: OutlineInputBorder(
                                   gapPadding: 0.5,
-                                  borderRadius: BorderRadius.circular(25),
+                                  borderRadius: BorderRadius.circular(12),
                                   borderSide: BorderSide(
                                     width: 0.50,
                                     color: Color.fromRGBO(255, 100, 100, 1),
@@ -132,7 +133,7 @@ class pregnancyInfo extends StatefulWidget {
                                 ),
                                 errorBorder: OutlineInputBorder(
                                   gapPadding: 0.5,
-                                  borderRadius: BorderRadius.circular(25),
+                                  borderRadius: BorderRadius.circular(12),
                                   borderSide: BorderSide(
                                     width: 0.50,
                                     color: Color.fromRGBO(255, 100, 100, 1),
@@ -140,7 +141,7 @@ class pregnancyInfo extends StatefulWidget {
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   gapPadding: 0.5,
-                                  borderRadius: BorderRadius.circular(25),
+                                  borderRadius: BorderRadius.circular(12),
                                   borderSide: BorderSide(
                                     width: 0.50,
                                     color: Color.fromARGB(255, 221, 225, 232),
@@ -148,7 +149,7 @@ class pregnancyInfo extends StatefulWidget {
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   // gapPadding: 100,
-                                  borderRadius: BorderRadius.circular(25),
+                                  borderRadius: BorderRadius.circular(12),
                                   borderSide: BorderSide(
                                     width: 0.50,
                                     color: Color.fromARGB(255, 221, 225, 232),
@@ -280,7 +281,7 @@ class pregnancyInfo extends StatefulWidget {
                                     fillColor: Color(0xFFF7F8F9),
                                     enabledBorder: OutlineInputBorder(
                                       gapPadding: 0.5,
-                                      borderRadius: BorderRadius.circular(40),
+                                      borderRadius: BorderRadius.circular(12),
                                       borderSide: BorderSide(
                                         width: 0.50,
                                         color: Color.fromARGB(255, 221, 225, 232),
@@ -288,7 +289,7 @@ class pregnancyInfo extends StatefulWidget {
                                   ),
                                   errorBorder: OutlineInputBorder(
                                       gapPadding: 0.5,
-                                      borderRadius: BorderRadius.circular(40),
+                                      borderRadius: BorderRadius.circular(12),
                                       borderSide: BorderSide(
                                         width: 0.50,
                                         color: Color.fromRGBO(255, 100, 100, 1),
@@ -344,6 +345,11 @@ class pregnancyInfo extends StatefulWidget {
                                   DateTime dueDate = calculateDueDate(weekNo);
                                   addPregnancyInfo(babyName, babyGender!, dueDate);
                                 }
+
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                  builder: (context) => SplashScreen()));
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.black,
@@ -352,6 +358,7 @@ class pregnancyInfo extends StatefulWidget {
                                 padding: EdgeInsets.only(left: 90, top: 15, right: 110,bottom: 15),
                               ),
                               child: Text("Start Journey",softWrap: false ,),
+                              
                             ),
                           ),
           
