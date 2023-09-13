@@ -22,7 +22,6 @@ class pregnancyInfo extends StatefulWidget {
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     final GlobalKey<FormFieldState> _nameKey = GlobalKey<FormFieldState>();
     final TextEditingController _babynameController = TextEditingController();
-    //CollectionReference pregnancyInfo = FirebaseFirestore .instance.collection("pregnancyInfo");
 
     String? gender;
     var selectedWeek = null; 
@@ -45,12 +44,6 @@ class pregnancyInfo extends StatefulWidget {
       }).then((value) => print('info added successfully')).catchError((error) => print('failed to add info:$error'));
     }
 
-    /*addPegnancyInfo() async{
-      CollectionReference pregnancyInfo = 
-      FirebaseFirestore.instance.collection('users').doc(widget.userId).collection('pregnancyInfo'); 
-
-      if (_formKey.currentState!.validate()),
-    }*/ 
 
 
   @override
