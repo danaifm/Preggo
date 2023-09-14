@@ -84,7 +84,7 @@ class pregnancyInfo extends StatefulWidget {
                   ),
               ),
               child: SingleChildScrollView(
-              //physics: NeverScrollableScrollPhysics(),
+              physics: NeverScrollableScrollPhysics(),
 
               child: Container(
               margin: EdgeInsets.symmetric(vertical: 5, horizontal: 20),

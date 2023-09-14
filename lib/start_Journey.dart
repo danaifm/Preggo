@@ -41,7 +41,7 @@ class _startJourney extends State<startJourney>{
                 children: [
                   Center(
             child: Padding(
-              padding: EdgeInsets.only(top: 40),
+              padding: EdgeInsets.only(top: 90),
               child: Image.asset('assets/images/calendar.png', height: 280, width: 280,
               
               ),
@@ -103,7 +103,7 @@ class _startJourney extends State<startJourney>{
                 ),
               ), */ //uncomment when admin page gets added 
               Padding(
-                padding: EdgeInsets.fromLTRB(240, 80, 0, 0),
+                padding: EdgeInsets.fromLTRB(240, 60, 0, 0),
                 child: ElevatedButton(
                 onPressed: () {
                   Navigator.push(
