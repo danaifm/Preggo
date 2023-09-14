@@ -15,34 +15,34 @@ class NavBar extends StatefulWidget {
 class _NavBar extends State<NavBar> {
   int currentTab = 0;
   final List<Widget> screens = [
-    PregnancyTracking(), //0
-    CommunityPage(), //1
-    ProfilePage(), //2
-    ToolsPage(), //3
-    ArticlesPage() //4
+    const PregnancyTracking(), //0
+    const CommunityPage(), //1
+    const ProfilePage(), //2
+    const ToolsPage(), //3
+    const ArticlesPage() //4
   ];
 
   final PageStorageBucket bucket = PageStorageBucket();
-  Widget currentScreen = PregnancyTracking();
+  Widget currentScreen = const PregnancyTracking();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageStorage(
-        child: currentScreen,
         bucket: bucket,
+        child: currentScreen,
       ),
 
       // the profile page
       floatingActionButton: FloatingActionButton(
-        backgroundColor: currentTab == 2 ? Color(0xFFD77D7C) : Colors.grey,
+        backgroundColor: currentTab == 2 ? const Color(0xFFD77D7C) : Colors.grey,
         onPressed: () {
           setState(() {
-            currentScreen = ProfilePage();
+            currentScreen = const ProfilePage();
             currentTab = 2;
           });
         },
-        child: Column(
+        child: const Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
@@ -56,9 +56,9 @@ class _NavBar extends State<NavBar> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
       bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(),
+        shape: const CircularNotchedRectangle(),
         notchMargin: 10,
-        child: Container(
+        child: SizedBox(
           height: 80,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -71,7 +71,7 @@ class _NavBar extends State<NavBar> {
                     minWidth: 40,
                     onPressed: () {
                       setState(() {
-                        currentScreen = PregnancyTracking();
+                        currentScreen = const PregnancyTracking();
                         currentTab = 0;
                       });
                     },
@@ -82,13 +82,13 @@ class _NavBar extends State<NavBar> {
                           size: 30,
                           Icons.home_filled,
                           color:
-                              currentTab == 0 ? Color(0xFFD77D7C) : Colors.grey,
+                              currentTab == 0 ? const Color(0xFFD77D7C) : Colors.grey,
                         ),
                         Text(
                           "Home",
                           style: TextStyle(
                               color: currentTab == 0
-                                  ? Color(0xFFD77D7C)
+                                  ? const Color(0xFFD77D7C)
                                   : Colors.grey,
                               fontFamily: 'Urbanist'),
                         )
@@ -101,7 +101,7 @@ class _NavBar extends State<NavBar> {
                     minWidth: 40,
                     onPressed: () {
                       setState(() {
-                        currentScreen = CommunityPage();
+                        currentScreen = const CommunityPage();
                         currentTab = 1;
                       });
                     },
@@ -112,13 +112,13 @@ class _NavBar extends State<NavBar> {
                           size: 30,
                           Icons.language,
                           color:
-                              currentTab == 1 ? Color(0xFFD77D7C) : Colors.grey,
+                              currentTab == 1 ? const Color(0xFFD77D7C) : Colors.grey,
                         ),
                         Text(
                           "Community",
                           style: TextStyle(
                               color: currentTab == 1
-                                  ? Color(0xFFD77D7C)
+                                  ? const Color(0xFFD77D7C)
                                   : Colors.grey,
                               fontFamily: 'Urbanist'),
                         )
@@ -138,7 +138,7 @@ class _NavBar extends State<NavBar> {
                     minWidth: 40,
                     onPressed: () {
                       setState(() {
-                        currentScreen = ToolsPage();
+                        currentScreen = const ToolsPage();
                         currentTab = 3;
                       });
                     },
@@ -149,14 +149,14 @@ class _NavBar extends State<NavBar> {
                           size: 30,
                           Icons.brush,
                           color:
-                              currentTab == 3 ? Color(0xFFD77D7C) : Colors.grey,
+                              currentTab == 3 ? const Color(0xFFD77D7C) : Colors.grey,
                         ),
                         Text(
                           "Tools",
                           style: TextStyle(
                             fontFamily: 'Urbanist',
                             color: currentTab == 3
-                                ? Color(0xFFD77D7C)
+                                ? const Color(0xFFD77D7C)
                                 : Colors.grey,
                           ),
                         )
@@ -169,7 +169,7 @@ class _NavBar extends State<NavBar> {
                     minWidth: 40,
                     onPressed: () {
                       setState(() {
-                        currentScreen = ArticlesPage();
+                        currentScreen = const ArticlesPage();
                         currentTab = 4;
                       });
                     },
@@ -180,13 +180,13 @@ class _NavBar extends State<NavBar> {
                           size: 30,
                           Icons.description,
                           color:
-                              currentTab == 4 ? Color(0xFFD77D7C) : Colors.grey,
+                              currentTab == 4 ? const Color(0xFFD77D7C) : Colors.grey,
                         ),
                         Text(
                           "Articles",
                           style: TextStyle(
                               color: currentTab == 4
-                                  ? Color(0xFFD77D7C)
+                                  ? const Color(0xFFD77D7C)
                                   : Colors.grey,
                               fontFamily: 'Urbanist'),
                         )

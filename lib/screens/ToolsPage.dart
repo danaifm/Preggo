@@ -10,6 +10,6 @@ class ToolsPage extends StatefulWidget {
 class _ToolsPage extends State<ToolsPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: Text("Tools page")));
+    return const Scaffold(body: Center(child: Text("Tools page")));
   }
 }
