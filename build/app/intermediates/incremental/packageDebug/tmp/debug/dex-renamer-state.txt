@@ -1,4 +1,0 @@
-#Wed Sep 13 21:14:16 AST 2023
-base.0=C\:\\Users\\Bdoor\\Documents\\GitHub\\Preggo\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
-path.0=classes.dex
-renamed.0=classes.dex
