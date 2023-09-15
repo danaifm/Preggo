@@ -21,8 +21,9 @@ class ProfileScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 InkWell(
+               // InkWell(
                     // onTap: ()=> Navigator.pop(context),
-                    child: Image.asset("assets/images/arrow-left.png")),
+                  //  child: Image.asset("assets/images/arrow-left.png")),
                 Row(
                   children: [
                     Expanded(
