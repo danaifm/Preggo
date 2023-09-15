@@ -37,6 +37,13 @@ dependencies:
   cupertino_icons: ^1.0.2
   firebase_core: ^2.15.1
   firebase_auth: ^4.9.0
+  cloud_firestore: ^4.9.1
+  string_validator: ^1.0.0
+  firebase_storage: ^11.2.6
+  firebase_database: ^10.2.5
+  email_validator: ^2.1.17
+  phone_form_field: ^8.1.0
+  intl_phone_field: ^3.2.0
 <<<<<<< HEAD
   fluttertoast: ^8.2.2
   dropdown_search: ^5.0.6
