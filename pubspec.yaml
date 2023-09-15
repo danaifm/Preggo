@@ -37,10 +37,18 @@ dependencies:
   cupertino_icons: ^1.0.2
   firebase_core: ^2.15.1
   firebase_auth: ^4.9.0
+<<<<<<< HEAD
   fluttertoast: ^8.2.2
   dropdown_search: ^5.0.6
   cloud_firestore: ^4.9.1
   firebase_storage: ^11.2.6
+=======
+  cloud_firestore: ^4.9.1
+  email_validator: ^2.1.17
+  phone_form_field: ^8.1.0
+  string_validator: ^1.0.0
+  dropdown_search: ^5.0.6
+>>>>>>> home_page
 
 dev_dependencies:
   flutter_test:
@@ -67,12 +75,21 @@ flutter:
     - assets/images/
 
   fonts:
+    - family: Signika
+      fonts:
+        - asset: fonts/Signika/static/Signika-Regular.ttf
+
     - family: Urbanist
       fonts:
+<<<<<<< HEAD
         - asset: assets/fonts/Urbanist-Regular.ttf
         - asset: assets/fonts/Urbanist-Medium.ttf
         - asset: assets/fonts/Urbanist-SemiBold.ttf
         - asset: assets/fonts/Urbanist-Bold.ttf
+=======
+       # - asset: fonts/Urbanist/static/Urbanist-Regular.ttf
+        - asset: fonts/Urbanist/static/Urbanist-Medium.ttf
+>>>>>>> home_page
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:preggo/SplashScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
+=======
+import 'package:preggo/NavBar.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:preggo/SignUp.dart';
+>>>>>>> home_page
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +28,11 @@ class MyApp extends StatelessWidget {
       ),
       // the root widget
       home:
+<<<<<<< HEAD
           const SplashScreen(), // each class representes a page or a screen, if you want to display the login class(page) you just call it form here
+=======
+          SignUp(), // each class representes a page or a screen, if you want to display the login class(page) you just call it form here
+>>>>>>> home_page
     );
   }
 }
