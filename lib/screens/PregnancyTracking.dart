@@ -1,30 +1,29 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_final_fields, unnecessary_import, sized_box_for_whitespace, library_private_types_in_public_api
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_final_fields, unnecessary_import, sized_box_for_whitespace, library_private_types_in_public_api, avoid_print
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PregnancyTracking extends StatefulWidget {
-  const PregnancyTracking({super.key});
+  PregnancyTracking({super.key});
+  //late final String userId;
 
   @override
-  _PregnancyTracking createState() => _PregnancyTracking();
+  State<StatefulWidget> createState() {
+    return _PregnancyTracking();
+  }
 }
 
 class _PregnancyTracking extends State<PregnancyTracking> {
   String babyHeight = ' ';
   String babyWeight = ' ';
   String babyPicture = 'assets/images/w01-02.jpg';
+  var duedate;
 
-  //_PregnancyTracking(); ??what is this
+  int currentWeek = 1;
 
-  List<dynamic> weeks = [];
-
-  toJson() {
-    return {'height': babyHeight, 'weight': babyWeight, 'image': babyPicture};
-  }
-
-  final firestore = FirebaseFirestore.instance.collection('pregnancytracking');
+  var firestore = FirebaseFirestore.instance.collection('pregnancytracking');
 
   @override
   void initState() {
@@ -32,8 +31,44 @@ class _PregnancyTracking extends State<PregnancyTracking> {
     super.initState();
   }
 
+  getDueDate() async {
+    //var today = DateTime.now();
+    var subCollectionRef = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('pregnancyInfo')
+        .where("DueDate", isGreaterThanOrEqualTo: Timestamp.now())
+        .get();
+
+    var data = subCollectionRef.docs.first.data() as Map;
+    duedate = data['DueDate'];
+    //var today = DateTime.now();
+    //print("today is " + today.toString());
+    print("due date is ${duedate.toDate()}");
+    return getCurrentWeek(duedate.toDate());
+
+    /*var query = subCollectionRef
+        .where('DueDate', isGreaterThanOrEqualTo: today)
+        .get() as Map<String, dynamic>;
+    print(query.toString());*/
+  }
+
+  getCurrentWeek(var duedate) {
+    var today = DateTime.now();
+    final difference = duedate.difference(today).inDays / 7;
+    //print("current week is " + difference.round()).toString();
+    if (mounted) {
+      setState(() {
+        myCurrWeek = difference.round();
+      });
+    }
+    return difference.round();
+  }
+
+  int myCurrWeek = 0;
+
   getWeek() async {
-    final QuerySnapshot snapshot = await firestore.get();
+    //final QuerySnapshot snapshot = await firestore.get();
 
     firestore.doc((selected + 1).toString()).get().then((DocumentSnapshot doc) {
       setState(() {
@@ -45,19 +80,21 @@ class _PregnancyTracking extends State<PregnancyTracking> {
       print(doc['height'].toString());
       print(doc['image'].toString());
 
-      setState(() {
-        weeks = snapshot.docs;
-      });
+      // setState(() {
+      // weeks = snapshot.docs;
+      //});
     });
   }
 
   double itemWidth = 60.0;
   int itemCount = 40;
   int selected = 0;
-  FixedExtentScrollController _scrollController =
-      FixedExtentScrollController(initialItem: 0);
   @override
   Widget build(BuildContext context) {
+    var week = getDueDate();
+    // getCurrentWeek();
+    FixedExtentScrollController _scrollController =
+        FixedExtentScrollController(initialItem: 0); //exception hereeeeee
     return Scaffold(
       body: Column(
         children: [
@@ -73,6 +110,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                   });
                   print("WEEK" + (selected + 1).toString());
                   getWeek();
+                  getDueDate();
                 },
                 controller: _scrollController,
                 itemExtent: itemWidth,
@@ -81,19 +119,19 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                   (x) => RotatedBox(
                     quarterTurns: 1,
                     child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 400),
+                      duration: Duration(milliseconds: 400),
                       width: x == selected ? 70 : 60,
                       height: x == selected ? 80 : 70,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                           color: x == selected
-                              ? const Color.fromRGBO(249, 220, 222, 1)
+                              ? Color.fromRGBO(249, 220, 222, 1)
                               : Colors.transparent,
                           shape: BoxShape.rectangle,
                           borderRadius: BorderRadius.circular(15)),
                       child: Text(
                         'week \n \n    ${x + 1}', // so it starts from week 1
-                        style: const TextStyle(fontFamily: 'Urbanist'),
+                        style: TextStyle(fontFamily: 'Urbanist'),
                       ),
                     ),
                   ),
@@ -151,7 +189,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                       babyHeight,
                       style: TextStyle(fontFamily: 'Urbanist', fontSize: 15),
                     ),
-                    const Text(
+                    Text(
                       'height',
                       style: TextStyle(fontFamily: 'Urbanist', fontSize: 12),
                     )
@@ -161,17 +199,16 @@ class _PregnancyTracking extends State<PregnancyTracking> {
             ],
           ),
           Container(
-            margin: const EdgeInsets.only(top: 20),
+            margin: EdgeInsets.only(top: 20),
             height: 300,
             width: 330,
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border.all(
-                  color: const Color.fromRGBO(249, 220, 222, 1), width: 1.5),
+                  color: Color.fromRGBO(249, 220, 222, 1), width: 1.5),
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
-                const BoxShadow(
-                    blurRadius: 2, spreadRadius: 0.5, color: Colors.grey)
+                BoxShadow(blurRadius: 2, spreadRadius: 0.5, color: Colors.grey)
               ],
             ),
           )
