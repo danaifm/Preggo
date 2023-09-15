@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-<<<<<<< HEAD
 import 'package:preggo/login_screen.dart';
-=======
-//import 'package:preggo/login_screen.dart';
-import 'package:preggo/start_Journey.dart';
->>>>>>> pregnancy_info
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -32,17 +27,7 @@ class _SplashScreenState extends State<SplashScreen>
   void dispose() {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: SystemUiOverlay.values);
-<<<<<<< HEAD
     super.dispose();
-=======
-
-    Future.delayed(const Duration(seconds: 2), () {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (_) =>
-            startJourney(), // => the next page after the splashscreen
-      ));
-    });
->>>>>>> pregnancy_info
   }
 
   @override
