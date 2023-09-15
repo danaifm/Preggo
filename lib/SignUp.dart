@@ -7,6 +7,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:preggo/NavBar.dart';
 import 'package:preggo/login_screen.dart';
 import 'package:preggo/start_Journey.dart';
 import 'package:string_validator/string_validator.dart';
@@ -508,7 +509,7 @@ class _SignUpState extends State<SignUp> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              SplashScreen()));
+                                              startJourney()));
                                 }
                               },
                               child: Text(

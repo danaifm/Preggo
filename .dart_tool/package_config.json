@@ -80,6 +80,12 @@
       "languageVersion": "2.19"
     },
     {
+      "name": "dropdown_search",
+      "rootUri": "file:///Users/dana/.pub-cache/hosted/pub.dev/dropdown_search-5.0.6",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
       "name": "email_validator",
       "rootUri": "file:///Users/dana/.pub-cache/hosted/pub.dev/email_validator-2.1.17",
       "packageUri": "lib/",
@@ -198,6 +204,12 @@
       "rootUri": "file:///Users/dana/Developer/flutter/packages/flutter_web_plugins",
       "packageUri": "lib/",
       "languageVersion": "3.0"
+    },
+    {
+      "name": "fluttertoast",
+      "rootUri": "file:///Users/dana/.pub-cache/hosted/pub.dev/fluttertoast-8.2.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "http",
@@ -380,7 +392,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2023-09-15T20:49:52.015810Z",
+  "generated": "2023-09-15T21:00:08.262297Z",
   "generator": "pub",
   "generatorVersion": "3.0.6"
 }
