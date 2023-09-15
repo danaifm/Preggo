@@ -15,7 +15,7 @@ class NavBar extends StatefulWidget {
 class _NavBar extends State<NavBar> {
   int currentTab = 0;
   final List<Widget> screens = [
-    const PregnancyTracking(), //0
+    PregnancyTracking(), //0
     const CommunityPage(), //1
     const ProfilePage(), //2
     const ToolsPage(), //3
@@ -23,7 +23,7 @@ class _NavBar extends State<NavBar> {
   ];
 
   final PageStorageBucket bucket = PageStorageBucket();
-  Widget currentScreen = const PregnancyTracking();
+  Widget currentScreen = PregnancyTracking();
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,8 @@ class _NavBar extends State<NavBar> {
 
       // the profile page
       floatingActionButton: FloatingActionButton(
-        backgroundColor: currentTab == 2 ? const Color(0xFFD77D7C) : Colors.grey,
+        backgroundColor:
+            currentTab == 2 ? const Color(0xFFD77D7C) : Colors.grey,
         onPressed: () {
           setState(() {
             currentScreen = const ProfilePage();
@@ -71,7 +72,7 @@ class _NavBar extends State<NavBar> {
                     minWidth: 40,
                     onPressed: () {
                       setState(() {
-                        currentScreen = const PregnancyTracking();
+                        currentScreen = PregnancyTracking();
                         currentTab = 0;
                       });
                     },
@@ -81,8 +82,9 @@ class _NavBar extends State<NavBar> {
                         Icon(
                           size: 30,
                           Icons.home_filled,
-                          color:
-                              currentTab == 0 ? const Color(0xFFD77D7C) : Colors.grey,
+                          color: currentTab == 0
+                              ? const Color(0xFFD77D7C)
+                              : Colors.grey,
                         ),
                         Text(
                           "Home",
@@ -111,8 +113,9 @@ class _NavBar extends State<NavBar> {
                         Icon(
                           size: 30,
                           Icons.language,
-                          color:
-                              currentTab == 1 ? const Color(0xFFD77D7C) : Colors.grey,
+                          color: currentTab == 1
+                              ? const Color(0xFFD77D7C)
+                              : Colors.grey,
                         ),
                         Text(
                           "Community",
@@ -148,8 +151,9 @@ class _NavBar extends State<NavBar> {
                         Icon(
                           size: 30,
                           Icons.brush,
-                          color:
-                              currentTab == 3 ? const Color(0xFFD77D7C) : Colors.grey,
+                          color: currentTab == 3
+                              ? const Color(0xFFD77D7C)
+                              : Colors.grey,
                         ),
                         Text(
                           "Tools",
@@ -179,8 +183,9 @@ class _NavBar extends State<NavBar> {
                         Icon(
                           size: 30,
                           Icons.description,
-                          color:
-                              currentTab == 4 ? const Color(0xFFD77D7C) : Colors.grey,
+                          color: currentTab == 4
+                              ? const Color(0xFFD77D7C)
+                              : Colors.grey,
                         ),
                         Text(
                           "Articles",
