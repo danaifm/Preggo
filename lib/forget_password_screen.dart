@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
 // import 'package:fluttertoast/fluttertoast.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/login_screen.dart';
@@ -89,6 +88,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 width: 200,
                 fit: BoxFit.cover,
               ),
+              const SizedBox(height: 30.0),
               Expanded(
                 child: Container(
                   padding: const EdgeInsets.symmetric(
@@ -115,7 +115,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 10.0),
+                        const SizedBox(height: 20.0),
                         const Text(
                           'A link will be send to your email to reset your password.',
                           style: TextStyle(
@@ -123,7 +123,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                             fontSize: 16,
                           ),
                         ),
-                        const SizedBox(height: 30.0),
+                        const SizedBox(height: 35.0),
                         Stack(
                           children: [
                             Container(
