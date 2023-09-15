@@ -16,8 +16,7 @@ class ForgetPasswordScreen extends StatefulWidget {
 class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _emailFieldController =
-      TextEditingController();
+  final TextEditingController _emailFieldController = TextEditingController();
 
   final FocusNode _emailNode = FocusNode();
 
@@ -55,7 +54,6 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
               builder: (context) => const LoginScreen(),
             ));
       }).catchError((error) {
-
         setState(() {
           isLoading = false;
           isError = true;
@@ -119,7 +117,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                         ),
                         const SizedBox(height: 10.0),
                         const Text(
-                          'A link will be send to your email to reset it',
+                          'A link will be send to your email to reset your password.',
                           style: TextStyle(
                             color: darkBlackColor,
                             fontSize: 16,
@@ -138,7 +136,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                   setState(() {});
                                 },
                                 decoration: InputDecoration(
-                                  hintText: "Enter your Email",
+                                  hintText: "Email",
                                   labelStyle: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w500,
@@ -162,14 +160,16 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                   focusedBorder: const OutlineInputBorder(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(12.0)),
-                                    borderSide: BorderSide(color: darkGrayColor),
+                                    borderSide:
+                                        BorderSide(color: darkGrayColor),
                                   ),
                                 ),
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     return 'This field cannot be empty.';
                                   }
-                                  if (!value.contains("@") || !value.contains(".")) {
+                                  if (!value.contains("@") ||
+                                      !value.contains(".")) {
                                     return 'Email is not valid.';
                                   }
                                   if (value.length < 8) {
@@ -190,20 +190,21 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                   child: !isError
                                       ? const SizedBox()
                                       : Text(
-                                    "Email doesn't exist",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(
-                                      fontSize: 12.0,
-                                      color: Theme.of(context).colorScheme.error,
-                                      fontWeight: FontWeight.normal,
-                                    ),
-                                  ),
+                                          "Email doesn't exist",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                fontSize: 12.0,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .error,
+                                                fontWeight: FontWeight.normal,
+                                              ),
+                                        ),
                                 ),
                               ),
                             ),
-
                           ],
                         ),
                         const SizedBox(height: 20.0),
