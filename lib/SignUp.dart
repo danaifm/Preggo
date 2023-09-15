@@ -1,3 +1,4 @@
+//..
 //new sign up
 
 //SIGNUP.DART
@@ -7,6 +8,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:preggo/login_screen.dart';
+import 'package:preggo/start_Journey.dart';
 import 'package:string_validator/string_validator.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:preggo/colors.dart';
@@ -92,6 +94,7 @@ class _SignUpState extends State<SignUp> {
       return validators.isNotEmpty ? PhoneValidator.compose(validators) : null;
     }*/
 
+    String phoneNo = '';
     return MaterialApp(
       home: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -289,7 +292,7 @@ class _SignUpState extends State<SignUp> {
                                 autovalidateMode: AutovalidateMode.disabled,
                                 controller: _phoneControllerCC,
                                 key: _phoneKey,
-
+                                onChanged: (p) => phoneNo = p.toString(),
                                 /*
                                         phone number validations
                                         --FRONT END--
@@ -469,9 +472,7 @@ class _SignUpState extends State<SignUp> {
                                               password:
                                                   _passwordController.text);
                                   _formKey.currentState?.save();
-                                  if (_phoneControllerCC.value!
-                                      .getFormattedNsn()
-                                      .isEmpty) {
+                                  if (phoneNo.isEmpty) {
                                     Map<String, String> dataToSave = {
                                       'username': _usernameController.text
                                           .toLowerCase(),
