@@ -8,6 +8,7 @@ import 'package:preggo/main.dart';
 import 'package:dropdown_search/dropdown_search.dart'; 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:preggo/start_Journey.dart';
 
 
 
@@ -344,12 +345,15 @@ class pregnancyInfo extends StatefulWidget {
                                   }
                                   DateTime dueDate = calculateDueDate(weekNo);
                                   addPregnancyInfo(babyName, babyGender!, dueDate);
-                                }
 
-                                Navigator.push(
+                                  Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                   builder: (context) => SplashScreen()));
+
+                                }
+
+                                
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.black,
