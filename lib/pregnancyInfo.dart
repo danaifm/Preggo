@@ -1,6 +1,7 @@
 // ignore_for_file: file_names, use_key_in_widget_constructors, camel_case_types, prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_init_to_null, unused_import, avoid_print, unused_element
 
 import 'package:flutter/material.dart';
+import 'package:preggo/NavBar.dart';
 import 'package:preggo/SplashScreen.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/main.dart';
@@ -448,8 +449,7 @@ class _fillPregnancyInfo extends State<pregnancyInfo> {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) =>
-                                                  SplashScreen()));
+                                              builder: (context) => NavBar()));
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(

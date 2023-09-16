@@ -18,7 +18,7 @@ class _NavBar extends State<NavBar> {
   final List<Widget> screens = [
     PregnancyTracking(), //0
     const CommunityPage(), //1
-    ProfileScreen() , //ProfilePage(), //2
+    ProfileScreen(), //ProfilePage(), //2
     const ToolsPage(), //3
     const ArticlesPage() //4
   ];
@@ -40,7 +40,8 @@ class _NavBar extends State<NavBar> {
             currentTab == 2 ? const Color(0xFFD77D7C) : Colors.grey,
         onPressed: () {
           setState(() {
-            currentScreen =   ProfileScreen(); //ProfileScreen() , //ProfileScreen(), //const ProfilePage();
+            currentScreen =
+                ProfileScreen(); //ProfileScreen() , //ProfileScreen(), //const ProfilePage();
             currentTab = 2;
           });
         },
