@@ -3,7 +3,6 @@
 
 //SIGNUP.DART
 // ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_literals_to_create_immutables, no_logic_in_create_state, avoid_print, use_build_context_synchronously, unused_import
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:preggo/NavBar.dart';
@@ -43,6 +42,14 @@ class _SignUpState extends State<SignUp> {
   bool hidePassword = true;
   FirebaseAuth auth = FirebaseAuth.instance;
   late UserCredential userCredential;
+
+  @override
+  void initState() {
+    super.initState();
+    _phoneControllerCC.addListener(() {
+      print(_phoneControllerCC.value);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +96,17 @@ class _SignUpState extends State<SignUp> {
       return '';
     }
 
+    bool hasSpecial(x) {
+      RegExp _regExp = RegExp(r'^[0-9]');
+      print(x.value);
+      //print(x.value.nsn);
+      if (!_regExp.hasMatch(x.value.nsn.toString())) {
+        print("invalid");
+        return true;
+      }
+      print('valid');
+      return false;
+    }
 /*
     PhoneNumberInputValidator? _getValidator() {
       List<PhoneNumberInputValidator> validators = [];
@@ -301,11 +319,9 @@ class _SignUpState extends State<SignUp> {
                           Container(
                             height: 85,
                             constraints: BoxConstraints(maxHeight: 100),
-                            child: PhoneFormField(
-                              defaultCountry: IsoCode.SA,
-                              isCountrySelectionEnabled: false,
-                              autovalidateMode: AutovalidateMode.disabled,
-                              controller: _phoneControllerCC,
+                            child: TextFormField(
+                              maxLength: 10,
+                              controller: _phoneController,
                               key: _phoneKey,
                               onChanged: (p) => phoneNo = p.toString(),
                               /*
@@ -316,42 +332,46 @@ class _SignUpState extends State<SignUp> {
                                         --BACK END--
                                         3- unique (???)
                                         */
-                              validator: PhoneValidator.validMobile(),
-                              /* (phone) {
-                                    bool hasLetter = false;
-                                    int i = 0;
-                                    while (i < phone!.toString().length) {
-                                      if (!isNumeric(phone.toString().[i])) {
-                                        hasLetter = true;
-                                      }
-                                      i++;
-                                    }
-                                    if (hasLetter) {
-                                      return 'Field must contain only digits.';
-                                    }
-                                    if (phone.toString().isEmpty) {
-                                      return 'This field cannot be empty.';
-                                    } else if (phone.toString().length != 10) {
-                                      return 'Phone number must be 10 digits.';
-                                    } else if (phoneTaken) { !!!!!!!!!!!!!!!!!!!!!!!!!
-                                      return 'Phone number is already taken!';
-                                    } else {
-                                      return null;
-                                    }
-                                  },*/
-                              keyboardType: TextInputType.phone,
+                              validator: (phone) {
+                                if (phone.toString().isEmpty) {
+                                  return 'This field cannot be empty.';
+                                }
+                                bool hasLetter = false;
+                                int i = 0;
+                                while (i < phone!.toString().length) {
+                                  if (!isNumeric(phone.toString()[i])) {
+                                    hasLetter = true;
+                                  }
+                                  i++;
+                                }
+                                if (hasLetter) {
+                                  return 'Phone number must contain only digits.';
+                                } else if (phone.toString().length != 10) {
+                                  return 'Phone number must be 10 digits.';
+                                  // } else if (phoneTaken) {
+                                  //
+                                  // return 'Phone number is already taken!';
+                                } else if (phone.toString().substring(0, 2) !=
+                                    '05') {
+                                  return 'Incorrect phone number format.';
+                                } else {
+                                  return null;
+                                }
+                              },
+                              keyboardType: TextInputType.number,
                               decoration: InputDecoration(
-                                helperText: '',
+                                helperText:
+                                    'Phone number format should be: 05xxxxxxxx',
                                 hintText: "Phone number (optional)",
                                 labelStyle: const TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w500,
                                   color: grayColor,
                                 ),
-                                /*  prefixIcon: const Icon(
-                                    Icons.phone,
-                                    color: Colors.grey,
-                                  ),*/
+                                prefixIcon: const Icon(
+                                  Icons.phone,
+                                  color: Colors.grey,
+                                ),
                                 filled: true,
                                 fillColor: textFieldBackgroundColor,
                                 border: OutlineInputBorder(
@@ -514,8 +534,7 @@ class _SignUpState extends State<SignUp> {
                                     'email':
                                         _emailController.text.toLowerCase(),
                                     //'password': _passwordController.text,
-                                    'phone': _phoneControllerCC.value!
-                                        .getFormattedNsn(),
+                                    'phone': _phoneController.text,
                                     'admin': '0'
                                   };
                                   FirebaseFirestore.instance
