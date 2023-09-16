@@ -242,6 +242,10 @@ class _SignUpState extends State<SignUp> {
                                   if (specialchar.hasMatch(value)) {
                                     return "Incorrect email format.";
                                   }
+                                  var dot = '.'.allMatches(value).length;
+                                  if (dot > 1) {
+                                    return "Incorrect email format.";
+                                  }
                                   // var username =
                                   //     value.substring(0, value.indexOf('@'));
                                   // var domain = value.substring(
