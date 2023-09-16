@@ -85,21 +85,6 @@ class _SignUpState extends State<SignUp> {
       return query.docs.isNotEmpty;
     }
 
-    // isemailvalid(value) {
-    //   var user;
-    //   try {
-    //     // user = auth.createUserWithEmailAndPassword(
-    //     //     email: value, password: 'Temporary123');
-    //     auth.fetchSignInMethodsForEmail(value);
-    //   } on Exception {
-    //     // print(e.toString());
-    //     print('invalid email');
-    //     return "Incorrect email format.";
-    //   }
-    //   // user!.delete();
-    //   return '';
-    // }
-
     // bool hasSpecial(x) {
     //   RegExp _regExp = RegExp(r'^[0-9]');
     //   print(x.value);
@@ -111,23 +96,6 @@ class _SignUpState extends State<SignUp> {
     //   print('valid');
     //   return false;
     // }
-/*
-    PhoneNumberInputValidator? _getValidator() {
-      List<PhoneNumberInputValidator> validators = [];
-      validators.add(
-        PhoneValidator.required(errorText: "This field cannot be empty."),
-      );
-      if (phoneTaken) {
-        print('here');
-        validators.add(
-          PhoneValidator.valitd(errorText: "Phone number is already taken!"),
-        );
-      }
-      validators.add(
-        PhoneValidator.validMobile(),
-      );
-      return validators.isNotEmpty ? PhoneValidator.compose(validators) : null;
-    }*/
 
     String phoneNo = '';
     return Scaffold(
@@ -268,6 +236,25 @@ class _SignUpState extends State<SignUp> {
                                   return "This field cannot be empty.";
                                 } else if (!EmailValidator.validate(value)) {
                                   return "Incorrect email format.";
+                                } else if (EmailValidator.validate(value)) {
+                                  var specialchar =
+                                      RegExp(r'[!#$%^&*(),?":{}|<>]');
+                                  if (specialchar.hasMatch(value)) {
+                                    return "Incorrect email format.";
+                                  }
+                                  // var username =
+                                  //     value.substring(0, value.indexOf('@'));
+                                  // var domain = value.substring(
+                                  //     value.indexOf('@') + 1,
+                                  //     value.indexOf('.'));
+                                  // var end =
+                                  //     value.substring(value.indexOf('.') + 1);
+                                  // bool specialChar = false;
+                                  // for(int i = 0; i < username.length; i++){
+                                  //   if(!isAlphanumeric(username[i])){
+                                  //     if()
+                                  //   }
+                                  // }
                                 } else if (emailTaken) {
                                   return 'Email is already taken!';
                                 } else {
