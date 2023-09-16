@@ -85,28 +85,32 @@ class _SignUpState extends State<SignUp> {
       return query.docs.isNotEmpty;
     }
 
-    isemailvalid(value) {
-      try {
-        print('hello');
-        var x = auth.fetchSignInMethodsForEmail(value) as List;
-      } catch (FirebaseAuthException) {
-        print('invalid email');
-        return "Incorrect email format.";
-      }
-      return '';
-    }
+    // isemailvalid(value) {
+    //   var user;
+    //   try {
+    //     // user = auth.createUserWithEmailAndPassword(
+    //     //     email: value, password: 'Temporary123');
+    //     auth.fetchSignInMethodsForEmail(value);
+    //   } on Exception {
+    //     // print(e.toString());
+    //     print('invalid email');
+    //     return "Incorrect email format.";
+    //   }
+    //   // user!.delete();
+    //   return '';
+    // }
 
-    bool hasSpecial(x) {
-      RegExp _regExp = RegExp(r'^[0-9]');
-      print(x.value);
-      //print(x.value.nsn);
-      if (!_regExp.hasMatch(x.value.nsn.toString())) {
-        print("invalid");
-        return true;
-      }
-      print('valid');
-      return false;
-    }
+    // bool hasSpecial(x) {
+    //   RegExp _regExp = RegExp(r'^[0-9]');
+    //   print(x.value);
+    //   //print(x.value.nsn);
+    //   if (!_regExp.hasMatch(x.value.nsn.toString())) {
+    //     print("invalid");
+    //     return true;
+    //   }
+    //   print('valid');
+    //   return false;
+    // }
 /*
     PhoneNumberInputValidator? _getValidator() {
       List<PhoneNumberInputValidator> validators = [];
@@ -267,8 +271,11 @@ class _SignUpState extends State<SignUp> {
                                 } else if (emailTaken) {
                                   return 'Email is already taken!';
                                 } else {
-                                  if (isemailvalid(value).isNotEmpty) {
-                                    return isemailvalid(value);
+                                  if (value
+                                          .substring(value.indexOf('.') + 1)
+                                          .length <
+                                      2) {
+                                    return "Incorrect email format.";
                                   }
                                 }
                               },
@@ -333,9 +340,9 @@ class _SignUpState extends State<SignUp> {
                                         3- unique (???)
                                         */
                               validator: (phone) {
-                                if (phone.toString().isEmpty) {
-                                  return 'This field cannot be empty.';
-                                }
+                                // if (phone.toString().isEmpty) {
+                                //   return 'This field cannot be empty.';
+                                // }
                                 bool hasLetter = false;
                                 int i = 0;
                                 while (i < phone!.toString().length) {
@@ -346,13 +353,14 @@ class _SignUpState extends State<SignUp> {
                                 }
                                 if (hasLetter) {
                                   return 'Phone number must contain only digits.';
-                                } else if (phone.toString().length != 10) {
+                                } else if (phone.toString().length != 0 &&
+                                    phone.toString().length != 10) {
                                   return 'Phone number must be 10 digits.';
                                   // } else if (phoneTaken) {
                                   //
                                   // return 'Phone number is already taken!';
-                                } else if (phone.toString().substring(0, 2) !=
-                                    '05') {
+                                } else if (phone.toString().length == 10 &&
+                                    phone.toString().substring(0, 2) != '05') {
                                   return 'Incorrect phone number format.';
                                 } else {
                                   return null;
