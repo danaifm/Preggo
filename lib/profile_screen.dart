@@ -256,7 +256,7 @@ class ProfileScreen extends StatelessWidget {
                       decoration: BoxDecoration(color: Colors.grey[200]),
                       child: const Center(
                           child: Text(
-                        "SignOut",
+                        "Sign Out",
                         style: TextStyle(
                             color: pinkColor,
                             fontWeight: FontWeight.bold,
@@ -275,7 +275,7 @@ class ProfileScreen extends StatelessWidget {
                               content: const SingleChildScrollView(
                                 child: ListBody(
                                   children: <Widget>[
-                                    Text('Are you sure you want to SignOut ?'),
+                                    Text('Are you sure you want to Sign Out ?'),
                                   ],
                                 ),
                               ),
@@ -316,7 +316,7 @@ class ProfileScreen extends StatelessWidget {
                                             borderRadius:
                                                 BorderRadius.circular(10)),
                                         child: const Text(
-                                          "SignOut",
+                                          "Sign Out",
                                           style: TextStyle(color: Colors.white),
                                         ),
                                       ),
@@ -354,7 +354,7 @@ class ProfileScreen extends StatelessWidget {
                               width: 10,
                             ),
                             const Text(
-                              "SignOut",
+                              "Sign Out",
                               style: TextStyle(fontSize: 16, color: Colors.red),
                             ),
                           ],
