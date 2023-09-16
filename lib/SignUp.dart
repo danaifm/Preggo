@@ -386,7 +386,7 @@ class _SignUpState extends State<SignUp> {
 
                                 decoration: InputDecoration(
                                   helperText:
-                                      'Password should be at least 8 characters long, and \ncontain at least one uppercase letter and digit.',
+                                      'Password should be at least 8 characters long',
                                   prefixIcon: const Icon(
                                     Icons.lock,
                                     color: Colors.grey,
