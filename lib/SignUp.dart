@@ -385,6 +385,7 @@ class _SignUpState extends State<SignUp> {
                                       */
 
                                 decoration: InputDecoration(
+                                  errorMaxLines: 2,
                                   helperText:
                                       'Password should be at least 8 characters long',
                                   prefixIcon: const Icon(
@@ -433,6 +434,7 @@ class _SignUpState extends State<SignUp> {
                                 ),
                                 obscureText: hidePassword ? true : false,
                                 autocorrect: false,
+                                
                                 validator: (pass) {
                                   if (pass!.isEmpty == true) {
                                     return "This field cannot be empty.";
@@ -452,7 +454,7 @@ class _SignUpState extends State<SignUp> {
                                     } //end while
                                     if (hasDigit == false ||
                                         hasUppercase == false) {
-                                      return "Password must contain at least one uppercase letter \nand one digit.";
+                                      return "Password must contain at least one uppercase letter and one digit.";
                                     }
                                   } //end else
                                   return null;
