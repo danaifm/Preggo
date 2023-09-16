@@ -559,7 +559,7 @@ class _SignUpState extends State<SignUp> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                'Already have an account?  ',
+                                'Already have an account? ',
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleLarge
@@ -579,7 +579,7 @@ class _SignUpState extends State<SignUp> {
                                   ), (route) => false);
                                 },
                                 child: Text(
-                                  'Sign In',
+                                  'Sign In!',
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleLarge
