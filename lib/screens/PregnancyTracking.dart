@@ -145,6 +145,8 @@ class _PregnancyTracking extends State<PregnancyTracking> {
     });
   }
 
+  var data;
+
   bool first = true;
   double itemWidth = 60.0;
   int itemCount = 40;
@@ -162,7 +164,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
               return Container();
             } //end if
             else if (snapshot.hasData) {
-              final data = snapshot.data;
+              data = snapshot.data;
               // _scrollController.animateToItem(data - 1,
               //     duration: Duration(milliseconds: 500), curve: Curves.linear);
 
@@ -179,9 +181,12 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                   children: [
                     Container(
                       height: 180,
+                      //alignment: Alignment.topCenter,
                       child: RotatedBox(
                         quarterTurns: -1,
                         child: ListWheelScrollView(
+                          physics: BouncingScrollPhysics(
+                              parent: AlwaysScrollableScrollPhysics()),
                           // useMagnifier: true,
                           // magnification: 1.15,
                           onSelectedItemChanged: (x) {
@@ -209,9 +214,20 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                         : Colors.transparent,
                                     shape: BoxShape.rectangle,
                                     borderRadius: BorderRadius.circular(15)),
-                                child: Text(
-                                  'week \n \n    ${x + 1}', // so it starts from week 1
-                                  style: TextStyle(fontFamily: 'Urbanist'),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      '\nweek\n \n   ${x + 1}', // so it starts from week 1
+                                      style: TextStyle(fontFamily: 'Urbanist'),
+                                    ),
+                                    x + 1 == data
+                                        ? Flexible(
+                                            child: Container(
+                                                padding:
+                                                    EdgeInsets.only(top: 10),
+                                                child: Icon(Icons.expand_less)))
+                                        : Container()
+                                  ],
                                 ),
                               ),
                             ),
