@@ -235,7 +235,7 @@ class _SignUpState extends State<SignUp> {
                                   if (value!.isEmpty) {
                                     return "This field cannot be empty.";
                                   } else if (!EmailValidator.validate(value)) {
-                                    return "Please enter a valid email.";
+                                    return "Incorrect email format.";
                                   } else if (emailTaken) {
                                     return 'Email is already taken!';
                                   } else {
@@ -244,7 +244,7 @@ class _SignUpState extends State<SignUp> {
                                           .fetchSignInMethodsForEmail(value);
                                     } catch (FirebaseAuthException) {
                                       print('invalid email');
-                                      return "Please enter a valid email.";
+                                      return "Incorrect email format.";
                                     }
                                     return null;
                                   }

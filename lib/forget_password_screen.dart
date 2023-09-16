@@ -130,6 +130,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                               height: 90,
                               constraints: const BoxConstraints(maxHeight: 100),
                               child: TextFormField(
+                                maxLength: 50,
                                 controller: _emailFieldController,
                                 focusNode: _emailNode,
                                 onChanged: (value) {

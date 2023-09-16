@@ -169,6 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 90,
                           constraints: BoxConstraints(maxHeight: 100),
                           child: TextFormField(
+                            maxLength: 25,
                             controller: _usernameFieldController,
                             focusNode: _usernameNode,
                             onChanged: (value) {
@@ -220,6 +221,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               height: 90,
                               constraints: BoxConstraints(maxHeight: 100),
                               child: TextFormField(
+                                maxLength: 50,
                                 controller: _passwordFieldController,
                                 focusNode: _passwordNode,
                                 obscureText: hidePassword ? true : false,
