@@ -238,7 +238,7 @@ class _SignUpState extends State<SignUp> {
                                   return "Incorrect email format.";
                                 } else if (EmailValidator.validate(value)) {
                                   var specialchar =
-                                      RegExp(r'[!#$%^&*(),?":{}|<>]');
+                                      RegExp(r'[!#$%^&*(),?":{}|<>/\+=-]');
                                   if (specialchar.hasMatch(value)) {
                                     return "Incorrect email format.";
                                   }
