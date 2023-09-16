@@ -171,7 +171,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                   }
                                   if (!value.contains("@") ||
                                       !value.contains(".")) {
-                                    return 'Email is not valid.';
+                                    return 'Incorrect email format.';
                                   }
                                   if (value.length < 8) {
                                     return 'Email is not valid.';
