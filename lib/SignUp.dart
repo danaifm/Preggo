@@ -43,6 +43,7 @@ class _SignUpState extends State<SignUp> {
   bool phoneTaken = false;
   bool hidePassword = true;
   FirebaseAuth auth = FirebaseAuth.instance;
+  late UserCredential userCredential;
 
   @override
   Widget build(BuildContext context) {
@@ -165,6 +166,7 @@ class _SignUpState extends State<SignUp> {
                               height: 85,
                               constraints: BoxConstraints(maxHeight: 100),
                               child: TextFormField(
+                                maxLength: 25,
                                 controller: _usernameController,
                                 key: _usernameKey,
                                 validator: (value) {
@@ -226,6 +228,7 @@ class _SignUpState extends State<SignUp> {
                               height: 85,
                               constraints: BoxConstraints(maxHeight: 100),
                               child: TextFormField(
+                                maxLength: 50,
                                 controller: _emailController,
                                 key: _emailKey,
                                 validator: (value) {
@@ -236,6 +239,13 @@ class _SignUpState extends State<SignUp> {
                                   } else if (emailTaken) {
                                     return 'Email is already taken!';
                                   } else {
+                                    try {
+                                      var validemail = auth
+                                          .fetchSignInMethodsForEmail(value);
+                                    } catch (FirebaseAuthException) {
+                                      print('invalid email');
+                                      return "Please enter a valid email.";
+                                    }
                                     return null;
                                   }
                                 },
@@ -251,7 +261,8 @@ class _SignUpState extends State<SignUp> {
                                         */
                                 keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
-                                  helperText: '',
+                                  helperText:
+                                      'Format should be: firstname@example.com',
                                   hintText: "Email",
                                   labelStyle: const TextStyle(
                                     fontSize: 15,
@@ -364,6 +375,8 @@ class _SignUpState extends State<SignUp> {
                               constraints: BoxConstraints(maxHeight: 90),
                               child: TextFormField(
                                 controller: _passwordController,
+                                maxLength: 50,
+
                                 /*
                                       password validations
                                       1- 8 digits or more
@@ -372,7 +385,8 @@ class _SignUpState extends State<SignUp> {
                                       */
 
                                 decoration: InputDecoration(
-                                  helperText: '',
+                                  helperText:
+                                      'Password should be at least 8 characters long, and \ncontain at least one uppercase letter and digit.',
                                   prefixIcon: const Icon(
                                     Icons.lock,
                                     color: Colors.grey,
@@ -465,13 +479,16 @@ class _SignUpState extends State<SignUp> {
                                     _phoneKey.currentState?.value);*/
                                 setState(() {});
                                 if (_formKey.currentState!.validate()) {
-                                  UserCredential userCredential =
-                                      await FirebaseAuth
-                                          .instance
-                                          .createUserWithEmailAndPassword(
-                                              email: _emailController.text,
-                                              password:
-                                                  _passwordController.text);
+                                  try {
+                                    userCredential = await FirebaseAuth.instance
+                                        .createUserWithEmailAndPassword(
+                                            email: _emailController.text,
+                                            password: _passwordController.text);
+                                  } catch (error) {
+                                    print(
+                                        'exception caught in registration try/catch');
+                                    return null;
+                                  }
                                   _formKey.currentState?.save();
                                   if (phoneNo.isEmpty) {
                                     Map<String, String> dataToSave = {
@@ -546,7 +563,7 @@ class _SignUpState extends State<SignUp> {
                                     ), (route) => false);
                                   },
                                   child: Text(
-                                    'Log In',
+                                    'Sign In',
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleLarge

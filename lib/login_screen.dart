@@ -375,7 +375,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ), (route) => false);
                               },
                               child: Text(
-                                'sign up now!',
+                                'Sign up now!',
                                 // style: TextStyle(
                                 //   fontSize: 15,
                                 //   fontWeight: FontWeight.w700,
