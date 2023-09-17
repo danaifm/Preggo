@@ -20,9 +20,9 @@ class ProfileScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-               // InkWell(
-                    // onTap: ()=> Navigator.pop(context),
-                  //  child: Image.asset("assets/images/arrow-left.png")),
+                // InkWell(
+                // onTap: ()=> Navigator.pop(context),
+                //  child: Image.asset("assets/images/arrow-left.png")),
                 Row(
                   children: [
                     Expanded(
@@ -30,7 +30,7 @@ class ProfileScreen extends StatelessWidget {
                             child: const Center(
                                 child: Text(
                       "Profile",
-                      style: TextStyle(fontSize: 23, color: Colors.black ),
+                      style: TextStyle(fontSize: 23, color: Colors.black),
                     )))),
                   ],
                 ),
@@ -275,7 +275,12 @@ class ProfileScreen extends StatelessWidget {
                               content: const SingleChildScrollView(
                                 child: ListBody(
                                   children: <Widget>[
-                                    Text('Are you sure you want to Sign Out ?'),
+                                    Center(
+                                      child: Text(
+                                        'Are you sure you want to \nSign Out ?',
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -288,8 +293,8 @@ class ProfileScreen extends StatelessWidget {
                                         padding: const EdgeInsets.only(
                                             top: 10,
                                             bottom: 10,
-                                            left: 20,
-                                            right: 20),
+                                            left: 25,
+                                            right: 25),
                                         decoration: BoxDecoration(
                                             color: Colors.grey,
                                             borderRadius:

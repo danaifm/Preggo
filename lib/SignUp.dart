@@ -1,7 +1,3 @@
-//..
-//new sign up
-
-//SIGNUP.DART
 // ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_literals_to_create_immutables, no_logic_in_create_state, avoid_print, use_build_context_synchronously, unused_import
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
