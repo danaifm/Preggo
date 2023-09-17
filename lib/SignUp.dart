@@ -232,16 +232,6 @@ class _SignUpState extends State<SignUp> {
                                   return "This field cannot be empty.";
                                 } else if (!EmailValidator.validate(value)) {
                                   return "Incorrect email format.";
-                                } else if (EmailValidator.validate(value)) {
-                                  var specialchar =
-                                      RegExp(r'[!#$%^&*(),?":{}|<>/\+=-]');
-                                  if (specialchar.hasMatch(value)) {
-                                    return "Incorrect email format.";
-                                  }
-                                  var dot = '.'.allMatches(value).length;
-                                  if (dot > 1) {
-                                    return "Incorrect email format.";
-                                  }
                                   // var username =
                                   //     value.substring(0, value.indexOf('@'));
                                   // var domain = value.substring(
@@ -257,6 +247,16 @@ class _SignUpState extends State<SignUp> {
                                   // }
                                 } else if (emailTaken) {
                                   return 'Email is already taken!';
+                                } else if (EmailValidator.validate(value)) {
+                                  var specialchar =
+                                      RegExp(r'[!#$%^&*(),?":{}|<>/\+=-]');
+                                  if (specialchar.hasMatch(value)) {
+                                    return "Incorrect email format.";
+                                  }
+                                  var dot = '.'.allMatches(value).length;
+                                  if (dot > 1) {
+                                    return "Incorrect email format.";
+                                  }
                                 } else {
                                   if (value
                                           .substring(value.indexOf('.') + 1)
