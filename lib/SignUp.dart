@@ -247,7 +247,17 @@ class _SignUpState extends State<SignUp> {
                                   // }
                                 } else if (emailTaken) {
                                   return 'Email is already taken!';
-                                } else if (EmailValidator.validate(value)) {
+                                  // } else if (EmailValidator.validate(value)) {
+                                  //   var specialchar =
+                                  //       RegExp(r'[!#$%^&*(),?":{}|<>/\+=-]');
+                                  //   if (specialchar.hasMatch(value)) {
+                                  //     return "Incorrect email format.";
+                                  //   }
+                                  //   var dot = '.'.allMatches(value).length;
+                                  //   if (dot > 1) {
+                                  //     return "Incorrect email format.";
+                                  //   }
+                                } else {
                                   var specialchar =
                                       RegExp(r'[!#$%^&*(),?":{}|<>/\+=-]');
                                   if (specialchar.hasMatch(value)) {
@@ -256,14 +266,14 @@ class _SignUpState extends State<SignUp> {
                                   var dot = '.'.allMatches(value).length;
                                   if (dot > 1) {
                                     return "Incorrect email format.";
-                                  }
-                                } else {
+                                  } //could be removed in the future if we can fix firebase invalid-email exception
                                   if (value
                                           .substring(value.indexOf('.') + 1)
                                           .length <
                                       2) {
-                                    return "Incorrect email format.";
+                                    return "Incorrect email format."; //for example abc@gmail.C (only 1 character after the dot) is invalid because firebase will throw invalid-email exception
                                   }
+                                  return null;
                                 }
                               },
                               /*
