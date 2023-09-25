@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 // import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'colors.dart';
 import 'package:jiffy/jiffy.dart';
+import "package:googleapis_auth/auth_io.dart";
+import 'package:googleapis/calendar/v3.dart';
 
 class addAppointment extends StatefulWidget {
   @override
@@ -81,7 +83,7 @@ class _addAppointmentState extends State<addAppointment> {
                 vertical: 0.0,
               ),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Color(0xFFFFFFFF),
                 borderRadius: BorderRadius.vertical(
                   top: Radius.circular(80.0),
                 ),
