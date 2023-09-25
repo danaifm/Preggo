@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:preggo/addAppointment.dart';
 import 'package:preggo/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -18,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen>
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (_) =>
-              const LoginScreen() // => the next page after the splashscreen
+              addAppointment() // => the next page after the splashscreen
           ));
     });
   }
