@@ -1,4 +1,4 @@
-// ignore_for_file: camel_case_types, prefer_const_literals_to_create_immutables, prefer_const_constructors, use_key_in_widget_constructors
+// ignore_for_file: camel_case_types, prefer_const_literals_to_create_immutables, prefer_const_constructors, use_key_in_widget_constructors, unused_field, unnecessary_const, unnecessary_new, prefer_final_fields, unused_element, avoid_print, no_leading_underscores_for_local_identifiers, file_names, unused_local_variable
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +7,10 @@ import 'colors.dart';
 import 'package:jiffy/jiffy.dart';
 import "package:googleapis_auth/auth_io.dart";
 import 'package:googleapis/calendar/v3.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
+import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 
 class addAppointment extends StatefulWidget {
   @override
@@ -22,14 +26,81 @@ class _addAppointmentState extends State<addAppointment> {
   var startFormat = Jiffy.now().format(pattern: "hh:mm a");
   var endFormat = Jiffy.now().format(pattern: "hh:mm a");
 
-  // var AMorPM;
-  // if(DateTime.now().hour > 11)
-  // var startTimeString = "" +
-  //     DateTime.now().hour.toString() +
-  //     ":" +
-  //     DateTime.now().minute.toString();
+  static const _scopes = const [
+    CalendarApi.calendarScope
+  ]; //scope to CREATE EVENT in calendar
+  var _clientID = new ClientId(
+      "3982098128-rlts9furpv5as6ob6885ifd4l88760pa.apps.googleusercontent.com",
+      ""); //ClientID Object
+
+  GoogleSignInAccount? _currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
+      setState(() {
+        _currentUser = account;
+      });
+    });
+    _googleSignIn.signInSilently();
+  }
+
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+      clientId:
+          "3982098128-rlts9furpv5as6ob6885ifd4l88760pa.apps.googleusercontent.com",
+      scopes: _scopes);
+
+  Future<void> _handleSignIn() async {
+    try {
+      await _googleSignIn.signIn();
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  insertEvent(event) async {
+    print('HELLO');
+    var client = (await _googleSignIn.authenticatedClient())!;
+    print(client);
+    print("printed client");
+    // assert(client != null, 'Authenticated client missing!');
+    final CalendarApi googleCalendarApi = CalendarApi(client!);
+    try {
+      // clientViaUserConsent(
+      //   _clientID,
+      //   _scopes,
+      //   prompt,
+      // ).then((AuthClient client) {
+      //   var calendar = CalendarApi(client);
+      String calendarId = "primary";
+      googleCalendarApi.events.insert(event, calendarId).then((value) {
+        print("ADDEDD_________________${value.status}");
+        if (value.status == "confirmed") {
+          print('Event added in google calendar');
+        } else {
+          print("Unable to add event in google calendar");
+        }
+      });
+      // });
+    } catch (e) {
+      print('Error creating event $e');
+    }
+  }
+
+  void prompt(String url) async {
+    // if (await canLaunchUrl(Uri.parse(url))) {
+    await launchUrl(Uri.parse(url));
+    // } else {
+    throw 'Could not launch $url';
+    // }
+  }
+
   GlobalKey<FormState> formstate = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormFieldState> _apptNameKey = GlobalKey<FormFieldState>();
+  final TextEditingController _apptNameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     void _showDialog(Widget child) {
@@ -102,21 +173,85 @@ class _addAppointmentState extends State<addAppointment> {
                           child: Column(
                             children: [
                               Container(
-                                //baby name label
+                                //Appointment name label
+                                margin: EdgeInsets.only(top: 30, left: 5),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "Appointment Name",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 0, 0, 0),
+                                    fontSize: 20,
+                                    fontFamily: 'Urbanist',
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.30,
+                                    letterSpacing: -0.28,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                //baby name text field
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 10.0),
+                                child: TextFormField(
+                                  key: _apptNameKey,
+                                  controller: _apptNameController,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 15.0, horizontal: 15),
+                                    focusedErrorBorder: OutlineInputBorder(
+                                      gapPadding: 0.5,
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(
+                                        width: 0.50,
+                                        color: Color.fromRGBO(255, 100, 100, 1),
+                                      ),
+                                    ),
+                                    errorBorder: OutlineInputBorder(
+                                      gapPadding: 0.5,
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(
+                                        width: 0.50,
+                                        color: Color.fromRGBO(255, 100, 100, 1),
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      gapPadding: 0.5,
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(
+                                        width: 0.50,
+                                        color:
+                                            Color.fromARGB(255, 221, 225, 232),
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      // gapPadding: 100,
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(
+                                        width: 0.50,
+                                        color:
+                                            Color.fromARGB(255, 221, 225, 232),
+                                      ),
+                                    ),
+                                    filled: true,
+                                    fillColor: Color(0xFFF7F8F9),
+                                  ),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return "This field cannot be empty.";
+                                    }
+                                    if (!RegExp(r'^[a-z A-Z0-9]+$')
+                                        .hasMatch(value)) {
+                                      //allow alphanumerical only AND SPACE
+                                      return "Please Enter letters only";
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                ),
+                              ), //end of appointment name text field
+                              Container(
                                 margin: EdgeInsets.symmetric(vertical: 30),
-                                // alignment: Alignment.centerLeft,
-                                // child: Text(
-                                //   "Baby's name",
-                                //   textAlign: TextAlign.left,
-                                //   style: TextStyle(
-                                //     color: Color.fromARGB(255, 0, 0, 0),
-                                //     fontSize: 20,
-                                //     fontFamily: 'Urbanist',
-                                //     fontWeight: FontWeight.w700,
-                                //     height: 1.30,
-                                //     letterSpacing: -0.28,
-                                //   ),
-                                // ),
                                 child: _DatePickerItem(
                                   children: <Widget>[
                                     const Text(
@@ -199,7 +334,7 @@ class _addAppointmentState extends State<addAppointment> {
                                       // You can use the intl package to format the value based on
                                       // the user's locale settings.
                                       child: Text(
-                                        '$startFormat',
+                                        startFormat,
                                         style: const TextStyle(
                                           fontSize: 22.0,
                                           color: Color(0xFFD77D7C),
@@ -248,7 +383,7 @@ class _addAppointmentState extends State<addAppointment> {
                                       // You can use the intl package to format the value based on
                                       // the user's locale settings.
                                       child: Text(
-                                        '$endFormat',
+                                        endFormat,
                                         style: const TextStyle(
                                           fontSize: 22.0,
                                           color: Color(0xFFD77D7C),
@@ -258,6 +393,48 @@ class _addAppointmentState extends State<addAppointment> {
                                   ],
                                 ),
                               ),
+                              Padding(
+                                //start journey button
+                                padding: const EdgeInsets.only(top: 30.0),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Event event =
+                                        Event(); // Create object of event
+                                    event.summary = _apptNameController
+                                        .text; //Setting summary of object (name of event)
+
+                                    EventDateTime start =
+                                        new EventDateTime(); //setting start time
+                                    start.dateTime = startTime;
+                                    start.timeZone = DateTime.now()
+                                        .timeZoneName; //local timezone
+                                    event.start = start;
+
+                                    EventDateTime end =
+                                        new EventDateTime(); //setting end time
+                                    end.timeZone = DateTime.now()
+                                        .timeZoneName; //local timezone
+                                    end.dateTime = endTime;
+                                    event.end = end;
+
+                                    insertEvent(event);
+                                  }, //end onPressed()
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: blackColor,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(40)),
+                                    padding: EdgeInsets.only(
+                                        left: 85,
+                                        top: 15,
+                                        right: 85,
+                                        bottom: 15),
+                                  ),
+                                  child: Text(
+                                    "Add Appointment",
+                                  ),
+                                ),
+                              )
                             ],
                           ),
                         ),
