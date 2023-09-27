@@ -1,4 +1,4 @@
-// ignore_for_file: camel_case_types, prefer_const_literals_to_create_immutables, prefer_const_constructors, use_key_in_widget_constructors, unused_field, unnecessary_const, unnecessary_new, prefer_final_fields, unused_element, avoid_print, no_leading_underscores_for_local_identifiers, file_names, unused_local_variable
+// ignore_for_file: camel_case_types, prefer_const_literals_to_create_immutables, prefer_const_constructors, use_key_in_widget_constructors, unused_field, unnecessary_const, unnecessary_new, prefer_final_fields, unused_element, avoid_print, no_leading_underscores_for_local_identifiers, file_names, unused_local_variable, unused_import
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
+import 'package:http/http.dart' as http;
 
 class addAppointment extends StatefulWidget {
   @override
@@ -33,23 +34,65 @@ class _addAppointmentState extends State<addAppointment> {
       "3982098128-rlts9furpv5as6ob6885ifd4l88760pa.apps.googleusercontent.com",
       ""); //ClientID Object
 
-  GoogleSignInAccount? _currentUser;
+  GoogleSignIn _googleSignIn = GoogleSignIn(
+    // Optional clientId
+    // clientId: 'your-client_id.apps.googleusercontent.com',
+    scopes: _scopes,
+  );
 
-  @override
+  GoogleSignInAccount? _currentUser;
+  bool _isAuthorized = false; // has granted permissions?
+  String _contactText = '';
+
+  // @override
+  // void initState() {
+  //   super.initState();
+
+  //   _googleSignIn.onCurrentUserChanged
+  //       .listen((GoogleSignInAccount? account) async {
+  //     // In mobile, being authenticated means being authorized...
+  //     bool isAuthorized = account != null;
+  //     // However, in the web...
+  //     if (kIsWeb && account != null) {
+  //       isAuthorized = await _googleSignIn.canAccessScopes(_scopes);
+  //     }
+
+  //     setState(() {
+  //       _currentUser = account;
+  //       _isAuthorized = isAuthorized;
+  //     });
+
+  //     // Now that we know that the user can access the required scopes, the app
+  //     // can call the REST API.
+  //     if (isAuthorized) {
+  //       unawaited(_handleGetContact(account!));
+  //     }
+  //   });
+
+  //   // In the web, _googleSignIn.signInSilently() triggers the One Tap UX.
+  //   //
+  //   // It is recommended by Google Identity Services to render both the One Tap UX
+  //   // and the Google Sign In button together to "reduce friction and improve
+  //   // sign-in rates" ([docs](https://developers.google.com/identity/gsi/web/guides/display-button#html)).
+  //   _googleSignIn.signInSilently();
+  // }
   void initState() {
     super.initState();
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
       setState(() {
         _currentUser = account;
       });
+      // if (_currentUser != null) {
+      //   _handleGetContact();
+      // }
     });
     _googleSignIn.signInSilently();
   }
 
-  final GoogleSignIn _googleSignIn = GoogleSignIn(
-      clientId:
-          "3982098128-rlts9furpv5as6ob6885ifd4l88760pa.apps.googleusercontent.com",
-      scopes: _scopes);
+  // final GoogleSignIn _googleSignInwithClientID = GoogleSignIn(
+  //     clientId:
+  //         "3982098128-rlts9furpv5as6ob6885ifd4l88760pa.apps.googleusercontent.com",
+  //     scopes: _scopes);
 
   Future<void> _handleSignIn() async {
     try {
@@ -59,9 +102,27 @@ class _addAppointmentState extends State<addAppointment> {
     }
   }
 
+  Future<void> _handleAuthorizeScopes() async {
+    final bool isAuthorized = await _googleSignIn.requestScopes(_scopes);
+    setState(() {
+      _isAuthorized = isAuthorized;
+    });
+  }
+
+  Future<void> _handleSignOut() => _googleSignIn.disconnect();
+
   insertEvent(event) async {
+    // final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+    // final httpClient = (await googleUser?.authHeaders);
+    // final googleAPI.CalendarApi calendarAPI = googleAPI.CalendarApi(httpClient);
+    // final googleAPI.Events calEvents = await calendarAPI.events.list(
+    //   "primary",
+    // );
+    final auth.AuthClient? client = await _googleSignIn.authenticatedClient();
+    assert(client != null, 'Authenticated client missing!');
+
     print('HELLO');
-    var client = (await _googleSignIn.authenticatedClient())!;
+    // var client = (await _googleSignIn.authenticatedClient())!;
     print(client);
     print("printed client");
     // assert(client != null, 'Authenticated client missing!');
@@ -398,24 +459,45 @@ class _addAppointmentState extends State<addAppointment> {
                                 padding: const EdgeInsets.only(top: 30.0),
                                 child: ElevatedButton(
                                   onPressed: () {
+                                    _handleSignIn();
                                     Event event =
                                         Event(); // Create object of event
                                     event.summary = _apptNameController
                                         .text; //Setting summary of object (name of event)
 
-                                    EventDateTime start =
-                                        new EventDateTime(); //setting start time
+                                    EventDateTime start = new EventDateTime();
+                                    // start.date = date; //setting start time
                                     start.dateTime = startTime;
                                     start.timeZone = DateTime.now()
                                         .timeZoneName; //local timezone
-                                    event.start = start;
+                                    event.start = EventDateTime(
+                                        // date: date,
+                                        dateTime: DateTime(
+                                            date.year,
+                                            date.month,
+                                            date.day,
+                                            startTime.hour,
+                                            startTime.minute,
+                                            startTime.second),
+                                        timeZone: DateTime.now().timeZoneName);
+                                    // event.start!.date = date;
 
-                                    EventDateTime end =
-                                        new EventDateTime(); //setting end time
+                                    EventDateTime end = new EventDateTime();
+                                    // end.date = date; //setting end time
                                     end.timeZone = DateTime.now()
                                         .timeZoneName; //local timezone
                                     end.dateTime = endTime;
-                                    event.end = end;
+                                    event.end = EventDateTime(
+                                        // date: date,
+                                        dateTime: DateTime(
+                                            date.year,
+                                            date.month,
+                                            date.day,
+                                            endTime.hour,
+                                            endTime.minute,
+                                            endTime.second),
+                                        timeZone: DateTime.now().timeZoneName);
+                                    // event.end!.date = date;
 
                                     insertEvent(event);
                                   }, //end onPressed()
