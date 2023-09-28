@@ -26,6 +26,7 @@ class _addAppointmentState extends State<addAppointment> {
   DateTime endTime = DateTime.now();
   var startFormat = Jiffy.now().format(pattern: "hh:mm a");
   var endFormat = Jiffy.now().format(pattern: "hh:mm a");
+  var errorMessage = "";
 
   static const _scopes = const [
     CalendarApi.calendarScope
@@ -164,6 +165,11 @@ class _addAppointmentState extends State<addAppointment> {
 
   @override
   Widget build(BuildContext context) {
+    var textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
+          fontSize: 12.0,
+          color: Theme.of(context).colorScheme.error,
+          fontWeight: FontWeight.normal,
+        );
     void _showDialog(Widget child) {
       showCupertinoModalPopup<void>(
         context: context,
@@ -192,7 +198,7 @@ class _addAppointmentState extends State<addAppointment> {
       body: Column(
         children: [
           SizedBox(
-            height: 55,
+            height: 85,
           ),
           Text(
             "Add a new appointment",
@@ -206,7 +212,7 @@ class _addAppointmentState extends State<addAppointment> {
             ),
           ),
           SizedBox(
-            height: 20,
+            height: 35,
           ),
           Expanded(
             child: Container(
@@ -297,6 +303,8 @@ class _addAppointmentState extends State<addAppointment> {
                                     filled: true,
                                     fillColor: Color(0xFFF7F8F9),
                                   ),
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
                                   validator: (value) {
                                     if (value!.isEmpty) {
                                       return "This field cannot be empty.";
@@ -304,7 +312,7 @@ class _addAppointmentState extends State<addAppointment> {
                                     if (!RegExp(r'^[a-z A-Z0-9]+$')
                                         .hasMatch(value)) {
                                       //allow alphanumerical only AND SPACE
-                                      return "Please Enter letters only";
+                                      return "Please enter letters only.";
                                     } else {
                                       return null;
                                     }
@@ -312,7 +320,7 @@ class _addAppointmentState extends State<addAppointment> {
                                 ),
                               ), //end of appointment name text field
                               Container(
-                                margin: EdgeInsets.symmetric(vertical: 30),
+                                margin: EdgeInsets.symmetric(vertical: 15),
                                 child: _DatePickerItem(
                                   children: <Widget>[
                                     const Text(
@@ -330,11 +338,16 @@ class _addAppointmentState extends State<addAppointment> {
                                       // Display a CupertinoDatePicker in date picker mode.
                                       onPressed: () => _showDialog(
                                         CupertinoDatePicker(
-                                          initialDateTime: date,
+                                          initialDateTime: DateTime(
+                                              date.year,
+                                              date.month,
+                                              date.day,
+                                              date.hour,
+                                              date.minute,
+                                              date.second + 1),
+                                          minimumDate: date,
                                           mode: CupertinoDatePickerMode.date,
                                           use24hFormat: false,
-                                          // This shows day of week alongside day of month
-                                          showDayOfWeek: true,
                                           // This is called when the user changes the date.
                                           onDateTimeChanged:
                                               (DateTime newDate) {
@@ -357,7 +370,7 @@ class _addAppointmentState extends State<addAppointment> {
                                 ),
                               ),
                               Container(
-                                margin: EdgeInsets.symmetric(vertical: 30),
+                                margin: EdgeInsets.symmetric(vertical: 15),
                                 child: _DatePickerItem(
                                   children: <Widget>[
                                     const Text(
@@ -406,7 +419,7 @@ class _addAppointmentState extends State<addAppointment> {
                                 ),
                               ),
                               Container(
-                                margin: EdgeInsets.symmetric(vertical: 30),
+                                margin: EdgeInsets.symmetric(vertical: 15),
                                 child: _DatePickerItem(
                                   children: <Widget>[
                                     const Text(
@@ -454,52 +467,71 @@ class _addAppointmentState extends State<addAppointment> {
                                   ],
                                 ),
                               ),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text(errorMessage, style: textStyle),
+                              ),
                               Padding(
                                 //start journey button
-                                padding: const EdgeInsets.only(top: 30.0),
+                                padding: const EdgeInsets.only(top: 40.0),
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    _handleSignIn();
-                                    Event event =
-                                        Event(); // Create object of event
-                                    event.summary = _apptNameController
-                                        .text; //Setting summary of object (name of event)
+                                    if (startTime.isAfter(endTime)) {
+                                      setState(() {
+                                        errorMessage =
+                                            "Starting time cannot be after end time.";
+                                      });
+                                    } else if (_apptNameController
+                                        .text.isEmpty) {
+                                      print("not added because empty name");
+                                    } else {
+                                      setState(() {
+                                        errorMessage = "";
+                                      });
+                                      _handleSignIn();
+                                      Event event =
+                                          Event(); // Create object of event
+                                      event.summary = _apptNameController
+                                          .text; //Setting summary of object (name of event)
 
-                                    EventDateTime start = new EventDateTime();
-                                    // start.date = date; //setting start time
-                                    start.dateTime = startTime;
-                                    start.timeZone = DateTime.now()
-                                        .timeZoneName; //local timezone
-                                    event.start = EventDateTime(
-                                        // date: date,
-                                        dateTime: DateTime(
-                                            date.year,
-                                            date.month,
-                                            date.day,
-                                            startTime.hour,
-                                            startTime.minute,
-                                            startTime.second),
-                                        timeZone: DateTime.now().timeZoneName);
-                                    // event.start!.date = date;
+                                      EventDateTime start = new EventDateTime();
+                                      // start.date = date; //setting start time
+                                      start.dateTime = startTime;
+                                      start.timeZone = DateTime.now()
+                                          .timeZoneName; //local timezone
+                                      event.start = EventDateTime(
+                                          // date: date,
+                                          dateTime: DateTime(
+                                              date.year,
+                                              date.month,
+                                              date.day,
+                                              startTime.hour,
+                                              startTime.minute,
+                                              startTime.second),
+                                          timeZone:
+                                              DateTime.now().timeZoneName);
+                                      // event.start!.date = date;
 
-                                    EventDateTime end = new EventDateTime();
-                                    // end.date = date; //setting end time
-                                    end.timeZone = DateTime.now()
-                                        .timeZoneName; //local timezone
-                                    end.dateTime = endTime;
-                                    event.end = EventDateTime(
-                                        // date: date,
-                                        dateTime: DateTime(
-                                            date.year,
-                                            date.month,
-                                            date.day,
-                                            endTime.hour,
-                                            endTime.minute,
-                                            endTime.second),
-                                        timeZone: DateTime.now().timeZoneName);
-                                    // event.end!.date = date;
+                                      EventDateTime end = new EventDateTime();
+                                      // end.date = date; //setting end time
+                                      end.timeZone = DateTime.now()
+                                          .timeZoneName; //local timezone
+                                      end.dateTime = endTime;
+                                      event.end = EventDateTime(
+                                          // date: date,
+                                          dateTime: DateTime(
+                                              date.year,
+                                              date.month,
+                                              date.day,
+                                              endTime.hour,
+                                              endTime.minute,
+                                              endTime.second),
+                                          timeZone:
+                                              DateTime.now().timeZoneName);
+                                      // event.end!.date = date;
 
-                                    insertEvent(event);
+                                      insertEvent(event);
+                                    }
                                   }, //end onPressed()
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: blackColor,
