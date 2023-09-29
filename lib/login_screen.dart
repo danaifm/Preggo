@@ -7,6 +7,9 @@ import 'package:preggo/SplashScreen.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/forget_password_screen.dart';
 import 'package:preggo/start_Journey.dart';
+import 'package:preggo/screens/add_reminder_screen.dart';
+import 'package:preggo/view_reminders.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -93,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => NavBar(),
+                    builder: (context) => viewReminders(),
                   ));
             }
           });
