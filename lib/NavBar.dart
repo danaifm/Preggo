@@ -16,7 +16,7 @@ class NavBar extends StatefulWidget {
 class _NavBar extends State<NavBar> {
   int currentTab = 0;
   final List<Widget> screens = [
-    PregnancyTracking(), //0
+    const PregnancyTracking(), //0
     const CommunityPage(), //1
     ProfileScreen(), //ProfilePage(), //2
     const ToolsPage(), //3
@@ -24,7 +24,7 @@ class _NavBar extends State<NavBar> {
   ];
 
   final PageStorageBucket bucket = PageStorageBucket();
-  Widget currentScreen = PregnancyTracking();
+  Widget currentScreen = const PregnancyTracking();
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +74,7 @@ class _NavBar extends State<NavBar> {
                     minWidth: 40,
                     onPressed: () {
                       setState(() {
-                        currentScreen = PregnancyTracking();
+                        currentScreen = const PregnancyTracking();
                         currentTab = 0;
                       });
                     },

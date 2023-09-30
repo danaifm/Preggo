@@ -1,19 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:googleapis/keep/v1.dart';
 import 'package:jiffy/jiffy.dart';
-import "package:googleapis_auth/auth_io.dart";
-import 'package:googleapis/calendar/v3.dart' as calendar;
-import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:preggo/colors.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
-import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
-import 'package:http/http.dart' as http;
+import 'package:preggo/login_screen.dart';
 
 class AddReminderScreen extends StatefulWidget {
   const AddReminderScreen({super.key});
@@ -29,9 +20,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
   DateTime selectedTime = DateTime.now();
   DateTime _minDate = DateTime.now();
   DateTime _minTime = DateTime.now();
-
-  var startFormat = Jiffy.now().format(pattern: "hh:mm a");
-  var endFormat = Jiffy.now().format(pattern: "hh:mm a");
+  var timeFormat = Jiffy.now().format(pattern: "hh:mm a");
   var errorMessage = "";
 
   List<Map<String, dynamic>> days = [
@@ -202,6 +191,22 @@ class AddReminderScreenState extends State<AddReminderScreen> {
     return Scaffold(
       backgroundColor: backGroundPink,
       resizeToAvoidBottomInset: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        leading: BackButton(
+          color: Colors.black,
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return const LoginScreen();
+                },
+              ),
+            );
+          },
+        ),
+      ),
       body: Column(
         children: [
           const SizedBox(
@@ -318,6 +323,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                     if (value!.isEmpty) {
                                       return "This field cannot be empty.";
                                     }
+                                    return null;
                                     // if (!RegExp(r'^[a-z A-Z0-9]+$')
                                     //     .hasMatch(value)) {
                                     //   //allow alphanumerical only AND SPACE
@@ -434,19 +440,25 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                       // Display a CupertinoDatePicker in date picker mode.
                                       onPressed: () => _showDialog(
                                         CupertinoDatePicker(
-                                          // initialDateTime: _minDate,
-                                          minimumDate: DateTime.now(),
-                                          maximumDate: DateTime(2113),
+                                          initialDateTime: selectedDate
+                                                  .isAfter(DateTime.now())
+                                              ? selectedDate
+                                              : DateTime.now(),
+                                          minimumDate: _minDate,
+                                          maximumDate: DateTime(2113, 12),
                                           mode: CupertinoDatePickerMode.date,
                                           // This is called when the user changes the date.
                                           onDateTimeChanged:
                                               (DateTime newDate) {
                                             setState(
-                                              () => selectedDate = DateTime(
-                                                newDate.year,
-                                                newDate.month,
-                                                newDate.day,
-                                              ),
+                                              () {
+                                                selectedDate = DateTime(
+                                                  newDate.year,
+                                                  newDate.month,
+                                                  newDate.day,
+                                                );
+                                                _minDate = DateTime.now();
+                                              },
                                             );
                                           },
                                         ),
@@ -485,24 +497,31 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                       // Display a CupertinoDatePicker in time picker mode.
                                       onPressed: () => _showDialog(
                                         CupertinoDatePicker(
-                                          initialDateTime: selectedTime,
-                                          mode: CupertinoDatePickerMode.time,
-
+                                          initialDateTime: selectedTime
+                                                  .isAfter(DateTime.now())
+                                              ? selectedTime
+                                              : DateTime.now(),
                                           minimumDate: _minTime,
-
-                                          // This is called when the user changes the time.
+                                          mode: CupertinoDatePickerMode.time,
                                           onDateTimeChanged:
                                               (DateTime newTime) {
                                             setState(() {
                                               selectedTime = newTime;
-                                              _minTime = DateTime.now();
+                                              // _minTime = DateTime.now();
+                                              _minTime = DateTime(
+                                                DateTime.now().year,
+                                                DateTime.now().month,
+                                                DateTime.now().day,
+                                                DateTime.now().hour,
+                                                DateTime.now().minute,
+                                              );
                                             });
                                             print(newTime.toString());
                                             var jiffy =
                                                 Jiffy.parse(newTime.toString());
-                                            startFormat = jiffy.format(
+                                            timeFormat = jiffy.format(
                                                 pattern: "hh:mm a");
-                                            print(startFormat);
+                                            print(timeFormat);
                                           },
                                         ),
                                       ),
@@ -510,7 +529,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                       // You can use the intl package to format the value based on
                                       // the user's locale settings.
                                       child: Text(
-                                        startFormat,
+                                        timeFormat,
                                         style: const TextStyle(
                                           fontSize: 22.0,
                                           color: Color(0xFFD77D7C),
