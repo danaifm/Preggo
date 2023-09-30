@@ -1,7 +1,7 @@
 // ignore_for_file: file_names, use_key_in_widget_constructors, camel_case_types, prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_init_to_null, unused_import, avoid_print, unused_element
 
 import 'package:flutter/material.dart';
-import 'package:googleapis/compute/v1.dart';
+//import 'package:googleapis/compute/v1.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -38,12 +38,36 @@ class _viewReminders extends State<viewReminders> {
     .where('date', isEqualTo: reminderDate)
     .get();
     
-    if(result.docs.isEmpty)
+    if(result.docs.isEmpty) //no reminders for this date 
     {
-      return Container(child: Text('nothing here $reminderDate', style: TextStyle(fontSize: 20),));
+      return Container(
+        child: Column(
+          children: [
+            Center( //notification bell image 
+            child: Padding(
+              padding: EdgeInsets.only(top: 100),
+              child: Image.asset('assets/images/notification.png', height: 140, width: 140,),
+              
+              ),
+            ),
+            
+            Container( //message 
+              margin: EdgeInsets.fromLTRB(30,35,30,80),
+              child: Text('No Reminders', 
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 26,
+                fontFamily: 'Urbanist',
+                fontWeight: FontWeight.w600,
+                letterSpacing: -0.28,),
+              )
+          ),
+        ],
+        ),
+        );
     }
     else{
-    return Container(child: Text('reminders are here!$reminderDate', style: TextStyle(fontSize: 20)));
+    return Container();
     }
 
   }
@@ -102,13 +126,17 @@ class _viewReminders extends State<viewReminders> {
                           EasyDateTimeLine(
                             initialDate: DateTime.now(),
                             onDateChange: (selectedDate) { 
-                              var dateOnly = selectedDate.toString();
-                              dateOnly= dateOnly.substring(0,10);
-                              List dateComponents = dateOnly.split("-"); 
-                              int year = int.parse(dateComponents[0]); 
-                              int month = int.parse(dateComponents[1]); 
-                              int day = int.parse(dateComponents[2]); 
-                              formattedDate = "${month.toStringAsFixed(0)}-${day.toStringAsFixed(0)}-$year"; 
+                              setState(() {
+                                var dateOnly = selectedDate.toString();
+                                dateOnly= dateOnly.substring(0,10);
+                                List dateComponents = dateOnly.split("-"); 
+                                int year = int.parse(dateComponents[0]); 
+                                int month = int.parse(dateComponents[1]); 
+                                int day = int.parse(dateComponents[2]); 
+                                formattedDate = "${month.toStringAsFixed(0)}-${day.toStringAsFixed(0)}-$year";
+                                
+                              });
+                               
                               
                             },
                             activeColor: pinkColor,
