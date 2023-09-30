@@ -3,9 +3,10 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:googleapis/keep/v1.dart';
 import 'package:jiffy/jiffy.dart';
 import "package:googleapis_auth/auth_io.dart";
-import 'package:googleapis/calendar/v3.dart';
+import 'package:googleapis/calendar/v3.dart' as calendar;
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:preggo/colors.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -26,6 +27,8 @@ class AddReminderScreen extends StatefulWidget {
 class AddReminderScreenState extends State<AddReminderScreen> {
   DateTime selectedDate = DateTime.now();
   DateTime selectedTime = DateTime.now();
+  DateTime _minDate = DateTime.now();
+  DateTime _minTime = DateTime.now();
 
   var startFormat = Jiffy.now().format(pattern: "hh:mm a");
   var endFormat = Jiffy.now().format(pattern: "hh:mm a");
@@ -82,16 +85,15 @@ class AddReminderScreenState extends State<AddReminderScreen> {
 
   Future<void> addNewReminder() async {
     try {
-      setState(() {
-        isLoading = true;
-      });
-
       /// Get user uuid
       /// Create new reminders collection
       /// Insert all data
       final String? currentUserUuid = FirebaseAuth.instance.currentUser?.uid;
       // final String userUid = "5ALfd5zhZnOsB8mdc5hN9MbhLry1";
-      if (currentUserUuid != null) {
+      if (currentUserUuid != null && _formKey.currentState!.validate()) {
+        setState(() {
+          isLoading = true;
+        });
         final remindersCollection = FirebaseFirestore.instance
             .collection("users")
             .doc(currentUserUuid)
@@ -104,7 +106,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
             "title": _reminderTitleController.text.trim(),
             "description": _reminderDescriptionController.text.trim(),
             "date":
-                "${selectedDate.year}-${selectedDate.month}-${selectedDate.day}",
+                "${selectedDate.month}-${selectedDate.day}-${selectedDate.year}",
             "time": TimeOfDay.fromDateTime(selectedTime).format(context),
             "repeat": selectedDays,
           },
@@ -128,17 +130,22 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                         child: const Text("Okay"),
                       ),
                     ],
-                    content: const Text("Done"),
+                    content: const Text("Saved successfully!"),
                   );
                 });
           }
           setState(() {
             isLoading = false;
-            _reminderTitleController.clear();
+            _reminderTitleController = TextEditingController();
             _reminderDescriptionController.clear();
+
             selectedDate = DateTime.now();
             selectedTime = DateTime.now();
           });
+        });
+      } else {
+        setState(() {
+          isLoading = false;
         });
       }
     } catch (error) {
@@ -148,107 +155,20 @@ class AddReminderScreenState extends State<AddReminderScreen> {
     }
   }
 
-  static const _scopes = const [
-    CalendarApi.calendarScope
-  ]; //scope to CREATE EVENT in calendar
-  var _clientID = new ClientId(
-      "3982098128-rlts9furpv5as6ob6885ifd4l88760pa.apps.googleusercontent.com",
-      ""); //ClientID Object
-
-  GoogleSignIn _googleSignIn = GoogleSignIn(
-    // Optional clientId
-    // clientId: 'your-client_id.apps.googleusercontent.com',
-    scopes: _scopes,
-  );
-
-  GoogleSignInAccount? _currentUser;
-  bool _isAuthorized = false; // has granted permissions?
-  String _contactText = '';
-
-  // @override
-  // void initState() {
-  //   super.initState();
-
-  //   _googleSignIn.onCurrentUserChanged
-  //       .listen((GoogleSignInAccount? account) async {
-  //     // In mobile, being authenticated means being authorized...
-  //     bool isAuthorized = account != null;
-  //     // However, in the web...
-  //     if (kIsWeb && account != null) {
-  //       isAuthorized = await _googleSignIn.canAccessScopes(_scopes);
-  //     }
-
-  //     setState(() {
-  //       _currentUser = account;
-  //       _isAuthorized = isAuthorized;
-  //     });
-
-  //     // Now that we know that the user can access the required scopes, the app
-  //     // can call the REST API.
-  //     if (isAuthorized) {
-  //       unawaited(_handleGetContact(account!));
-  //     }
-  //   });
-
-  //   // In the web, _googleSignIn.signInSilently() triggers the One Tap UX.
-  //   //
-  //   // It is recommended by Google Identity Services to render both the One Tap UX
-  //   // and the Google Sign In button together to "reduce friction and improve
-  //   // sign-in rates" ([docs](https://developers.google.com/identity/gsi/web/guides/display-button#html)).
-  //   _googleSignIn.signInSilently();
-  // }
-  void initState() {
-    super.initState();
-    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
-      setState(() {
-        _currentUser = account;
-      });
-      // if (_currentUser != null) {
-      //   _handleGetContact();
-      // }
-    });
-    _googleSignIn.signInSilently();
-  }
-
-  // final GoogleSignIn _googleSignInwithClientID = GoogleSignIn(
-  //     clientId:
-  //         "3982098128-rlts9furpv5as6ob6885ifd4l88760pa.apps.googleusercontent.com",
-  //     scopes: _scopes);
-
-  Future<void> _handleSignIn() async {
-    try {
-      await _googleSignIn.signIn();
-    } catch (error) {
-      print(error);
-    }
-  }
-
-  Future<void> _handleAuthorizeScopes() async {
-    final bool isAuthorized = await _googleSignIn.requestScopes(_scopes);
-    setState(() {
-      _isAuthorized = isAuthorized;
-    });
-  }
-
-  Future<void> _handleSignOut() => _googleSignIn.disconnect();
-
-  void prompt(String url) async {
-    // if (await canLaunchUrl(Uri.parse(url))) {
-    await launchUrl(Uri.parse(url));
-    // } else {
-    throw 'Could not launch $url';
-    // }
-  }
-
   GlobalKey<FormState> formstate = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   // final GlobalKey<FormFieldState> _reminderTitleKey =
   //     GlobalKey<FormFieldState>();
-  final TextEditingController _reminderTitleController =
-      TextEditingController();
+  late TextEditingController _reminderTitleController;
 
-  final TextEditingController _reminderDescriptionController =
-      TextEditingController();
+  late TextEditingController _reminderDescriptionController;
+
+  @override
+  void initState() {
+    super.initState();
+    _reminderTitleController = TextEditingController();
+    _reminderDescriptionController = TextEditingController();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -398,13 +318,13 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                     if (value!.isEmpty) {
                                       return "This field cannot be empty.";
                                     }
-                                    if (!RegExp(r'^[a-z A-Z0-9]+$')
-                                        .hasMatch(value)) {
-                                      //allow alphanumerical only AND SPACE
-                                      return "Please enter letters only.";
-                                    } else {
-                                      return null;
-                                    }
+                                    // if (!RegExp(r'^[a-z A-Z0-9]+$')
+                                    //     .hasMatch(value)) {
+                                    //   //allow alphanumerical only AND SPACE
+                                    //   return "Please enter letters only.";
+                                    // } else {
+                                    //   return null;
+                                    // }
                                   },
                                 ),
                               ), //end of appointment name text field
@@ -478,18 +398,18 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                   ),
                                   autovalidateMode:
                                       AutovalidateMode.onUserInteraction,
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return "This field cannot be empty.";
-                                    }
-                                    if (!RegExp(r'^[a-z A-Z0-9]+$')
-                                        .hasMatch(value)) {
-                                      //allow alphanumerical only AND SPACE
-                                      return "Please enter letters only.";
-                                    } else {
-                                      return null;
-                                    }
-                                  },
+                                  // validator: (value) {
+                                  //   if (value!.isEmpty) {
+                                  //     return "This field cannot be empty.";
+                                  //   }
+                                  //   if (!RegExp(r'^[a-z A-Z0-9]+$')
+                                  //       .hasMatch(value)) {
+                                  //     //allow alphanumerical only AND SPACE
+                                  //     return "Please enter letters only.";
+                                  //   } else {
+                                  //     return null;
+                                  //   }
+                                  // },
                                 ),
                               ), //end of appointment name text field
 
@@ -497,7 +417,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                               Container(
                                 margin:
                                     const EdgeInsets.symmetric(vertical: 15),
-                                child: _DatePickerItem(
+                                child: CustomResizeWidget(
                                   children: <Widget>[
                                     const Text(
                                       "Date",
@@ -514,8 +434,9 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                       // Display a CupertinoDatePicker in date picker mode.
                                       onPressed: () => _showDialog(
                                         CupertinoDatePicker(
-                                          initialDateTime: DateTime.now(),
-                                          minimumDate: selectedDate,
+                                          // initialDateTime: _minDate,
+                                          minimumDate: DateTime.now(),
+                                          maximumDate: DateTime(2113),
                                           mode: CupertinoDatePickerMode.date,
                                           // This is called when the user changes the date.
                                           onDateTimeChanged:
@@ -547,10 +468,10 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                               Container(
                                 margin:
                                     const EdgeInsets.symmetric(vertical: 15),
-                                child: _DatePickerItem(
+                                child: CustomResizeWidget(
                                   children: <Widget>[
                                     const Text(
-                                      'Time',
+                                      "Time",
                                       style: TextStyle(
                                         color: Color.fromARGB(255, 0, 0, 0),
                                         fontSize: 20,
@@ -567,11 +488,15 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                           initialDateTime: selectedTime,
                                           mode: CupertinoDatePickerMode.time,
 
+                                          minimumDate: _minTime,
+
                                           // This is called when the user changes the time.
                                           onDateTimeChanged:
                                               (DateTime newTime) {
-                                            setState(
-                                                () => selectedTime = newTime);
+                                            setState(() {
+                                              selectedTime = newTime;
+                                              _minTime = DateTime.now();
+                                            });
                                             print(newTime.toString());
                                             var jiffy =
                                                 Jiffy.parse(newTime.toString());
@@ -597,15 +522,10 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                               ),
 
                               /// Repeat Widget
-                              Material(
-                                // color: Colors.grey.shade200,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                child: InkWell(
-                                  customBorder: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
+                              Container(
+                                margin:
+                                    const EdgeInsets.symmetric(vertical: 15),
+                                child: CustomResizeWidget(
                                   onTap: () async {
                                     await showDialog(
                                       context: context,
@@ -622,71 +542,190 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                       });
                                     });
                                   },
-                                  child: Container(
-                                    width:
-                                        MediaQuery.sizeOf(context).width * 0.94,
-                                    height: 55,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      // mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Text(
-                                          "Repeat",
-                                          style: TextStyle(
-                                            // color: Colors.black,
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 3,
-                                          child: Padding(
-                                            padding: const EdgeInsetsDirectional
-                                                .only(start: 10),
-                                            child: SingleChildScrollView(
-                                              // padding: const EdgeInsets.symmetric(horizontal: 10),
-                                              scrollDirection: Axis.horizontal,
-                                              reverse: true,
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: List.generate(
-                                                  selectedDays.length,
-                                                  (index) {
-                                                    return Padding(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 5.0),
-                                                      child: Text(
-                                                        selectedDays[index]
-                                                            ['short'],
-                                                        style: const TextStyle(
-                                                          // color: Colors.black,
-                                                          fontSize: 18,
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        const Padding(
-                                          padding: EdgeInsetsDirectional.only(
-                                              start: 5),
-                                          child: Icon(
-                                            Icons.keyboard_arrow_down,
-                                            // color: Colors.black,
-                                          ),
-                                        ),
-                                      ],
+                                  children: [
+                                    const Text(
+                                      "Repeat",
+                                      style: TextStyle(
+                                        // color: Colors.black,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
+                                    Expanded(
+                                      flex: 3,
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsetsDirectional.only(
+                                                start: 10),
+                                        child: SingleChildScrollView(
+                                          // padding: const EdgeInsets.symmetric(horizontal: 10),
+                                          scrollDirection: Axis.horizontal,
+                                          reverse: true,
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: selectedDays.isEmpty
+                                                ? [
+                                                    const Text(
+                                                      "Never",
+                                                      style: TextStyle(
+                                                        fontSize: 22.0,
+                                                        color:
+                                                            Color(0xFFD77D7C),
+                                                      ),
+                                                    ),
+                                                  ]
+                                                : List.generate(
+                                                    selectedDays.length,
+                                                    (index) {
+                                                      return Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal:
+                                                                    5.0),
+                                                        child: Text(
+                                                          selectedDays[index]
+                                                              ['short'],
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 22.0,
+                                                            color: Color(
+                                                                0xFFD77D7C),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const Padding(
+                                      padding:
+                                          EdgeInsetsDirectional.only(start: 5),
+                                      child: Icon(
+                                        Icons.keyboard_arrow_down,
+                                        // color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
+                              // Container(
+                              //   margin:
+                              //       const EdgeInsets.symmetric(vertical: 15),
+                              //   // decoration: const BoxDecoration(
+                              //   //   border: Border(
+                              //   //     top: BorderSide(
+                              //   //       color: CupertinoColors.inactiveGray,
+                              //   //       width: 0.0,
+                              //   //     ),
+                              //   //     bottom: BorderSide(
+                              //   //       color: CupertinoColors.inactiveGray,
+                              //   //       width: 0.0,
+                              //   //     ),
+                              //   //   ),
+                              //   // ),
+                              //   child: _DatePickerItem(
+                              //     child: GestureDetector(
+                              //       onTap: () async {
+                              //         await showDialog(
+                              //           context: context,
+                              //           builder: (context) {
+                              //             return DaysDialog(
+                              //               days: days,
+                              //               selectedDays: selectedDays,
+                              //             );
+                              //           },
+                              //         ).then((value) {
+                              //           setState(() {
+                              //             selectedDays.sort((a, b) =>
+                              //                 a['id'].compareTo(b['id']));
+                              //           });
+                              //         });
+                              //       },
+                              //       child: Container(
+                              //         width:
+                              //             MediaQuery.sizeOf(context).width * 0.94,
+                              //         height: 55,
+                              //         padding: const EdgeInsets.symmetric(
+                              //             horizontal: 10),
+                              //         child: Row(
+                              //           mainAxisAlignment:
+                              //               MainAxisAlignment.spaceBetween,
+                              //           // mainAxisSize: MainAxisSize.min,
+                              //           children: [
+                              //             const Text(
+                              //               "Repeat",
+                              //               style: TextStyle(
+                              //                 // color: Colors.black,
+                              //                 fontSize: 20,
+                              //                 fontWeight: FontWeight.bold,
+                              //               ),
+                              //             ),
+                              //             Expanded(
+                              //               flex: 3,
+                              //               child: Padding(
+                              //                 padding: const EdgeInsetsDirectional
+                              //                     .only(start: 10),
+                              //                 child: SingleChildScrollView(
+                              //                   // padding: const EdgeInsets.symmetric(horizontal: 10),
+                              //                   scrollDirection: Axis.horizontal,
+                              //                   reverse: true,
+                              //                   child: Row(
+                              //                     mainAxisSize: MainAxisSize.min,
+                              //                     children: selectedDays.isEmpty
+                              //                         ? [
+                              //                             const Text(
+                              //                               "Never",
+                              //                               style: TextStyle(
+                              //                                 fontSize: 22.0,
+                              //                                 color: Color(
+                              //                                     0xFFD77D7C),
+                              //                               ),
+                              //                             ),
+                              //                           ]
+                              //                         : List.generate(
+                              //                             selectedDays.length,
+                              //                             (index) {
+                              //                               return Padding(
+                              //                                 padding:
+                              //                                     const EdgeInsets
+                              //                                         .symmetric(
+                              //                                         horizontal:
+                              //                                             5.0),
+                              //                                 child: Text(
+                              //                                   selectedDays[
+                              //                                           index]
+                              //                                       ['short'],
+                              //                                   style:
+                              //                                       const TextStyle(
+                              //                                     fontSize: 22.0,
+                              //                                     color: Color(
+                              //                                         0xFFD77D7C),
+                              //                                   ),
+                              //                                 ),
+                              //                               );
+                              //                             },
+                              //                           ),
+                              //                   ),
+                              //                 ),
+                              //               ),
+                              //             ),
+                              //             const Padding(
+                              //               padding: EdgeInsetsDirectional.only(
+                              //                   start: 5),
+                              //               child: Icon(
+                              //                 Icons.keyboard_arrow_down,
+                              //                 // color: Colors.black,
+                              //               ),
+                              //             ),
+                              //           ],
+                              //         ),
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
 
                               // Container(
                               //   decoration: const BoxDecoration(
@@ -704,7 +743,8 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                 alignment: Alignment.centerLeft,
                                 child: Text(errorMessage, style: textStyle),
                               ),
-                              Padding(
+                              Container(
+                                width: MediaQuery.sizeOf(context).width * 0.55,
                                 //start journey button
                                 padding: const EdgeInsets.only(top: 40.0),
                                 child: ElevatedButton(
@@ -749,28 +789,35 @@ class AddReminderScreenState extends State<AddReminderScreen> {
   }
 }
 
-class _DatePickerItem extends StatelessWidget {
-  const _DatePickerItem({required this.children});
+class CustomResizeWidget extends StatelessWidget {
+  const CustomResizeWidget({
+    super.key,
+    required this.children,
+    this.onTap,
+  });
 
   final List<Widget> children;
+  final GestureTapCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: const BoxDecoration(
-        border: Border(
-          top: BorderSide(
-            color: CupertinoColors.inactiveGray,
-            width: 0.0,
-          ),
-          bottom: BorderSide(
-            color: CupertinoColors.inactiveGray,
-            width: 0.0,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 60,
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        decoration: const BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              color: CupertinoColors.inactiveGray,
+              width: 0.0,
+            ),
+            bottom: BorderSide(
+              color: CupertinoColors.inactiveGray,
+              width: 0.0,
+            ),
           ),
         ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: children,
@@ -804,16 +851,22 @@ class _DaysDialogState extends State<DaysDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.sizeOf(context).width * 0.90,
+    return Center(
       child: AlertDialog(
         title: const Text("Select"),
+        contentPadding: EdgeInsets.zero,
+        // insetPadding: EdgeInsets.zero,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
         actions: [
           TextButton(
+            // style: ,
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text("Cancel"),
+            child: const Text("Cancel",
+                style: TextStyle(
+                  color: Colors.black,
+                )),
           ),
           TextButton(
             onPressed: () {
@@ -827,46 +880,54 @@ class _DaysDialogState extends State<DaysDialog> {
                 }
               });
             },
-            child: const Text("Done"),
+            child: const Text(
+              "Save",
+              style: TextStyle(color: pinkColor),
+            ),
           ),
         ],
-        contentPadding: EdgeInsets.zero,
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: List.generate(
-            widget.days.length,
-            (i) {
-              return Directionality(
-                textDirection: TextDirection.rtl,
-                child: CheckboxListTile(
-                  activeColor: pinkColor,
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(
-                    widget.days[i]['day'],
-                    textAlign: TextAlign.end,
+        content: SizedBox(
+          width: MediaQuery.sizeOf(context).width * 0.74,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: List.generate(
+              widget.days.length,
+              (i) {
+                return Theme(
+                  data: ThemeData(
+                    unselectedWidgetColor:
+                        widget.days[i]['selected'] ? pinkColor : Colors.black54,
                   ),
-                  value: widget.days[i]['selected'],
-                  onChanged: (value) {
-                    setState(
-                      () {
-                        widget.days[i]['selected'] = value;
+                  child: CheckboxListTile(
+                    controlAffinity: ListTileControlAffinity.leading,
+                    activeColor: pinkColor,
+                    title: Text(
+                      widget.days[i]['day'],
+                    ),
+                    value: widget.days[i]['selected'],
+                    onChanged: (value) {
+                      setState(
+                        () {
+                          widget.days[i]['selected'] = value;
 
-                        if (value == true) {
-                          tempDays.add({
-                            'id': widget.days[i]['id'],
-                            'short': widget.days[i]['short'],
-                          });
-                        } else {
-                          tempDays.removeWhere(
-                            (element) => element['id'] == widget.days[i]['id'],
-                          );
-                        }
-                      },
-                    );
-                  },
-                ),
-              );
-            },
+                          if (value == true) {
+                            tempDays.add({
+                              'id': widget.days[i]['id'],
+                              'short': widget.days[i]['short'],
+                            });
+                          } else {
+                            tempDays.removeWhere(
+                              (element) =>
+                                  element['id'] == widget.days[i]['id'],
+                            );
+                          }
+                        },
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ),
