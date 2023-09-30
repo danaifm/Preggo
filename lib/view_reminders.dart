@@ -1,6 +1,7 @@
 // ignore_for_file: file_names, use_key_in_widget_constructors, camel_case_types, prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_init_to_null, unused_import, avoid_print, unused_element
 
 import 'package:flutter/material.dart';
+import 'package:googleapis/compute/v1.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,32 +19,37 @@ class viewReminders extends StatefulWidget {
 
 class _viewReminders extends State<viewReminders> {
   late final String userId;
+  late String formattedDate = ""; 
+  
+
   String getUserId() {
     User? user = FirebaseAuth.instance.currentUser;
     return user!.uid;
   }
 
-  /*Future<Widget> getReminders(String reminderDate) async {
+  Future<Container> getReminders(String reminderDate) async {
 
     //FirebaseFirestore firestore = FirebaseFirestore.instance;
     String userUid = getUserId();
 
-    var result = await FirebaseFirestore.instance
+    QuerySnapshot result = await FirebaseFirestore.instance
     .collection('users').doc(userUid)
     .collection('reminders')
     .where('date', isEqualTo: reminderDate)
     .get();
-
+    
     if(result.docs.isEmpty)
     {
-      return Container(
-        child: Text("you don't have any reminders set for this day"),
-      );
+      return Container(child: Text('nothing here $reminderDate', style: TextStyle(fontSize: 20),));
+    }
+    else{
+    return Container(child: Text('reminders are here!$reminderDate', style: TextStyle(fontSize: 20)));
     }
 
-    return Container(child: Text('hello'),);
+  }
 
-  }*/
+  
+  
 
 
   @override
@@ -102,31 +108,8 @@ class _viewReminders extends State<viewReminders> {
                               int year = int.parse(dateComponents[0]); 
                               int month = int.parse(dateComponents[1]); 
                               int day = int.parse(dateComponents[2]); 
-                              String formattedDate = "${month.toStringAsFixed(0)}-${day.toStringAsFixed(0)}-$year"; 
-
-                              ///////////////////////////////////////////
-                              Future<dynamic> getReminders(String reminderDate) async {
-
-                              //FirebaseFirestore firestore = FirebaseFirestore.instance;
-                              String userUid = getUserId();
-
-                              var result = await FirebaseFirestore.instance
-                              .collection('users').doc(userUid)
-                              .collection('reminders')
-                              .where('date', isEqualTo: reminderDate)
-                              .get();
-
-                              if(result.docs.isEmpty)
-                              {
-                                return Center(child: Text('nothing here', style: TextStyle(fontSize: 20),));
-                              }
-                              else{
-                              print('reminders here');}
-
-                            }
-                              ///////////////////////////////////////////
-                              getReminders(formattedDate);
-                    
+                              formattedDate = "${month.toStringAsFixed(0)}-${day.toStringAsFixed(0)}-$year"; 
+                              
                             },
                             activeColor: pinkColor,
                             headerProps: const EasyHeaderProps(
@@ -151,7 +134,18 @@ class _viewReminders extends State<viewReminders> {
                           ),
 
                           
-                            //getReminders(formattedDate); need to have container returned here!!!!!!!
+
+                          FutureBuilder<Widget>(
+                            future: getReminders(formattedDate), 
+                            builder: (BuildContext context , AsyncSnapshot<Widget> snapshot){
+                              if(snapshot.hasData) {
+                                return snapshot.data!;
+                              }
+                              
+                            return Container(child: CircularProgressIndicator(),);
+                            },
+                            )
+
                             
                           
                         ],
