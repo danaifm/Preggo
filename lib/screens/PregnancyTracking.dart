@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:preggo/colors.dart';
-// import 'package:preggo/notification/notification.dart';
-// import 'package:timeago/timeago.dart' as timeago;
+
 
 class weeklyModel {}
 
@@ -392,7 +391,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                       child: Column(
                         children: [
                           Text(
-                            'Highlights This Week:',
+                            'Highlights This Week',
                             style: TextStyle(
                               color: pinkColor,
                               fontWeight: FontWeight.bold,
@@ -432,7 +431,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                         child: Column(
                           children: [
                             Text(
-                              'Baby Development: ',
+                              'Baby Development ',
                               style: TextStyle(
                                 color: pinkColor,
                                 fontWeight: FontWeight.bold,
