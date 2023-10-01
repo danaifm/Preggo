@@ -5,11 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:preggo/colors.dart';
+// import 'package:preggo/notification/notification.dart';
+// import 'package:timeago/timeago.dart' as timeago;
 
 class weeklyModel {}
 
 class PregnancyTracking extends StatefulWidget {
   PregnancyTracking({super.key});
+
   //late final String userId;
 
   @override
@@ -22,6 +25,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
   @override
   void initState() {
     getAllWeeks();
+    getStrCurrentWeek();
     super.initState();
     // getWeek();
   }
@@ -49,6 +53,8 @@ class _PregnancyTracking extends State<PregnancyTracking> {
   }
 
   int currentWeek = 1;
+
+  int currentWeekProgress = 0;
 
   var firestore = FirebaseFirestore.instance.collection('pregnancytracking');
   late final Future myFuture = getDueDate();
@@ -99,6 +105,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
 
   int row = 40;
   int col = 4;
+
   // List<List<String>> allWeeks = <List<String>>[];
   var allWeeks = List<List>.generate(
       40, (i) => List<dynamic>.generate(4, (index) => null, growable: false),
@@ -108,7 +115,14 @@ class _PregnancyTracking extends State<PregnancyTracking> {
   getAllWeeks() async {
     var weeks = await firestore.get().then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
-        List<String> eachWeek = [doc['height'], doc['weight'], doc['image']];
+        print('Doc => ${doc.data()}');
+        List<String> eachWeek = [
+          doc['height'],
+          doc['weight'],
+          doc['image'],
+          doc['babychanges'],
+          doc['motherchanges']
+        ];
         // print(eachWeek);
         allWeeks[int.parse(doc.id) - 1] = (eachWeek);
       });
@@ -150,6 +164,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
   bool first = true;
   double itemWidth = 60.0;
   int itemCount = 40;
+
   @override
   Widget build(BuildContext context) {
     // getAllWeeks();
@@ -217,7 +232,8 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                 child: Column(
                                   children: [
                                     Text(
-                                      '\nweek\n \n   ${x + 1}', // so it starts from week 1
+                                      '\nweek\n \n   ${x + 1}',
+                                      // so it starts from week 1
                                       style: TextStyle(fontFamily: 'Urbanist'),
                                     ),
                                     x + 1 == data
@@ -300,7 +316,65 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                     ),
                     Container(
                       margin: EdgeInsets.only(top: 20),
-                      height: 300,
+                      padding: EdgeInsets.all(5),
+                      width: 330,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          color: Color.fromRGBO(249, 220, 222, 1),
+                          width: 1.5,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                              blurRadius: 2,
+                              spreadRadius: 0.5,
+                              color: Colors.grey)
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            //baby pic
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: AssetImage(allWeeks[0][2]),
+                              ),
+                              borderRadius: BorderRadius.circular(500),
+                            ),
+                          ),
+                          Expanded(
+                            child: Slider(
+                              value: currentWeekProgress.toDouble(),
+                              min: 0,
+                              max: 270,
+                              onChanged: (double value) {},
+                              activeColor: pinkColor,
+                              inactiveColor: pinkColor,
+                            ),
+                          ),
+                          Container(
+                            //baby pic
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: AssetImage(allWeeks[39][2]),
+                              ),
+                              borderRadius: BorderRadius.circular(500),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: 20),
+                      padding: EdgeInsets.all(5),
+                      height: 125,
                       width: 330,
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -315,7 +389,67 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                               color: Colors.grey)
                         ],
                       ),
-                    )
+                      child: Column(
+                        children: [
+                          Text(
+                            'Highlights This Week:',
+                            style: TextStyle(
+                              color: pinkColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Expanded(
+                            child: ListView(
+                              padding: EdgeInsets.only(top: 5),
+                              children: [
+                                Text(motherChanges()),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Visibility(
+                      visible: selected != 0 && selected != 1,
+                      child: Container(
+                        margin: EdgeInsets.only(top: 20),
+                        padding: EdgeInsets.all(5),
+                        height: 125,
+                        width: 330,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                              color: Color.fromRGBO(249, 220, 222, 1),
+                              width: 1.5),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                                blurRadius: 2,
+                                spreadRadius: 0.5,
+                                color: Colors.grey)
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Baby Development: ',
+                              style: TextStyle(
+                                color: pinkColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Expanded(
+                              child: ListView(
+                                padding: EdgeInsets.only(top: 5),
+                                children: [
+                                  Text(babyChanges()),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               );
@@ -335,5 +469,38 @@ class _PregnancyTracking extends State<PregnancyTracking> {
             ),
           );
         });
+  }
+
+  String babyChanges() {
+    final baby = allWeeks[selected][3].toString().split('.');
+    String changes = "";
+    for (var element in baby) {
+      changes += "$element\n";
+    }
+    return changes;
+  }
+
+  String motherChanges() {
+    final mother = allWeeks[selected][4].toString().split('.');
+    String changes = "";
+    for (var element in mother) {
+      changes += "$element\n";
+    }
+    return changes;
+  }
+
+  void getStrCurrentWeek() {
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("pregnancyInfo")
+        .get()
+        .then((value) {
+      Timestamp timestamp = value.docs.first.data()["DueDate"];
+      var date = timestamp.toDate();
+
+      currentWeekProgress = 270 - date.difference(DateTime.now()).inDays;
+      setState(() {});
+    });
   }
 }
