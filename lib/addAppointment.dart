@@ -135,8 +135,17 @@ class _addAppointmentState extends State<addAppointment> {
       //   prompt,
       // ).then((AuthClient client) {
       //   var calendar = CalendarApi(client);
-      String calendarId = "primary";
-      googleCalendarApi.events.insert(event, calendarId).then((value) {
+      Calendar preggoCalendar =
+          new Calendar(summary: "Preggo Calendar", kind: "calendar#1");
+
+      googleCalendarApi.calendars.insert(preggoCalendar);
+      print('dana123');
+      print(googleCalendarApi.calendarList.list());
+
+      // print(list);
+      // String calendarId = "primary";
+
+      googleCalendarApi.events.insert(event, "primary").then((value) {
         print("ADDEDD_________________${value.status}");
         if (value.status == "confirmed") {
           print('Event added in google calendar');
@@ -346,6 +355,13 @@ class _addAppointmentState extends State<addAppointment> {
                                               date.minute,
                                               date.second + 1),
                                           minimumDate: date,
+                                          // maximumDate: DateTime(
+                                          //     date.year + 1,
+                                          //     date.month,
+                                          //     date.day,
+                                          //     date.hour,
+                                          //     date.minute,
+                                          //     date.second + 1),
                                           mode: CupertinoDatePickerMode.date,
                                           use24hFormat: false,
                                           // This is called when the user changes the date.
