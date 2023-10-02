@@ -616,7 +616,7 @@ class _SignUpState extends State<SignUp> {
                                   Navigator.of(context).pushAndRemoveUntil(
                                       MaterialPageRoute(
                                     builder: (context) {
-                                      return addAppointment();
+                                      return LoginScreen();
                                     },
                                   ), (route) => false);
                                 },

@@ -10,7 +10,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
-import 'package:http/http.dart' as http;
 
 class addAppointment extends StatefulWidget {
   @override
@@ -43,6 +42,7 @@ class _addAppointmentState extends State<addAppointment> {
   GoogleSignInAccount? _currentUser;
   bool _isAuthorized = false; // has granted permissions?
   String _contactText = '';
+  bool valid = false;
 
   // @override
   // void initState() {
@@ -79,8 +79,10 @@ class _addAppointmentState extends State<addAppointment> {
   @override
   void initState() {
     super.initState();
+
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
       setState(() {
+        // _handleSignIn();
         _currentUser = account;
       });
       // if (_currentUser != null) {
@@ -98,19 +100,21 @@ class _addAppointmentState extends State<addAppointment> {
   Future<void> _handleSignIn() async {
     try {
       await _googleSignIn.signIn();
+      print("successful sign in");
     } catch (error) {
+      print("XOXOXO");
       print(error);
     }
   }
 
-  Future<void> _handleAuthorizeScopes() async {
-    final bool isAuthorized = await _googleSignIn.requestScopes(_scopes);
-    setState(() {
-      _isAuthorized = isAuthorized;
-    });
-  }
+  // Future<void> _handleAuthorizeScopes() async {
+  //   final bool isAuthorized = await _googleSignIn.requestScopes(_scopes);
+  //   setState(() {
+  //     _isAuthorized = isAuthorized;
+  //   });
+  // }
 
-  Future<void> _handleSignOut() => _googleSignIn.disconnect();
+  // Future<void> _handleSignOut() => _googleSignIn.disconnect();
 
   insertEvent(event) async {
     // final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
@@ -119,6 +123,7 @@ class _addAppointmentState extends State<addAppointment> {
     // final googleAPI.Events calEvents = await calendarAPI.events.list(
     //   "primary",
     // );
+    await _handleSignIn();
     final auth.AuthClient? client = await _googleSignIn.authenticatedClient();
     assert(client != null, 'Authenticated client missing!');
 
@@ -151,7 +156,7 @@ class _addAppointmentState extends State<addAppointment> {
         Calendar preggoCalendar =
             new Calendar(summary: "Preggo Calendar", kind: "calendar#1");
         googleCalendarApi.calendars.insert(preggoCalendar);
-        for (CalendarListEntry entry in items!) {
+        for (CalendarListEntry entry in items) {
           if (entry.summary == "Preggo Calendar") {
             id = entry.id;
             break;
@@ -173,21 +178,32 @@ class _addAppointmentState extends State<addAppointment> {
     }
   }
 
-  void prompt(String url) async {
-    // if (await canLaunchUrl(Uri.parse(url))) {
-    await launchUrl(Uri.parse(url));
-    // } else {
-    throw 'Could not launch $url';
-    // }
-  }
+  // void prompt(String url) async {
+  //   // if (await canLaunchUrl(Uri.parse(url))) {
+  //   await launchUrl(Uri.parse(url));
+  //   // } else {
+  //   throw 'Could not launch $url';
+  //   // }
+  // }
 
   GlobalKey<FormState> formstate = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormFieldState> _apptNameKey = GlobalKey<FormFieldState>();
   final TextEditingController _apptNameController = TextEditingController();
 
+  final GlobalKey<FormFieldState> _hospitalKey = GlobalKey<FormFieldState>();
+  final TextEditingController _hospitalController = TextEditingController();
+
+  final GlobalKey<FormFieldState> _drKey = GlobalKey<FormFieldState>();
+  final TextEditingController _drController = TextEditingController();
+
+  bool timeRed = false;
+
   @override
   Widget build(BuildContext context) {
+    Color timeColor =
+        timeRed ? Color.fromRGBO(255, 100, 100, 1) : Color(0xFFD77D7C);
+
     var textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontSize: 12.0,
           color: Theme.of(context).colorScheme.error,
@@ -221,7 +237,7 @@ class _addAppointmentState extends State<addAppointment> {
       body: Column(
         children: [
           SizedBox(
-            height: 85,
+            height: 45,
           ),
           Text(
             "Add a new appointment",
@@ -235,7 +251,7 @@ class _addAppointmentState extends State<addAppointment> {
             ),
           ),
           SizedBox(
-            height: 35,
+            height: 15,
           ),
           Expanded(
             child: Container(
@@ -280,12 +296,11 @@ class _addAppointmentState extends State<addAppointment> {
                                 ),
                               ),
                               Padding(
-                                //baby name text field
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10.0),
+                                padding: const EdgeInsets.only(top: 0.0),
                                 child: TextFormField(
                                   key: _apptNameKey,
                                   controller: _apptNameController,
+                                  maxLength: 25,
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.symmetric(
                                         vertical: 15.0, horizontal: 15),
@@ -341,9 +356,171 @@ class _addAppointmentState extends State<addAppointment> {
                                     }
                                   },
                                 ),
-                              ), //end of appointment name text field
+                              ),
                               Container(
-                                margin: EdgeInsets.symmetric(vertical: 15),
+                                //hospital name label
+                                margin: EdgeInsets.only(left: 5),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "Hospital Name",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 0, 0, 0),
+                                    fontSize: 20,
+                                    fontFamily: 'Urbanist',
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.30,
+                                    letterSpacing: -0.28,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                //baby name text field
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 0.0),
+                                child: TextFormField(
+                                  key: _hospitalKey,
+                                  controller: _hospitalController,
+                                  maxLength: 25,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 15.0, horizontal: 15),
+                                    focusedErrorBorder: OutlineInputBorder(
+                                      gapPadding: 0.5,
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(
+                                        width: 0.50,
+                                        color: Color.fromRGBO(255, 100, 100, 1),
+                                      ),
+                                    ),
+                                    errorBorder: OutlineInputBorder(
+                                      gapPadding: 0.5,
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(
+                                        width: 0.50,
+                                        color: Color.fromRGBO(255, 100, 100, 1),
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      gapPadding: 0.5,
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(
+                                        width: 0.50,
+                                        color:
+                                            Color.fromARGB(255, 221, 225, 232),
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      // gapPadding: 100,
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(
+                                        width: 0.50,
+                                        color:
+                                            Color.fromARGB(255, 221, 225, 232),
+                                      ),
+                                    ),
+                                    filled: true,
+                                    fillColor: Color(0xFFF7F8F9),
+                                  ),
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return "This field cannot be empty.";
+                                    }
+                                    if (!RegExp(r'^[a-z A-Z0-9]+$')
+                                        .hasMatch(value)) {
+                                      //allow alphanumerical only AND SPACE
+                                      return "Please enter letters only.";
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                ),
+                              ), //end of hospital name text field
+                              Container(
+                                //doctor name label
+                                margin: EdgeInsets.only(left: 5),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "Doctor's Name",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 0, 0, 0),
+                                    fontSize: 20,
+                                    fontFamily: 'Urbanist',
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.30,
+                                    letterSpacing: -0.28,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                //baby name text field
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 0.0),
+                                child: TextFormField(
+                                  key: _drKey,
+                                  controller: _drController,
+                                  maxLength: 25,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 15.0, horizontal: 15),
+                                    focusedErrorBorder: OutlineInputBorder(
+                                      gapPadding: 0.5,
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(
+                                        width: 0.50,
+                                        color: Color.fromRGBO(255, 100, 100, 1),
+                                      ),
+                                    ),
+                                    errorBorder: OutlineInputBorder(
+                                      gapPadding: 0.5,
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(
+                                        width: 0.50,
+                                        color: Color.fromRGBO(255, 100, 100, 1),
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      gapPadding: 0.5,
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(
+                                        width: 0.50,
+                                        color:
+                                            Color.fromARGB(255, 221, 225, 232),
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      // gapPadding: 100,
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(
+                                        width: 0.50,
+                                        color:
+                                            Color.fromARGB(255, 221, 225, 232),
+                                      ),
+                                    ),
+                                    filled: true,
+                                    fillColor: Color(0xFFF7F8F9),
+                                  ),
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return "This field cannot be empty.";
+                                    }
+                                    if (!RegExp(r'^[a-z A-Z0-9]+$')
+                                        .hasMatch(value)) {
+                                      //allow alphanumerical only AND SPACE
+                                      return "Please enter letters only.";
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                ),
+                              ), //end of dr name text field
+                              Container(
+                                margin: EdgeInsets.only(top: 10),
                                 child: _DatePickerItem(
                                   children: <Widget>[
                                     const Text(
@@ -361,9 +538,9 @@ class _addAppointmentState extends State<addAppointment> {
                                       // Display a CupertinoDatePicker in date picker mode.
                                       onPressed: () => _showDialog(
                                         CupertinoDatePicker(
-                                          initialDateTime: DateTime.now()
-                                              .add(Duration(seconds: 1)),
-                                          minimumDate: DateTime.now(),
+                                          initialDateTime:
+                                              date.add(Duration(seconds: 1)),
+                                          // minimumDate: DateTime.now(),
                                           maximumDate: DateTime.now()
                                               .add(Duration(days: 3650)),
                                           mode: CupertinoDatePickerMode.date,
@@ -390,10 +567,10 @@ class _addAppointmentState extends State<addAppointment> {
                                 ),
                               ),
                               Container(
-                                margin: EdgeInsets.symmetric(vertical: 15),
+                                margin: EdgeInsets.symmetric(vertical: 0),
                                 child: _DatePickerItem(
                                   children: <Widget>[
-                                    const Text(
+                                    Text(
                                       'Starting Time',
                                       style: TextStyle(
                                         color: Color.fromARGB(255, 0, 0, 0),
@@ -429,9 +606,10 @@ class _addAppointmentState extends State<addAppointment> {
                                       // the user's locale settings.
                                       child: Text(
                                         startFormat,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 22.0,
-                                          color: Color(0xFFD77D7C),
+                                          color: timeColor,
+                                          // color: Color(0xFFD77D7C),
                                         ),
                                       ),
                                     ),
@@ -439,10 +617,10 @@ class _addAppointmentState extends State<addAppointment> {
                                 ),
                               ),
                               Container(
-                                margin: EdgeInsets.symmetric(vertical: 15),
+                                margin: EdgeInsets.symmetric(vertical: 0),
                                 child: _DatePickerItem(
                                   children: <Widget>[
-                                    const Text(
+                                    Text(
                                       'End Time',
                                       style: TextStyle(
                                         color: Color.fromARGB(255, 0, 0, 0),
@@ -478,9 +656,10 @@ class _addAppointmentState extends State<addAppointment> {
                                       // the user's locale settings.
                                       child: Text(
                                         endFormat,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 22.0,
-                                          color: Color(0xFFD77D7C),
+                                          color: timeColor,
+                                          // color: Color(0xFFD77D7C),
                                         ),
                                       ),
                                     ),
@@ -489,69 +668,93 @@ class _addAppointmentState extends State<addAppointment> {
                               ),
                               Container(
                                 alignment: Alignment.centerLeft,
+                                margin: EdgeInsets.only(top: 5),
                                 child: Text(errorMessage, style: textStyle),
                               ),
                               Padding(
-                                //start journey button
-                                padding: const EdgeInsets.only(top: 40.0),
+                                padding: const EdgeInsets.only(top: 10.0),
                                 child: ElevatedButton(
                                   onPressed: () {
                                     if (startTime.isAfter(endTime)) {
                                       setState(() {
                                         errorMessage =
                                             "Starting time cannot be after end time.";
+                                        valid = false;
+                                        timeRed = true;
+                                      });
+                                    } else if (startTime.hour == endTime.hour &&
+                                        startTime.minute == endTime.minute) {
+                                      setState(() {
+                                        errorMessage =
+                                            "Starting time cannot be equal to end time.";
+                                        valid = false;
+                                        timeRed = true;
                                       });
                                     } else if (_apptNameController
                                         .text.isEmpty) {
+                                      errorMessage = "";
+                                      valid = false;
+                                      timeRed = false;
                                       print("not added because empty name");
                                     } else {
                                       setState(() {
+                                        timeRed = false;
                                         errorMessage = "";
+                                        // _handleSignIn();
+                                        valid = true;
                                       });
-                                      _handleSignIn();
-                                      Event event =
-                                          Event(); // Create object of event
-                                      event.summary = _apptNameController
-                                          .text; //Setting summary of object (name of event)
+                                      if (valid == true) {
+                                        print("now signed in");
+                                        Event event =
+                                            Event(); // Create object of event
+                                        event.summary = _apptNameController.text
+                                            .trim(); //Setting summary of object (name of event)
+                                        event.location =
+                                            _hospitalController.text.trim();
+                                        event.description =
+                                            _drController.text.trim();
 
-                                      EventDateTime start = new EventDateTime();
-                                      // start.date = date; //setting start time
-                                      start.dateTime = startTime;
-                                      start.timeZone = DateTime.now()
-                                          .timeZoneName; //local timezone
-                                      event.start = EventDateTime(
-                                          // date: date,
-                                          dateTime: DateTime(
-                                              date.year,
-                                              date.month,
-                                              date.day,
-                                              startTime.hour,
-                                              startTime.minute,
-                                              startTime.second),
-                                          timeZone:
-                                              DateTime.now().timeZoneName);
-                                      // event.start!.date = date;
+                                        EventDateTime start =
+                                            new EventDateTime();
+                                        // start.date = date; //setting start time
+                                        start.dateTime = startTime;
+                                        start.timeZone = DateTime.now()
+                                            .timeZoneName; //local timezone
+                                        event.start = EventDateTime(
+                                            // date: date,
+                                            dateTime: DateTime(
+                                                date.year,
+                                                date.month,
+                                                date.day,
+                                                startTime.hour,
+                                                startTime.minute,
+                                                startTime.second),
+                                            timeZone:
+                                                DateTime.now().timeZoneName);
+                                        // event.start!.date = date;
 
-                                      EventDateTime end = new EventDateTime();
-                                      // end.date = date; //setting end time
-                                      end.timeZone = DateTime.now()
-                                          .timeZoneName; //local timezone
-                                      end.dateTime = endTime;
-                                      event.end = EventDateTime(
-                                          // date: date,
-                                          dateTime: DateTime(
-                                              date.year,
-                                              date.month,
-                                              date.day,
-                                              endTime.hour,
-                                              endTime.minute,
-                                              endTime.second),
-                                          timeZone:
-                                              DateTime.now().timeZoneName);
-                                      // event.end!.date = date;
+                                        EventDateTime end = new EventDateTime();
+                                        // end.date = date; //setting end time
+                                        end.timeZone = DateTime.now()
+                                            .timeZoneName; //local timezone
+                                        end.dateTime = endTime;
+                                        event.end = EventDateTime(
+                                            // date: date,
+                                            dateTime: DateTime(
+                                                date.year,
+                                                date.month,
+                                                date.day,
+                                                endTime.hour,
+                                                endTime.minute,
+                                                endTime.second),
+                                            timeZone:
+                                                DateTime.now().timeZoneName);
+                                        // event.end!.date = date;
 
-                                      insertEvent(event);
-                                    }
+                                        insertEvent(event);
+                                        print('now event inserted');
+                                      }
+                                    } //if valid then submit
                                   }, //end onPressed()
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: blackColor,
