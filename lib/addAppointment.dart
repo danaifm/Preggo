@@ -1,6 +1,7 @@
 // ignore_for_file: camel_case_types, prefer_const_literals_to_create_immutables, prefer_const_constructors, use_key_in_widget_constructors, unnecessary_const, unnecessary_new, prefer_final_fields, avoid_print, no_leading_underscores_for_local_identifiers, file_names,
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:preggo/screens/PregnancyTracking.dart';
 import 'colors.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:googleapis/calendar/v3.dart';
@@ -138,13 +139,26 @@ class _addAppointmentState extends State<addAppointment> {
       body: Column(
         children: [
           SizedBox(
-            height: 45,
+            height: 35,
+          ),
+          Container(
+            alignment: AlignmentDirectional.centerStart,
+            child: IconButton(
+              onPressed: () {
+                // Navigator.push(context,  MaterialPageRoute(
+                //                         builder: (context) => PregnancyTracking()));
+              },
+              icon: const Icon(
+                Icons.arrow_back,
+                color: Color.fromARGB(255, 0, 0, 0),
+              ),
+            ),
           ),
           Text(
             "Add a new appointment",
             style: TextStyle(
               color: Color(0xFFD77D7C),
-              fontSize: 32,
+              fontSize: 30,
               fontFamily: 'Urbanist',
               fontWeight: FontWeight.w600,
               height: 1.30,
@@ -188,7 +202,7 @@ class _addAppointmentState extends State<addAppointment> {
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     color: Color.fromARGB(255, 0, 0, 0),
-                                    fontSize: 20,
+                                    fontSize: 17,
                                     fontFamily: 'Urbanist',
                                     fontWeight: FontWeight.w700,
                                     height: 1.30,
@@ -267,7 +281,7 @@ class _addAppointmentState extends State<addAppointment> {
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     color: Color.fromARGB(255, 0, 0, 0),
-                                    fontSize: 20,
+                                    fontSize: 17,
                                     fontFamily: 'Urbanist',
                                     fontWeight: FontWeight.w700,
                                     height: 1.30,
@@ -348,7 +362,7 @@ class _addAppointmentState extends State<addAppointment> {
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     color: Color.fromARGB(255, 0, 0, 0),
-                                    fontSize: 20,
+                                    fontSize: 17,
                                     fontFamily: 'Urbanist',
                                     fontWeight: FontWeight.w700,
                                     height: 1.30,
@@ -428,7 +442,7 @@ class _addAppointmentState extends State<addAppointment> {
                                       'Date',
                                       style: TextStyle(
                                         color: Color.fromARGB(255, 0, 0, 0),
-                                        fontSize: 20,
+                                        fontSize: 17,
                                         fontFamily: 'Urbanist',
                                         fontWeight: FontWeight.w700,
                                         height: 1.30,
@@ -459,7 +473,7 @@ class _addAppointmentState extends State<addAppointment> {
                                       child: Text(
                                         '${date.month}-${date.day}-${date.year}',
                                         style: const TextStyle(
-                                          fontSize: 22.0,
+                                          fontSize: 20.0,
                                           color: Color(0xFFD77D7C),
                                         ),
                                       ),
@@ -475,7 +489,7 @@ class _addAppointmentState extends State<addAppointment> {
                                       'Starting Time',
                                       style: TextStyle(
                                         color: Color.fromARGB(255, 0, 0, 0),
-                                        fontSize: 20,
+                                        fontSize: 17,
                                         fontFamily: 'Urbanist',
                                         fontWeight: FontWeight.w700,
                                         height: 1.30,
@@ -508,7 +522,7 @@ class _addAppointmentState extends State<addAppointment> {
                                       child: Text(
                                         startFormat,
                                         style: TextStyle(
-                                          fontSize: 22.0,
+                                          fontSize: 20.0,
                                           color: timeColor,
                                           // color: Color(0xFFD77D7C),
                                         ),
@@ -525,7 +539,7 @@ class _addAppointmentState extends State<addAppointment> {
                                       'End Time',
                                       style: TextStyle(
                                         color: Color.fromARGB(255, 0, 0, 0),
-                                        fontSize: 20,
+                                        fontSize: 17,
                                         fontFamily: 'Urbanist',
                                         fontWeight: FontWeight.w700,
                                         height: 1.30,
@@ -558,7 +572,7 @@ class _addAppointmentState extends State<addAppointment> {
                                       child: Text(
                                         endFormat,
                                         style: TextStyle(
-                                          fontSize: 22.0,
+                                          fontSize: 20.0,
                                           color: timeColor,
                                           // color: Color(0xFFD77D7C),
                                         ),

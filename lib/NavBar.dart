@@ -167,6 +167,8 @@ class _NavBar extends State<NavBar> {
                       setState(() {
                         currentScreen = addAppointment();
                         currentTab = 3;
+                        print('HELLOHELLO');
+                        print(_googleSignIn.currentUser);
                       });
                     },
                     child: Column(
