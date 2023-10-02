@@ -47,6 +47,7 @@ dependencies:
   dropdown_search: ^5.0.6
 
   email_validator: ^2.1.17
+  syncfusion_flutter_calendar: ^23.1.38
 
 
 dev_dependencies:
