@@ -1,5 +1,4 @@
 // ignore_for_file: camel_case_types, prefer_const_literals_to_create_immutables, prefer_const_constructors, use_key_in_widget_constructors, unused_field, unnecessary_const, unnecessary_new, prefer_final_fields, unused_element, avoid_print, no_leading_underscores_for_local_identifiers, file_names, unused_local_variable, unused_import
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -77,6 +76,7 @@ class _addAppointmentState extends State<addAppointment> {
   //   // sign-in rates" ([docs](https://developers.google.com/identity/gsi/web/guides/display-button#html)).
   //   _googleSignIn.signInSilently();
   // }
+  @override
   void initState() {
     super.initState();
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
@@ -135,17 +135,31 @@ class _addAppointmentState extends State<addAppointment> {
       //   prompt,
       // ).then((AuthClient client) {
       //   var calendar = CalendarApi(client);
-      Calendar preggoCalendar =
-          new Calendar(summary: "Preggo Calendar", kind: "calendar#1");
+      String? id;
+      bool exists = false;
+      var list = await googleCalendarApi.calendarList.list();
+      var items = list.items;
+      for (CalendarListEntry entry in items!) {
+        print(entry.summary);
+        if (entry.summary == "Preggo Calendar") {
+          id = entry.id;
+          exists = true;
+          break;
+        }
+      }
+      if (exists == false) {
+        Calendar preggoCalendar =
+            new Calendar(summary: "Preggo Calendar", kind: "calendar#1");
+        googleCalendarApi.calendars.insert(preggoCalendar);
+        for (CalendarListEntry entry in items!) {
+          if (entry.summary == "Preggo Calendar") {
+            id = entry.id;
+            break;
+          }
+        }
+      }
 
-      googleCalendarApi.calendars.insert(preggoCalendar);
-      print('dana123');
-      print(googleCalendarApi.calendarList.list());
-
-      // print(list);
-      // String calendarId = "primary";
-
-      googleCalendarApi.events.insert(event, "primary").then((value) {
+      googleCalendarApi.events.insert(event, id!).then((value) {
         print("ADDEDD_________________${value.status}");
         if (value.status == "confirmed") {
           print('Event added in google calendar');
@@ -347,21 +361,11 @@ class _addAppointmentState extends State<addAppointment> {
                                       // Display a CupertinoDatePicker in date picker mode.
                                       onPressed: () => _showDialog(
                                         CupertinoDatePicker(
-                                          initialDateTime: DateTime(
-                                              date.year,
-                                              date.month,
-                                              date.day,
-                                              date.hour,
-                                              date.minute,
-                                              date.second + 1),
-                                          minimumDate: date,
-                                          // maximumDate: DateTime(
-                                          //     date.year + 1,
-                                          //     date.month,
-                                          //     date.day,
-                                          //     date.hour,
-                                          //     date.minute,
-                                          //     date.second + 1),
+                                          initialDateTime: DateTime.now()
+                                              .add(Duration(seconds: 1)),
+                                          minimumDate: DateTime.now(),
+                                          maximumDate: DateTime.now()
+                                              .add(Duration(days: 3650)),
                                           mode: CupertinoDatePickerMode.date,
                                           use24hFormat: false,
                                           // This is called when the user changes the date.
