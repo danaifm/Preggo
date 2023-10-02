@@ -1,7 +1,6 @@
 // ignore_for_file: camel_case_types, prefer_const_literals_to_create_immutables, prefer_const_constructors, use_key_in_widget_constructors, unused_field, unnecessary_const, unnecessary_new, prefer_final_fields, unused_element, avoid_print, no_leading_underscores_for_local_identifiers, file_names, unused_local_variable, unused_import
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'colors.dart';
 import 'package:jiffy/jiffy.dart';
 import "package:googleapis_auth/auth_io.dart";
@@ -19,6 +18,12 @@ class addAppointment extends StatefulWidget {
 }
 
 class _addAppointmentState extends State<addAppointment> {
+  @override
+  void initState() {
+    super.initState();
+    _googleSignIn.signInSilently();
+  }
+
   DateTime date = DateTime.now();
   DateTime startTime = DateTime.now();
   DateTime endTime = DateTime.now();
@@ -28,7 +33,8 @@ class _addAppointmentState extends State<addAppointment> {
 
   static const _scopes = const [
     CalendarApi.calendarScope
-  ]; //scope to CREATE EVENT in calendar
+  ]; //scope to CREATE EVENT / CALENDAR in Google calendar
+
   var _clientID = new ClientId(
       "3982098128-rlts9furpv5as6ob6885ifd4l88760pa.apps.googleusercontent.com",
       ""); //ClientID Object
@@ -39,107 +45,13 @@ class _addAppointmentState extends State<addAppointment> {
     scopes: _scopes,
   );
 
-  GoogleSignInAccount? _currentUser;
-  bool _isAuthorized = false; // has granted permissions?
-  String _contactText = '';
-  bool valid = false;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-
-  //   _googleSignIn.onCurrentUserChanged
-  //       .listen((GoogleSignInAccount? account) async {
-  //     // In mobile, being authenticated means being authorized...
-  //     bool isAuthorized = account != null;
-  //     // However, in the web...
-  //     if (kIsWeb && account != null) {
-  //       isAuthorized = await _googleSignIn.canAccessScopes(_scopes);
-  //     }
-
-  //     setState(() {
-  //       _currentUser = account;
-  //       _isAuthorized = isAuthorized;
-  //     });
-
-  //     // Now that we know that the user can access the required scopes, the app
-  //     // can call the REST API.
-  //     if (isAuthorized) {
-  //       unawaited(_handleGetContact(account!));
-  //     }
-  //   });
-
-  //   // In the web, _googleSignIn.signInSilently() triggers the One Tap UX.
-  //   //
-  //   // It is recommended by Google Identity Services to render both the One Tap UX
-  //   // and the Google Sign In button together to "reduce friction and improve
-  //   // sign-in rates" ([docs](https://developers.google.com/identity/gsi/web/guides/display-button#html)).
-  //   _googleSignIn.signInSilently();
-  // }
-  @override
-  void initState() {
-    super.initState();
-
-    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
-      setState(() {
-        // _handleSignIn();
-        _currentUser = account;
-      });
-      // if (_currentUser != null) {
-      //   _handleGetContact();
-      // }
-    });
-    _googleSignIn.signInSilently();
-  }
-
-  // final GoogleSignIn _googleSignInwithClientID = GoogleSignIn(
-  //     clientId:
-  //         "3982098128-rlts9furpv5as6ob6885ifd4l88760pa.apps.googleusercontent.com",
-  //     scopes: _scopes);
-
-  Future<void> _handleSignIn() async {
-    try {
-      await _googleSignIn.signIn();
-      print("successful sign in");
-    } catch (error) {
-      print("XOXOXO");
-      print(error);
-    }
-  }
-
-  // Future<void> _handleAuthorizeScopes() async {
-  //   final bool isAuthorized = await _googleSignIn.requestScopes(_scopes);
-  //   setState(() {
-  //     _isAuthorized = isAuthorized;
-  //   });
-  // }
-
-  // Future<void> _handleSignOut() => _googleSignIn.disconnect();
-
   insertEvent(event) async {
-    // final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-    // final httpClient = (await googleUser?.authHeaders);
-    // final googleAPI.CalendarApi calendarAPI = googleAPI.CalendarApi(httpClient);
-    // final googleAPI.Events calEvents = await calendarAPI.events.list(
-    //   "primary",
-    // );
-    await _handleSignIn();
     final auth.AuthClient? client = await _googleSignIn.authenticatedClient();
     assert(client != null, 'Authenticated client missing!');
-
-    print('HELLO');
-    // var client = (await _googleSignIn.authenticatedClient())!;
     print(client);
     print("printed client");
-    // assert(client != null, 'Authenticated client missing!');
     final CalendarApi googleCalendarApi = CalendarApi(client!);
     try {
-      // clientViaUserConsent(
-      //   _clientID,
-      //   _scopes,
-      //   prompt,
-      // ).then((AuthClient client) {
-      //   var calendar = CalendarApi(client);
       String? id;
       bool exists = false;
       var list = await googleCalendarApi.calendarList.list();
@@ -153,8 +65,7 @@ class _addAppointmentState extends State<addAppointment> {
         }
       }
       if (exists == false) {
-        Calendar preggoCalendar =
-            new Calendar(summary: "Preggo Calendar", kind: "calendar#1");
+        Calendar preggoCalendar = new Calendar(summary: "Preggo Calendar");
         googleCalendarApi.calendars.insert(preggoCalendar);
         for (CalendarListEntry entry in items) {
           if (entry.summary == "Preggo Calendar") {
@@ -178,14 +89,6 @@ class _addAppointmentState extends State<addAppointment> {
     }
   }
 
-  // void prompt(String url) async {
-  //   // if (await canLaunchUrl(Uri.parse(url))) {
-  //   await launchUrl(Uri.parse(url));
-  //   // } else {
-  //   throw 'Could not launch $url';
-  //   // }
-  // }
-
   GlobalKey<FormState> formstate = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormFieldState> _apptNameKey = GlobalKey<FormFieldState>();
@@ -198,6 +101,7 @@ class _addAppointmentState extends State<addAppointment> {
   final TextEditingController _drController = TextEditingController();
 
   bool timeRed = false;
+  bool valid = false;
 
   @override
   Widget build(BuildContext context) {

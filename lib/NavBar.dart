@@ -144,28 +144,27 @@ class _NavBar extends State<NavBar> {
                   // tools page
                   MaterialButton(
                     minWidth: 40,
-                    onPressed: () {
-                      setState(() {
-                        const _scopes = [
-                          Cal.CalendarApi.calendarScope
-                        ]; //scope to CREATE EVENT in calendar
+                    onPressed: () async {
+                      const _scopes = [
+                        Cal.CalendarApi.calendarScope
+                      ]; //scope to CREATE EVENT in calendar
 
-                        GoogleSignIn _googleSignIn = GoogleSignIn(
-                          // Optional clientId
-                          // clientId: 'your-client_id.apps.googleusercontent.com',
-                          scopes: _scopes,
-                        );
+                      GoogleSignIn _googleSignIn = GoogleSignIn(
+                        // Optional clientId
+                        // clientId: 'your-client_id.apps.googleusercontent.com',
+                        scopes: _scopes,
+                      );
 
-                        Future<void> _handleSignIn() async {
-                          try {
-                            await _googleSignIn.signIn();
-                          } catch (error) {
-                            print(error);
-                          }
+                      Future<void> _handleSignIn() async {
+                        try {
+                          await _googleSignIn.signIn();
+                        } catch (error) {
+                          print(error);
                         }
+                      }
 
-                        _handleSignIn();
-
+                      await _handleSignIn();
+                      setState(() {
                         currentScreen = addAppointment();
                         currentTab = 3;
                       });
