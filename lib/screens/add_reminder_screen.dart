@@ -215,7 +215,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
           const Text(
             "Add a new reminder",
             style: TextStyle(
-              color: Color(0xFFD77D7C),
+              color: pinkColor,
               fontSize: 32,
               fontFamily: 'Urbanist',
               fontWeight: FontWeight.w600,
@@ -360,9 +360,17 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                 child: TextFormField(
                                   maxLines: 3,
                                   maxLength: 150,
+                                  style: const TextStyle(
+                                    fontSize: 22.0,
+                                    color: pinkColor,
+                                  ),
                                   controller: _reminderDescriptionController,
                                   decoration: InputDecoration(
                                     hintText: "Optional",
+                                    hintStyle: const TextStyle(
+                                      fontSize: 22.0,
+                                      // color: pinkColor,
+                                    ),
                                     contentPadding: const EdgeInsets.symmetric(
                                         vertical: 15.0, horizontal: 15),
                                     focusedErrorBorder: OutlineInputBorder(
@@ -445,7 +453,28 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                               ? selectedDate
                                               : DateTime.now(),
                                           minimumDate: _minDate,
-                                          maximumDate: DateTime(2113, 12),
+                                          maximumDate: DateTime.now().copyWith(
+                                            year: DateTime.now().year + 10,
+                                            month: 12,
+                                            day: 31,
+                                          ),
+
+                                          /// Test for the date limitation, up to 10 years only.
+                                          /// Note that we set the initial Date Time one more year to avoid any picker issue, just for testing.
+                                          // initialDateTime:
+                                          //     DateTime.now().copyWith(
+                                          //   year: DateTime.now().year + 2,
+                                          // ),
+                                          // minimumDate: DateTime.now().copyWith(
+                                          //   year: DateTime.now().year + 1,
+                                          // ),
+                                          // maximumDate: DateTime.now().copyWith(
+                                          //   year: DateTime.now().year + 11,
+                                          //   month: 12,
+                                          //   day: 31,
+                                          // ),
+
+                                          /// End the test
                                           mode: CupertinoDatePickerMode.date,
                                           // This is called when the user changes the date.
                                           onDateTimeChanged:
@@ -470,7 +499,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                         '${selectedDate.month}-${selectedDate.day}-${selectedDate.year}',
                                         style: const TextStyle(
                                           fontSize: 22.0,
-                                          color: Color(0xFFD77D7C),
+                                          color: pinkColor,
                                         ),
                                       ),
                                     ),
@@ -532,7 +561,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                         timeFormat,
                                         style: const TextStyle(
                                           fontSize: 22.0,
-                                          color: Color(0xFFD77D7C),
+                                          color: pinkColor,
                                         ),
                                       ),
                                     ),
@@ -588,8 +617,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                                       "Never",
                                                       style: TextStyle(
                                                         fontSize: 22.0,
-                                                        color:
-                                                            Color(0xFFD77D7C),
+                                                        color: pinkColor,
                                                       ),
                                                     ),
                                                   ]
