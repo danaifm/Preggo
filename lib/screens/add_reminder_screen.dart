@@ -253,7 +253,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                           child: Column(
                             children: [
                               Container(
-                                //Appointment name label
+                                //title label
                                 margin: const EdgeInsets.only(top: 30, left: 5),
                                 alignment: Alignment.centerLeft,
                                 child: const Text(
@@ -333,11 +333,11 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                     // }
                                   },
                                 ),
-                              ), //end of appointment name text field
+                              ), //end of text field
 
                               /// Description
                               Container(
-                                //Appointment name label
+                                //title name label
                                 margin: const EdgeInsets.only(top: 10, left: 5),
                                 alignment: Alignment.centerLeft,
                                 child: const Text(
@@ -425,7 +425,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                   //   }
                                   // },
                                 ),
-                              ), //end of appointment name text field
+                              ), //end of text field
 
                               /// End description
                               Container(
@@ -459,7 +459,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                             day: 31,
                                           ),
 
-                                          /// Test for the date limitation, up to 10 years only.
+                                          /// Test for the date limitation(2024-2034), up to 10 years only.
                                           /// Note that we set the initial Date Time one more year to avoid any picker issue, just for testing.
                                           // initialDateTime:
                                           //     DateTime.now().copyWith(
