@@ -30,6 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+ 
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -48,6 +49,9 @@ dependencies:
 
   email_validator: ^2.1.17
   syncfusion_flutter_calendar: ^23.1.38
+  google_sign_in: ^6.1.5
+  googleapis_auth: ^1.4.1
+  extension_google_sign_in_as_googleapis_auth: ^2.0.11
 
 
 dev_dependencies:
