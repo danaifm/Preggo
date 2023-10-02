@@ -1,11 +1,10 @@
-// ignore_for_file: camel_case_types, prefer_const_literals_to_create_immutables, prefer_const_constructors, use_key_in_widget_constructors, unused_field, unnecessary_const, unnecessary_new, prefer_final_fields, unused_element, avoid_print, no_leading_underscores_for_local_identifiers, file_names, unused_local_variable, unused_import
+// ignore_for_file: camel_case_types, prefer_const_literals_to_create_immutables, prefer_const_constructors, use_key_in_widget_constructors, unnecessary_const, unnecessary_new, prefer_final_fields, avoid_print, no_leading_underscores_for_local_identifiers, file_names,
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'colors.dart';
 import 'package:jiffy/jiffy.dart';
 import "package:googleapis_auth/auth_io.dart";
 import 'package:googleapis/calendar/v3.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
@@ -35,9 +34,9 @@ class _addAppointmentState extends State<addAppointment> {
     CalendarApi.calendarScope
   ]; //scope to CREATE EVENT / CALENDAR in Google calendar
 
-  var _clientID = new ClientId(
-      "3982098128-rlts9furpv5as6ob6885ifd4l88760pa.apps.googleusercontent.com",
-      ""); //ClientID Object
+  // var _clientID = new ClientId(
+  //     "3982098128-rlts9furpv5as6ob6885ifd4l88760pa.apps.googleusercontent.com",
+  //     ""); //ClientID Object
 
   GoogleSignIn _googleSignIn = GoogleSignIn(
     // Optional clientId
@@ -83,7 +82,6 @@ class _addAppointmentState extends State<addAppointment> {
           print("Unable to add event in google calendar");
         }
       });
-      // });
     } catch (e) {
       print('Error creating event $e');
     }
