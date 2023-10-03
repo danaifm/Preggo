@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/login_screen.dart';
-import 'package:preggo/reminder.dart';
+//import 'package:preggo/reminder.dart';
 
 class AddReminderScreen extends StatefulWidget {
   const AddReminderScreen({super.key});
@@ -74,21 +74,17 @@ class AddReminderScreenState extends State<AddReminderScreen> {
   bool isLoading = false;
 
   Future<void> addNewReminder() async {
-    DateTime dateTime = DateTime(
-      selectedDate.month,
-      selectedDate.day,
-      selectedDate.year,
-      12,
-      4
-    );
-    //NUHA'S CODE =================PAY ATTENSION!!!=================
     try {
-    addReminderToSystem(
-       dateTime: dateTime,
-        title: _reminderTitleController.text.trim(),
-       body: _reminderDescriptionController.text.trim(),
-      );
-    //END OF NUHA'S CODE =================PAY ATTENSION!!!=================
+      DateTime dateTime = DateTime(
+          selectedDate.month, selectedDate.day, selectedDate.year, 12, 4);
+      //NUHA'S CODE =================PAY ATTENSION!!!=================
+      //  try {
+      // addReminderToSystem(
+      //  dateTime: dateTime,
+      //    title: _reminderTitleController.text.trim(),
+      //    body: _reminderDescriptionController.text.trim(),
+      //  );
+      //END OF NUHA'S CODE =================PAY ATTENSION!!!=================
 
       /// Get user uuid
       /// Create new reminders collection
