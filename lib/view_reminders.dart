@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/main.dart';
+import 'package:preggo/reminder_details.dart';
 import 'package:preggo/screens/add_reminder_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -97,7 +98,7 @@ class _viewReminders extends State<viewReminders> {
       itemCount: reminderResult.length,
 
       itemBuilder: (context, index) {
-        //String id = reminderResult[index].data()['id'] ?? '';
+        String id = reminderResult[index].data()['id'] ?? '';
         String title = reminderResult[index].data()['title'] ?? '';
         String time = reminderResult[index].data()['time'] ?? '';
 
@@ -148,12 +149,22 @@ class _viewReminders extends State<viewReminders> {
                     ),
                   ),
                  
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.black,
-                      size: 20,
+                  GestureDetector(
+                    onTap: () {
+                    String documentId= id;
+                    Navigator.push(context,MaterialPageRoute(
+                    builder: (context) => reminderDetails(),
+                    settings: RouteSettings(arguments: documentId),
+                    ),
+                    );
+                  },
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.black,
+                        size: 20,
+                      ),
                     ),
                   )
                 ] 
@@ -179,16 +190,30 @@ class _viewReminders extends State<viewReminders> {
             SizedBox(
               height: 40,
             ),
-            Text(
-              "Reminders",
-              style: TextStyle(
-                color: Color(0xFFD77D7C),
-                fontSize: 32,
-                fontFamily: 'Urbanist',
-                fontWeight: FontWeight.w600,
-                height: 1.30,
-                letterSpacing: -0.28,
-              ),
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(width: 60,),
+                Text(
+                  "Reminders",
+                  style: TextStyle(
+                    color: Color(0xFFD77D7C),
+                    fontSize: 32,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    height: 1.30,
+                    letterSpacing: -0.28,
+                  ),
+                ),
+              ],
             ),
             SizedBox(
               height: 10,
@@ -213,7 +238,6 @@ class _viewReminders extends State<viewReminders> {
 
                     Container(
 
-                      
                       child:Column(
                         children: [
                           EasyDateTimeLine(
@@ -294,7 +318,7 @@ class _viewReminders extends State<viewReminders> {
                                 return snapshot.data!;
                               }
                               
-                            return Container(child: CircularProgressIndicator(),);
+                            return CircularProgressIndicator();
                             },
                           ),
 
