@@ -1,18 +1,15 @@
+// ignore_for_file: unnecessary_const, prefer_final_fields
+
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:googleapis_auth/googleapis_auth.dart' as auth;
-// ignore: depend_on_referenced_packages
+import 'package:googleapis/calendar/v3.dart';
+import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:googleapis/calendar/v3.dart' as GoogleAPI;
-// ignore: depend_on_referenced_packages
-import 'package:http/io_client.dart' show IOClient, IOStreamedResponse;
-// ignore: depend_on_referenced_packages
-import 'package:http/http.dart' show BaseRequest, Response;
 
 class viewAppointment extends StatefulWidget {
   //const SignUp({Key? key}) : super(key: key);
-  late final String userId;
+  // late final String userId;
   @override
   State<StatefulWidget> createState() {
     return _viewAppointment();
@@ -36,78 +33,115 @@ class _viewAppointment extends State<viewAppointment> {
   //   );
   // }
 
+  static const _scopes = const [CalendarApi.calendarScope];
+
   final GoogleSignIn _googleSignIn = GoogleSignIn(
-    //clientId: 'your-client_id.apps.googleusercontent.com',
-    scopes: <String>[GoogleAPI.CalendarApi.calendarScope],
+    // Optional clientId
+    // clientId:
+    //     '3982098128-rlts9furpv5as6ob6885ifd4l88760pa.apps.googleusercontent.com',
+    scopes: _scopes,
   );
 
-  GoogleSignInAccount? _currentUser;
+  Future<void> _handleSignIn() async {
+    try {
+      await _googleSignIn.signInSilently();
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  // GoogleSignInAccount? _currentUser;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // dispose();
+  //   _googleSignIn.disconnect();
+  //   _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
+  //     setState(() {
+  //       _currentUser = account;
+  //     });
+  //     if (_currentUser != null) {
+  //       //getGoogleEventsData();
+  //     }
+  //   });
+  //   _googleSignIn.signInSilently();
+  // }
 
   @override
   void initState() {
     super.initState();
-    // dispose();
-    _googleSignIn.disconnect();
-    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
-      setState(() {
-        _currentUser = account;
-      });
-      if (_currentUser != null) {
-        //getGoogleEventsData();
-      }
-    });
-    _googleSignIn.signInSilently();
+    // _googleSignIn.onCurrentUserChanged
+    //     .listen((GoogleSignInAccount? account) {});
+
+    print("START OF PAGE");
+    print(_googleSignIn.currentUser);
   }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _googleSignIn.signInSilently();
+  // }
 
   getAppointments() async {
-    final auth.AuthClient? client = await _googleSignIn.authenticatedClient();
-    assert(client != null, 'authenticated client missing!');
-    print(client);
-    final GoogleAPI.CalendarApi googleCalendarApi =
-        GoogleAPI.CalendarApi(client!);
+    _googleSignIn
+        .signOut(); //this line will make it ask for your account every time
+    _googleSignIn.signIn();
+    await _handleSignIn();
 
-    try {
-      String? id;
-      bool exists = false;
-      var list = await googleCalendarApi.calendarList.list();
-      var items = list.items;
-      for (GoogleAPI.CalendarListEntry entry in items!) {
-        print(entry.summary);
+    print('before await');
+    final auth.AuthClient? client = await _googleSignIn.authenticatedClient();
+    //assert(client != null, 'authenticated client missing!');
+    print(client);
+    final CalendarApi googleCalendarApi = CalendarApi(client!);
+    print('after googleapicalendar');
+    String? id;
+    bool exists = false;
+    var list = await googleCalendarApi.calendarList.list();
+    var items = list.items;
+    for (CalendarListEntry entry in items!) {
+      if (entry.summary == "Preggo Calendar") {
+        id = entry.id;
+        exists = true;
+        break;
+      }
+    }
+
+    if (exists == false) {
+      Calendar preggoCalendar = new Calendar(summary: "Preggo Calendar");
+      googleCalendarApi.calendars.insert(preggoCalendar);
+      for (CalendarListEntry entry in items) {
         if (entry.summary == "Preggo Calendar") {
           id = entry.id;
-          exists = true;
           break;
         }
       }
-
-      if (exists == false) {
-        GoogleAPI.Calendar preggoCalendar =
-            new GoogleAPI.Calendar(summary: "Preggo Calendar");
-        googleCalendarApi.calendars.insert(preggoCalendar);
-        for (GoogleAPI.CalendarListEntry entry in items) {
-          if (entry.summary == "Preggo Calendar") {
-            id = entry.id;
-            break;
-          }
-        }
-      }
-      final GoogleAPI.Events calEvents =
-          await googleCalendarApi.events.list(id!);
-      final List<GoogleAPI.Event> appointments = <GoogleAPI.Event>[];
-      if (calEvents.items != null) {
-        for (int i = 0; i < calEvents.items!.length; i++) {
-          final GoogleAPI.Event event = calEvents.items![i];
-          if (event.start == null) {
-            continue;
-          }
-          appointments.add(event);
-        }
-      }
-
-      return appointments;
-    } catch (e) {
-      print('error in new method');
     }
+    final Events calEvents = await googleCalendarApi.events.list(id!);
+
+    final List<Event> appointments = <Event>[];
+    if (calEvents.items != null) {
+      for (int i = 0; i < calEvents.items!.length; i++) {
+        final Event event = calEvents.items![i];
+        if (event.start == null) {
+          continue;
+        }
+        appointments.add(event);
+      }
+    }
+
+    // final List<GoogleAPI.Event> appointments = <GoogleAPI.Event>[];
+    // if (calEvents.items != null) {
+    //   for (int i = 0; i < calEvents.items!.length; i++) {
+    //     final GoogleAPI.Event event = calEvents.items![i];
+    //     if (event.start == null) {
+    //       continue;
+    //     }
+    //     appointments.add(event);
+    //   }
+    // }
+
+    return appointments;
   }
 
   // Future<List<GoogleAPI.Event>> getGoogleEventsData() async {
@@ -144,15 +178,13 @@ class _viewAppointment extends State<viewAppointment> {
       body: FutureBuilder(
         future: getAppointments(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
+          print("in future builder");
+
           return Stack(
             children: [
               SfCalendar(
                 view: CalendarView.month,
-                initialDisplayDate: DateTime(
-                  2023,
-                  8,
-                  1,
-                ),
+                initialDisplayDate: DateTime.now(),
                 dataSource: GoogleDataSource(events: snapshot.data),
                 monthViewSettings: const MonthViewSettings(
                     appointmentDisplayMode:
@@ -160,7 +192,7 @@ class _viewAppointment extends State<viewAppointment> {
               ),
               snapshot.data != null
                   ? Container()
-                  : const Center(
+                  : Center(
                       child: CircularProgressIndicator(),
                     )
             ],
@@ -170,25 +202,25 @@ class _viewAppointment extends State<viewAppointment> {
     );
   }
 
-  @override
-  void dispose() {
-    if (_googleSignIn.currentUser != null) {
-      _googleSignIn.disconnect();
-      _googleSignIn.signOut();
-    }
+  // @override
+  // void dispose() {
+  //   if (_googleSignIn.currentUser != null) {
+  //     _googleSignIn.disconnect();
+  //     _googleSignIn.signOut();
+  //   }
 
-    super.dispose();
-  }
+  //   super.dispose();
+  // }
 }
 
 class GoogleDataSource extends CalendarDataSource {
-  GoogleDataSource({required List<GoogleAPI.Event>? events}) {
+  GoogleDataSource({required List<Event>? events}) {
     appointments = events;
   }
 
   @override
   DateTime getStartTime(int index) {
-    final GoogleAPI.Event event = appointments![index];
+    final Event event = appointments![index];
     return event.start?.date ?? event.start!.dateTime!.toLocal();
   }
 
@@ -199,7 +231,7 @@ class GoogleDataSource extends CalendarDataSource {
 
   @override
   DateTime getEndTime(int index) {
-    final GoogleAPI.Event event = appointments![index];
+    final Event event = appointments![index];
     return event.endTimeUnspecified != null && event.endTimeUnspecified!
         ? (event.start?.date ?? event.start!.dateTime!.toLocal())
         : (event.end?.date != null
@@ -219,24 +251,24 @@ class GoogleDataSource extends CalendarDataSource {
 
   @override
   String getSubject(int index) {
-    final GoogleAPI.Event event = appointments![index];
+    final Event event = appointments![index];
     return event.summary == null || event.summary!.isEmpty
         ? 'No Title'
         : event.summary!;
   }
 }
 
-class GoogleAPIClient extends IOClient {
-  final Map<String, String> _headers;
+// class GoogleAPIClient extends IOClient {
+//   final Map<String, String> _headers;
 
-  GoogleAPIClient(this._headers) : super();
+//   GoogleAPIClient(this._headers) : super();
 
-  @override
-  Future<IOStreamedResponse> send(BaseRequest request) =>
-      super.send(request..headers.addAll(_headers));
+//   @override
+//   Future<IOStreamedResponse> send(BaseRequest request) =>
+//       super.send(request..headers.addAll(_headers));
 
-  @override
-  Future<Response> head(Uri url, {Map<String, String>? headers}) =>
-      super.head(url,
-          headers: (headers != null ? (headers..addAll(_headers)) : headers));
-}
+//   @override
+//   Future<Response> head(Uri url, {Map<String, String>? headers}) =>
+//       super.head(url,
+//           headers: (headers != null ? (headers..addAll(_headers)) : headers));
+// }
