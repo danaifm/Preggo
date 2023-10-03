@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:preggo/colors.dart';
 
 class ToolsPage extends StatefulWidget {
   const ToolsPage({super.key});
@@ -14,7 +15,7 @@ class _ToolsPage extends State<ToolsPage> {
         body: Stack(
       children: [
         Container(
-            margin: EdgeInsets.only(left: 20, top: 40),
+            margin: EdgeInsets.only(left: 20, top: 45),
             child: RichText(
               text: const TextSpan(
                   style: TextStyle(
@@ -48,7 +49,24 @@ class _ToolsPage extends State<ToolsPage> {
                         ],
                         begin: Alignment.bottomRight,
                       ),
-                      borderRadius: BorderRadius.circular(20))),
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    //crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Image.asset(
+                        "assets/images/schedule.png",
+                        height: 100,
+                      ),
+                      Text(
+                        "Appointments",
+                        style: TextStyle(
+                            fontFamily: "Urbainst",
+                            fontSize: 16,
+                            color: whiteColor),
+                      )
+                    ],
+                  )),
               Container(
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
