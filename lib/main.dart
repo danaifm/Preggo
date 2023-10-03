@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:preggo/NavBar.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:preggo/SignUp.dart';
+import 'package:preggo/colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
