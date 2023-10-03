@@ -74,21 +74,17 @@ class AddReminderScreenState extends State<AddReminderScreen> {
   bool isLoading = false;
 
   Future<void> addNewReminder() async {
-    DateTime dateTime = DateTime(
-      selectedDate.month,
-      selectedDate.day,
-      selectedDate.year,
-      12,
-      4
-    );
-    //NUHA'S CODE =================PAY ATTENSION!!!=================
-    //  try {
-    // addReminderToSystem(
-    //  dateTime: dateTime,
-    //    title: _reminderTitleController.text.trim(),
-    //    body: _reminderDescriptionController.text.trim(),
-    //  );
-    //END OF NUHA'S CODE =================PAY ATTENSION!!!=================
+    try {
+      DateTime dateTime = DateTime(
+          selectedDate.month, selectedDate.day, selectedDate.year, 12, 4);
+      //NUHA'S CODE =================PAY ATTENSION!!!=================
+      //  try {
+      // addReminderToSystem(
+      //  dateTime: dateTime,
+      //    title: _reminderTitleController.text.trim(),
+      //    body: _reminderDescriptionController.text.trim(),
+      //  );
+      //END OF NUHA'S CODE =================PAY ATTENSION!!!=================
 
       /// Get user uuid
       /// Create new reminders collection
