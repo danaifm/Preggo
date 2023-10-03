@@ -517,7 +517,7 @@ class _addAppointmentState extends State<addAppointment> {
                                 child: _DatePickerItem(
                                   children: <Widget>[
                                     Text(
-                                      'Starting Time',
+                                      'Start Time',
                                       style: TextStyle(
                                         color: Color.fromARGB(255, 0, 0, 0),
                                         fontSize: 17,
@@ -672,7 +672,7 @@ class _addAppointmentState extends State<addAppointment> {
                                     if (startTime.isAfter(endTime)) {
                                       setState(() {
                                         errorMessage =
-                                            "Starting time cannot be after end time.";
+                                            "Start time cannot be after end time.";
                                         valid = false;
                                         timeRed = true;
                                       });
@@ -680,7 +680,7 @@ class _addAppointmentState extends State<addAppointment> {
                                         startTime.minute == endTime.minute) {
                                       setState(() {
                                         errorMessage =
-                                            "Starting time cannot be equal to end time.";
+                                            "Start time cannot be equal to end time.";
                                         valid = false;
                                         timeRed = true;
                                       });
