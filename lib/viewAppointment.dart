@@ -1,4 +1,6 @@
+import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:googleapis_auth/googleapis_auth.dart' as auth;
 // ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -44,6 +46,8 @@ class _viewAppointment extends State<viewAppointment> {
   @override
   void initState() {
     super.initState();
+    // dispose();
+    _googleSignIn.disconnect();
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
       setState(() {
         _currentUser = account;
@@ -55,30 +59,81 @@ class _viewAppointment extends State<viewAppointment> {
     _googleSignIn.signInSilently();
   }
 
-  Future<List<GoogleAPI.Event>> getGoogleEventsData() async {
-    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+  getAppointments() async {
+    final auth.AuthClient? client = await _googleSignIn.authenticatedClient();
+    assert(client != null, 'authenticated client missing!');
+    print(client);
+    final GoogleAPI.CalendarApi googleCalendarApi =
+        GoogleAPI.CalendarApi(client!);
 
-    final GoogleAPIClient httpClient =
-        GoogleAPIClient(await googleUser!.authHeaders);
-
-    final GoogleAPI.CalendarApi calendarApi = GoogleAPI.CalendarApi(httpClient);
-    final GoogleAPI.Events calEvents = await calendarApi.events.list(
-      "primary",
-    );
-
-    final List<GoogleAPI.Event> appointments = <GoogleAPI.Event>[];
-    if (calEvents.items != null) {
-      for (int i = 0; i < calEvents.items!.length; i++) {
-        final GoogleAPI.Event event = calEvents.items![i];
-        if (event.start == null) {
-          continue;
+    try {
+      String? id;
+      bool exists = false;
+      var list = await googleCalendarApi.calendarList.list();
+      var items = list.items;
+      for (GoogleAPI.CalendarListEntry entry in items!) {
+        print(entry.summary);
+        if (entry.summary == "Preggo Calendar") {
+          id = entry.id;
+          exists = true;
+          break;
         }
-        appointments.add(event);
       }
-    }
 
-    return appointments;
+      if (exists == false) {
+        GoogleAPI.Calendar preggoCalendar =
+            new GoogleAPI.Calendar(summary: "Preggo Calendar");
+        googleCalendarApi.calendars.insert(preggoCalendar);
+        for (GoogleAPI.CalendarListEntry entry in items) {
+          if (entry.summary == "Preggo Calendar") {
+            id = entry.id;
+            break;
+          }
+        }
+      }
+      final GoogleAPI.Events calEvents =
+          await googleCalendarApi.events.list(id!);
+      final List<GoogleAPI.Event> appointments = <GoogleAPI.Event>[];
+      if (calEvents.items != null) {
+        for (int i = 0; i < calEvents.items!.length; i++) {
+          final GoogleAPI.Event event = calEvents.items![i];
+          if (event.start == null) {
+            continue;
+          }
+          appointments.add(event);
+        }
+      }
+
+      return appointments;
+    } catch (e) {
+      print('error in new method');
+    }
   }
+
+  // Future<List<GoogleAPI.Event>> getGoogleEventsData() async {
+  //   final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+  //   final GoogleAPIClient httpClient =
+  //       GoogleAPIClient(await googleUser!.authHeaders);
+
+  //   final GoogleAPI.CalendarApi calendarApi = GoogleAPI.CalendarApi(httpClient);
+  //   final GoogleAPI.Events calEvents = await calendarApi.events.list(
+  //     "primary",
+  //   );
+  // }
+  //   final List<GoogleAPI.Event> appointments = <GoogleAPI.Event>[];
+  //   if (calEvents.items != null) {
+  //     for (int i = 0; i < calEvents.items!.length; i++) {
+  //       final GoogleAPI.Event event = calEvents.items![i];
+  //       if (event.start == null) {
+  //         continue;
+  //       }
+  //       appointments.add(event);
+  //     }
+  //   }
+
+  //   return appointments;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +142,7 @@ class _viewAppointment extends State<viewAppointment> {
         title: const Text('Event Calendar'),
       ),
       body: FutureBuilder(
-        future: getGoogleEventsData(),
+        future: getAppointments(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           return Stack(
             children: [
