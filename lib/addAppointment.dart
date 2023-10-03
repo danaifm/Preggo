@@ -29,6 +29,8 @@ class _addAppointmentState extends State<addAppointment> {
   var startFormat = Jiffy.now().format(pattern: "hh:mm a");
   var endFormat = Jiffy.now().format(pattern: "hh:mm a");
   var errorMessage = "";
+  DateTime _minDate = DateTime.now();
+  DateTime _minTime = DateTime.now();
 
   static const _scopes = const [
     CalendarApi.calendarScope
@@ -453,11 +455,21 @@ class _addAppointmentState extends State<addAppointment> {
                                       // Display a CupertinoDatePicker in date picker mode.
                                       onPressed: () => _showDialog(
                                         CupertinoDatePicker(
+                                          // initialDateTime:
+                                          //     date.add(Duration(seconds: 1)),
                                           initialDateTime:
-                                              date.add(Duration(seconds: 1)),
+                                              date.isAfter(DateTime.now())
+                                                  ? date
+                                                  : DateTime.now(),
                                           // minimumDate: DateTime.now(),
-                                          maximumDate: DateTime.now()
-                                              .add(Duration(days: 3650)),
+                                          // maximumDate: DateTime.now()
+                                          //     .add(Duration(days: 3650)),
+                                          minimumDate: _minDate,
+                                          maximumDate: DateTime.now().copyWith(
+                                            year: DateTime.now().year + 10,
+                                            month: 12,
+                                            day: 31,
+                                          ),
                                           mode: CupertinoDatePickerMode.date,
                                           use24hFormat: false,
                                           // This is called when the user changes the date.
@@ -470,14 +482,33 @@ class _addAppointmentState extends State<addAppointment> {
                                       // In this example, the date is formatted manually. You can
                                       // use the intl package to format the value based on the
                                       // user's locale settings.
-                                      child: Text(
-                                        '${date.month}-${date.day}-${date.year}',
-                                        style: const TextStyle(
-                                          fontSize: 20.0,
-                                          color: Color(0xFFD77D7C),
-                                        ),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            '${date.month}-${date.day}-${date.year}',
+                                            style: const TextStyle(
+                                              fontSize: 20.0,
+                                              color: Color(0xFFD77D7C),
+                                            ),
+                                          ),
+                                          const Padding(
+                                            padding: EdgeInsetsDirectional.only(
+                                                end: 0),
+                                            child: Icon(
+                                                Icons.keyboard_arrow_down,
+                                                color: blackColor),
+                                          ),
+                                        ],
                                       ),
                                     ),
+                                    // Container(
+                                    //   margin: EdgeInsets.only(left: 50),
+                                    // ),
+                                    // const Padding(
+                                    //   padding:
+                                    //       EdgeInsetsDirectional.only(start: 5),
+                                    //   child: Icon(Icons.keyboard_arrow_down),
+                                    // ),
                                   ],
                                 ),
                               ),
@@ -500,7 +531,18 @@ class _addAppointmentState extends State<addAppointment> {
                                       // Display a CupertinoDatePicker in time picker mode.
                                       onPressed: () => _showDialog(
                                         CupertinoDatePicker(
-                                          initialDateTime: startTime,
+                                          initialDateTime:
+                                              startTime.isAfter(DateTime.now())
+                                                  ? startTime
+                                                  : DateTime.now(),
+                                          minimumDate: date.day ==
+                                                      DateTime.now().day &&
+                                                  date.month ==
+                                                      DateTime.now().month &&
+                                                  date.year ==
+                                                      DateTime.now().year
+                                              ? _minTime
+                                              : null,
                                           mode: CupertinoDatePickerMode.time,
                                           use24hFormat: false,
                                           // This is called when the user changes the time.
@@ -519,13 +561,24 @@ class _addAppointmentState extends State<addAppointment> {
                                       // In this example, the time value is formatted manually.
                                       // You can use the intl package to format the value based on
                                       // the user's locale settings.
-                                      child: Text(
-                                        startFormat,
-                                        style: TextStyle(
-                                          fontSize: 20.0,
-                                          color: timeColor,
-                                          // color: Color(0xFFD77D7C),
-                                        ),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            startFormat,
+                                            style: TextStyle(
+                                              fontSize: 20.0,
+                                              color: timeColor,
+                                              // color: Color(0xFFD77D7C),
+                                            ),
+                                          ),
+                                          const Padding(
+                                            padding: EdgeInsetsDirectional.only(
+                                                start: 0),
+                                            child: Icon(
+                                                Icons.keyboard_arrow_down,
+                                                color: blackColor),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
@@ -535,22 +588,37 @@ class _addAppointmentState extends State<addAppointment> {
                                 margin: EdgeInsets.symmetric(vertical: 0),
                                 child: _DatePickerItem(
                                   children: <Widget>[
-                                    Text(
-                                      'End Time',
-                                      style: TextStyle(
-                                        color: Color.fromARGB(255, 0, 0, 0),
-                                        fontSize: 17,
-                                        fontFamily: 'Urbanist',
-                                        fontWeight: FontWeight.w700,
-                                        height: 1.30,
-                                        letterSpacing: -0.28,
-                                      ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'End Time',
+                                          style: TextStyle(
+                                            color: Color.fromARGB(255, 0, 0, 0),
+                                            fontSize: 17,
+                                            fontFamily: 'Urbanist',
+                                            fontWeight: FontWeight.w700,
+                                            height: 1.30,
+                                            letterSpacing: -0.28,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                     CupertinoButton(
                                       // Display a CupertinoDatePicker in time picker mode.
                                       onPressed: () => _showDialog(
                                         CupertinoDatePicker(
-                                          initialDateTime: startTime,
+                                          initialDateTime:
+                                              endTime.isAfter(DateTime.now())
+                                                  ? endTime
+                                                  : DateTime.now(),
+                                          minimumDate: date.day ==
+                                                      DateTime.now().day &&
+                                                  date.month ==
+                                                      DateTime.now().month &&
+                                                  date.year ==
+                                                      DateTime.now().year
+                                              ? _minTime
+                                              : null,
                                           mode: CupertinoDatePickerMode.time,
                                           use24hFormat: false,
                                           // This is called when the user changes the time.
@@ -569,13 +637,24 @@ class _addAppointmentState extends State<addAppointment> {
                                       // In this example, the time value is formatted manually.
                                       // You can use the intl package to format the value based on
                                       // the user's locale settings.
-                                      child: Text(
-                                        endFormat,
-                                        style: TextStyle(
-                                          fontSize: 20.0,
-                                          color: timeColor,
-                                          // color: Color(0xFFD77D7C),
-                                        ),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            endFormat,
+                                            style: TextStyle(
+                                              fontSize: 20.0,
+                                              color: timeColor,
+                                              // color: Color(0xFFD77D7C),
+                                            ),
+                                          ),
+                                          const Padding(
+                                            padding: EdgeInsetsDirectional.only(
+                                                end: 0),
+                                            child: Icon(
+                                                Icons.keyboard_arrow_down,
+                                                color: blackColor),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
