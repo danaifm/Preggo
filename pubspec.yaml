@@ -47,6 +47,7 @@ dependencies:
   dropdown_search: ^5.0.6
 
   email_validator: ^2.1.17
+  alarm: ^2.0.1
 
 
 dev_dependencies:
