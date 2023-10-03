@@ -1,13 +1,13 @@
 // ignore_for_file: file_names, use_key_in_widget_constructors, camel_case_types, prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_init_to_null, unused_import, avoid_print, unused_element
 
 import 'package:flutter/material.dart';
-//import 'package:googleapis/compute/v1.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/main.dart';
+import 'package:preggo/screens/add_reminder_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
-
+import 'package:intl/intl.dart';
 
 class viewReminders extends StatefulWidget {
   //const SignUp({Key? key}) : super(key: key);
@@ -19,6 +19,10 @@ class viewReminders extends StatefulWidget {
 
 class _viewReminders extends State<viewReminders> {
   late final String userId;
+  int weekDay = 0; 
+  int dayInDB =0;
+  String dayOfWeek = ""; 
+  String dayShortName = ""; 
   late String formattedDate = ""; 
   
 
@@ -27,7 +31,7 @@ class _viewReminders extends State<viewReminders> {
     return user!.uid;
   }
 
-  Future<Container> getReminders(String reminderDate) async {
+  Future<Container> getReminders(String reminderDate , String dayOfWeek, String dayShortName ) async {
 
     //FirebaseFirestore firestore = FirebaseFirestore.instance;
     String userUid = getUserId();
@@ -35,8 +39,14 @@ class _viewReminders extends State<viewReminders> {
     QuerySnapshot result = await FirebaseFirestore.instance
     .collection('users').doc(userUid)
     .collection('reminders')
-    .where('date', isEqualTo: reminderDate)
+    //.where('repeat', arrayContains: {'id': dayOfWeek})
+    .where(
+    Filter.or(
+      Filter('date', isEqualTo: reminderDate),
+      Filter('repeat', arrayContains: {'id': dayOfWeek , 'short':dayShortName})
+    ))
     .get();
+
     
     if(result.docs.isEmpty) //no reminders for this date 
     {
@@ -66,15 +76,98 @@ class _viewReminders extends State<viewReminders> {
         ),
         );
     }
-    else{
-    return Container();
-    }
+    else{ //reminders exist for this day
+    List reminderResult = result.docs;
+    //sort the reminders based on the time of the day first 
+    reminderResult.sort((a, b) {
+    String timeA = a.data()['time'] ?? '';
+    String timeB = b.data()['time'] ?? '';
+    // Convert 'time' strings to DateTime objects for comparison
+    DateFormat format=DateFormat("hh:mm a");
+    DateTime dateTimeA = format.parse(timeA);
+    DateTime dateTimeB = format.parse(timeB);
+    return dateTimeA.compareTo(dateTimeB);
+    });
+    
+      return Container(
 
+    child: ListView.builder(
+      shrinkWrap: true,
+
+      itemCount: reminderResult.length,
+
+      itemBuilder: (context, index) {
+        //String id = reminderResult[index].data()['id'] ?? '';
+        String title = reminderResult[index].data()['title'] ?? '';
+        String time = reminderResult[index].data()['time'] ?? '';
+
+        return Container(
+          
+          margin: EdgeInsets.all(8),
+          //padding: EdgeInsets.all(10),
+        
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+            
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 17),
+                decoration: BoxDecoration(
+                  color: backGroundPink.withOpacity(0.3),
+                  border: Border.all(color: backGroundPink, width: 2),
+                  borderRadius: BorderRadius.circular(13),
+                 
+                ),
+                child: Row(
+                  children: [
+                    
+                  Container(
+                    width: 85,
+                    child: Text(
+                      '$time',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Urbanist',
+                      ),
+                  
+                    ),
+                  ),
+                  SizedBox(width: 20,),
+                  Expanded(
+                    child: Text(
+                      '$title',
+                      style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Urbanist',
+                    ),
+                    
+                    ),
+                  ),
+                 
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.black,
+                      size: 20,
+                    ),
+                  )
+                ] 
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    ),
+
+  );
   }
-
-  
-  
-
+}
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +207,7 @@ class _viewReminders extends State<viewReminders> {
                 ),
 
                 child: SingleChildScrollView(
-                  padding: EdgeInsets.only(top: 10),
+                  padding: EdgeInsets.only(top: 15),
                 
                   child:
 
@@ -127,6 +220,7 @@ class _viewReminders extends State<viewReminders> {
                             initialDate: DateTime.now(),
                             onDateChange: (selectedDate) { 
                               setState(() {
+                                
                                 var dateOnly = selectedDate.toString();
                                 dateOnly= dateOnly.substring(0,10);
                                 List dateComponents = dateOnly.split("-"); 
@@ -135,8 +229,38 @@ class _viewReminders extends State<viewReminders> {
                                 int day = int.parse(dateComponents[2]); 
                                 formattedDate = "${month.toStringAsFixed(0)}-${day.toStringAsFixed(0)}-$year";
                                 
+                                weekDay=selectedDate.weekday; //monday is 1 
+                                if (weekDay == 1){ //monday 
+                                  dayInDB = 2;
+                                  dayShortName = "Mon";
+                                }
+                                else if (weekDay == 2){ //tuesday 
+                                  dayInDB = 3;
+                                  dayShortName = "Tue";
+                                }
+                                else if (weekDay == 3){ //wednesday 
+                                  dayInDB = 4;
+                                  dayShortName = "Wed";
+                                }
+                                else if (weekDay == 4){ //thursday 
+                                  dayInDB = 5;
+                                  dayShortName = "Thu";
+                                }
+                                else if (weekDay == 5){ //friday 
+                                  dayInDB = 6;
+                                  dayShortName = "Fri";
+                                }
+                                else if (weekDay == 6){ //saturday 
+                                  dayInDB = 7;
+                                  dayShortName = "Sat";
+                                }
+                                else{ //sunday 
+                                  dayInDB = 1;
+                                  dayShortName = "Sun";
+                                }
+
+                                dayOfWeek=dayInDB.toString(); 
                               });
-                               
                               
                             },
                             activeColor: pinkColor,
@@ -164,7 +288,7 @@ class _viewReminders extends State<viewReminders> {
                           
 
                           FutureBuilder<Widget>(
-                            future: getReminders(formattedDate), 
+                            future: getReminders(formattedDate,dayOfWeek,dayShortName), 
                             builder: (BuildContext context , AsyncSnapshot<Widget> snapshot){
                               if(snapshot.hasData) {
                                 return snapshot.data!;
@@ -172,9 +296,31 @@ class _viewReminders extends State<viewReminders> {
                               
                             return Container(child: CircularProgressIndicator(),);
                             },
-                            )
+                          ),
 
-                            
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: Padding(
+                              padding: EdgeInsets.fromLTRB(240, 20, 5, 20),
+                              child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                  builder: (context) => const AddReminderScreen()));
+                              },
+                              style: ElevatedButton.styleFrom(
+                                fixedSize: const Size(55, 55),
+                                shape: const CircleBorder(),
+                                backgroundColor: darkBlackColor,
+                              ),
+                              child: const Text(
+                                '+',
+                                style: TextStyle(fontSize: 38),
+                              ),
+                            ),
+                            ),
+                          ),
                           
                         ],
                       ),
@@ -186,11 +332,6 @@ class _viewReminders extends State<viewReminders> {
                 ),
               ),
             
-            
-
-            
-            
-
             
           ],
         ));
