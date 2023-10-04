@@ -39,13 +39,17 @@ class _reminderDetails extends State<reminderDetails>{
         var title = data['title'];
         var time = data['time'];
         var date = data['date'];
+        var repeat= data['repeat'];
+        var desc= data['description'];
+
         
         return Container(
-          padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+          padding: EdgeInsets.symmetric(horizontal: 10,vertical: 0),
           child: Column(
             children: [
               Row(
                 children: [
+                  
                   Text(
                     "Title: ",
                     style: TextStyle(
@@ -71,11 +75,12 @@ class _reminderDetails extends State<reminderDetails>{
                 ],
 
               ),
-              SizedBox(height: 10,),
+              SizedBox(height: 15,),
               Row(
                 children: [
+                  
                   Text(
-                    "Time: ",
+                    "Description: ",
                     style: TextStyle(
                     color: pinkColor,
                     fontSize: 24,
@@ -86,7 +91,7 @@ class _reminderDetails extends State<reminderDetails>{
                     ),
                   ),
                   Text(
-                    "$time",
+                    "$desc",
                     style: TextStyle(
                     color: Colors.black,
                     fontSize: 20,
@@ -99,11 +104,93 @@ class _reminderDetails extends State<reminderDetails>{
                 ],
 
               ),
-              SizedBox(height: 10,),
+              SizedBox(height: 15,),
+              
               Row(
                 children: [
+                  Expanded(
+                    child: Column(
+                      children: [
+                      Row(
+                        children: [
+                          Icon(
+                      Icons.calendar_today,
+                      color: pinkColor,
+                    ),
+                    SizedBox(width: 10,),
+                    Text(
+                      "Date: ",
+                      style: TextStyle(
+                      color: pinkColor,
+                      fontSize: 24,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w700,
+                      height: 1.30,
+                      letterSpacing: -0.28,
+                      ),
+                    ),],
+                    ),
+                      
+                    Text(
+                      "$date",
+                      style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      height: 1.30,
+                      letterSpacing: -0.28,
+                      ),
+                    ),],),
+                  ),
+
+                  Expanded(
+                    child: Column(children: [
+                      Row(children: [
+                        Icon(
+                      Icons.schedule,
+                      color: pinkColor,
+                    ),
+                    SizedBox(width: 10,),
+                    Text(
+                      "Time: ",
+                      style: TextStyle(
+                      color: pinkColor,
+                      fontSize: 24,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w700,
+                      height: 1.30,
+                      letterSpacing: -0.28,
+                      ),
+                    ),
+                      ],),
+                      
+                    Text(
+                      "$time",
+                      style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      height: 1.30,
+                      letterSpacing: -0.28,
+                      ),
+                    ),],),
+                  ),
+                  
+                ],
+
+              ),
+              SizedBox(height: 20,),
+              Row(
+                children: [
+                  Icon(
+                    Icons.repeat,
+                    color: Colors.black,
+                  ),
+                  SizedBox(width: 10,),
                   Text(
-                    "Date: ",
+                    "Repeat: ",
                     style: TextStyle(
                     color: pinkColor,
                     fontSize: 24,
@@ -114,7 +201,7 @@ class _reminderDetails extends State<reminderDetails>{
                     ),
                   ),
                   Text(
-                    "$date",
+                    "$repeat",
                     style: TextStyle(
                     color: Colors.black,
                     fontSize: 20,
