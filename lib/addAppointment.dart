@@ -561,6 +561,7 @@ class _addAppointmentState extends State<addAppointment> {
                                       ),
                                     ),
                                     CupertinoButton(
+                                      padding: EdgeInsets.zero,
                                       // Display a CupertinoDatePicker in date picker mode.
                                       onPressed: () => _showDialog(
                                         CupertinoDatePicker(
@@ -639,6 +640,7 @@ class _addAppointmentState extends State<addAppointment> {
                                       ),
                                     ),
                                     CupertinoButton(
+                                      padding: EdgeInsets.zero,
                                       // Display a CupertinoDatePicker in time picker mode.
                                       onPressed: () => _showDialog(
                                         CupertinoDatePicker(
@@ -716,6 +718,7 @@ class _addAppointmentState extends State<addAppointment> {
                                       ],
                                     ),
                                     CupertinoButton(
+                                      padding: EdgeInsets.zero,
                                       // Display a CupertinoDatePicker in time picker mode.
                                       onPressed: () => _showDialog(
                                         CupertinoDatePicker(
