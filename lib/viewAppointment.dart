@@ -84,10 +84,16 @@ class _viewAppointment extends State<viewAppointment> {
   // }
 
   getAppointments() async {
-    _googleSignIn
-        .signOut(); //this line will make it ask for your account every time
-    _googleSignIn.signIn();
-    await _handleSignIn();
+    print('in get appts');
+    // _googleSignIn.signOut();
+    print("AA first: " + (await _googleSignIn.isSignedIn()).toString());
+    // await _googleSignIn.signOut();
+    await _googleSignIn.signIn();
+    print("AA second: " + (await _googleSignIn.isSignedIn()).toString());
+    // _googleSignIn
+    //     .signOut(); //this line will make it ask for your account every time
+    // _googleSignIn.signIn();
+    // await _handleSignIn();
 
     print('before await');
     final auth.AuthClient? client = await _googleSignIn.authenticatedClient();
@@ -173,9 +179,6 @@ class _viewAppointment extends State<viewAppointment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Event Calendar'),
-      ),
       body: FutureBuilder(
         future: getAppointments(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
