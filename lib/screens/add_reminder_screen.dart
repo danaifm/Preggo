@@ -303,9 +303,10 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                             right: 70,
                                             bottom: 15),
                                       ),
-                                      child: const Text(
-                                        "OK",
-                                      ),
+                                      child: const Text("OK",
+                                          style: TextStyle(
+                                            fontFamily: 'Urbanist',
+                                          )),
                                     ),
                                   ),
                                 ),
@@ -991,9 +992,10 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                                   CircularProgressIndicator(),
                                             ),
                                           )
-                                        : const Text(
-                                            "Add Reminder",
-                                          ),
+                                        : const Text("Add Reminder",
+                                            style: TextStyle(
+                                              fontFamily: 'Urbanist',
+                                            )),
                                   ),
                                 )
                               ],
@@ -1077,7 +1079,12 @@ class _DaysDialogState extends State<DaysDialog> {
   Widget build(BuildContext context) {
     return Center(
       child: AlertDialog(
-        title: const Text("Select"),
+        title: const Text(
+          "Select",
+          style: TextStyle(
+            fontFamily: 'Urbanist',
+          ),
+        ),
         contentPadding: EdgeInsets.zero,
         // insetPadding: EdgeInsets.zero,
         clipBehavior: Clip.antiAliasWithSaveLayer,
