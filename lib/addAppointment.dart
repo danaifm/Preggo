@@ -806,7 +806,7 @@ class _addAppointmentState extends State<addAppointment> {
                                                     today.minute))) {
                                       setState(() {
                                         errorMessage =
-                                            "Date/time cannot be in the past.";
+                                            "Time cannot be in the past.";
                                         valid = false;
                                         timeRed = true;
                                       });
