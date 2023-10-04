@@ -665,7 +665,8 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                             child: Text(
                                               '${selectedDate.month}-${selectedDate.day}-${selectedDate.year}',
                                               style: const TextStyle(
-                                                fontSize: 22.0,
+                                                //date size
+                                                fontSize: 16.0,
                                                 fontFamily: 'Urbanist',
 
                                                 /// Date Color
@@ -715,7 +716,8 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                           child: Text(
                                             timeFormat,
                                             style: const TextStyle(
-                                              fontSize: 22.0,
+                                              //time size
+                                              fontSize: 16.0,
                                               fontFamily: 'Urbanist',
 
                                               /// Time Color
@@ -784,7 +786,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                                     const Text(
                                                       "Never",
                                                       style: TextStyle(
-                                                        fontSize: 18.0,
+                                                        fontSize: 16.0,
                                                         fontFamily: 'Urbanist',
 
                                                         /// Never Color
@@ -806,7 +808,8 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                                               ['short'],
                                                           style:
                                                               const TextStyle(
-                                                            fontSize: 18.0,
+                                                            //selected days size
+                                                            fontSize: 16.0,
                                                             fontFamily:
                                                                 'Urbanist',
 
