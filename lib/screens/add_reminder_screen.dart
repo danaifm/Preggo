@@ -459,7 +459,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                     textAlign: TextAlign.left,
                                     style: TextStyle(
                                       color: Color.fromARGB(255, 0, 0, 0),
-                                      fontSize: 20,
+                                      fontSize: 17,
                                       fontFamily: 'Urbanist',
                                       fontWeight: FontWeight.w700,
                                       height: 1.30,
@@ -552,7 +552,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                     textAlign: TextAlign.left,
                                     style: TextStyle(
                                       color: Color.fromARGB(255, 0, 0, 0),
-                                      fontSize: 20,
+                                      fontSize: 17,
                                       fontFamily: 'Urbanist',
                                       fontWeight: FontWeight.w700,
                                       height: 1.30,
@@ -648,7 +648,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                         "Date",
                                         style: TextStyle(
                                           color: Color.fromARGB(255, 0, 0, 0),
-                                          fontSize: 20,
+                                          fontSize: 17,
                                           fontFamily: 'Urbanist',
                                           fontWeight: FontWeight.w700,
                                           height: 1.30,
@@ -697,7 +697,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                       "Time",
                                       style: TextStyle(
                                         color: Color.fromARGB(255, 0, 0, 0),
-                                        fontSize: 20,
+                                        fontSize: 17,
                                         fontFamily: 'Urbanist',
                                         fontWeight: FontWeight.w700,
                                         height: 1.30,
@@ -764,7 +764,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                       "Repeat",
                                       style: TextStyle(
                                         // color: Colors.black,
-                                        fontSize: 20,
+                                        fontSize: 17,
                                         fontWeight: FontWeight.bold,
                                         fontFamily: 'Urbanist',
                                       ),
@@ -786,7 +786,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                                     const Text(
                                                       "Never",
                                                       style: TextStyle(
-                                                        fontSize: 16.0,
+                                                        fontSize: 15.0,
                                                         fontFamily: 'Urbanist',
 
                                                         /// Never Color
