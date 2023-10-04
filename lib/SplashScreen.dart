@@ -19,7 +19,8 @@ class _SplashScreenState extends State<SplashScreen>
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (_) => SignUp() // => the next page after the splashscreen
+          builder: (_) =>
+              LoginScreen() // => the next page after the splashscreen
           ));
     });
   }

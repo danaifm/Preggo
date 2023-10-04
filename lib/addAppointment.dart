@@ -31,6 +31,7 @@ class _addAppointmentState extends State<addAppointment> {
   var errorMessage = "";
   DateTime _minDate = DateTime.now();
   DateTime _minTime = DateTime.now();
+  DateTime today = DateTime.now();
 
   static const _scopes = const [
     CalendarApi.calendarScope
@@ -84,6 +85,111 @@ class _addAppointmentState extends State<addAppointment> {
           print("Unable to add event in google calendar");
         }
       });
+
+//SUCCESS POPUP
+      /// Show dialog | start of message
+      if (mounted) {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return Center(
+                child: SizedBox(
+                  height: MediaQuery.sizeOf(context).height * 0.40,
+                  width: MediaQuery.sizeOf(context).width * 0.85,
+                  child: Dialog(
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: const BoxDecoration(
+                        color: Color.fromRGBO(255, 255, 255, 1),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20),
+                        ),
+                      ),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(height: 20),
+                            Container(
+                              padding: const EdgeInsets.all(15),
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: pinkColor,
+                                // border: Border.all(
+                                //   width: 1.3,
+                                //   color: Colors.black,
+                                // ),
+                              ),
+                              child: const Icon(
+                                Icons.check,
+                                color: Color.fromRGBO(255, 255, 255, 1),
+                                size: 35,
+                              ),
+                            ),
+                            const SizedBox(height: 25),
+
+                            // Done
+                            const Text(
+                              "Appointment added successfully!",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 0, 0, 0),
+                                fontSize: 20,
+                                fontFamily: 'Urbanist',
+                                fontWeight: FontWeight.w700,
+                                height: 1.30,
+                                letterSpacing: -0.28,
+                              ),
+                            ),
+
+                            const SizedBox(height: 20),
+
+                            /// OK Button
+                            Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              width: MediaQuery.sizeOf(context).width * 0.80,
+                              height: 45.0,
+                              child: Center(
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    // Navigator.of(context)
+                                    //     .pushAndRemoveUntil(
+                                    //   MaterialPageRoute(builder: (context) {
+                                    //     return const LoginScreen();
+                                    //   }),
+                                    //   (route) => false,
+                                    // );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: blackColor,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(40)),
+                                    padding: const EdgeInsets.only(
+                                        left: 70,
+                                        top: 15,
+                                        right: 70,
+                                        bottom: 15),
+                                  ),
+                                  child: const Text(
+                                    "OK",
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 20),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            });
+      }
+      // Show dialog | end of message
     } catch (e) {
       print('Error creating event $e');
     }
@@ -105,9 +211,12 @@ class _addAppointmentState extends State<addAppointment> {
 
   @override
   Widget build(BuildContext context) {
-    Color timeColor =
-        timeRed ? Color.fromRGBO(255, 100, 100, 1) : Color(0xFFD77D7C);
+    // Color timeColor =
+    //     timeRed ? Color.fromRGBO(255, 100, 100, 1) : Color(0xFFD77D7C);
 
+    Color timeColor = timeRed
+        ? Color.fromRGBO(255, 100, 100, 1)
+        : Color.fromARGB(255, 0, 0, 0);
     var textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontSize: 12.0,
           color: Theme.of(context).colorScheme.error,
@@ -373,7 +482,7 @@ class _addAppointmentState extends State<addAppointment> {
                                 ),
                               ),
                               Padding(
-                                //baby name text field
+                                //dr name text field
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 0.0),
                                 child: TextFormField(
@@ -487,8 +596,10 @@ class _addAppointmentState extends State<addAppointment> {
                                           Text(
                                             '${date.month}-${date.day}-${date.year}',
                                             style: const TextStyle(
-                                              fontSize: 20.0,
-                                              color: Color(0xFFD77D7C),
+                                              fontSize: 16.0,
+                                              fontFamily: 'Urbanist',
+                                              color:
+                                                  Color.fromARGB(255, 0, 0, 0),
                                             ),
                                           ),
                                           const Padding(
@@ -531,10 +642,10 @@ class _addAppointmentState extends State<addAppointment> {
                                       // Display a CupertinoDatePicker in time picker mode.
                                       onPressed: () => _showDialog(
                                         CupertinoDatePicker(
-                                          initialDateTime:
-                                              startTime.isAfter(DateTime.now())
-                                                  ? startTime
-                                                  : DateTime.now(),
+                                          initialDateTime: startTime,
+                                          // startTime.isAfter(DateTime.now())
+                                          //     ? startTime
+                                          //     : DateTime.now(),
                                           minimumDate: date.day ==
                                                       DateTime.now().day &&
                                                   date.month ==
@@ -566,7 +677,8 @@ class _addAppointmentState extends State<addAppointment> {
                                           Text(
                                             startFormat,
                                             style: TextStyle(
-                                              fontSize: 20.0,
+                                              fontSize: 16.0,
+                                              fontFamily: 'Urbanist',
                                               color: timeColor,
                                               // color: Color(0xFFD77D7C),
                                             ),
@@ -607,10 +719,10 @@ class _addAppointmentState extends State<addAppointment> {
                                       // Display a CupertinoDatePicker in time picker mode.
                                       onPressed: () => _showDialog(
                                         CupertinoDatePicker(
-                                          initialDateTime:
-                                              endTime.isAfter(DateTime.now())
-                                                  ? endTime
-                                                  : DateTime.now(),
+                                          initialDateTime: endTime,
+                                          // endTime.isAfter(DateTime.now())
+                                          //     ? endTime
+                                          //     : DateTime.now(),
                                           minimumDate: date.day ==
                                                       DateTime.now().day &&
                                                   date.month ==
@@ -642,7 +754,8 @@ class _addAppointmentState extends State<addAppointment> {
                                           Text(
                                             endFormat,
                                             style: TextStyle(
-                                              fontSize: 20.0,
+                                              fontSize: 16.0,
+                                              fontFamily: 'Urbanist',
                                               color: timeColor,
                                               // color: Color(0xFFD77D7C),
                                             ),
@@ -681,6 +794,19 @@ class _addAppointmentState extends State<addAppointment> {
                                       setState(() {
                                         errorMessage =
                                             "Start time cannot be equal to end time.";
+                                        valid = false;
+                                        timeRed = true;
+                                      });
+                                    } else if (date.day == today.day &&
+                                        date.month == today.month &&
+                                        date.year == today.year &&
+                                        (startTime.hour < (today.hour) ||
+                                            (startTime.hour == today.hour &&
+                                                startTime.minute <
+                                                    today.minute))) {
+                                      setState(() {
+                                        errorMessage =
+                                            "Date/time cannot be in the past.";
                                         valid = false;
                                         timeRed = true;
                                       });
