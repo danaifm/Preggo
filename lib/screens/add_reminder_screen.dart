@@ -91,6 +91,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
       /// Insert all data
       final String? currentUserUuid = FirebaseAuth.instance.currentUser?.uid;
       // final String userUid = "5ALfd5zhZnOsB8mdc5hN9MbhLry1";
+
       if (currentUserUuid != null && _formKey.currentState!.validate()) {
         setState(() {
           isLoading = true;
@@ -122,22 +123,96 @@ class AddReminderScreenState extends State<AddReminderScreen> {
             showDialog(
                 context: context,
                 builder: (context) {
-                  return AlertDialog(
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text("Okay"),
+                  return Center(
+                    child: SizedBox(
+                      height: MediaQuery.sizeOf(context).height * 0.33,
+                      width: MediaQuery.sizeOf(context).width * 0.80,
+                      child: Dialog(
+                        child: Container(
+                          padding: EdgeInsets.all(5),
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20),
+                            ),
+                          ),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const SizedBox(height: 10),
+                                Container(
+                                  padding: const EdgeInsets.all(15),
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: pinkColor,
+                                    // border: Border.all(
+                                    //   width: 1.3,
+                                    //   color: Colors.black,
+                                    // ),
+                                  ),
+                                  child: const Icon(
+                                    Icons.check,
+                                    color: Colors.white,
+                                    size: 35,
+                                  ),
+                                ),
+                                const SizedBox(height: 25),
+
+                                // Done
+                                const Text(
+                                  "Reminder added successfully!",
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 0, 0, 0),
+                                    fontSize: 20,
+                                    fontFamily: 'Urbanist',
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.30,
+                                    letterSpacing: -0.28,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 10),
+
+                                /// OK Button
+                                Container(
+                                  width:
+                                      MediaQuery.sizeOf(context).width * 0.40,
+                                  //start journey button
+                                  padding: const EdgeInsets.only(top: 40.0),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: blackColor,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(40)),
+                                      padding: const EdgeInsets.only(
+                                          left: 85,
+                                          top: 15,
+                                          right: 85,
+                                          bottom: 15),
+                                    ),
+                                    child: const Text(
+                                      "OK",
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
-                    ],
-                    content: const Text("Saved successfully!"),
+                    ),
                   );
                 });
           }
           setState(() {
             isLoading = false;
-            _reminderTitleController = TextEditingController();
+            _reminderTitleController = TextEditingController(text: "");
             _reminderDescriptionController.clear();
 
             selectedDate = DateTime.now();
@@ -156,7 +231,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
     }
   }
 
-  GlobalKey<FormState> formstate = GlobalKey<FormState>();
+  // GlobalKey<FormState> formstate = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   // final GlobalKey<FormFieldState> _reminderTitleKey =
   //     GlobalKey<FormFieldState>();
@@ -203,250 +278,61 @@ class AddReminderScreenState extends State<AddReminderScreen> {
     return Scaffold(
       backgroundColor: backGroundPink,
       resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-        leading: BackButton(
-          color: Colors.black,
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) {
-                  return const LoginScreen();
-                },
-              ),
-            );
-          },
-        ),
-      ),
-      body: Column(
+      body: Stack(
         children: [
-          const SizedBox(
-            height: 85,
-          ),
-          const Text(
-            "Add a new reminder",
-            style: TextStyle(
-              color: pinkColor,
-              fontSize: 32,
-              fontFamily: 'Urbanist',
-              fontWeight: FontWeight.w600,
-              height: 1.30,
-              letterSpacing: -0.28,
-            ),
-          ),
-          const SizedBox(
-            height: 35,
-          ),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 18.0,
-                vertical: 0.0,
+          Column(
+            children: [
+              const SizedBox(
+                height: 85,
               ),
-              decoration: const BoxDecoration(
-                color: Color(0xFFFFFFFF),
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(80.0),
+              const Text(
+                "Add a new reminder",
+                style: TextStyle(
+                  color: pinkColor,
+                  fontSize: 32,
+                  fontFamily: 'Urbanist',
+                  fontWeight: FontWeight.w600,
+                  height: 1.30,
+                  letterSpacing: -0.28,
                 ),
               ),
-              child: SingleChildScrollView(
-                physics: const NeverScrollableScrollPhysics(),
+              const SizedBox(
+                height: 35,
+              ),
+              Expanded(
                 child: Container(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5.0),
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            children: [
-                              Container(
-                                //title label
-                                margin: const EdgeInsets.only(top: 30, left: 5),
-                                alignment: Alignment.centerLeft,
-                                child: const Text(
-                                  "Reminder title",
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    color: Color.fromARGB(255, 0, 0, 0),
-                                    fontSize: 20,
-                                    fontFamily: 'Urbanist',
-                                    fontWeight: FontWeight.w700,
-                                    height: 1.30,
-                                    letterSpacing: -0.28,
-                                  ),
-                                ),
-                              ),
-
-                              Padding(
-                                //baby name text field
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 5.0),
-                                child: TextFormField(
-                                  maxLength: 25,
-                                  controller: _reminderTitleController,
-                                  decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 15.0, horizontal: 15),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                      gapPadding: 0.5,
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: const BorderSide(
-                                        width: 0.50,
-                                        color: Color.fromRGBO(255, 100, 100, 1),
-                                      ),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      gapPadding: 0.5,
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: const BorderSide(
-                                        width: 0.50,
-                                        color: Color.fromRGBO(255, 100, 100, 1),
-                                      ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      gapPadding: 0.5,
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: const BorderSide(
-                                        width: 0.50,
-                                        color:
-                                            Color.fromARGB(255, 221, 225, 232),
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      // gapPadding: 100,
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: const BorderSide(
-                                        width: 0.50,
-                                        color:
-                                            Color.fromARGB(255, 221, 225, 232),
-                                      ),
-                                    ),
-                                    filled: true,
-                                    fillColor: const Color(0xFFF7F8F9),
-                                  ),
-                                  autovalidateMode:
-                                      AutovalidateMode.onUserInteraction,
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return "This field cannot be empty.";
-                                    }
-                                    return null;
-                                    // if (!RegExp(r'^[a-z A-Z0-9]+$')
-                                    //     .hasMatch(value)) {
-                                    //   //allow alphanumerical only AND SPACE
-                                    //   return "Please enter letters only.";
-                                    // } else {
-                                    //   return null;
-                                    // }
-                                  },
-                                ),
-                              ), //end of text field
-
-                              /// Description
-                              Container(
-                                //title name label
-                                margin: const EdgeInsets.only(top: 10, left: 5),
-                                alignment: Alignment.centerLeft,
-                                child: const Text(
-                                  "Reminder description",
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    color: Color.fromARGB(255, 0, 0, 0),
-                                    fontSize: 20,
-                                    fontFamily: 'Urbanist',
-                                    fontWeight: FontWeight.w700,
-                                    height: 1.30,
-                                    letterSpacing: -0.28,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                //baby name text field
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10.0),
-                                child: TextFormField(
-                                  maxLines: 3,
-                                  maxLength: 150,
-                                  style: const TextStyle(
-                                    fontSize: 22.0,
-                                    color: pinkColor,
-                                  ),
-                                  controller: _reminderDescriptionController,
-                                  decoration: InputDecoration(
-                                    hintText: "Optional",
-                                    hintStyle: const TextStyle(
-                                      fontSize: 22.0,
-                                      // color: pinkColor,
-                                    ),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 15.0, horizontal: 15),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                      gapPadding: 0.5,
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: const BorderSide(
-                                        width: 0.50,
-                                        color: Color.fromRGBO(255, 100, 100, 1),
-                                      ),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      gapPadding: 0.5,
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: const BorderSide(
-                                        width: 0.50,
-                                        color: Color.fromRGBO(255, 100, 100, 1),
-                                      ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      gapPadding: 0.5,
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: const BorderSide(
-                                        width: 0.50,
-                                        color:
-                                            Color.fromARGB(255, 221, 225, 232),
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      // gapPadding: 100,
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: const BorderSide(
-                                        width: 0.50,
-                                        color:
-                                            Color.fromARGB(255, 221, 225, 232),
-                                      ),
-                                    ),
-                                    filled: true,
-                                    fillColor: const Color(0xFFF7F8F9),
-                                  ),
-                                  autovalidateMode:
-                                      AutovalidateMode.onUserInteraction,
-                                  // validator: (value) {
-                                  //   if (value!.isEmpty) {
-                                  //     return "This field cannot be empty.";
-                                  //   }
-                                  //   if (!RegExp(r'^[a-z A-Z0-9]+$')
-                                  //       .hasMatch(value)) {
-                                  //     //allow alphanumerical only AND SPACE
-                                  //     return "Please enter letters only.";
-                                  //   } else {
-                                  //     return null;
-                                  //   }
-                                  // },
-                                ),
-                              ), //end of text field
-
-                              /// End description
-                              Container(
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 15),
-                                child: CustomResizeWidget(
-                                  children: <Widget>[
-                                    const Text(
-                                      "Date",
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18.0,
+                    vertical: 0.0,
+                  ),
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFFFFFFF),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(80.0),
+                    ),
+                  ),
+                  child: SingleChildScrollView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 5, horizontal: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    //title label
+                                    margin:
+                                        const EdgeInsets.only(top: 30, left: 5),
+                                    alignment: Alignment.centerLeft,
+                                    child: const Text(
+                                      "Reminder Title",
+                                      textAlign: TextAlign.left,
                                       style: TextStyle(
                                         color: Color.fromARGB(255, 0, 0, 0),
                                         fontSize: 20,
@@ -456,390 +342,653 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                         letterSpacing: -0.28,
                                       ),
                                     ),
-                                    CupertinoButton(
-                                      // Display a CupertinoDatePicker in date picker mode.
-                                      onPressed: () => _showDialog(
-                                        CupertinoDatePicker(
-                                          initialDateTime: selectedDate
-                                                  .isAfter(DateTime.now())
-                                              ? selectedDate
-                                              : DateTime.now(),
-                                          minimumDate: _minDate,
-                                          maximumDate: DateTime.now().copyWith(
-                                            year: DateTime.now().year + 10,
-                                            month: 12,
-                                            day: 31,
+                                  ),
+
+                                  Padding(
+                                    //baby name text field
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 5.0),
+                                    child: TextFormField(
+                                      maxLength: 25,
+                                      controller: _reminderTitleController,
+                                      style: const TextStyle(
+                                        fontSize: 22.0,
+                                        // color: pinkColor,
+                                      ),
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 15.0, horizontal: 15),
+                                        focusedErrorBorder: OutlineInputBorder(
+                                          gapPadding: 0.5,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: const BorderSide(
+                                            width: 0.50,
+                                            color: Color.fromRGBO(
+                                                255, 100, 100, 1),
                                           ),
-
-                                          /// Test for the date limitation(2024-2034), up to 10 years only.
-                                          /// Note that we set the initial Date Time one more year to avoid any picker issue, just for testing.
-                                          // initialDateTime:
-                                          //     DateTime.now().copyWith(
-                                          //   year: DateTime.now().year + 2,
-                                          // ),
-                                          // minimumDate: DateTime.now().copyWith(
-                                          //   year: DateTime.now().year + 1,
-                                          // ),
-                                          // maximumDate: DateTime.now().copyWith(
-                                          //   year: DateTime.now().year + 11,
-                                          //   month: 12,
-                                          //   day: 31,
-                                          // ),
-
-                                          /// End the test
-                                          mode: CupertinoDatePickerMode.date,
-                                          // This is called when the user changes the date.
-                                          onDateTimeChanged:
-                                              (DateTime newDate) {
-                                            setState(
-                                              () {
-                                                selectedDate = DateTime(
-                                                  newDate.year,
-                                                  newDate.month,
-                                                  newDate.day,
-                                                );
-                                                _minDate = DateTime.now();
-                                              },
-                                            );
-                                          },
                                         ),
-                                      ),
-                                      // In this example, the date is formatted manually. You can
-                                      // use the intl package to format the value based on the
-                                      // user's locale settings.
-                                      child: Text(
-                                        '${selectedDate.month}-${selectedDate.day}-${selectedDate.year}',
-                                        style: const TextStyle(
-                                          fontSize: 22.0,
-                                          color: pinkColor,
+                                        errorBorder: OutlineInputBorder(
+                                          gapPadding: 0.5,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: const BorderSide(
+                                            width: 0.50,
+                                            color: Color.fromRGBO(
+                                                255, 100, 100, 1),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 15),
-                                child: CustomResizeWidget(
-                                  children: <Widget>[
-                                    const Text(
-                                      "Time",
-                                      style: TextStyle(
-                                        color: Color.fromARGB(255, 0, 0, 0),
-                                        fontSize: 20,
-                                        fontFamily: 'Urbanist',
-                                        fontWeight: FontWeight.w700,
-                                        height: 1.30,
-                                        letterSpacing: -0.28,
-                                      ),
-                                    ),
-                                    CupertinoButton(
-                                      // Display a CupertinoDatePicker in time picker mode.
-                                      onPressed: () => _showDialog(
-                                        CupertinoDatePicker(
-                                          initialDateTime: selectedTime
-                                                  .isAfter(DateTime.now())
-                                              ? selectedTime
-                                              : DateTime.now(),
-                                          minimumDate: _minTime,
-                                          mode: CupertinoDatePickerMode.time,
-                                          onDateTimeChanged:
-                                              (DateTime newTime) {
-                                            setState(() {
-                                              selectedTime = newTime;
-                                              // _minTime = DateTime.now();
-                                              _minTime = DateTime(
-                                                DateTime.now().year,
-                                                DateTime.now().month,
-                                                DateTime.now().day,
-                                                DateTime.now().hour,
-                                                DateTime.now().minute,
-                                              );
-                                            });
-                                            print(newTime.toString());
-                                            var jiffy =
-                                                Jiffy.parse(newTime.toString());
-                                            timeFormat = jiffy.format(
-                                                pattern: "hh:mm a");
-                                            print(timeFormat);
-                                          },
+                                        enabledBorder: OutlineInputBorder(
+                                          gapPadding: 0.5,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: const BorderSide(
+                                            width: 0.50,
+                                            color: Color.fromARGB(
+                                                255, 221, 225, 232),
+                                          ),
                                         ),
-                                      ),
-                                      // In this example, the time value is formatted manually.
-                                      // You can use the intl package to format the value based on
-                                      // the user's locale settings.
-                                      child: Text(
-                                        timeFormat,
-                                        style: const TextStyle(
-                                          fontSize: 22.0,
-                                          color: pinkColor,
+                                        focusedBorder: OutlineInputBorder(
+                                          // gapPadding: 100,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: const BorderSide(
+                                            width: 0.50,
+                                            color: Color.fromARGB(
+                                                255, 221, 225, 232),
+                                          ),
                                         ),
+                                        filled: true,
+                                        fillColor: const Color(0xFFF7F8F9),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              /// Repeat Widget
-                              Container(
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 15),
-                                child: CustomResizeWidget(
-                                  onTap: () async {
-                                    await showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return DaysDialog(
-                                          days: days,
-                                          selectedDays: selectedDays,
-                                        );
+                                      autovalidateMode:
+                                          AutovalidateMode.onUserInteraction,
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return "This field cannot be empty.";
+                                        }
+                                        return null;
+                                        // if (!RegExp(r'^[a-z A-Z0-9]+$')
+                                        //     .hasMatch(value)) {
+                                        //   //allow alphanumerical only AND SPACE
+                                        //   return "Please enter letters only.";
+                                        // } else {
+                                        //   return null;
+                                        // }
                                       },
-                                    ).then((value) {
-                                      setState(() {
-                                        selectedDays.sort((a, b) =>
-                                            a['id'].compareTo(b['id']));
-                                      });
-                                    });
-                                  },
-                                  children: [
-                                    const Text(
-                                      "Repeat",
+                                    ),
+                                  ), //end of text field
+
+                                  /// Description
+                                  Container(
+                                    //title name label
+                                    margin:
+                                        const EdgeInsets.only(top: 5, left: 5),
+                                    alignment: Alignment.centerLeft,
+                                    child: const Text(
+                                      "Reminder Description",
+                                      textAlign: TextAlign.left,
                                       style: TextStyle(
-                                        // color: Colors.black,
+                                        color: Color.fromARGB(255, 0, 0, 0),
                                         fontSize: 20,
-                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Urbanist',
+                                        fontWeight: FontWeight.w700,
+                                        height: 1.30,
+                                        letterSpacing: -0.28,
                                       ),
                                     ),
-                                    Expanded(
-                                      flex: 3,
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsetsDirectional.only(
-                                                start: 10),
-                                        child: SingleChildScrollView(
-                                          // padding: const EdgeInsets.symmetric(horizontal: 10),
-                                          scrollDirection: Axis.horizontal,
-                                          reverse: true,
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: selectedDays.isEmpty
-                                                ? [
-                                                    const Text(
-                                                      "Never",
-                                                      style: TextStyle(
-                                                        fontSize: 22.0,
-                                                        color: pinkColor,
-                                                      ),
-                                                    ),
-                                                  ]
-                                                : List.generate(
-                                                    selectedDays.length,
-                                                    (index) {
-                                                      return Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                                horizontal:
-                                                                    5.0),
-                                                        child: Text(
-                                                          selectedDays[index]
-                                                              ['short'],
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 22.0,
-                                                            color: Color(
-                                                                0xFFD77D7C),
-                                                          ),
-                                                        ),
-                                                      );
-                                                    },
-                                                  ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    const Padding(
-                                      padding:
-                                          EdgeInsetsDirectional.only(start: 5),
-                                      child: Icon(
-                                        Icons.keyboard_arrow_down,
-                                        // color: Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              // Container(
-                              //   margin:
-                              //       const EdgeInsets.symmetric(vertical: 15),
-                              //   // decoration: const BoxDecoration(
-                              //   //   border: Border(
-                              //   //     top: BorderSide(
-                              //   //       color: CupertinoColors.inactiveGray,
-                              //   //       width: 0.0,
-                              //   //     ),
-                              //   //     bottom: BorderSide(
-                              //   //       color: CupertinoColors.inactiveGray,
-                              //   //       width: 0.0,
-                              //   //     ),
-                              //   //   ),
-                              //   // ),
-                              //   child: _DatePickerItem(
-                              //     child: GestureDetector(
-                              //       onTap: () async {
-                              //         await showDialog(
-                              //           context: context,
-                              //           builder: (context) {
-                              //             return DaysDialog(
-                              //               days: days,
-                              //               selectedDays: selectedDays,
-                              //             );
-                              //           },
-                              //         ).then((value) {
-                              //           setState(() {
-                              //             selectedDays.sort((a, b) =>
-                              //                 a['id'].compareTo(b['id']));
-                              //           });
-                              //         });
-                              //       },
-                              //       child: Container(
-                              //         width:
-                              //             MediaQuery.sizeOf(context).width * 0.94,
-                              //         height: 55,
-                              //         padding: const EdgeInsets.symmetric(
-                              //             horizontal: 10),
-                              //         child: Row(
-                              //           mainAxisAlignment:
-                              //               MainAxisAlignment.spaceBetween,
-                              //           // mainAxisSize: MainAxisSize.min,
-                              //           children: [
-                              //             const Text(
-                              //               "Repeat",
-                              //               style: TextStyle(
-                              //                 // color: Colors.black,
-                              //                 fontSize: 20,
-                              //                 fontWeight: FontWeight.bold,
-                              //               ),
-                              //             ),
-                              //             Expanded(
-                              //               flex: 3,
-                              //               child: Padding(
-                              //                 padding: const EdgeInsetsDirectional
-                              //                     .only(start: 10),
-                              //                 child: SingleChildScrollView(
-                              //                   // padding: const EdgeInsets.symmetric(horizontal: 10),
-                              //                   scrollDirection: Axis.horizontal,
-                              //                   reverse: true,
-                              //                   child: Row(
-                              //                     mainAxisSize: MainAxisSize.min,
-                              //                     children: selectedDays.isEmpty
-                              //                         ? [
-                              //                             const Text(
-                              //                               "Never",
-                              //                               style: TextStyle(
-                              //                                 fontSize: 22.0,
-                              //                                 color: Color(
-                              //                                     0xFFD77D7C),
-                              //                               ),
-                              //                             ),
-                              //                           ]
-                              //                         : List.generate(
-                              //                             selectedDays.length,
-                              //                             (index) {
-                              //                               return Padding(
-                              //                                 padding:
-                              //                                     const EdgeInsets
-                              //                                         .symmetric(
-                              //                                         horizontal:
-                              //                                             5.0),
-                              //                                 child: Text(
-                              //                                   selectedDays[
-                              //                                           index]
-                              //                                       ['short'],
-                              //                                   style:
-                              //                                       const TextStyle(
-                              //                                     fontSize: 22.0,
-                              //                                     color: Color(
-                              //                                         0xFFD77D7C),
-                              //                                   ),
-                              //                                 ),
-                              //                               );
-                              //                             },
-                              //                           ),
-                              //                   ),
-                              //                 ),
-                              //               ),
-                              //             ),
-                              //             const Padding(
-                              //               padding: EdgeInsetsDirectional.only(
-                              //                   start: 5),
-                              //               child: Icon(
-                              //                 Icons.keyboard_arrow_down,
-                              //                 // color: Colors.black,
-                              //               ),
-                              //             ),
-                              //           ],
-                              //         ),
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
-
-                              // Container(
-                              //   decoration: const BoxDecoration(
-                              //     color: blackColor,
-                              //     border: Border(
-                              //       bottom: BorderSide(
-                              //         color: blackColor,
-                              //         width: 1.0,
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
-
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(errorMessage, style: textStyle),
-                              ),
-                              Container(
-                                width: MediaQuery.sizeOf(context).width * 0.55,
-                                //start journey button
-                                padding: const EdgeInsets.only(top: 40.0),
-                                child: ElevatedButton(
-                                  onPressed: addNewReminder,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: blackColor,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(40)),
-                                    padding: const EdgeInsets.only(
-                                        left: 85,
-                                        top: 15,
-                                        right: 85,
-                                        bottom: 15),
                                   ),
-                                  child: isLoading
-                                      ? const Center(
-                                          child: SizedBox(
-                                            width: 22,
-                                            height: 22,
-                                            child: CircularProgressIndicator(),
-                                          ),
-                                        )
-                                      : const Text(
-                                          "Add reminder",
+                                  Padding(
+                                    //baby name text field
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10.0),
+                                    child: TextFormField(
+                                      maxLines: 3,
+                                      maxLength: 150,
+                                      style: const TextStyle(
+                                        fontSize: 22.0,
+                                        // color: pinkColor,
+                                      ),
+                                      controller:
+                                          _reminderDescriptionController,
+                                      decoration: InputDecoration(
+                                        hintText: "Optional",
+                                        hintStyle: const TextStyle(
+                                          fontSize: 22.0,
+                                          // color: pinkColor,
                                         ),
-                                ),
-                              )
-                            ],
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 15.0, horizontal: 15),
+                                        focusedErrorBorder: OutlineInputBorder(
+                                          gapPadding: 0.5,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: const BorderSide(
+                                            width: 0.50,
+                                            color: Color.fromRGBO(
+                                                255, 100, 100, 1),
+                                          ),
+                                        ),
+                                        errorBorder: OutlineInputBorder(
+                                          gapPadding: 0.5,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: const BorderSide(
+                                            width: 0.50,
+                                            color: Color.fromRGBO(
+                                                255, 100, 100, 1),
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          gapPadding: 0.5,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: const BorderSide(
+                                            width: 0.50,
+                                            color: Color.fromARGB(
+                                                255, 221, 225, 232),
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          // gapPadding: 100,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: const BorderSide(
+                                            width: 0.50,
+                                            color: Color.fromARGB(
+                                                255, 221, 225, 232),
+                                          ),
+                                        ),
+                                        filled: true,
+                                        fillColor: const Color(0xFFF7F8F9),
+                                      ),
+                                      autovalidateMode:
+                                          AutovalidateMode.onUserInteraction,
+                                      // validator: (value) {
+                                      //   if (value!.isEmpty) {
+                                      //     return "This field cannot be empty.";
+                                      //   }
+                                      //   if (!RegExp(r'^[a-z A-Z0-9]+$')
+                                      //       .hasMatch(value)) {
+                                      //     //allow alphanumerical only AND SPACE
+                                      //     return "Please enter letters only.";
+                                      //   } else {
+                                      //     return null;
+                                      //   }
+                                      // },
+                                    ),
+                                  ), //end of text field
+
+                                  /// End description
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 20.0),
+                                    child: CustomResizeWidget(
+                                      children: <Widget>[
+                                        const Text(
+                                          "Date",
+                                          style: TextStyle(
+                                            color: Color.fromARGB(255, 0, 0, 0),
+                                            fontSize: 20,
+                                            fontFamily: 'Urbanist',
+                                            fontWeight: FontWeight.w700,
+                                            height: 1.30,
+                                            letterSpacing: -0.28,
+                                          ),
+                                        ),
+                                        const Spacer(),
+                                        Row(
+                                          children: [
+                                            CupertinoButton(
+                                              padding: EdgeInsets.zero,
+                                              child: Text(
+                                                '${selectedDate.month}-${selectedDate.day}-${selectedDate.year}',
+                                                style: const TextStyle(
+                                                  fontSize: 22.0,
+                                                  color: pinkColor,
+                                                ),
+                                              ),
+                                              // Display a CupertinoDatePicker in date picker mode.
+                                              onPressed: () => _showDialog(
+                                                CupertinoDatePicker(
+                                                  initialDateTime:
+                                                      selectedDate.isAfter(
+                                                              DateTime.now())
+                                                          ? selectedDate
+                                                          : DateTime.now(),
+                                                  minimumDate: _minDate,
+                                                  maximumDate:
+                                                      DateTime.now().copyWith(
+                                                    year: DateTime.now().year +
+                                                        10,
+                                                    month: 12,
+                                                    day: 31,
+                                                  ),
+
+                                                  /// Test for the date limitation(2024-2034), up to 10 years only.
+                                                  /// Note that we set the initial Date Time one more year to avoid any picker issue, just for testing.
+                                                  // initialDateTime:
+                                                  //     DateTime.now().copyWith(
+                                                  //   year: DateTime.now().year + 2,
+                                                  // ),
+                                                  // minimumDate: DateTime.now().copyWith(
+                                                  //   year: DateTime.now().year + 1,
+                                                  // ),
+                                                  // maximumDate: DateTime.now().copyWith(
+                                                  //   year: DateTime.now().year + 11,
+                                                  //   month: 12,
+                                                  //   day: 31,
+                                                  // ),
+
+                                                  /// End the test
+                                                  /// Test for the date limitation(2024-2034), up to 10 years only.
+                                                  /// Note that we set the initial Date Time one more year to avoid any picker issue, just for testing.
+                                                  // initialDateTime:
+                                                  //     DateTime.now().copyWith(
+                                                  //   year: DateTime.now().year + 2,
+                                                  // ),
+                                                  // minimumDate: DateTime.now().copyWith(
+                                                  //   year: DateTime.now().year + 1,
+                                                  // ),
+                                                  // maximumDate: DateTime.now().copyWith(
+                                                  //   year: DateTime.now().year + 11,
+                                                  //   month: 12,
+                                                  //   day: 31,
+                                                  // ),
+
+                                                  /// End the test
+                                                  mode: CupertinoDatePickerMode
+                                                      .date,
+                                                  // This is called when the user changes the date.
+                                                  onDateTimeChanged:
+                                                      (DateTime newDate) {
+                                                    setState(
+                                                      () {
+                                                        selectedDate = DateTime(
+                                                          newDate.year,
+                                                          newDate.month,
+                                                          newDate.day,
+                                                        );
+                                                        _minDate =
+                                                            DateTime.now();
+                                                      },
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                            const Padding(
+                                              padding:
+                                                  EdgeInsetsDirectional.only(
+                                                      start: 5),
+                                              child: Icon(
+                                                Icons.keyboard_arrow_down,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  CustomResizeWidget(
+                                    children: <Widget>[
+                                      const Text(
+                                        "Time",
+                                        style: TextStyle(
+                                          color: Color.fromARGB(255, 0, 0, 0),
+                                          fontSize: 20,
+                                          fontFamily: 'Urbanist',
+                                          fontWeight: FontWeight.w700,
+                                          height: 1.30,
+                                          letterSpacing: -0.28,
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          CupertinoButton(
+                                            padding: EdgeInsets.zero,
+                                            // Display a CupertinoDatePicker in time picker mode.
+                                            onPressed: () => _showDialog(
+                                              CupertinoDatePicker(
+                                                initialDateTime: selectedTime
+                                                        .isAfter(DateTime.now())
+                                                    ? selectedTime
+                                                    : DateTime.now(),
+                                                minimumDate: selectedDate.day ==
+                                                            DateTime.now()
+                                                                .day &&
+                                                        selectedDate.month ==
+                                                            DateTime.now()
+                                                                .month &&
+                                                        selectedDate.year ==
+                                                            DateTime.now().year
+                                                    ? _minTime
+                                                    : null,
+                                                mode: CupertinoDatePickerMode
+                                                    .time,
+                                                onDateTimeChanged:
+                                                    (DateTime newTime) {
+                                                  setState(() {
+                                                    selectedTime = newTime;
+                                                    // _minTime = DateTime.now();
+                                                    _minTime = DateTime(
+                                                      DateTime.now().year,
+                                                      DateTime.now().month,
+                                                      DateTime.now().day,
+                                                      DateTime.now().hour,
+                                                      DateTime.now().minute,
+                                                    );
+                                                  });
+                                                  print(newTime.toString());
+                                                  var jiffy = Jiffy.parse(
+                                                      newTime.toString());
+                                                  timeFormat = jiffy.format(
+                                                      pattern: "hh:mm a");
+                                                  print(timeFormat);
+                                                },
+                                              ),
+                                            ),
+                                            // In this example, the time value is formatted manually.
+                                            // You can use the intl package to format the value based on
+                                            // the user's locale settings.
+                                            child: Text(
+                                              timeFormat,
+                                              style: const TextStyle(
+                                                fontSize: 22.0,
+                                                color: pinkColor,
+                                              ),
+                                            ),
+                                          ),
+                                          const Padding(
+                                            padding: EdgeInsetsDirectional.only(
+                                                start: 5),
+                                            child: Icon(
+                                              Icons.keyboard_arrow_down,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+
+                                  /// Repeat Widget
+                                  CustomResizeWidget(
+                                    onTap: () async {
+                                      await showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return DaysDialog(
+                                            days: days,
+                                            selectedDays: selectedDays,
+                                          );
+                                        },
+                                      ).then((value) {
+                                        setState(() {
+                                          selectedDays.sort((a, b) =>
+                                              a['id'].compareTo(b['id']));
+                                        });
+                                      });
+                                    },
+                                    children: [
+                                      const Text(
+                                        "Repeat",
+                                        style: TextStyle(
+                                          // color: Colors.black,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 3,
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsetsDirectional.only(
+                                                  start: 10),
+                                          child: SingleChildScrollView(
+                                            // padding: const EdgeInsets.symmetric(horizontal: 10),
+                                            scrollDirection: Axis.horizontal,
+                                            reverse: true,
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: selectedDays.isEmpty
+                                                  ? [
+                                                      const Text(
+                                                        "Never",
+                                                        style: TextStyle(
+                                                          fontSize: 22.0,
+                                                          color: pinkColor,
+                                                        ),
+                                                      ),
+                                                    ]
+                                                  : List.generate(
+                                                      selectedDays.length,
+                                                      (index) {
+                                                        return Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                      5.0),
+                                                          child: Text(
+                                                            selectedDays[index]
+                                                                ['short'],
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 22.0,
+                                                              color: Color(
+                                                                  0xFFD77D7C),
+                                                            ),
+                                                          ),
+                                                        );
+                                                      },
+                                                    ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const Padding(
+                                        padding: EdgeInsetsDirectional.only(
+                                            start: 5),
+                                        child: Icon(
+                                          Icons.keyboard_arrow_down,
+                                          // color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  // Container(
+                                  //   margin:
+                                  //       const EdgeInsets.symmetric(vertical: 15),
+                                  //   // decoration: const BoxDecoration(
+                                  //   //   border: Border(
+                                  //   //     top: BorderSide(
+                                  //   //       color: CupertinoColors.inactiveGray,
+                                  //   //       width: 0.0,
+                                  //   //     ),
+                                  //   //     bottom: BorderSide(
+                                  //   //       color: CupertinoColors.inactiveGray,
+                                  //   //       width: 0.0,
+                                  //   //     ),
+                                  //   //   ),
+                                  //   // ),
+                                  //   child: _DatePickerItem(
+                                  //     child: GestureDetector(
+                                  //       onTap: () async {
+                                  //         await showDialog(
+                                  //           context: context,
+                                  //           builder: (context) {
+                                  //             return DaysDialog(
+                                  //               days: days,
+                                  //               selectedDays: selectedDays,
+                                  //             );
+                                  //           },
+                                  //         ).then((value) {
+                                  //           setState(() {
+                                  //             selectedDays.sort((a, b) =>
+                                  //                 a['id'].compareTo(b['id']));
+                                  //           });
+                                  //         });
+                                  //       },
+                                  //       child: Container(
+                                  //         width:
+                                  //             MediaQuery.sizeOf(context).width * 0.94,
+                                  //         height: 55,
+                                  //         padding: const EdgeInsets.symmetric(
+                                  //             horizontal: 10),
+                                  //         child: Row(
+                                  //           mainAxisAlignment:
+                                  //               MainAxisAlignment.spaceBetween,
+                                  //           // mainAxisSize: MainAxisSize.min,
+                                  //           children: [
+                                  //             const Text(
+                                  //               "Repeat",
+                                  //               style: TextStyle(
+                                  //                 // color: Colors.black,
+                                  //                 fontSize: 20,
+                                  //                 fontWeight: FontWeight.bold,
+                                  //               ),
+                                  //             ),
+                                  //             Expanded(
+                                  //               flex: 3,
+                                  //               child: Padding(
+                                  //                 padding: const EdgeInsetsDirectional
+                                  //                     .only(start: 10),
+                                  //                 child: SingleChildScrollView(
+                                  //                   // padding: const EdgeInsets.symmetric(horizontal: 10),
+                                  //                   scrollDirection: Axis.horizontal,
+                                  //                   reverse: true,
+                                  //                   child: Row(
+                                  //                     mainAxisSize: MainAxisSize.min,
+                                  //                     children: selectedDays.isEmpty
+                                  //                         ? [
+                                  //                             const Text(
+                                  //                               "Never",
+                                  //                               style: TextStyle(
+                                  //                                 fontSize: 22.0,
+                                  //                                 color: Color(
+                                  //                                     0xFFD77D7C),
+                                  //                               ),
+                                  //                             ),
+                                  //                           ]
+                                  //                         : List.generate(
+                                  //                             selectedDays.length,
+                                  //                             (index) {
+                                  //                               return Padding(
+                                  //                                 padding:
+                                  //                                     const EdgeInsets
+                                  //                                         .symmetric(
+                                  //                                         horizontal:
+                                  //                                             5.0),
+                                  //                                 child: Text(
+                                  //                                   selectedDays[
+                                  //                                           index]
+                                  //                                       ['short'],
+                                  //                                   style:
+                                  //                                       const TextStyle(
+                                  //                                     fontSize: 22.0,
+                                  //                                     color: Color(
+                                  //                                         0xFFD77D7C),
+                                  //                                   ),
+                                  //                                 ),
+                                  //                               );
+                                  //                             },
+                                  //                           ),
+                                  //                   ),
+                                  //                 ),
+                                  //               ),
+                                  //             ),
+                                  //             const Padding(
+                                  //               padding: EdgeInsetsDirectional.only(
+                                  //                   start: 5),
+                                  //               child: Icon(
+                                  //                 Icons.keyboard_arrow_down,
+                                  //                 // color: Colors.black,
+                                  //               ),
+                                  //             ),
+                                  //           ],
+                                  //         ),
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  // ),
+
+                                  // Container(
+                                  //   decoration: const BoxDecoration(
+                                  //     color: blackColor,
+                                  //     border: Border(
+                                  //       bottom: BorderSide(
+                                  //         color: blackColor,
+                                  //         width: 1.0,
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  // ),
+
+                                  Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(errorMessage, style: textStyle),
+                                  ),
+                                  Container(
+                                    width:
+                                        MediaQuery.sizeOf(context).width * 0.55,
+                                    //start journey button
+                                    padding: const EdgeInsets.only(top: 40.0),
+                                    child: ElevatedButton(
+                                      onPressed: addNewReminder,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: blackColor,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(40)),
+                                        padding: const EdgeInsets.only(
+                                            left: 85,
+                                            top: 15,
+                                            right: 85,
+                                            bottom: 15),
+                                      ),
+                                      child: isLoading
+                                          ? const Center(
+                                              child: SizedBox(
+                                                width: 22,
+                                                height: 22,
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              ),
+                                            )
+                                          : const Text(
+                                              "Add Reminder",
+                                            ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
+            ],
+          ),
+          Positioned(
+            top: 30,
+            left: 20,
+            child: BackButton(
+              color: Colors.black,
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const LoginScreen();
+                    },
+                  ),
+                );
+              },
             ),
           ),
         ],
