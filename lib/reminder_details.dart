@@ -24,6 +24,74 @@ class _reminderDetails extends State<reminderDetails>{
     return user!.uid;
   }
 
+  Widget getDayWidget(String id, String short) {
+
+  return Container(
+
+    width: 100,
+
+    height: 50,
+
+    decoration: BoxDecoration(
+
+      color: backGroundPink,
+
+      shape: BoxShape.rectangle,
+
+    ),
+
+    child: Center(
+
+      child: Text(
+
+        "Every $short",
+
+        style: TextStyle(
+
+          color: Colors.white,
+
+          fontWeight: FontWeight.bold,
+
+        ),
+
+      ),
+
+    ),
+
+  );
+
+}
+
+
+
+Widget buildRepeatWidget(List<dynamic> repeat) {
+
+  if (repeat.isEmpty) {
+
+    return Text("none");
+
+  } else {
+
+    return Column(
+
+      crossAxisAlignment: CrossAxisAlignment.center,
+
+      children: [
+
+        for (var item in repeat)
+
+          if (item is Map<String, dynamic>)
+
+            getDayWidget(item["id"], item["short"]),
+
+      ],
+
+    );
+
+  }
+
+}
+
   Future<Container> reminderInfo(String reminderId) async {
 
     String userUid = getUserId();
@@ -53,7 +121,7 @@ class _reminderDetails extends State<reminderDetails>{
                   Text(
                     "Title: ",
                     style: TextStyle(
-                    color: pinkColor,
+                    color: Colors.black,
                     fontSize: 24,
                     fontFamily: 'Urbanist',
                     fontWeight: FontWeight.w700,
@@ -64,8 +132,8 @@ class _reminderDetails extends State<reminderDetails>{
                   Text(
                     "$title",
                     style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
+                    color: pinkColor,
+                    fontSize: 22,
                     fontFamily: 'Urbanist',
                     fontWeight: FontWeight.w600,
                     height: 1.30,
@@ -76,13 +144,57 @@ class _reminderDetails extends State<reminderDetails>{
 
               ),
               SizedBox(height: 15,),
-              Row(
+              Column(
                 children: [
                   
+                  Row(
+                    children: [
+                      Text(
+                        "Description: ",
+                        style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 24,
+                        fontFamily: 'Urbanist',
+                        fontWeight: FontWeight.w700,
+                        height: 1.30,
+                        letterSpacing: -0.28,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        " $desc",
+                        style: TextStyle(
+                        color: pinkColor,
+                        fontSize: 22,
+                        fontFamily: 'Urbanist',
+                        fontWeight: FontWeight.w600,
+                        height: 1.30,
+                        letterSpacing: -0.28,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+
+              ),
+              SizedBox(height: 15,),
+              Row(
+                
+                children: [
+                  Icon(
+                      Icons.calendar_today,
+                      color: Colors.black,
+                      size: 23,
+                    ),
+                    SizedBox(width: 10,),
+                  
                   Text(
-                    "Description: ",
+                    "Date: ",
                     style: TextStyle(
-                    color: pinkColor,
+                    color: Colors.black,
                     fontSize: 24,
                     fontFamily: 'Urbanist',
                     fontWeight: FontWeight.w700,
@@ -91,10 +203,10 @@ class _reminderDetails extends State<reminderDetails>{
                     ),
                   ),
                   Text(
-                    "$desc",
+                    "$date",
                     style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
+                    color: pinkColor,
+                    fontSize: 22,
                     fontFamily: 'Urbanist',
                     fontWeight: FontWeight.w600,
                     height: 1.30,
@@ -104,95 +216,56 @@ class _reminderDetails extends State<reminderDetails>{
                 ],
 
               ),
-              SizedBox(height: 15,),
-              
+              SizedBox(height: 10,),
               Row(
+                
                 children: [
-                  Expanded(
-                    child: Column(
-                      children: [
-                      Row(
-                        children: [
-                          Icon(
-                      Icons.calendar_today,
-                      color: pinkColor,
-                    ),
-                    SizedBox(width: 10,),
-                    Text(
-                      "Date: ",
-                      style: TextStyle(
-                      color: pinkColor,
-                      fontSize: 24,
-                      fontFamily: 'Urbanist',
-                      fontWeight: FontWeight.w700,
-                      height: 1.30,
-                      letterSpacing: -0.28,
-                      ),
-                    ),],
-                    ),
-                      
-                    Text(
-                      "$date",
-                      style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontFamily: 'Urbanist',
-                      fontWeight: FontWeight.w600,
-                      height: 1.30,
-                      letterSpacing: -0.28,
-                      ),
-                    ),],),
-                  ),
-
-                  Expanded(
-                    child: Column(children: [
-                      Row(children: [
-                        Icon(
+                  Icon(
                       Icons.schedule,
-                      color: pinkColor,
+                      color: Colors.black,
+                      size: 23,
                     ),
                     SizedBox(width: 10,),
-                    Text(
-                      "Time: ",
-                      style: TextStyle(
-                      color: pinkColor,
-                      fontSize: 24,
-                      fontFamily: 'Urbanist',
-                      fontWeight: FontWeight.w700,
-                      height: 1.30,
-                      letterSpacing: -0.28,
-                      ),
-                    ),
-                      ],),
-                      
-                    Text(
-                      "$time",
-                      style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontFamily: 'Urbanist',
-                      fontWeight: FontWeight.w600,
-                      height: 1.30,
-                      letterSpacing: -0.28,
-                      ),
-                    ),],),
-                  ),
                   
+                  Text(
+                    "Time: ",
+                    style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 24,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w700,
+                    height: 1.30,
+                    letterSpacing: -0.28,
+                    ),
+                  ),
+                  Text(
+                    "$time",
+                    style: TextStyle(
+                    color: pinkColor,
+                    fontSize: 22,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    height: 1.30,
+                    letterSpacing: -0.28,
+                    ),
+                  ),
                 ],
 
               ),
-              SizedBox(height: 20,),
+              
+              SizedBox(height: 15,),
               Row(
                 children: [
                   Icon(
                     Icons.repeat,
                     color: Colors.black,
+                    size: 23,
                   ),
                   SizedBox(width: 10,),
                   Text(
                     "Repeat: ",
                     style: TextStyle(
-                    color: pinkColor,
+                    color: Colors.black,
                     fontSize: 24,
                     fontFamily: 'Urbanist',
                     fontWeight: FontWeight.w700,
@@ -200,16 +273,8 @@ class _reminderDetails extends State<reminderDetails>{
                     letterSpacing: -0.28,
                     ),
                   ),
-                  Text(
-                    "$repeat",
-                    style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w600,
-                    height: 1.30,
-                    letterSpacing: -0.28,
-                    ),
+                  Container(
+                    child: buildRepeatWidget(repeat),
                   ),
                 ],
 
@@ -299,23 +364,8 @@ class _reminderDetails extends State<reminderDetails>{
                 padding: EdgeInsets.only(top: 15),
                 child: Column(
                   children: [
-                    SizedBox(height: 30,),
-                    /*Row(
-                      children: [
-                        Text(
-                          reminderId,
-                          style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 15,
-                          fontFamily: 'Urbanist',
-                          fontWeight: FontWeight.w600,
-                          height: 1.30,
-                          letterSpacing: -0.28,
-                          ),
-                        ),
-                      ],
-                    ),*/
-
+                    SizedBox(height: 25,),
+                    
                     FutureBuilder<Widget>(
                       future: reminderInfo(reminderId), 
                       builder: (BuildContext context , AsyncSnapshot<Widget> snapshot){
@@ -336,7 +386,7 @@ class _reminderDetails extends State<reminderDetails>{
                    
                 
                 ],
-                          ),
+                ),
               )  
               
             ),
