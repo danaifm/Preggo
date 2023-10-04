@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:preggo/login_screen.dart';
-
+import 'package:preggo/screens/add_reminder_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -20,6 +20,7 @@ class _SplashScreenState extends State<SplashScreen>
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (_) =>
               const LoginScreen() // => the next page after the splashscreen
+          // const AddReminderScreen() // => the next page after the splashscreen
           ));
     });
   }
