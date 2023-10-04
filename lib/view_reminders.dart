@@ -179,185 +179,191 @@ class _viewReminders extends State<viewReminders> {
   );
   }
 }
-
+  //////////////////////////////////////////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: backGroundPink,
         resizeToAvoidBottomInset: true,
-        body: Column(
+        body: Stack(
           children: [
-            SizedBox(
-              height: 40,
-            ),
-            Row(
+            Column(
               children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: const Icon(
-                    Icons.arrow_back,
-                    color: Colors.black,
-                  ),
+                SizedBox(
+                  height: 40,
                 ),
-                SizedBox(width: 60,),
-                Text(
-                  "Reminders",
-                  style: TextStyle(
-                    color: Color(0xFFD77D7C),
-                    fontSize: 32,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w600,
-                    height: 1.30,
-                    letterSpacing: -0.28,
-                  ),
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        color: Colors.black,
+                      ),
+                    ),
+                    SizedBox(width: 60,),
+                    Text(
+                      "Reminders",
+                      style: TextStyle(
+                        color: Color(0xFFD77D7C),
+                        fontSize: 32,
+                        fontFamily: 'Urbanist',
+                        fontWeight: FontWeight.w600,
+                        height: 1.30,
+                        letterSpacing: -0.28,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 18.0,
-                  vertical: 0.0,
+                SizedBox(
+                  height: 10,
                 ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(45.0),
-                  ),
-                ),
-
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.only(top: 15),
-                
-                  child:
-
-                    Container(
-
-                      child:Column(
-                        children: [
-                          EasyDateTimeLine(
-                            initialDate: DateTime.now(),
-                            onDateChange: (selectedDate) { 
-                              setState(() {
-                                
-                                var dateOnly = selectedDate.toString();
-                                dateOnly= dateOnly.substring(0,10);
-                                List dateComponents = dateOnly.split("-"); 
-                                int year = int.parse(dateComponents[0]); 
-                                int month = int.parse(dateComponents[1]); 
-                                int day = int.parse(dateComponents[2]); 
-                                formattedDate = "${month.toStringAsFixed(0)}-${day.toStringAsFixed(0)}-$year";
-                                
-                                weekDay=selectedDate.weekday; //monday is 1 
-                                if (weekDay == 1){ //monday 
-                                  dayInDB = 2;
-                                  dayShortName = "Mon";
-                                }
-                                else if (weekDay == 2){ //tuesday 
-                                  dayInDB = 3;
-                                  dayShortName = "Tue";
-                                }
-                                else if (weekDay == 3){ //wednesday 
-                                  dayInDB = 4;
-                                  dayShortName = "Wed";
-                                }
-                                else if (weekDay == 4){ //thursday 
-                                  dayInDB = 5;
-                                  dayShortName = "Thu";
-                                }
-                                else if (weekDay == 5){ //friday 
-                                  dayInDB = 6;
-                                  dayShortName = "Fri";
-                                }
-                                else if (weekDay == 6){ //saturday 
-                                  dayInDB = 7;
-                                  dayShortName = "Sat";
-                                }
-                                else{ //sunday 
-                                  dayInDB = 1;
-                                  dayShortName = "Sun";
-                                }
-
-                                dayOfWeek=dayInDB.toString(); 
-                              });
-                              
-                            },
-                            activeColor: pinkColor,
-                            headerProps: const EasyHeaderProps(
-                            monthPickerType: MonthPickerType.dropDown,
-                            selectedDateFormat: SelectedDateFormat.fullDateDMonthAsStrY,
-                          ),
-                                          
-                            dayProps: const EasyDayProps(
-                            activeDayStyle: DayStyle(
-                              borderRadius: 12.0,
-                            ),
-                            inactiveDayStyle: DayStyle(
-                              borderRadius: 12.0,
-                            ),
-                            todayHighlightStyle: TodayHighlightStyle.withBorder,
-                                      
-                          ),
-                            timeLineProps: const EasyTimeLineProps(
-                            hPadding: 16.0, // padding from left and right
-                            separatorPadding: 16.0, // padding between days
-                            ),
-                          ),
-
-                          
-
-                          FutureBuilder<Widget>(
-                            future: getReminders(formattedDate,dayOfWeek,dayShortName), 
-                            builder: (BuildContext context , AsyncSnapshot<Widget> snapshot){
-                              if(snapshot.hasData) {
-                                return snapshot.data!;
-                              }
-                              
-                            return CircularProgressIndicator();
-                            },
-                          ),
-
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: Padding(
-                              padding: EdgeInsets.fromLTRB(240, 20, 5, 20),
-                              child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                  builder: (context) => const AddReminderScreen()));
-                              },
-                              style: ElevatedButton.styleFrom(
-                                fixedSize: const Size(55, 55),
-                                shape: const CircleBorder(),
-                                backgroundColor: darkBlackColor,
-                              ),
-                              child: const Text(
-                                '+',
-                                style: TextStyle(fontSize: 38),
-                              ),
-                            ),
-                            ),
-                          ),
-                          
-                        ],
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18.0,
+                      vertical: 0.0,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(45.0),
                       ),
                     ),
 
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.only(top: 15),
                     
+                      child:
+
+                        Container(
+
+                          child:Column(
+                            children: [
+                              EasyDateTimeLine(
+                                initialDate: DateTime.now(),
+                                onDateChange: (selectedDate) { 
+                                  setState(() {
+                                    
+                                    var dateOnly = selectedDate.toString();
+                                    dateOnly= dateOnly.substring(0,10);
+                                    List dateComponents = dateOnly.split("-"); 
+                                    int year = int.parse(dateComponents[0]); 
+                                    int month = int.parse(dateComponents[1]); 
+                                    int day = int.parse(dateComponents[2]); 
+                                    formattedDate = "${month.toStringAsFixed(0)}-${day.toStringAsFixed(0)}-$year";
+                                    
+                                    weekDay=selectedDate.weekday; //monday is 1 
+                                    if (weekDay == 1){ //monday 
+                                      dayInDB = 2;
+                                      dayShortName = "Mon";
+                                    }
+                                    else if (weekDay == 2){ //tuesday 
+                                      dayInDB = 3;
+                                      dayShortName = "Tue";
+                                    }
+                                    else if (weekDay == 3){ //wednesday 
+                                      dayInDB = 4;
+                                      dayShortName = "Wed";
+                                    }
+                                    else if (weekDay == 4){ //thursday 
+                                      dayInDB = 5;
+                                      dayShortName = "Thu";
+                                    }
+                                    else if (weekDay == 5){ //friday 
+                                      dayInDB = 6;
+                                      dayShortName = "Fri";
+                                    }
+                                    else if (weekDay == 6){ //saturday 
+                                      dayInDB = 7;
+                                      dayShortName = "Sat";
+                                    }
+                                    else{ //sunday 
+                                      dayInDB = 1;
+                                      dayShortName = "Sun";
+                                    }
+
+                                    dayOfWeek=dayInDB.toString(); 
+                                  });
+                                  
+                                },
+                                activeColor: pinkColor,
+                                headerProps: const EasyHeaderProps(
+                                monthPickerType: MonthPickerType.dropDown,
+                                selectedDateFormat: SelectedDateFormat.fullDateDMonthAsStrY,
+                              ),
+                                              
+                                dayProps: const EasyDayProps(
+                                activeDayStyle: DayStyle(
+                                  borderRadius: 12.0,
+                                ),
+                                inactiveDayStyle: DayStyle(
+                                  borderRadius: 12.0,
+                                ),
+                                todayHighlightStyle: TodayHighlightStyle.withBorder,
+                                          
+                              ),
+                                timeLineProps: const EasyTimeLineProps(
+                                hPadding: 16.0, // padding from left and right
+                                separatorPadding: 16.0, // padding between days
+                                ),
+                              ),
+
+                              
+
+                              FutureBuilder<Widget>(
+                                future: getReminders(formattedDate,dayOfWeek,dayShortName), 
+                                builder: (BuildContext context , AsyncSnapshot<Widget> snapshot){
+                                  if(snapshot.hasData) {
+                                    return snapshot.data!;
+                                  }
+                                  
+                                return CircularProgressIndicator();
+                                },
+                              ),
+                            
+                              
+                              
+                            ],
+                          ),
+                        ),
+
+                        
+                      ),
+                    
+                    ),
                   ),
                 
+                
+              ],
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(0, 20, 20, 80),
+                child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                    builder: (context) => const AddReminderScreen()));
+                },
+                style: ElevatedButton.styleFrom(
+                  fixedSize: const Size(55, 55),
+                  shape: const CircleBorder(),
+                  backgroundColor: darkBlackColor,
+                ),
+                child: Icon(
+                  Icons.add,
+                  color: Colors.white,
                 ),
               ),
-            
-            
+              ),
+            ),
           ],
-        ));
+        )
+      );
   }
 }

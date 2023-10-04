@@ -116,9 +116,9 @@ class _startJourney extends State<startJourney>{
                   shape: const CircleBorder(),
                   backgroundColor: darkBlackColor,
                 ),
-                child: const Text(
-                  '+',
-                  style: TextStyle(fontSize: 38),
+                child: Icon(
+                  Icons.add,
+                  color: Colors.white,
                 ),
               ),
               ),
