@@ -119,6 +119,8 @@ class AddReminderScreenState extends State<AddReminderScreen> {
             },
             SetOptions(merge: true),
           );
+
+          /// Show dialog | start of message
           if (mounted) {
             showDialog(
                 context: context,
@@ -129,7 +131,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                       width: MediaQuery.sizeOf(context).width * 0.80,
                       child: Dialog(
                         child: Container(
-                          padding: EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(5),
                           decoration: const BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.all(
@@ -183,7 +185,12 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                   padding: const EdgeInsets.only(top: 40.0),
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      Navigator.of(context).pop();
+                                      Navigator.of(context).pushAndRemoveUntil(
+                                        MaterialPageRoute(builder: (context) {
+                                          return const LoginScreen();
+                                        }),
+                                        (route) => false,
+                                      );
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: blackColor,
@@ -210,9 +217,10 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                   );
                 });
           }
+          // Show dialog | end of message
           setState(() {
             isLoading = false;
-            _reminderTitleController = TextEditingController(text: "");
+            _reminderTitleController.clear();
             _reminderDescriptionController.clear();
 
             selectedDate = DateTime.now();
@@ -232,7 +240,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
   }
 
   // GlobalKey<FormState> formstate = GlobalKey<FormState>();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
   // final GlobalKey<FormFieldState> _reminderTitleKey =
   //     GlobalKey<FormFieldState>();
   late TextEditingController _reminderTitleController;
@@ -244,6 +252,13 @@ class AddReminderScreenState extends State<AddReminderScreen> {
     super.initState();
     _reminderTitleController = TextEditingController();
     _reminderDescriptionController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _reminderTitleController.dispose();
+    _reminderDescriptionController.dispose();
+    super.dispose();
   }
 
   @override
@@ -402,10 +417,10 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                         filled: true,
                                         fillColor: const Color(0xFFF7F8F9),
                                       ),
-                                      autovalidateMode:
-                                          AutovalidateMode.onUserInteraction,
+                                      // autovalidateMode:
+                                      //     AutovalidateMode.onUserInteraction,
                                       validator: (value) {
-                                        if (value!.isEmpty) {
+                                        if (value == null || value.isEmpty) {
                                           return "This field cannot be empty.";
                                         }
                                         return null;
@@ -504,8 +519,8 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                         filled: true,
                                         fillColor: const Color(0xFFF7F8F9),
                                       ),
-                                      autovalidateMode:
-                                          AutovalidateMode.onUserInteraction,
+                                      // autovalidateMode:
+                                      //     AutovalidateMode.onUserInteraction,
                                       // validator: (value) {
                                       //   if (value!.isEmpty) {
                                       //     return "This field cannot be empty.";
@@ -546,7 +561,9 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                                 '${selectedDate.month}-${selectedDate.day}-${selectedDate.year}',
                                                 style: const TextStyle(
                                                   fontSize: 22.0,
-                                                  color: pinkColor,
+
+                                                  /// Date Color
+                                                  color: Colors.black,
                                                 ),
                                               ),
                                               // Display a CupertinoDatePicker in date picker mode.
@@ -618,13 +635,16 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                                 ),
                                               ),
                                             ),
-                                            const Padding(
-                                              padding:
-                                                  EdgeInsetsDirectional.only(
-                                                      start: 5),
-                                              child: Icon(
-                                                Icons.keyboard_arrow_down,
-                                                color: Colors.black,
+                                            GestureDetector(
+                                              onTap: () {},
+                                              child: const Padding(
+                                                padding:
+                                                    EdgeInsetsDirectional.only(
+                                                        start: 5),
+                                                child: Icon(
+                                                  Icons.keyboard_arrow_down,
+                                                  color: Colors.black,
+                                                ),
                                               ),
                                             ),
                                           ],
@@ -697,7 +717,9 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                               timeFormat,
                                               style: const TextStyle(
                                                 fontSize: 22.0,
-                                                color: pinkColor,
+
+                                                /// Time Color
+                                                color: Colors.black,
                                               ),
                                             ),
                                           ),
@@ -759,7 +781,9 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                                         "Never",
                                                         style: TextStyle(
                                                           fontSize: 22.0,
-                                                          color: pinkColor,
+
+                                                          /// Never Color
+                                                          color: Colors.black,
                                                         ),
                                                       ),
                                                     ]
@@ -778,8 +802,10 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                                             style:
                                                                 const TextStyle(
                                                               fontSize: 22.0,
-                                                              color: Color(
-                                                                  0xFFD77D7C),
+
+                                                              /// Selected days Color
+                                                              color:
+                                                                  Colors.black,
                                                             ),
                                                           ),
                                                         );
@@ -789,7 +815,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                           ),
                                         ),
                                       ),
-                                      const Padding(
+                                      Padding(
                                         padding: EdgeInsetsDirectional.only(
                                             start: 5),
                                         child: Icon(
