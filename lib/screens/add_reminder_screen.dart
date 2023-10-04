@@ -223,11 +223,11 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                 builder: (context) {
                   return Center(
                     child: SizedBox(
-                      height: MediaQuery.sizeOf(context).height * 0.37,
-                      width: MediaQuery.sizeOf(context).width * 0.80,
+                      height: MediaQuery.sizeOf(context).height * 0.40,
+                      width: MediaQuery.sizeOf(context).width * 0.85,
                       child: Dialog(
                         child: Container(
-                          padding: const EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(10),
                           decoration: const BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.all(
@@ -239,7 +239,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const SizedBox(height: 10),
+                                const SizedBox(height: 20),
                                 Container(
                                   padding: const EdgeInsets.all(15),
                                   decoration: const BoxDecoration(
@@ -261,6 +261,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                 // Done
                                 const Text(
                                   "Reminder added successfully!",
+                                  textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Color.fromARGB(255, 0, 0, 0),
                                     fontSize: 20,
@@ -271,39 +272,44 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                   ),
                                 ),
 
-                                const SizedBox(height: 10),
+                                const SizedBox(height: 20),
 
                                 /// OK Button
                                 Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
                                   width:
-                                      MediaQuery.sizeOf(context).width * 0.40,
-                                  //start journey button
-                                  padding: const EdgeInsets.only(top: 40.0),
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pushAndRemoveUntil(
-                                        MaterialPageRoute(builder: (context) {
-                                          return const LoginScreen();
-                                        }),
-                                        (route) => false,
-                                      );
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: blackColor,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(40)),
-                                      padding: const EdgeInsets.only(
-                                          left: 85,
-                                          top: 15,
-                                          right: 85,
-                                          bottom: 15),
-                                    ),
-                                    child: const Text(
-                                      "OK",
+                                      MediaQuery.sizeOf(context).width * 0.80,
+                                  height: 45.0,
+                                  child: Center(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.of(context)
+                                            .pushAndRemoveUntil(
+                                          MaterialPageRoute(builder: (context) {
+                                            return const LoginScreen();
+                                          }),
+                                          (route) => false,
+                                        );
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: blackColor,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(40)),
+                                        padding: const EdgeInsets.only(
+                                            left: 70,
+                                            top: 15,
+                                            right: 70,
+                                            bottom: 15),
+                                      ),
+                                      child: const Text(
+                                        "OK",
+                                      ),
                                     ),
                                   ),
                                 ),
+                                SizedBox(height: 20),
                               ],
                             ),
                           ),
@@ -383,256 +389,311 @@ class AddReminderScreenState extends State<AddReminderScreen> {
   Widget build(BuildContext context) {
     var textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontSize: 12.0,
+          fontFamily: 'Urbanist',
           color: Theme.of(context).colorScheme.error,
           fontWeight: FontWeight.normal,
         );
     return Scaffold(
       backgroundColor: backGroundPink,
       resizeToAvoidBottomInset: true,
-      body: Column(
-        children: [
-          const SizedBox(
-            height: 35,
-          ),
-          Container(
-            alignment: AlignmentDirectional.centerStart,
-            child: IconButton(
-              onPressed: () {
-                // Navigator.push(context,  MaterialPageRoute(
-                //                         builder: (context) => PregnancyTracking()));
-              },
-              icon: const Icon(
-                Icons.arrow_back,
-                color: Color.fromARGB(255, 0, 0, 0),
-              ),
-            ),
-          ),
-          const Text(
-            "Add a new reminder",
-            style: TextStyle(
-              color: pinkColor,
-              fontSize: 32,
-              fontFamily: 'Urbanist',
-              fontWeight: FontWeight.w600,
-              height: 1.30,
-              letterSpacing: -0.28,
-            ),
-          ),
-          const SizedBox(
-            height: 35,
-          ),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 18.0,
-                vertical: 0.0,
-              ),
-              decoration: const BoxDecoration(
-                color: Color(0xFFFFFFFF),
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(80.0),
+      body: SafeArea(
+        child: Column(
+          children: [
+            const Align(
+              alignment: Alignment.bottomLeft,
+              child: BackButton(
+                style: ButtonStyle(
+                  padding: MaterialStatePropertyAll(
+                    EdgeInsets.zero,
+                  ),
                 ),
               ),
-              child: SingleChildScrollView(
-                physics: const NeverScrollableScrollPhysics(),
-                child: Container(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5.0),
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            children: [
-                              Container(
-                                //title label
-                                margin: const EdgeInsets.only(top: 30, left: 5),
-                                alignment: Alignment.centerLeft,
-                                child: const Text(
-                                  "Reminder Title",
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    color: Color.fromARGB(255, 0, 0, 0),
-                                    fontSize: 20,
-                                    fontFamily: 'Urbanist',
-                                    fontWeight: FontWeight.w700,
-                                    height: 1.30,
-                                    letterSpacing: -0.28,
+            ),
+            const Text(
+              "Add a new reminder",
+              style: TextStyle(
+                color: Color(0xFFD77D7C),
+                fontSize: 32,
+                fontFamily: 'Urbanist',
+                fontWeight: FontWeight.w600,
+                // height: 1.30,
+                letterSpacing: -0.28,
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18.0,
+                  vertical: 0.0,
+                ),
+                decoration: const BoxDecoration(
+                  color: Color(0xFFFFFFFF),
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(80.0),
+                  ),
+                ),
+                child: SingleChildScrollView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  child: Container(
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5.0),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              children: [
+                                Container(
+                                  //title label
+                                  margin:
+                                      const EdgeInsets.only(top: 30, left: 5),
+                                  alignment: Alignment.centerLeft,
+                                  child: const Text(
+                                    "Reminder Title",
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                      color: Color.fromARGB(255, 0, 0, 0),
+                                      fontSize: 20,
+                                      fontFamily: 'Urbanist',
+                                      fontWeight: FontWeight.w700,
+                                      height: 1.30,
+                                      letterSpacing: -0.28,
+                                    ),
                                   ),
                                 ),
-                              ),
 
-                              Padding(
-                                //baby name text field
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 5.0),
-                                child: TextFormField(
-                                  maxLength: 25,
-                                  controller: _reminderTitleController,
-                                  style: const TextStyle(
-                                    fontSize: 22.0,
-                                    // color: pinkColor,
-                                  ),
-                                  decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 15.0, horizontal: 15),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                      gapPadding: 0.5,
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: const BorderSide(
-                                        width: 0.50,
-                                        color: Color.fromRGBO(255, 100, 100, 1),
-                                      ),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      gapPadding: 0.5,
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: const BorderSide(
-                                        width: 0.50,
-                                        color: Color.fromRGBO(255, 100, 100, 1),
-                                      ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      gapPadding: 0.5,
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: const BorderSide(
-                                        width: 0.50,
-                                        color:
-                                            Color.fromARGB(255, 221, 225, 232),
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      // gapPadding: 100,
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: const BorderSide(
-                                        width: 0.50,
-                                        color:
-                                            Color.fromARGB(255, 221, 225, 232),
-                                      ),
-                                    ),
-                                    filled: true,
-                                    fillColor: const Color(0xFFF7F8F9),
-                                  ),
-                                  // autovalidateMode:
-                                  //     AutovalidateMode.onUserInteraction,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return "This field cannot be empty.";
-                                    }
-                                    return null;
-                                    // if (!RegExp(r'^[a-z A-Z0-9]+$')
-                                    //     .hasMatch(value)) {
-                                    //   //allow alphanumerical only AND SPACE
-                                    //   return "Please enter letters only.";
-                                    // } else {
-                                    //   return null;
-                                    // }
-                                  },
-                                ),
-                              ), //end of text field
-
-                              /// Description
-                              Container(
-                                //title name label
-                                margin: const EdgeInsets.only(top: 5, left: 5),
-                                alignment: Alignment.centerLeft,
-                                child: const Text(
-                                  "Reminder Description",
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    color: Color.fromARGB(255, 0, 0, 0),
-                                    fontSize: 20,
-                                    fontFamily: 'Urbanist',
-                                    fontWeight: FontWeight.w700,
-                                    height: 1.30,
-                                    letterSpacing: -0.28,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                //baby name text field
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10.0),
-                                child: TextFormField(
-                                  maxLines: 3,
-                                  maxLength: 150,
-                                  style: const TextStyle(
-                                    fontSize: 22.0,
-                                    // color: pinkColor,
-                                  ),
-                                  controller: _reminderDescriptionController,
-                                  decoration: InputDecoration(
-                                    hintText: "Optional",
-                                    hintStyle: const TextStyle(
-                                      fontSize: 22.0,
+                                Padding(
+                                  //baby name text field
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 5.0),
+                                  child: TextFormField(
+                                    maxLength: 25,
+                                    controller: _reminderTitleController,
+                                    style: const TextStyle(
+                                      fontSize: 15.0,
+                                      fontFamily: 'Urbanist',
                                       // color: pinkColor,
                                     ),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 15.0, horizontal: 15),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                      gapPadding: 0.5,
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: const BorderSide(
-                                        width: 0.50,
-                                        color: Color.fromRGBO(255, 100, 100, 1),
+                                    decoration: InputDecoration(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 15.0, horizontal: 15),
+                                      focusedErrorBorder: OutlineInputBorder(
+                                        gapPadding: 0.5,
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: const BorderSide(
+                                          width: 0.50,
+                                          color:
+                                              Color.fromRGBO(255, 100, 100, 1),
+                                        ),
                                       ),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      gapPadding: 0.5,
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: const BorderSide(
-                                        width: 0.50,
-                                        color: Color.fromRGBO(255, 100, 100, 1),
+                                      errorBorder: OutlineInputBorder(
+                                        gapPadding: 0.5,
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: const BorderSide(
+                                          width: 0.50,
+                                          color:
+                                              Color.fromRGBO(255, 100, 100, 1),
+                                        ),
                                       ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      gapPadding: 0.5,
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: const BorderSide(
-                                        width: 0.50,
-                                        color:
-                                            Color.fromARGB(255, 221, 225, 232),
+                                      enabledBorder: OutlineInputBorder(
+                                        gapPadding: 0.5,
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: const BorderSide(
+                                          width: 0.50,
+                                          color: Color.fromARGB(
+                                              255, 221, 225, 232),
+                                        ),
                                       ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      // gapPadding: 100,
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: const BorderSide(
-                                        width: 0.50,
-                                        color:
-                                            Color.fromARGB(255, 221, 225, 232),
+                                      focusedBorder: OutlineInputBorder(
+                                        // gapPadding: 100,
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: const BorderSide(
+                                          width: 0.50,
+                                          color: Color.fromARGB(
+                                              255, 221, 225, 232),
+                                        ),
                                       ),
+                                      filled: true,
+                                      fillColor: const Color(0xFFF7F8F9),
                                     ),
-                                    filled: true,
-                                    fillColor: const Color(0xFFF7F8F9),
+                                    // autovalidateMode:
+                                    //     AutovalidateMode.onUserInteraction,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return "This field cannot be empty.";
+                                      }
+                                      return null;
+                                      // if (!RegExp(r'^[a-z A-Z0-9]+$')
+                                      //     .hasMatch(value)) {
+                                      //   //allow alphanumerical only AND SPACE
+                                      //   return "Please enter letters only.";
+                                      // } else {
+                                      //   return null;
+                                      // }
+                                    },
                                   ),
-                                  // autovalidateMode:
-                                  //     AutovalidateMode.onUserInteraction,
-                                  // validator: (value) {
-                                  //   if (value!.isEmpty) {
-                                  //     return "This field cannot be empty.";
-                                  //   }
-                                  //   if (!RegExp(r'^[a-z A-Z0-9]+$')
-                                  //       .hasMatch(value)) {
-                                  //     //allow alphanumerical only AND SPACE
-                                  //     return "Please enter letters only.";
-                                  //   } else {
-                                  //     return null;
-                                  //   }
-                                  // },
-                                ),
-                              ), //end of text field
+                                ), //end of text field
 
-                              /// End description
-                              Padding(
-                                padding: const EdgeInsets.only(top: 20.0),
-                                child: CustomResizeWidget(
+                                /// Description
+                                Container(
+                                  //title name label
+                                  margin:
+                                      const EdgeInsets.only(top: 5, left: 5),
+                                  alignment: Alignment.centerLeft,
+                                  child: const Text(
+                                    "Reminder Description",
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                      color: Color.fromARGB(255, 0, 0, 0),
+                                      fontSize: 20,
+                                      fontFamily: 'Urbanist',
+                                      fontWeight: FontWeight.w700,
+                                      height: 1.30,
+                                      letterSpacing: -0.28,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  //baby name text field
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10.0),
+                                  child: TextFormField(
+                                    maxLines: 3,
+                                    maxLength: 150,
+                                    style: const TextStyle(
+                                      fontSize: 15.0,
+                                      fontFamily: 'Urbanist',
+                                      // color: pinkColor,
+                                    ),
+                                    controller: _reminderDescriptionController,
+                                    decoration: InputDecoration(
+                                      hintText: "Optional",
+                                      hintStyle: const TextStyle(
+                                        fontSize: 15.0,
+                                        fontFamily: 'Urbanist',
+                                        // color: pinkColor,
+                                      ),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 15.0, horizontal: 15),
+                                      focusedErrorBorder: OutlineInputBorder(
+                                        gapPadding: 0.5,
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: const BorderSide(
+                                          width: 0.50,
+                                          color:
+                                              Color.fromRGBO(255, 100, 100, 1),
+                                        ),
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                        gapPadding: 0.5,
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: const BorderSide(
+                                          width: 0.50,
+                                          color:
+                                              Color.fromRGBO(255, 100, 100, 1),
+                                        ),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        gapPadding: 0.5,
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: const BorderSide(
+                                          width: 0.50,
+                                          color: Color.fromARGB(
+                                              255, 221, 225, 232),
+                                        ),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        // gapPadding: 100,
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: const BorderSide(
+                                          width: 0.50,
+                                          color: Color.fromARGB(
+                                              255, 221, 225, 232),
+                                        ),
+                                      ),
+                                      filled: true,
+                                      fillColor: const Color(0xFFF7F8F9),
+                                    ),
+                                    // autovalidateMode:
+                                    //     AutovalidateMode.onUserInteraction,
+                                    // validator: (value) {
+                                    //   if (value!.isEmpty) {
+                                    //     return "This field cannot be empty.";
+                                    //   }
+                                    //   if (!RegExp(r'^[a-z A-Z0-9]+$')
+                                    //       .hasMatch(value)) {
+                                    //     //allow alphanumerical only AND SPACE
+                                    //     return "Please enter letters only.";
+                                    //   } else {
+                                    //     return null;
+                                    //   }
+                                    // },
+                                  ),
+                                ), //end of text field
+
+                                /// End description
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 20.0),
+                                  child: CustomResizeWidget(
+                                    children: <Widget>[
+                                      const Text(
+                                        "Date",
+                                        style: TextStyle(
+                                          color: Color.fromARGB(255, 0, 0, 0),
+                                          fontSize: 20,
+                                          fontFamily: 'Urbanist',
+                                          fontWeight: FontWeight.w700,
+                                          height: 1.30,
+                                          letterSpacing: -0.28,
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      Row(
+                                        children: [
+                                          CupertinoButton(
+                                            padding: EdgeInsets.zero,
+                                            // Display a CupertinoDatePicker in date picker mode.
+                                            onPressed: _showDatePicker,
+                                            child: Text(
+                                              '${selectedDate.month}-${selectedDate.day}-${selectedDate.year}',
+                                              style: const TextStyle(
+                                                fontSize: 22.0,
+                                                fontFamily: 'Urbanist',
+
+                                                /// Date Color
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: _showDatePicker,
+                                            child: const Padding(
+                                              padding:
+                                                  EdgeInsetsDirectional.only(
+                                                      start: 5),
+                                              child: Icon(
+                                                Icons.keyboard_arrow_down,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                CustomResizeWidget(
                                   children: <Widget>[
                                     const Text(
-                                      "Date",
+                                      "Time",
                                       style: TextStyle(
                                         color: Color.fromARGB(255, 0, 0, 0),
                                         fontSize: 20,
@@ -642,25 +703,28 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                         letterSpacing: -0.28,
                                       ),
                                     ),
-                                    const Spacer(),
                                     Row(
                                       children: [
                                         CupertinoButton(
                                           padding: EdgeInsets.zero,
-                                          // Display a CupertinoDatePicker in date picker mode.
-                                          onPressed: _showDatePicker,
+                                          // Display a CupertinoDatePicker in time picker mode.
+                                          onPressed: _showTimePicker,
+                                          // In this example, the time value is formatted manually.
+                                          // You can use the intl package to format the value based on
+                                          // the user's locale settings.
                                           child: Text(
-                                            '${selectedDate.month}-${selectedDate.day}-${selectedDate.year}',
+                                            timeFormat,
                                             style: const TextStyle(
                                               fontSize: 22.0,
+                                              fontFamily: 'Urbanist',
 
-                                              /// Date Color
+                                              /// Time Color
                                               color: Colors.black,
                                             ),
                                           ),
                                         ),
                                         GestureDetector(
-                                          onTap: _showDatePicker,
+                                          onTap: _showTimePicker,
                                           child: const Padding(
                                             padding: EdgeInsetsDirectional.only(
                                                 start: 5),
@@ -674,312 +738,273 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                     ),
                                   ],
                                 ),
-                              ),
-                              CustomResizeWidget(
-                                children: <Widget>[
-                                  const Text(
-                                    "Time",
-                                    style: TextStyle(
-                                      color: Color.fromARGB(255, 0, 0, 0),
-                                      fontSize: 20,
-                                      fontFamily: 'Urbanist',
-                                      fontWeight: FontWeight.w700,
-                                      height: 1.30,
-                                      letterSpacing: -0.28,
-                                    ),
-                                  ),
-                                  Row(
-                                    children: [
-                                      CupertinoButton(
-                                        padding: EdgeInsets.zero,
-                                        // Display a CupertinoDatePicker in time picker mode.
-                                        onPressed: _showTimePicker,
-                                        // In this example, the time value is formatted manually.
-                                        // You can use the intl package to format the value based on
-                                        // the user's locale settings.
-                                        child: Text(
-                                          timeFormat,
-                                          style: const TextStyle(
-                                            fontSize: 22.0,
 
-                                            /// Time Color
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: _showTimePicker,
-                                        child: const Padding(
-                                          padding: EdgeInsetsDirectional.only(
-                                              start: 5),
-                                          child: Icon(
-                                            Icons.keyboard_arrow_down,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-
-                              /// Repeat Widget
-                              CustomResizeWidget(
-                                onTap: () async {
-                                  await showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return DaysDialog(
-                                        days: days,
-                                        selectedDays: selectedDays,
-                                      );
-                                    },
-                                  ).then((value) {
-                                    setState(() {
-                                      selectedDays.sort(
-                                          (a, b) => a['id'].compareTo(b['id']));
+                                /// Repeat Widget
+                                CustomResizeWidget(
+                                  onTap: () async {
+                                    await showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return DaysDialog(
+                                          days: days,
+                                          selectedDays: selectedDays,
+                                        );
+                                      },
+                                    ).then((value) {
+                                      setState(() {
+                                        selectedDays.sort((a, b) =>
+                                            a['id'].compareTo(b['id']));
+                                      });
                                     });
-                                  });
-                                },
-                                children: [
-                                  const Text(
-                                    "Repeat",
-                                    style: TextStyle(
-                                      // color: Colors.black,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
+                                  },
+                                  children: [
+                                    const Text(
+                                      "Repeat",
+                                      style: TextStyle(
+                                        // color: Colors.black,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Urbanist',
+                                      ),
                                     ),
-                                  ),
-                                  Expanded(
-                                    flex: 3,
-                                    child: Padding(
-                                      padding: const EdgeInsetsDirectional.only(
-                                          start: 10),
-                                      child: SingleChildScrollView(
-                                        // padding: const EdgeInsets.symmetric(horizontal: 10),
-                                        scrollDirection: Axis.horizontal,
-                                        reverse: true,
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: selectedDays.isEmpty
-                                              ? [
-                                                  const Text(
-                                                    "Never",
-                                                    style: TextStyle(
-                                                      fontSize: 22.0,
+                                    Expanded(
+                                      flex: 3,
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsetsDirectional.only(
+                                                start: 10),
+                                        child: SingleChildScrollView(
+                                          // padding: const EdgeInsets.symmetric(horizontal: 10),
+                                          scrollDirection: Axis.horizontal,
+                                          reverse: true,
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: selectedDays.isEmpty
+                                                ? [
+                                                    const Text(
+                                                      "Never",
+                                                      style: TextStyle(
+                                                        fontSize: 18.0,
+                                                        fontFamily: 'Urbanist',
 
-                                                      /// Never Color
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-                                                ]
-                                              : List.generate(
-                                                  selectedDays.length,
-                                                  (index) {
-                                                    return Padding(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 5.0),
-                                                      child: Text(
-                                                        selectedDays[index]
-                                                            ['short'],
-                                                        style: const TextStyle(
-                                                          fontSize: 22.0,
-
-                                                          /// Selected days Color
-                                                          color: Colors.black,
-                                                        ),
+                                                        /// Never Color
+                                                        color: Colors.black,
                                                       ),
-                                                    );
-                                                  },
-                                                ),
+                                                    ),
+                                                  ]
+                                                : List.generate(
+                                                    selectedDays.length,
+                                                    (index) {
+                                                      return Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal:
+                                                                    5.0),
+                                                        child: Text(
+                                                          selectedDays[index]
+                                                              ['short'],
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 18.0,
+                                                            fontFamily:
+                                                                'Urbanist',
+
+                                                            /// Selected days Color
+                                                            color: Colors.black,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  const Padding(
-                                    padding:
-                                        EdgeInsetsDirectional.only(start: 5),
-                                    child: Icon(
-                                      Icons.keyboard_arrow_down,
-                                      // color: Colors.black,
+                                    const Padding(
+                                      padding:
+                                          EdgeInsetsDirectional.only(start: 5),
+                                      child: Icon(
+                                        Icons.keyboard_arrow_down,
+                                        // color: Colors.black,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              // Container(
-                              //   margin:
-                              //       const EdgeInsets.symmetric(vertical: 15),
-                              //   // decoration: const BoxDecoration(
-                              //   //   border: Border(
-                              //   //     top: BorderSide(
-                              //   //       color: CupertinoColors.inactiveGray,
-                              //   //       width: 0.0,
-                              //   //     ),
-                              //   //     bottom: BorderSide(
-                              //   //       color: CupertinoColors.inactiveGray,
-                              //   //       width: 0.0,
-                              //   //     ),
-                              //   //   ),
-                              //   // ),
-                              //   child: _DatePickerItem(
-                              //     child: GestureDetector(
-                              //       onTap: () async {
-                              //         await showDialog(
-                              //           context: context,
-                              //           builder: (context) {
-                              //             return DaysDialog(
-                              //               days: days,
-                              //               selectedDays: selectedDays,
-                              //             );
-                              //           },
-                              //         ).then((value) {
-                              //           setState(() {
-                              //             selectedDays.sort((a, b) =>
-                              //                 a['id'].compareTo(b['id']));
-                              //           });
-                              //         });
-                              //       },
-                              //       child: Container(
-                              //         width:
-                              //             MediaQuery.sizeOf(context).width * 0.94,
-                              //         height: 55,
-                              //         padding: const EdgeInsets.symmetric(
-                              //             horizontal: 10),
-                              //         child: Row(
-                              //           mainAxisAlignment:
-                              //               MainAxisAlignment.spaceBetween,
-                              //           // mainAxisSize: MainAxisSize.min,
-                              //           children: [
-                              //             const Text(
-                              //               "Repeat",
-                              //               style: TextStyle(
-                              //                 // color: Colors.black,
-                              //                 fontSize: 20,
-                              //                 fontWeight: FontWeight.bold,
-                              //               ),
-                              //             ),
-                              //             Expanded(
-                              //               flex: 3,
-                              //               child: Padding(
-                              //                 padding: const EdgeInsetsDirectional
-                              //                     .only(start: 10),
-                              //                 child: SingleChildScrollView(
-                              //                   // padding: const EdgeInsets.symmetric(horizontal: 10),
-                              //                   scrollDirection: Axis.horizontal,
-                              //                   reverse: true,
-                              //                   child: Row(
-                              //                     mainAxisSize: MainAxisSize.min,
-                              //                     children: selectedDays.isEmpty
-                              //                         ? [
-                              //                             const Text(
-                              //                               "Never",
-                              //                               style: TextStyle(
-                              //                                 fontSize: 22.0,
-                              //                                 color: Color(
-                              //                                     0xFFD77D7C),
-                              //                               ),
-                              //                             ),
-                              //                           ]
-                              //                         : List.generate(
-                              //                             selectedDays.length,
-                              //                             (index) {
-                              //                               return Padding(
-                              //                                 padding:
-                              //                                     const EdgeInsets
-                              //                                         .symmetric(
-                              //                                         horizontal:
-                              //                                             5.0),
-                              //                                 child: Text(
-                              //                                   selectedDays[
-                              //                                           index]
-                              //                                       ['short'],
-                              //                                   style:
-                              //                                       const TextStyle(
-                              //                                     fontSize: 22.0,
-                              //                                     color: Color(
-                              //                                         0xFFD77D7C),
-                              //                                   ),
-                              //                                 ),
-                              //                               );
-                              //                             },
-                              //                           ),
-                              //                   ),
-                              //                 ),
-                              //               ),
-                              //             ),
-                              //             const Padding(
-                              //               padding: EdgeInsetsDirectional.only(
-                              //                   start: 5),
-                              //               child: Icon(
-                              //                 Icons.keyboard_arrow_down,
-                              //                 // color: Colors.black,
-                              //               ),
-                              //             ),
-                              //           ],
-                              //         ),
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
-
-                              // Container(
-                              //   decoration: const BoxDecoration(
-                              //     color: blackColor,
-                              //     border: Border(
-                              //       bottom: BorderSide(
-                              //         color: blackColor,
-                              //         width: 1.0,
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
-
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(errorMessage, style: textStyle),
-                              ),
-                              const SizedBox(height: 30),
-                              SizedBox(
-                                // width: MediaQuery.sizeOf(context).width * 0.55,
-                                //start journey button
-                                child: ElevatedButton(
-                                  onPressed: addNewReminder,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: blackColor,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(40)),
-                                    padding: const EdgeInsets.only(
-                                        left: 85,
-                                        top: 15,
-                                        right: 85,
-                                        bottom: 15),
-                                  ),
-                                  child: isLoading
-                                      ? const Center(
-                                          child: SizedBox(
-                                            width: 22,
-                                            height: 22,
-                                            child: CircularProgressIndicator(),
-                                          ),
-                                        )
-                                      : const Text(
-                                          "Add Reminder",
-                                        ),
+                                  ],
                                 ),
-                              )
-                            ],
+                                // Container(
+                                //   margin:
+                                //       const EdgeInsets.symmetric(vertical: 15),
+                                //   // decoration: const BoxDecoration(
+                                //   //   border: Border(
+                                //   //     top: BorderSide(
+                                //   //       color: CupertinoColors.inactiveGray,
+                                //   //       width: 0.0,
+                                //   //     ),
+                                //   //     bottom: BorderSide(
+                                //   //       color: CupertinoColors.inactiveGray,
+                                //   //       width: 0.0,
+                                //   //     ),
+                                //   //   ),
+                                //   // ),
+                                //   child: _DatePickerItem(
+                                //     child: GestureDetector(
+                                //       onTap: () async {
+                                //         await showDialog(
+                                //           context: context,
+                                //           builder: (context) {
+                                //             return DaysDialog(
+                                //               days: days,
+                                //               selectedDays: selectedDays,
+                                //             );
+                                //           },
+                                //         ).then((value) {
+                                //           setState(() {
+                                //             selectedDays.sort((a, b) =>
+                                //                 a['id'].compareTo(b['id']));
+                                //           });
+                                //         });
+                                //       },
+                                //       child: Container(
+                                //         width:
+                                //             MediaQuery.sizeOf(context).width * 0.94,
+                                //         height: 55,
+                                //         padding: const EdgeInsets.symmetric(
+                                //             horizontal: 10),
+                                //         child: Row(
+                                //           mainAxisAlignment:
+                                //               MainAxisAlignment.spaceBetween,
+                                //           // mainAxisSize: MainAxisSize.min,
+                                //           children: [
+                                //             const Text(
+                                //               "Repeat",
+                                //               style: TextStyle(
+                                //                 // color: Colors.black,
+                                //                 fontSize: 20,
+                                //                 fontWeight: FontWeight.bold,
+                                //               ),
+                                //             ),
+                                //             Expanded(
+                                //               flex: 3,
+                                //               child: Padding(
+                                //                 padding: const EdgeInsetsDirectional
+                                //                     .only(start: 10),
+                                //                 child: SingleChildScrollView(
+                                //                   // padding: const EdgeInsets.symmetric(horizontal: 10),
+                                //                   scrollDirection: Axis.horizontal,
+                                //                   reverse: true,
+                                //                   child: Row(
+                                //                     mainAxisSize: MainAxisSize.min,
+                                //                     children: selectedDays.isEmpty
+                                //                         ? [
+                                //                             const Text(
+                                //                               "Never",
+                                //                               style: TextStyle(
+                                //                                 fontSize: 22.0,
+                                //                                 color: Color(
+                                //                                     0xFFD77D7C),
+                                //                               ),
+                                //                             ),
+                                //                           ]
+                                //                         : List.generate(
+                                //                             selectedDays.length,
+                                //                             (index) {
+                                //                               return Padding(
+                                //                                 padding:
+                                //                                     const EdgeInsets
+                                //                                         .symmetric(
+                                //                                         horizontal:
+                                //                                             5.0),
+                                //                                 child: Text(
+                                //                                   selectedDays[
+                                //                                           index]
+                                //                                       ['short'],
+                                //                                   style:
+                                //                                       const TextStyle(
+                                //                                     fontSize: 22.0,
+                                //                                     color: Color(
+                                //                                         0xFFD77D7C),
+                                //                                   ),
+                                //                                 ),
+                                //                               );
+                                //                             },
+                                //                           ),
+                                //                   ),
+                                //                 ),
+                                //               ),
+                                //             ),
+                                //             const Padding(
+                                //               padding: EdgeInsetsDirectional.only(
+                                //                   start: 5),
+                                //               child: Icon(
+                                //                 Icons.keyboard_arrow_down,
+                                //                 // color: Colors.black,
+                                //               ),
+                                //             ),
+                                //           ],
+                                //         ),
+                                //       ),
+                                //     ),
+                                //   ),
+                                // ),
+
+                                // Container(
+                                //   decoration: const BoxDecoration(
+                                //     color: blackColor,
+                                //     border: Border(
+                                //       bottom: BorderSide(
+                                //         color: blackColor,
+                                //         width: 1.0,
+                                //       ),
+                                //     ),
+                                //   ),
+                                // ),
+
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(errorMessage, style: textStyle),
+                                ),
+                                const SizedBox(height: 30),
+                                SizedBox(
+                                  height: 45.0,
+                                  child: ElevatedButton(
+                                    onPressed: addNewReminder,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: blackColor,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(40)),
+                                      padding: const EdgeInsets.only(
+                                          left: 85,
+                                          top: 15,
+                                          right: 85,
+                                          bottom: 15),
+                                    ),
+                                    child: isLoading
+                                        ? const Center(
+                                            child: SizedBox(
+                                              width: 22,
+                                              height: 22,
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ),
+                                          )
+                                        : const Text(
+                                            "Add Reminder",
+                                          ),
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -1062,6 +1087,7 @@ class _DaysDialogState extends State<DaysDialog> {
             child: const Text("Cancel",
                 style: TextStyle(
                   color: Colors.black,
+                  fontFamily: 'Urbanist',
                 )),
           ),
           TextButton(
@@ -1078,7 +1104,10 @@ class _DaysDialogState extends State<DaysDialog> {
             },
             child: const Text(
               "Save",
-              style: TextStyle(color: pinkColor),
+              style: TextStyle(
+                color: pinkColor,
+                fontFamily: 'Urbanist',
+              ),
             ),
           ),
         ],
