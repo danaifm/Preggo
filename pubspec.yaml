@@ -35,7 +35,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-
+  alarm: ^2.0.1
   flutter_datetime_picker: ^1.5.1
   jiffy: ^6.2.1
   googleapis_auth: ^1.4.1
@@ -54,9 +54,7 @@ dependencies:
   intl_phone_field: ^3.2.0
   fluttertoast: ^8.2.2
   dropdown_search: ^5.0.6
-
   email_validator: ^2.1.17
-  alarm: ^2.0.1
 
 
 dev_dependencies:

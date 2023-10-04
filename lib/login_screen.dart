@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:preggo/NavBar.dart';
 import 'package:preggo/SignUp.dart';
 import 'package:preggo/SplashScreen.dart';
+import 'package:preggo/addAppointment.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/forget_password_screen.dart';
 import 'package:preggo/screens/add_reminder_screen.dart';
@@ -310,11 +311,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: GestureDetector(
                             onTap: () {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        ForgetPasswordScreen(),
-                                  ));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ForgetPasswordScreen(),
+                                ),
+                              );
                             },
                             child: const Text(
                               'Forgot Password?',

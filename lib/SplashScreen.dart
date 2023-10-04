@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:preggo/SignUp.dart';
+import 'package:preggo/addAppointment.dart';
 import 'package:preggo/login_screen.dart';
 
 
@@ -18,8 +20,7 @@ class _SplashScreenState extends State<SplashScreen>
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (_) =>
-              const LoginScreen() // => the next page after the splashscreen
+          builder: (_) => SignUp() // => the next page after the splashscreen
           ));
     });
   }
