@@ -57,7 +57,7 @@ class _viewReminders extends State<viewReminders> {
             Center( //notification bell image 
             child: Padding(
               padding: EdgeInsets.only(top: 100),
-              child: Image.asset('assets/images/notification.png', height: 140, width: 140,),
+              child: Image.asset('assets/images/notification.png', height: 100, width: 100,),
               
               ),
             ),

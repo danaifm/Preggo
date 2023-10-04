@@ -41,7 +41,7 @@ class _reminderDetails extends State<reminderDetails>{
         var date = data['date'];
         
         return Container(
-          padding: EdgeInsets.symmetric(horizontal: 10,vertical: 30),
+          padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
           child: Column(
             children: [
               Row(
@@ -204,7 +204,7 @@ class _reminderDetails extends State<reminderDetails>{
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(80.0),
+                  top: Radius.circular(50.0),
                   ),
               ),
 
