@@ -1,4 +1,3 @@
-import 'package:preggo/addAppointment.dart';
 import 'package:preggo/profile_screen.dart';
 import 'package:preggo/screens/PregnancyTracking.dart';
 import 'package:preggo/screens/CommunityPage.dart';
@@ -6,8 +5,6 @@ import 'package:preggo/screens/CommunityPage.dart';
 import 'package:preggo/screens/ToolsPage.dart';
 import 'package:preggo/screens/ArticlesPage.dart';
 import 'package:flutter/material.dart';
-import 'package:googleapis/calendar/v3.dart' as Cal;
-import 'package:google_sign_in/google_sign_in.dart';
 
 class NavBar extends StatefulWidget {
   const NavBar({super.key});
@@ -144,31 +141,10 @@ class _NavBar extends State<NavBar> {
                   // tools page
                   MaterialButton(
                     minWidth: 40,
-                    onPressed: () async {
-                      const _scopes = [
-                        Cal.CalendarApi.calendarScope
-                      ]; //scope to CREATE EVENT in calendar
-
-                      GoogleSignIn _googleSignIn = GoogleSignIn(
-                        // Optional clientId
-                        // clientId: 'your-client_id.apps.googleusercontent.com',
-                        scopes: _scopes,
-                      );
-
-                      Future<void> _handleSignIn() async {
-                        try {
-                          await _googleSignIn.signIn();
-                        } catch (error) {
-                          print(error);
-                        }
-                      }
-
-                      await _handleSignIn();
+                    onPressed: () {
                       setState(() {
-                        currentScreen = addAppointment();
+                        currentScreen = const ToolsPage();
                         currentTab = 3;
-                        print('HELLOHELLO');
-                        print(_googleSignIn.currentUser);
                       });
                     },
                     child: Column(

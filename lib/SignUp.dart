@@ -2,7 +2,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:preggo/NavBar.dart';
-import 'package:preggo/addAppointment.dart';
 import 'package:preggo/login_screen.dart';
 import 'package:preggo/start_Journey.dart';
 import 'package:string_validator/string_validator.dart';
@@ -62,12 +61,12 @@ class _SignUpState extends State<SignUp> {
       return query.docs.isNotEmpty;
     }
 
-    uniqueEmail(String email) async {
+    Future<bool> uniqueEmail(String email) async {
       QuerySnapshot query = await FirebaseFirestore.instance
           .collection('users')
           .where('email', isEqualTo: email.toLowerCase())
           .get();
-      return await query.docs.isNotEmpty;
+      return query.docs.isNotEmpty;
     }
 
     Future<bool> uniquePhone(String phone) async {
@@ -80,16 +79,6 @@ class _SignUpState extends State<SignUp> {
         print("phone is taken");
       }
       return query.docs.isNotEmpty;
-    }
-
-    uniqueEmail2(String email) async {
-      QuerySnapshot query = await FirebaseFirestore.instance
-          .collection('users')
-          .where('email', isEqualTo: email.toLowerCase())
-          .get();
-      setState(() {
-        emailTaken = query.docs.isNotEmpty;
-      });
     }
 
     // bool hasSpecial(x) {
@@ -174,8 +163,6 @@ class _SignUpState extends State<SignUp> {
                             height: 85,
                             constraints: BoxConstraints(maxHeight: 100),
                             child: TextFormField(
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
                               maxLength: 25,
                               controller: _usernameController,
                               key: _usernameKey,
@@ -237,14 +224,6 @@ class _SignUpState extends State<SignUp> {
                             height: 85,
                             constraints: BoxConstraints(maxHeight: 100),
                             child: TextFormField(
-                              onChanged: (value) async {
-                                var x = await uniqueEmail(value);
-                                setState(() {
-                                  emailTaken = x;
-                                });
-                              },
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
                               maxLength: 50,
                               controller: _emailController,
                               key: _emailKey,
@@ -284,10 +263,10 @@ class _SignUpState extends State<SignUp> {
                                   if (specialchar.hasMatch(value)) {
                                     return "Incorrect email format.";
                                   }
-                                  // var dot = '.'.allMatches(value).length;
-                                  // if (dot > 1) {
-                                  //   return "Incorrect email format.";
-                                  // } //could be removed in the future if we can fix firebase invalid-email exception
+                                  var dot = '.'.allMatches(value).length;
+                                  if (dot > 1) {
+                                    return "Incorrect email format.";
+                                  } //could be removed in the future if we can fix firebase invalid-email exception
                                   if (value
                                           .substring(value.indexOf('.') + 1)
                                           .length <
@@ -345,19 +324,10 @@ class _SignUpState extends State<SignUp> {
                             height: 85,
                             constraints: BoxConstraints(maxHeight: 100),
                             child: TextFormField(
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
                               maxLength: 10,
                               controller: _phoneController,
                               key: _phoneKey,
                               onChanged: (p) => phoneNo = p.toString(),
-                              // onChanged: (p) async {
-                              //   phoneNo = p.toString();
-                              //   var x = await uniquePhone(p);
-                              //   setState(() {
-                              //     phoneTaken = x;
-                              //   });
-                              // },
                               /*
                                         phone number validations
                                         --FRONT END--
@@ -384,7 +354,8 @@ class _SignUpState extends State<SignUp> {
                                     phone.toString().length != 10) {
                                   return 'Phone number must be 10 digits.';
                                   // } else if (phoneTaken) {
-                                  //   return 'Phone number is already taken!';
+                                  //
+                                  // return 'Phone number is already taken!';
                                 } else if (phone.toString().length == 10 &&
                                     phone.toString().substring(0, 2) != '05') {
                                   return 'Incorrect phone number format.';
@@ -431,8 +402,6 @@ class _SignUpState extends State<SignUp> {
                             height: 95,
                             constraints: BoxConstraints(maxHeight: 95),
                             child: TextFormField(
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
                               controller: _passwordController,
                               maxLength: 50,
 
@@ -549,7 +518,7 @@ class _SignUpState extends State<SignUp> {
                                   return null;
                                 }
                                 _formKey.currentState?.save();
-                                if (_phoneController.text.isEmpty) {
+                                if (phoneNo.isEmpty) {
                                   Map<String, String> dataToSave = {
                                     'username':
                                         _usernameController.text.toLowerCase(),
@@ -578,7 +547,6 @@ class _SignUpState extends State<SignUp> {
                                       .doc(userCredential.user!.uid)
                                       .set(dataToSave);
                                   print('Registration successful with phone');
-                                  print(_phoneController.text);
                                 }
 
                                 Navigator.push(
@@ -616,7 +584,7 @@ class _SignUpState extends State<SignUp> {
                                   Navigator.of(context).pushAndRemoveUntil(
                                       MaterialPageRoute(
                                     builder: (context) {
-                                      return LoginScreen();
+                                      return const LoginScreen();
                                     },
                                   ), (route) => false);
                                 },

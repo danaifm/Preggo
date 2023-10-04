@@ -423,37 +423,33 @@ class _fillPregnancyInfo extends State<pregnancyInfo> {
                                         showError = false;
                                       }
                                     });
-                                    if (gender != null) {
-                                      if (_formKey.currentState!.validate()) {
-                                        String babyName =
-                                            _babynameController.text;
-                                        String? babyGender = gender;
-                                        String currentWeek = selectedWeek;
-                                        String weekNum =
-                                            currentWeek.substring(5);
-                                        int weekNo = int.parse(weekNum);
 
-                                        calculateDueDate(int week) {
-                                          const fullTerm = 40;
-                                          int daysToAdd = (fullTerm - week) * 7;
-                                          DateTime currentDate = DateTime.now();
-                                          DateTime calculatedDueDate =
-                                              currentDate.add(
-                                                  Duration(days: daysToAdd));
-                                          return calculatedDueDate;
-                                        }
+                                    if (_formKey.currentState!.validate()) {
+                                      String babyName =
+                                          _babynameController.text;
+                                      String? babyGender = gender;
+                                      String currentWeek = selectedWeek;
+                                      String weekNum = currentWeek.substring(5);
+                                      int weekNo = int.parse(weekNum);
 
-                                        DateTime dueDate =
-                                            calculateDueDate(weekNo);
-                                        addPregnancyInfo(
-                                            babyName, babyGender!, dueDate);
-
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    NavBar()));
+                                      calculateDueDate(int week) {
+                                        const fullTerm = 40;
+                                        int daysToAdd = (fullTerm - week) * 7;
+                                        DateTime currentDate = DateTime.now();
+                                        DateTime calculatedDueDate = currentDate
+                                            .add(Duration(days: daysToAdd));
+                                        return calculatedDueDate;
                                       }
+
+                                      DateTime dueDate =
+                                          calculateDueDate(weekNo);
+                                      addPregnancyInfo(
+                                          babyName, babyGender!, dueDate);
+
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => NavBar()));
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(

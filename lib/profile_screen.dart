@@ -2,9 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/login_screen.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:preggo/addAppointment.dart';
-import 'package:googleapis/calendar/v3.dart' as Cal;
 
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({super.key});
@@ -329,30 +326,14 @@ class ProfileScreen extends StatelessWidget {
                                         ),
                                       ),
                                       onTap: () {
-                                        const _scopes = const [
-                                          Cal.CalendarApi.calendarScope
-                                        ]; //scope to CREATE EVENT in calendar
-                                        GoogleSignIn _googleSignIn =
-                                            GoogleSignIn(
-                                          // Optional clientId
-                                          // clientId: 'your-client_id.apps.googleusercontent.com',
-                                          scopes: _scopes,
-                                        );
-
-                                        _googleSignIn.disconnect();
-
-                                        //disconnect the authorized google account on logging out
-                                        auth.signOut().then(
-                                          (value) {
-                                            Navigator.push(
+                                        auth.signOut().then((value) {
+                                          Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
                                                     const LoginScreen(),
-                                              ),
-                                            );
-                                          },
-                                        );
+                                              ));
+                                        });
                                       },
                                     ),
                                   ],

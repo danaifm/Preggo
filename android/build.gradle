@@ -5,13 +5,10 @@ buildscript {
         mavenCentral()
     }
 
-// apply plugin: 'com.android.application'
-
     dependencies {
         classpath 'com.google.gms:google-services:4.3.15'
         classpath 'com.android.tools.build:gradle:7.3.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        // testImplementation 'com.google.android.gms:play-services-auth:20.7.0'
     }
 }
 
