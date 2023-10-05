@@ -401,7 +401,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                         child: Column(
                           children: [
                             Text(
-                              'Highlight of The Week',
+                              'Highlights of The Week',
                               style: TextStyle(
                                 color: pinkColor,
                                 fontWeight: FontWeight.bold,
