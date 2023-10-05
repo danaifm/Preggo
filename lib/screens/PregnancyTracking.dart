@@ -6,7 +6,6 @@ import 'package:flutter/rendering.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:preggo/colors.dart';
 
-
 class weeklyModel {}
 
 class PregnancyTracking extends StatefulWidget {
@@ -54,6 +53,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
   int currentWeek = 1;
 
   int currentWeekProgress = 0;
+  String currentWeekPregnant = "";
 
   var firestore = FirebaseFirestore.instance.collection('pregnancytracking');
   late final Future myFuture = getDueDate();
@@ -314,14 +314,14 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                       ],
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 20),
+                      margin: EdgeInsets.only(top: 10),
                       padding: EdgeInsets.all(5),
                       width: 330,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         border: Border.all(
                           color: Color.fromRGBO(249, 220, 222, 1),
-                          width: 1.5,
+                          width: 0.1,
                         ),
                         borderRadius: BorderRadius.circular(10),
                         boxShadow: [
@@ -340,19 +340,29 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                 fit: BoxFit.cover,
-                                image: AssetImage(allWeeks[0][2]),
+                                image: AssetImage("assets/images/sperm.png"),
                               ),
                               borderRadius: BorderRadius.circular(500),
                             ),
                           ),
                           Expanded(
-                            child: Slider(
-                              value: currentWeekProgress.toDouble(),
-                              min: 0,
-                              max: 270,
-                              onChanged: (double value) {},
-                              activeColor: pinkColor,
-                              inactiveColor: pinkColor,
+                            child: Column(
+                              children: [
+                                Slider(
+                                  value: currentWeekProgress.toDouble(),
+                                  min: 0,
+                                  max: 270,
+                                  onChanged: (double value) {},
+                                  activeColor: pinkColor,
+                                  inactiveColor: pinkColor,
+                                ),
+                                Text(
+                                  "You’re currently pregnant in week $data",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           Container(
@@ -362,7 +372,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                 fit: BoxFit.cover,
-                                image: AssetImage(allWeeks[39][2]),
+                                image: AssetImage("assets/images/baby-girl.png"),
                               ),
                               borderRadius: BorderRadius.circular(500),
                             ),
@@ -370,50 +380,10 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                         ],
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(top: 20),
-                      padding: EdgeInsets.all(5),
-                      height: 125,
-                      width: 330,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(
-                            color: Color.fromRGBO(249, 220, 222, 1),
-                            width: 1.5),
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                              blurRadius: 2,
-                              spreadRadius: 0.5,
-                              color: Colors.grey)
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          Text(
-                            'Highlights This Week',
-                            style: TextStyle(
-                              color: pinkColor,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Expanded(
-                            child: ListView(
-                              padding: EdgeInsets.only(top: 5),
-                              children: [
-                                Text(motherChanges()),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Visibility(
-                      visible: selected != 0 && selected != 1,
+                    Expanded(
                       child: Container(
-                        margin: EdgeInsets.only(top: 20),
+                        margin: EdgeInsets.only(top: 10),
                         padding: EdgeInsets.all(5),
-                        height: 125,
                         width: 330,
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -431,7 +401,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                         child: Column(
                           children: [
                             Text(
-                              'Baby Development ',
+                              'Highlight of The Week',
                               style: TextStyle(
                                 color: pinkColor,
                                 fontWeight: FontWeight.bold,
@@ -441,11 +411,53 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                               child: ListView(
                                 padding: EdgeInsets.only(top: 5),
                                 children: [
-                                  Text(babyChanges()),
+                                  Text(motherChanges()),
                                 ],
                               ),
                             ),
                           ],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Visibility(
+                        visible: selected != 0 && selected != 1,
+                        child: Container(
+                          margin: EdgeInsets.only(top: 10),
+                          padding: EdgeInsets.all(5),
+                          width: 330,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                                color: Color.fromRGBO(249, 220, 222, 1),
+                                width: 1.5),
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                  blurRadius: 2,
+                                  spreadRadius: 0.5,
+                                  color: Colors.grey)
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                'Baby Development ',
+                                style: TextStyle(
+                                  color: pinkColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Expanded(
+                                child: ListView(
+                                  padding: EdgeInsets.only(top: 5),
+                                  children: [
+                                    Text(babyChanges()),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -498,7 +510,14 @@ class _PregnancyTracking extends State<PregnancyTracking> {
       Timestamp timestamp = value.docs.first.data()["DueDate"];
       var date = timestamp.toDate();
 
-      currentWeekProgress = 270 - date.difference(DateTime.now()).inDays;
+      currentWeekProgress = 280 - date.difference(DateTime.now()).inDays;
+
+      DateTime today = DateTime.now();
+
+      print(date);
+      int weeksPregnant = 40 - (date.difference(today).inDays) ~/ 7;
+      currentWeekPregnant = weeksPregnant.toString();
+
       setState(() {});
     });
   }
