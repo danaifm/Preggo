@@ -244,7 +244,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                   padding: const EdgeInsets.all(15),
                                   decoration: const BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: Colors.green,
+                                    color: green,
                                     // color: pinkColor,
                                     // border: Border.all(
                                     //   width: 1.3,
