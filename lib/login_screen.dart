@@ -6,6 +6,9 @@ import 'package:preggo/SignUp.dart';
 import 'package:preggo/SplashScreen.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/forget_password_screen.dart';
+import 'package:preggo/pregnancyInfo.dart';
+import 'package:preggo/reminder.dart';
+import 'package:preggo/screens/add_reminder_screen.dart';
 import 'package:preggo/start_Journey.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -87,13 +90,14 @@ class _LoginScreenState extends State<LoginScreen> {
         );
 
         if (credential?.user != null) {
+          await getRemainders();
           setState(() {
             isUserValid = true;
             if (mounted) {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => NavBar(),
+                    builder: (context) => const AddReminderScreen(),
                   ));
             }
           });
@@ -147,19 +151,19 @@ class _LoginScreenState extends State<LoginScreen> {
                     horizontal: 22.0,
                     vertical: 5.0,
                   ),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(80.0),
                     ),
                   ),
                   child: SingleChildScrollView(
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         const SizedBox(height: 40.0),
-                        Text("Welcome back!",
+                        const Text("Welcome back!",
                             style: TextStyle(
                               fontSize: 23.0,
                               fontWeight: FontWeight.w600,
@@ -167,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 45.0),
                         Container(
                           height: 90,
-                          constraints: BoxConstraints(maxHeight: 100),
+                          constraints: const BoxConstraints(maxHeight: 100),
                           child: TextFormField(
                             maxLength: 25,
                             controller: _usernameFieldController,
@@ -219,7 +223,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                             Container(
                               height: 90,
-                              constraints: BoxConstraints(maxHeight: 100),
+                              constraints: const BoxConstraints(maxHeight: 100),
                               child: TextFormField(
                                 maxLength: 50,
                                 controller: _passwordFieldController,
