@@ -372,7 +372,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                 fit: BoxFit.cover,
-                                image: AssetImage("assets/images/baby-girl.png"),
+                                image: AssetImage("assets/images/baby.png"),
                               ),
                               borderRadius: BorderRadius.circular(500),
                             ),
