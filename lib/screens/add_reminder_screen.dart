@@ -120,6 +120,8 @@ class AddReminderScreenState extends State<AddReminderScreen> {
         mode: CupertinoDatePickerMode.date,
         // This is called when the user changes the date.
         onDateTimeChanged: (DateTime newDate) {
+          print("abc");
+          print(newDate);
           setState(
             () {
               selectedDate = DateTime(
@@ -132,6 +134,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
               );
               print("::: Selected date is: $selectedDate #");
               _minDate = DateTime.now();
+              print(selectedDate);
             },
           );
         },
@@ -150,12 +153,17 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                 DateTime.now().isBefore(selectedTime)
             ? selectedTime
             : DateTime.now(),
-        minimumDate:
-            selectedDate.isAfter(DateTime.now()) ? null : DateTime.now(),
+        minimumDate: selectedDate.isAfter(DateTime.now()) ||
+                selectedDate.minute == DateTime.now().minute
+            ? null
+            : DateTime.now(),
         mode: CupertinoDatePickerMode.time,
         onDateTimeChanged: (DateTime newTime) {
           setState(() {
-            selectedTime = newTime;
+            print("aliyah");
+            print(newTime);
+            selectedDate = DateTime(selectedDate.year, selectedDate.month,
+                selectedDate.day, newTime.hour, newTime.minute);
             // _minTime = DateTime.now();
             _minTime = DateTime(
               DateTime.now().year,
@@ -185,7 +193,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
 
       if (currentUserUuid != null &&
           _formKey.currentState!.validate() &&
-          !selectedTime.isBefore(DateTime.now())) {
+          !selectedDate.isBefore(DateTime.now())) {
         setState(() {
           isLoading = true;
           errorMessage = "";
@@ -330,7 +338,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
           });
         });
       } else if (currentUserUuid != null &&
-          selectedTime.isBefore(DateTime.now())) {
+          selectedDate.isBefore(DateTime.now())) {
         setState(() {
           errorMessage = "Time cannot be in the past.";
         });
@@ -340,6 +348,8 @@ class AddReminderScreenState extends State<AddReminderScreen> {
           errorMessage = "";
         });
       }
+
+      print(selectedTime);
     } catch (error) {
       setState(() {
         isLoading = false;
