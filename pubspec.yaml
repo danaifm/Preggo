@@ -54,10 +54,10 @@ dependencies:
   intl_phone_field: ^3.2.0
   fluttertoast: ^8.2.2
   dropdown_search: ^5.0.6
-
+  awesome_notifications: ^0.8.2 
   email_validator: ^2.1.17
   alarm: ^2.0.1
-
+  timezone: ^0.9.2
 
 dev_dependencies:
   flutter_test:

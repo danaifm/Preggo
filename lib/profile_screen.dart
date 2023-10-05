@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/login_screen.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({super.key});
@@ -325,15 +326,18 @@ class ProfileScreen extends StatelessWidget {
                                           style: TextStyle(color: Colors.white),
                                         ),
                                       ),
-                                      onTap: () {
-                                        auth.signOut().then((value) {
+                                      onTap: () async{
+                                      await auth.signOut();
+                                        await AwesomeNotifications()
+                                            .cancelAll();
+                                        if (context.mounted) {
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
                                                     const LoginScreen(),
                                               ));
-                                        });
+                                        }
                                       },
                                     ),
                                   ],
