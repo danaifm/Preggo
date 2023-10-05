@@ -239,7 +239,7 @@ class _viewAppointment extends State<viewAppointment> {
                   print("in future builder");
 
                   return Container(
-                      margin: EdgeInsets.only(top: 20),
+                      margin: EdgeInsets.only(top: 30),
                       child: Stack(
                         children: [
                           SfCalendar(
@@ -256,6 +256,8 @@ class _viewAppointment extends State<viewAppointment> {
                               shape: BoxShape.rectangle,
                             ),
                             monthViewSettings: MonthViewSettings(
+                              appointmentDisplayMode:
+                                  MonthAppointmentDisplayMode.indicator,
                               showAgenda: true,
                               agendaViewHeight: 280,
                               agendaStyle: AgendaStyle(
@@ -279,7 +281,7 @@ class _viewAppointment extends State<viewAppointment> {
                               ),
                               monthCellStyle: MonthCellStyle(),
                             ),
-
+                            showNavigationArrow: true,
                             todayHighlightColor: pinkColor,
 
                             //End of design
