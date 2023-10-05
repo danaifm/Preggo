@@ -1,9 +1,13 @@
 // ignore_for_file: unnecessary_const, prefer_final_fields
 
+import 'dart:math';
+
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:googleapis/calendar/v3.dart';
 import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
+import 'package:preggo/colors.dart';
+import 'package:preggo/screens/ToolsPage.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -179,29 +183,143 @@ class _viewAppointment extends State<viewAppointment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
-        future: getAppointments(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          print("in future builder");
-
-          return Stack(
+      backgroundColor: backGroundPink,
+      body: Column(
+        children: [
+          SizedBox(
+            height: 40,
+          ),
+          Row(
             children: [
-              SfCalendar(
-                view: CalendarView.month,
-                initialDisplayDate: DateTime.now(),
-                dataSource: GoogleDataSource(events: snapshot.data),
-                monthViewSettings: const MonthViewSettings(
-                    appointmentDisplayMode:
-                        MonthAppointmentDisplayMode.appointment),
+              IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: blackColor,
+                ),
               ),
-              snapshot.data != null
-                  ? Container()
-                  : Center(
-                      child: CircularProgressIndicator(),
-                    )
+              SizedBox(
+                width: 20,
+              ),
+              Text(
+                "Appointments",
+                style: TextStyle(
+                  color: Color(0xFFD77D7C),
+                  fontSize: 32,
+                  fontFamily: 'Urbanist',
+                  fontWeight: FontWeight.w600,
+                  height: 1.30,
+                  letterSpacing: -0.28,
+                ),
+              ),
             ],
-          );
-        },
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 18.0,
+                vertical: 0.0,
+              ),
+              decoration: BoxDecoration(
+                color: whiteColor,
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(80.0),
+                ),
+              ),
+              // the end for the top decoration
+
+              child: FutureBuilder(
+                future: getAppointments(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  print("in future builder");
+
+                  return Container(
+                      margin: EdgeInsets.only(top: 20),
+                      child: Stack(
+                        children: [
+                          SfCalendar(
+                            //The design of the calender
+                            view: CalendarView.month,
+                            cellBorderColor: backGroundPink,
+                            initialDisplayDate: DateTime.now(),
+                            selectionDecoration: BoxDecoration(
+                              color: transparent,
+                              border:
+                                  Border.all(color: backGroundPink, width: 2),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(4)),
+                              shape: BoxShape.rectangle,
+                            ),
+                            monthViewSettings: MonthViewSettings(
+                              showAgenda: true,
+                              agendaViewHeight: 280,
+                              agendaStyle: AgendaStyle(
+                                appointmentTextStyle: TextStyle(
+                                    fontSize:
+                                        14, //the font style of the appointment info box
+                                    fontFamily: 'Urbanist',
+                                    fontWeight: FontWeight.w400,
+                                    color: whiteColor),
+                                dateTextStyle: TextStyle(
+                                    fontFamily: 'Urbanist',
+                                    fontSize: 13, // For the circle
+                                    fontWeight: FontWeight.w400,
+                                    color: pinkColor),
+                                dayTextStyle: TextStyle(
+                                    // deign the day name
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w700,
+                                    color: pinkColor),
+                              ),
+                              monthCellStyle: MonthCellStyle(),
+                            ),
+
+                            todayHighlightColor: pinkColor,
+
+                            //End of design
+                            dataSource: GoogleDataSource(events: snapshot.data),
+                          ),
+                          snapshot.data != null
+                              ? Container()
+                              : Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                          //add reminder button
+                          Align(
+                              alignment: Alignment.bottomRight,
+                              child: Padding(
+                                padding: EdgeInsets.fromLTRB(0, 20, 20, 80),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ToolsPage()));
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    fixedSize: const Size(55, 55),
+                                    shape: const CircleBorder(),
+                                    backgroundColor: darkBlackColor,
+                                  ),
+                                  child: Icon(
+                                    Icons.add,
+                                    color: whiteColor,
+                                  ),
+                                ),
+                              ))
+                        ],
+                      ));
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
