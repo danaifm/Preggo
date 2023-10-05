@@ -6,6 +6,8 @@ import 'package:preggo/SignUp.dart';
 import 'package:preggo/SplashScreen.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/forget_password_screen.dart';
+import 'package:preggo/pregnancyInfo.dart';
+import 'package:preggo/reminder.dart';
 import 'package:preggo/screens/add_reminder_screen.dart';
 import 'package:preggo/start_Journey.dart';
 
@@ -88,6 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
         );
 
         if (credential?.user != null) {
+          await getRemainders();
           setState(() {
             isUserValid = true;
             if (mounted) {

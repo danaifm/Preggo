@@ -18,6 +18,8 @@ void main() async {
         channelName: 'channel_id',
         channelDescription: 'test',
         playSound: true,
+        enableVibration: true,
+        defaultRingtoneType: DefaultRingtoneType.Alarm,
         channelShowBadge: true,
         importance: NotificationImportance.High,
         criticalAlerts: true,
