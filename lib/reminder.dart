@@ -1,3 +1,4 @@
+
 import 'dart:math' as math;
 import 'package:alarm/alarm.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
@@ -34,23 +35,6 @@ Future<void> scheduleRepeatingAlarms({
   bool repeat = true,
 }) async {
   final day = int.parse(dayStr);
-  String localTimeZone =
-  await AwesomeNotifications().getLocalTimeZoneIdentifier();
-
-  int daysUntilNextDay = (day - date.weekday + 7) % 7;
-  DateTime nextTime = DateTime(
-    date.year,
-    date.month,
-    date.day + daysUntilNextDay,
-    hour,
-    minute,
-  );
-
-  if (nextTime.isBefore(DateTime.now())) {
-    nextTime = nextTime.add(const Duration(days: 7));
-  }
-
-  int nextTimeInSeconds = nextTime.difference(DateTime.now()).inSeconds;
   const int maxInt32 = 0x7FFFFFFF;
   int uniqueId =
       generateUniqueNumericId() % (maxInt32 + math.Random().nextInt(5));
@@ -61,9 +45,12 @@ Future<void> scheduleRepeatingAlarms({
       channelKey: 'channel_id',
       title: title,
     ),
-    schedule: NotificationInterval(
-      interval: nextTimeInSeconds,
-      timeZone: localTimeZone,
+    schedule: NotificationCalendar(
+      weekday: day,
+      hour: hour,
+      minute: minute,
+      second: 0,
+      millisecond: 0,
       repeats: repeat,
     ),
   );
