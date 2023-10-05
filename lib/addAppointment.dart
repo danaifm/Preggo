@@ -115,7 +115,8 @@ class _addAppointmentState extends State<addAppointment> {
                               padding: const EdgeInsets.all(15),
                               decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: pinkColor,
+                                color: green,
+                                //color: pinkColor,
                                 // border: Border.all(
                                 //   width: 1.3,
                                 //   color: Colors.black,
@@ -135,7 +136,7 @@ class _addAppointmentState extends State<addAppointment> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Color.fromARGB(255, 0, 0, 0),
-                                fontSize: 20,
+                                fontSize: 17,
                                 fontFamily: 'Urbanist',
                                 fontWeight: FontWeight.w700,
                                 height: 1.30,
