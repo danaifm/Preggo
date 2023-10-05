@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/login_screen.dart';
-//import 'package:preggo/reminder.dart';
 
 class AddReminderScreen extends StatefulWidget {
   const AddReminderScreen({super.key});
@@ -127,7 +126,11 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                 newDate.year,
                 newDate.month,
                 newDate.day,
+                selectedTime.hour,
+                selectedTime.minute,
+                selectedTime.second,
               );
+              print("::: Selected date is: $selectedDate #");
               _minDate = DateTime.now();
             },
           );
@@ -137,16 +140,18 @@ class AddReminderScreenState extends State<AddReminderScreen> {
   }
 
   _showTimePicker() {
+    print("Selected Time:# $selectedTime #");
+    print("Selected DATE:# $selectedDate #");
+    final initial = DateTime.now().isBefore(selectedDate);
+    print("Selected initial:# $initial #");
     _showDialog(
       CupertinoDatePicker(
-        initialDateTime: selectedTime.isAfter(DateTime.now())
+        initialDateTime: DateTime.now().isBefore(selectedDate) ||
+                DateTime.now().isBefore(selectedTime)
             ? selectedTime
             : DateTime.now(),
-        minimumDate: selectedDate.day == DateTime.now().day &&
-                selectedDate.month == DateTime.now().month &&
-                selectedDate.year == DateTime.now().year
-            ? _minTime
-            : null,
+        minimumDate:
+            selectedDate.isAfter(DateTime.now()) ? null : DateTime.now(),
         mode: CupertinoDatePickerMode.time,
         onDateTimeChanged: (DateTime newTime) {
           setState(() {
@@ -171,26 +176,19 @@ class AddReminderScreenState extends State<AddReminderScreen> {
 
   Future<void> addNewReminder() async {
     try {
-      DateTime dateTime = DateTime(
-          selectedDate.month, selectedDate.day, selectedDate.year, 12, 4);
-      //NUHA'S CODE =================PAY ATTENSION!!!=================
-      //  try {
-      // addReminderToSystem(
-      //  dateTime: dateTime,
-      //    title: _reminderTitleController.text.trim(),
-      //    body: _reminderDescriptionController.text.trim(),
-      //  );
-      //END OF NUHA'S CODE =================PAY ATTENSION!!!=================
+      final today = DateTime.now();
+      final isToday = selectedDate.year == today.year &&
+          selectedDate.month == today.month &&
+          selectedDate.day == today.day;
 
-      /// Get user uuid
-      /// Create new reminders collection
-      /// Insert all data
       final String? currentUserUuid = FirebaseAuth.instance.currentUser?.uid;
-      // final String userUid = "5ALfd5zhZnOsB8mdc5hN9MbhLry1";
 
-      if (currentUserUuid != null && _formKey.currentState!.validate()) {
+      if (currentUserUuid != null &&
+          _formKey.currentState!.validate() &&
+          !selectedTime.isBefore(DateTime.now())) {
         setState(() {
           isLoading = true;
+          errorMessage = "";
         });
         final remindersCollection = FirebaseFirestore.instance
             .collection("users")
@@ -311,7 +309,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: 20),
+                                const SizedBox(height: 20),
                               ],
                             ),
                           ),
@@ -331,17 +329,219 @@ class AddReminderScreenState extends State<AddReminderScreen> {
             selectedTime = DateTime.now();
           });
         });
+      } else if (currentUserUuid != null &&
+          selectedTime.isBefore(DateTime.now())) {
+        setState(() {
+          errorMessage = "Time cannot be in the past.";
+        });
       } else {
         setState(() {
-          isLoading = false;
+          isLoading = true;
+          errorMessage = "";
         });
       }
     } catch (error) {
       setState(() {
         isLoading = false;
+        errorMessage = "";
       });
     }
   }
+
+  // Future<void> addNewReminder() async {
+  //   try {
+  //     final isTimeInvalid = selectedDate.isBefore(DateTime.now());
+  //     print("selectedTime:: $selectedTime #");
+  //     print("selectedDate:: $selectedDate #");
+  //     print("isTimeInvalid:: $isTimeInvalid #");
+
+  //     // bool isSelectedDateEqualToNow = selectedDate.day == DateTime.now().day &&
+  //     //     selectedDate.month == DateTime.now().month &&
+  //     //     selectedDate.year == DateTime.now().year;
+  //     // bool isValidTime = isSelectedDateEqualToNow &&
+  //     //     (selectedTime.hour < (DateTime.now().hour) ||
+  //     //         (selectedTime.hour == DateTime.now().hour &&
+  //     //             selectedTime.minute < DateTime.now().minute));
+  //     DateTime dateTime = DateTime(
+  //         selectedDate.month, selectedDate.day, selectedDate.year, 12, 4);
+  //     //NUHA'S CODE =================PAY ATTENSION!!!=================
+  //     //  try {
+  //     // addReminderToSystem(
+  //     //  dateTime: dateTime,
+  //     //    title: _reminderTitleController.text.trim(),
+  //     //    body: _reminderDescriptionController.text.trim(),
+  //     //  );
+  //     //END OF NUHA'S CODE =================PAY ATTENSION!!!=================
+
+  //     /// Get user uuid
+  //     /// Create new reminders collection
+  //     /// Insert all data
+  //     final String? currentUserUuid = FirebaseAuth.instance.currentUser?.uid;
+  //     // final String userUid = "5ALfd5zhZnOsB8mdc5hN9MbhLry1";
+
+  //     if (currentUserUuid != null &&
+  //         _formKey.currentState!.validate() &&
+  //         isTimeInvalid == false) {
+  //       setState(() {
+  //         isLoading = true;
+  //         errorMessage = "";
+  //       });
+  //       final remindersCollection = FirebaseFirestore.instance
+  //           .collection("users")
+  //           .doc(currentUserUuid)
+  //           .collection("reminders");
+
+  //       // final docId = await remindersCollection.get();
+  //       await remindersCollection.add(
+  //         {
+  //           "id": "",
+  //           "title": _reminderTitleController.text.trim(),
+  //           "description": _reminderDescriptionController.text.trim(),
+  //           "date":
+  //               "${selectedDate.month}-${selectedDate.day}-${selectedDate.year}",
+  //           "time": TimeOfDay.fromDateTime(selectedTime).format(context),
+  //           "repeat": selectedDays,
+  //         },
+  //       ).then((value) async {
+  //         await remindersCollection.doc(value.id).set(
+  //           {
+  //             "id": value.id,
+  //           },
+  //           SetOptions(merge: true),
+  //         );
+
+  //         /// Show dialog | start of message
+  //         if (mounted) {
+  //           showDialog(
+  //               context: context,
+  //               builder: (context) {
+  //                 return Center(
+  //                   child: SizedBox(
+  //                     height: MediaQuery.sizeOf(context).height * 0.40,
+  //                     width: MediaQuery.sizeOf(context).width * 0.85,
+  //                     child: Dialog(
+  //                       child: Container(
+  //                         padding: const EdgeInsets.all(10),
+  //                         decoration: const BoxDecoration(
+  //                           color: Colors.white,
+  //                           borderRadius: BorderRadius.all(
+  //                             Radius.circular(20),
+  //                           ),
+  //                         ),
+  //                         child: Center(
+  //                           child: Column(
+  //                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //                             mainAxisSize: MainAxisSize.min,
+  //                             children: [
+  //                               const SizedBox(height: 20),
+  //                               Container(
+  //                                 padding: const EdgeInsets.all(15),
+  //                                 decoration: const BoxDecoration(
+  //                                   shape: BoxShape.circle,
+  //                                   color: green,
+  //                                   // color: pinkColor,
+  //                                   // border: Border.all(
+  //                                   //   width: 1.3,
+  //                                   //   color: Colors.black,
+  //                                   // ),
+  //                                 ),
+  //                                 child: const Icon(
+  //                                   Icons.check,
+  //                                   color: Colors.white,
+  //                                   size: 35,
+  //                                 ),
+  //                               ),
+  //                               const SizedBox(height: 25),
+
+  //                               // Done
+  //                               const Text(
+  //                                 "Reminder added successfully!",
+  //                                 textAlign: TextAlign.center,
+  //                                 style: TextStyle(
+  //                                   color: Color.fromARGB(255, 0, 0, 0),
+  //                                   fontSize: 17,
+  //                                   fontFamily: 'Urbanist',
+  //                                   fontWeight: FontWeight.w700,
+  //                                   height: 1.30,
+  //                                   letterSpacing: -0.28,
+  //                                 ),
+  //                               ),
+
+  //                               const SizedBox(height: 20),
+
+  //                               /// OK Button
+  //                               Container(
+  //                                 padding: const EdgeInsets.symmetric(
+  //                                     horizontal: 10),
+  //                                 width:
+  //                                     MediaQuery.sizeOf(context).width * 0.80,
+  //                                 height: 45.0,
+  //                                 child: Center(
+  //                                   child: ElevatedButton(
+  //                                     onPressed: () {
+  //                                       // Navigator.of(context)
+  //                                       //     .pushAndRemoveUntil(
+  //                                       //   MaterialPageRoute(builder: (context) {
+  //                                       //     return const LoginScreen();
+  //                                       //   }),
+  //                                       //   (route) => false,
+  //                                       // );
+  //                                     },
+  //                                     style: ElevatedButton.styleFrom(
+  //                                       backgroundColor: blackColor,
+  //                                       shape: RoundedRectangleBorder(
+  //                                           borderRadius:
+  //                                               BorderRadius.circular(40)),
+  //                                       padding: const EdgeInsets.only(
+  //                                           left: 70,
+  //                                           top: 15,
+  //                                           right: 70,
+  //                                           bottom: 15),
+  //                                     ),
+  //                                     child: const Text("OK",
+  //                                         style: TextStyle(
+  //                                           fontFamily: 'Urbanist',
+  //                                         )),
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //                               const SizedBox(height: 20),
+  //                             ],
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 );
+  //               });
+  //         }
+  //         // Show dialog | end of message
+  //         setState(() {
+  //           isLoading = false;
+  //           _reminderTitleController.clear();
+  //           _reminderDescriptionController.clear();
+
+  //           selectedDate = DateTime.now();
+  //           selectedTime = DateTime.now();
+  //         });
+  //       });
+  //     } else if (isTimeInvalid) {
+  //       setState(() {
+  //         errorMessage = "Time cannot be in the past.";
+  //       });
+  //     } else {
+  //       setState(() {
+  //         isLoading = false;
+  //         errorMessage = "";
+  //       });
+  //     }
+  //   } catch (error) {
+  //     setState(() {
+  //       isLoading = false;
+  //       errorMessage = "";
+  //     });
+  //   }
+  // }
 
   // GlobalKey<FormState> formstate = GlobalKey<FormState>();
   final _formKey = GlobalKey<FormState>();
@@ -717,13 +917,15 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                           // the user's locale settings.
                                           child: Text(
                                             timeFormat,
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                               //time size
                                               fontSize: 16.0,
                                               fontFamily: 'Urbanist',
 
                                               /// Time Color
-                                              color: Colors.black,
+                                              color: errorMessage.isEmpty
+                                                  ? Colors.black
+                                                  : pinkColor,
                                             ),
                                           ),
                                         ),
@@ -984,19 +1186,10 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                           right: 85,
                                           bottom: 15),
                                     ),
-                                    child: isLoading
-                                        ? const Center(
-                                            child: SizedBox(
-                                              width: 22,
-                                              height: 22,
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            ),
-                                          )
-                                        : const Text("Add Reminder",
-                                            style: TextStyle(
-                                              fontFamily: 'Urbanist',
-                                            )),
+                                    child: const Text("Add Reminder",
+                                        style: TextStyle(
+                                          fontFamily: 'Urbanist',
+                                        )),
                                   ),
                                 )
                               ],
