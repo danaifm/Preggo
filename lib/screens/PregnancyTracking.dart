@@ -354,7 +354,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                   max: 270,
                                   onChanged: (double value) {},
                                   activeColor: pinkColor,
-                                  inactiveColor: pinkColor,
+                                  inactiveColor: NavBraGrayColor,
                                 ),
                                 Text(
                                   "You’re currently pregnant in week $data",
