@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_final_fields, unnecessary_import, sized_box_for_whitespace, library_private_types_in_public_api, avoid_print, prefer_interpolation_to_compose_strings, prefer_const_constructors, unnecessary_cast, prefer_typing_uninitialized_variables, unnecessary_new, prefer_const_constructors_in_immutables, camel_case_types
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_final_fields, unnecessary_import, sized_box_for_whitespace, library_private_types_in_public_api, avoid_print, prefer_interpolation_to_compose_strings, prefer_const_constructors, unnecessary_cast, prefer_typing_uninitialized_variables, unnecessary_new
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +9,7 @@ import 'package:preggo/colors.dart';
 class weeklyModel {}
 
 class PregnancyTracking extends StatefulWidget {
-  PregnancyTracking({super.key});
+  const PregnancyTracking({super.key});
 
   //late final String userId;
 
@@ -113,7 +113,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
 
   getAllWeeks() async {
     var weeks = await firestore.get().then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
+      for (var doc in querySnapshot.docs) {
         print('Doc => ${doc.data()}');
         List<String> eachWeek = [
           doc['height'],
@@ -124,7 +124,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
         ];
         // print(eachWeek);
         allWeeks[int.parse(doc.id) - 1] = (eachWeek);
-      });
+      }
     });
     // print(allWeeks);
     // print(allWeeks.length);
@@ -191,162 +191,192 @@ class _PregnancyTracking extends State<PregnancyTracking> {
 
               // }
               return Scaffold(
-                body: Column(
-                  children: [
-                    Container(
-                      height: 180,
-                      //alignment: Alignment.topCenter,
-                      child: RotatedBox(
-                        quarterTurns: -1,
-                        child: ListWheelScrollView(
-                          physics: BouncingScrollPhysics(
-                              parent: AlwaysScrollableScrollPhysics()),
-                          // useMagnifier: true,
-                          // magnification: 1.15,
-                          onSelectedItemChanged: (x) {
-                            setState(() {
-                              selected = x;
-                            });
-                            // print("WEEK" + (selected + 1).toString());
-                            //getWeek();
-                            // getDueDate();
-                          },
-                          controller: _scrollController,
-                          itemExtent: itemWidth,
-                          children: List.generate(
-                            itemCount,
-                            (x) => RotatedBox(
-                              quarterTurns: 1,
-                              child: AnimatedContainer(
-                                duration: Duration(milliseconds: 400),
-                                width: x == selected ? 70 : 60,
-                                height: x == selected ? 80 : 70,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    color: x == selected
-                                        ? Color.fromRGBO(249, 220, 222, 1)
-                                        : Colors.transparent,
-                                    shape: BoxShape.rectangle,
-                                    borderRadius: BorderRadius.circular(15)),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      '\nweek\n \n   ${x + 1}',
-                                      // so it starts from week 1
-                                      style: TextStyle(fontFamily: 'Urbanist'),
+                body: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Container(
+                          margin: EdgeInsets.only(left: 20, top: 45),
+                          child: RichText(
+                            text: const TextSpan(
+                                style: TextStyle(
+                                  fontFamily: 'Urbanist',
+                                ),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                      text: 'Pregnancy tracking\n',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 35,
+                                          fontWeight: FontWeight.w400)),
+                                  TextSpan(
+                                    text:
+                                        'Track your pregnancy and get insight of weekly development.',
+                                    style: TextStyle(
+                                      color: Color.fromARGB(
+                                        255,
+                                        121,
+                                        119,
+                                        119,
+                                      ),
                                     ),
-                                    x + 1 == data
-                                        ? Flexible(
-                                            child: Container(
-                                                padding:
-                                                    EdgeInsets.only(top: 10),
-                                                child: Icon(Icons.expand_less)))
-                                        : Container()
-                                  ],
+                                  ),
+                                ]),
+                          )),
+                      Container(
+                        height: 100,
+                        //alignment: Alignment.topCenter,
+                        child: RotatedBox(
+                          quarterTurns: -1,
+                          child: ListWheelScrollView(
+                            physics: BouncingScrollPhysics(
+                                parent: AlwaysScrollableScrollPhysics()),
+                            // useMagnifier: true,
+                            // magnification: 1.15,
+                            onSelectedItemChanged: (x) {
+                              setState(() {
+                                selected = x;
+                              });
+                              // print("WEEK" + (selected + 1).toString());
+                              //getWeek();
+                              // getDueDate();
+                            },
+                            controller: _scrollController,
+                            itemExtent: itemWidth,
+                            children: List.generate(
+                              itemCount,
+                              (x) => RotatedBox(
+                                quarterTurns: 1,
+                                child: AnimatedContainer(
+                                  duration: Duration(milliseconds: 400),
+                                  width: x == selected ? 70 : 60,
+                                  height: x == selected ? 80 : 70,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      color: x == selected
+                                          ? Color.fromRGBO(249, 220, 222, 1)
+                                          : Colors.transparent,
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(15)),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        '\nweek\n \n   ${x + 1}',
+                                        // so it starts from week 1
+                                        style:
+                                            TextStyle(fontFamily: 'Urbanist'),
+                                      ),
+                                      x + 1 == data
+                                          ? Flexible(
+                                              child: Container(
+                                                  padding:
+                                                      EdgeInsets.only(top: 10),
+                                                  child:
+                                                      Icon(Icons.expand_less)))
+                                          : Container()
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    Row(
-                      children: [
-                        //weight icon
-                        Container(
-                          width: 90,
-                          height: 70,
-                          child: Column(
-                            children: [
-                              Icon(
-                                Icons.monitor_weight_outlined,
-                                color: Color.fromARGB(255, 163, 39, 39),
-                              ),
-                              Text(
-                                allWeeks[selected][1],
-                                style: TextStyle(
-                                    fontFamily: 'Urbanist', fontSize: 15),
-                              ),
-                              Text(
-                                'Weight',
-                                style: TextStyle(
-                                    fontFamily: 'Urbanist', fontSize: 12),
-                              )
-                            ],
-                          ),
-                        ),
-                        Container(
-                          //baby pic
-                          width: 170,
-                          height: 170,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: AssetImage(allWeeks[selected][2]),
-                            ),
-                            borderRadius: BorderRadius.circular(500),
-                          ),
-                        ),
-
-                        Container(
-                          //length icon
-                          width: 90,
-                          height: 70,
-                          child: Column(
-                            children: [
-                              Icon(
-                                Icons.straighten,
-                                color: Colors.teal[800],
-                              ),
-                              Text(
-                                allWeeks[selected][0],
-                                style: TextStyle(
-                                    fontFamily: 'Urbanist', fontSize: 15),
-                              ),
-                              Text(
-                                'height',
-                                style: TextStyle(
-                                    fontFamily: 'Urbanist', fontSize: 12),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: 10),
-                      padding: EdgeInsets.all(5),
-                      width: 330,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(
-                          color: Color.fromRGBO(249, 220, 222, 1),
-                          width: 0.1,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                              blurRadius: 2,
-                              spreadRadius: 0.5,
-                              color: Colors.grey)
-                        ],
-                      ),
-                      child: Row(
+                      Row(
                         children: [
+                          //weight icon
+                          Container(
+                            width: 90,
+                            height: 70,
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.monitor_weight_outlined,
+                                  color: Color.fromARGB(255, 163, 39, 39),
+                                ),
+                                Text(
+                                  allWeeks[selected][1],
+                                  style: TextStyle(
+                                      fontFamily: 'Urbanist', fontSize: 15),
+                                ),
+                                Text(
+                                  'Weight',
+                                  style: TextStyle(
+                                      fontFamily: 'Urbanist', fontSize: 12),
+                                )
+                              ],
+                            ),
+                          ),
                           Container(
                             //baby pic
-                            width: 50,
-                            height: 50,
+                            width: 170,
+                            height: 170,
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                 fit: BoxFit.cover,
-                                image: AssetImage("assets/images/sperm.png"),
+                                image: AssetImage(allWeeks[selected][2]),
                               ),
                               borderRadius: BorderRadius.circular(500),
                             ),
                           ),
-                          Expanded(
+
+                          Container(
+                            //length icon
+                            width: 90,
+                            height: 70,
                             child: Column(
+                              children: [
+                                Icon(
+                                  Icons.straighten,
+                                  color: Colors.teal[800],
+                                ),
+                                Text(
+                                  allWeeks[selected][0],
+                                  style: TextStyle(
+                                      fontFamily: 'Urbanist', fontSize: 15),
+                                ),
+                                Text(
+                                  'height',
+                                  style: TextStyle(
+                                      fontFamily: 'Urbanist', fontSize: 12),
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 10),
+                        padding: EdgeInsets.all(5),
+                        width: 330,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                            color: Color.fromRGBO(249, 220, 222, 1),
+                            width: 0.1,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                                blurRadius: 2,
+                                spreadRadius: 0.5,
+                                color: Colors.grey)
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              //baby pic
+                              width: 50,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: AssetImage("assets/images/sperm.png"),
+                                ),
+                                borderRadius: BorderRadius.circular(500),
+                              ),
+                            ),
+                            Column(
                               children: [
                                 Slider(
                                   value: currentWeekProgress.toDouble(),
@@ -364,24 +394,22 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                 ),
                               ],
                             ),
-                          ),
-                          Container(
-                            //baby pic
-                            width: 50,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: AssetImage("assets/images/baby.png"),
+                            Container(
+                              //baby pic
+                              width: 50,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: AssetImage("assets/images/baby.png"),
+                                ),
+                                borderRadius: BorderRadius.circular(500),
                               ),
-                              borderRadius: BorderRadius.circular(500),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      child: Container(
+                      Container(
                         margin: EdgeInsets.only(top: 10),
                         padding: EdgeInsets.all(5),
                         width: 330,
@@ -407,20 +435,11 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            Expanded(
-                              child: ListView(
-                                padding: EdgeInsets.only(top: 5),
-                                children: [
-                                  Text(motherChanges()),
-                                ],
-                              ),
-                            ),
+                            Text(motherChanges() * 2)
                           ],
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: Visibility(
+                      Visibility(
                         visible: selected != 0 && selected != 1,
                         child: Container(
                           margin: EdgeInsets.only(top: 10),
@@ -448,20 +467,14 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              Expanded(
-                                child: ListView(
-                                  padding: EdgeInsets.only(top: 5),
-                                  children: [
-                                    Text(babyChanges()),
-                                  ],
-                                ),
-                              ),
+                              Text(babyChanges())
                             ],
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 50),
+                    ],
+                  ),
                 ),
               );
             }
