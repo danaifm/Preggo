@@ -214,8 +214,10 @@ class AddReminderScreenState extends State<AddReminderScreen> {
       //     (selectedTime.hour < (DateTime.now().hour) ||
       //         (selectedTime.hour == DateTime.now().hour &&
       //             selectedTime.minute < DateTime.now().minute));
-      DateTime dateTime = DateTime(
-          selectedDate.month, selectedDate.day, selectedDate.year, 12, 4);
+
+      //DateTime dateTime = DateTime(
+      //selectedDate.month, selectedDate.day, selectedDate.year, 12, 4);
+
       //NUHA'S CODE =================PAY ATTENSION!!!=================
       //  try {
       // addReminderToSystem(
