@@ -12,8 +12,6 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class viewAppointment extends StatefulWidget {
-  //const SignUp({Key? key}) : super(key: key);
-  // late final String userId;
   @override
   State<StatefulWidget> createState() {
     return _viewAppointment();
@@ -21,28 +19,9 @@ class viewAppointment extends StatefulWidget {
 }
 
 class _viewAppointment extends State<viewAppointment> {
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     body: Text("Bdoor"),
-  //   );
-  // }
-
-  //  Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     body: SfCalendar(
-  //       view: CalendarView.month,
-  //       initialDisplayDate: DateTime(2023, 09, 01),
-  //     ),
-  //   );
-  // }
-
   static const _scopes = const [CalendarApi.calendarScope];
 
   final GoogleSignIn _googleSignIn = GoogleSignIn(
-    // Optional clientId
-    // clientId:
-    //     '3982098128-rlts9furpv5as6ob6885ifd4l88760pa.apps.googleusercontent.com',
     scopes: _scopes,
   );
 
@@ -54,38 +33,13 @@ class _viewAppointment extends State<viewAppointment> {
     }
   }
 
-  // GoogleSignInAccount? _currentUser;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   // dispose();
-  //   _googleSignIn.disconnect();
-  //   _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
-  //     setState(() {
-  //       _currentUser = account;
-  //     });
-  //     if (_currentUser != null) {
-  //       //getGoogleEventsData();
-  //     }
-  //   });
-  //   _googleSignIn.signInSilently();
-  // }
-
   @override
   void initState() {
     super.initState();
-    // _googleSignIn.onCurrentUserChanged
-    //     .listen((GoogleSignInAccount? account) {});
 
     print("START OF PAGE");
     print(_googleSignIn.currentUser);
   }
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _googleSignIn.signInSilently();
-  // }
 
   getAppointments() async {
     print('in get appts');
@@ -94,14 +48,8 @@ class _viewAppointment extends State<viewAppointment> {
     // await _googleSignIn.signOut();
     await _googleSignIn.signIn();
     print("AA second: " + (await _googleSignIn.isSignedIn()).toString());
-    // _googleSignIn
-    //     .signOut(); //this line will make it ask for your account every time
-    // _googleSignIn.signIn();
-    // await _handleSignIn();
-
     print('before await');
     final auth.AuthClient? client = await _googleSignIn.authenticatedClient();
-    //assert(client != null, 'authenticated client missing!');
     print(client);
     final CalendarApi googleCalendarApi = CalendarApi(client!);
     print('after googleapicalendar');
@@ -116,7 +64,6 @@ class _viewAppointment extends State<viewAppointment> {
         break;
       }
     }
-    //push
 
     if (exists == false) {
       Calendar preggoCalendar = new Calendar(summary: "Preggo Calendar");
@@ -132,6 +79,8 @@ class _viewAppointment extends State<viewAppointment> {
 
     final List<Event> appointments = <Event>[];
     List<Appointment> appts = <Appointment>[];
+    print('PRINTING APPTS');
+    print(appts);
     if (calEvents.items != null) {
       for (int i = 0; i < calEvents.items!.length; i++) {
         final Event event = calEvents.items![i];
@@ -140,8 +89,8 @@ class _viewAppointment extends State<viewAppointment> {
         }
         print(event.start!.dateTime);
         Appointment appt = Appointment(
-            startTime: event.start!.dateTime!,
-            endTime: event.end!.dateTime!,
+            startTime: event.start!.dateTime!.toLocal(),
+            endTime: event.end!.dateTime!.toLocal(),
             subject: event.summary!,
             color: pinkColor);
         // event.colorId = '6';
@@ -150,44 +99,8 @@ class _viewAppointment extends State<viewAppointment> {
       }
     }
 
-    // final List<GoogleAPI.Event> appointments = <GoogleAPI.Event>[];
-    // if (calEvents.items != null) {
-    //   for (int i = 0; i < calEvents.items!.length; i++) {
-    //     final GoogleAPI.Event event = calEvents.items![i];
-    //     if (event.start == null) {
-    //       continue;
-    //     }
-    //     appointments.add(event);
-    //   }
-    // }
-
     return appts;
   }
-
-  // Future<List<GoogleAPI.Event>> getGoogleEventsData() async {
-  //   final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-
-  //   final GoogleAPIClient httpClient =
-  //       GoogleAPIClient(await googleUser!.authHeaders);
-
-  //   final GoogleAPI.CalendarApi calendarApi = GoogleAPI.CalendarApi(httpClient);
-  //   final GoogleAPI.Events calEvents = await calendarApi.events.list(
-  //     "primary",
-  //   );
-  // }
-  //   final List<GoogleAPI.Event> appointments = <GoogleAPI.Event>[];
-  //   if (calEvents.items != null) {
-  //     for (int i = 0; i < calEvents.items!.length; i++) {
-  //       final GoogleAPI.Event event = calEvents.items![i];
-  //       if (event.start == null) {
-  //         continue;
-  //       }
-  //       appointments.add(event);
-  //     }
-  //   }
-
-  //   return appointments;
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -248,86 +161,89 @@ class _viewAppointment extends State<viewAppointment> {
                   print("in future builder");
 
                   return Container(
-                      margin: EdgeInsets.only(top: 30),
-                      child: Stack(
-                        children: [
-                          SfCalendar(
-                            //The design of the calender
-                            view: CalendarView.month,
-                            cellBorderColor: backGroundPink,
-                            initialDisplayDate: DateTime.now(),
-                            initialSelectedDate: DateTime.now(), //dana add
-                            selectionDecoration: BoxDecoration(
-                              color: transparent,
-                              border:
-                                  Border.all(color: backGroundPink, width: 2),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(4)),
-                              shape: BoxShape.rectangle,
-                            ),
-                            monthViewSettings: MonthViewSettings(
-                              appointmentDisplayMode:
-                                  MonthAppointmentDisplayMode.indicator,
-                              showAgenda: true,
-                              agendaViewHeight: 280,
-                              agendaStyle: AgendaStyle(
-                                appointmentTextStyle: TextStyle(
-                                    fontSize:
-                                        14, //the font style of the appointment info box
-                                    fontFamily: 'Urbanist',
-                                    fontWeight: FontWeight.w400,
-                                    color: whiteColor),
-                                dateTextStyle: TextStyle(
-                                    fontFamily: 'Urbanist',
-                                    fontSize: 13, // For the circle
-                                    fontWeight: FontWeight.w400,
-                                    color: pinkColor),
-                                dayTextStyle: TextStyle(
-                                    // deign the day name
-                                    fontStyle: FontStyle.normal,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w700,
-                                    color: pinkColor),
-                              ),
-                              monthCellStyle: MonthCellStyle(),
-                            ),
-                            showNavigationArrow: true,
-                            todayHighlightColor: pinkColor,
-
-                            //End of design
-                            dataSource: DataSource(snapshot.data),
+                    margin: EdgeInsets.only(top: 30),
+                    child: Stack(
+                      children: [
+                        SfCalendar(
+                          //The design of the calender
+                          view: CalendarView.month,
+                          cellBorderColor: backGroundPink,
+                          initialDisplayDate: DateTime.now(),
+                          initialSelectedDate: DateTime.now(), //dana add
+                          selectionDecoration: BoxDecoration(
+                            color: transparent,
+                            border: Border.all(color: backGroundPink, width: 2),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(4)),
+                            shape: BoxShape.rectangle,
                           ),
-                          snapshot.data != null
-                              ? Container()
-                              : Center(
-                                  child: CircularProgressIndicator(
-                                      color: pinkColor),
-                                ),
-                          //add reminder button
-                          Align(
-                              alignment: Alignment.bottomRight,
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(0, 20, 20, 80),
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => ToolsPage()));
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    fixedSize: const Size(55, 55),
-                                    shape: const CircleBorder(),
-                                    backgroundColor: darkBlackColor,
+                          monthViewSettings: MonthViewSettings(
+                            appointmentDisplayMode:
+                                MonthAppointmentDisplayMode.indicator,
+                            showAgenda: true,
+                            agendaViewHeight: 280,
+                            agendaStyle: AgendaStyle(
+                              appointmentTextStyle: TextStyle(
+                                  fontSize:
+                                      14, //the font style of the appointment info box
+                                  fontFamily: 'Urbanist',
+                                  fontWeight: FontWeight.w400,
+                                  color: whiteColor),
+                              dateTextStyle: TextStyle(
+                                  fontFamily: 'Urbanist',
+                                  fontSize: 13, // For the circle
+                                  fontWeight: FontWeight.w400,
+                                  color: pinkColor),
+                              dayTextStyle: TextStyle(
+                                  // deign the day name
+                                  fontStyle: FontStyle.normal,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                  color: pinkColor),
+                            ),
+                            monthCellStyle: MonthCellStyle(),
+                          ),
+                          showNavigationArrow: true,
+                          todayHighlightColor: pinkColor,
+
+                          //End of design
+                          dataSource: DataSource(snapshot.data ?? []),
+                        ),
+                        snapshot.hasData
+                            ? Container()
+                            : Center(
+                                child:
+                                    CircularProgressIndicator(color: pinkColor),
+                              ),
+                        //add reminder button
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(0, 20, 20, 80),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ToolsPage(),
                                   ),
-                                  child: Icon(
-                                    Icons.add,
-                                    color: whiteColor,
-                                  ),
-                                ),
-                              ))
-                        ],
-                      ));
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                fixedSize: const Size(55, 55),
+                                shape: const CircleBorder(),
+                                backgroundColor: darkBlackColor,
+                              ),
+                              child: Icon(
+                                Icons.add,
+                                color: whiteColor,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  );
                 },
               ),
             ),
@@ -336,16 +252,6 @@ class _viewAppointment extends State<viewAppointment> {
       ),
     );
   }
-
-  // @override
-  // void dispose() {
-  //   if (_googleSignIn.currentUser != null) {
-  //     _googleSignIn.disconnect();
-  //     _googleSignIn.signOut();
-  //   }
-
-  //   super.dispose();
-  // }
 }
 
 class GoogleDataSource extends CalendarDataSource {
@@ -353,44 +259,45 @@ class GoogleDataSource extends CalendarDataSource {
     appointments = events;
   }
 
-  @override
-  DateTime getStartTime(int index) {
-    final Event event = appointments![index];
-    return event.start?.date ?? event.start!.dateTime!.toLocal();
-  }
+//maybe userful for later sprints:
+  // @override
+  // DateTime getStartTime(int index) {
+  //   final Event event = appointments![index];
+  //   return event.start?.date ?? event.start!.dateTime!.toLocal();
+  // }
 
-  @override
-  bool isAllDay(int index) {
-    return appointments![index].start.date != null;
-  }
+  // @override
+  // bool isAllDay(int index) {
+  //   return appointments![index].start.date != null;
+  // }
 
-  @override
-  DateTime getEndTime(int index) {
-    final Event event = appointments![index];
-    return event.endTimeUnspecified != null && event.endTimeUnspecified!
-        ? (event.start?.date ?? event.start!.dateTime!.toLocal())
-        : (event.end?.date != null
-            ? event.end!.date!.add(const Duration(days: -1))
-            : event.end!.dateTime!.toLocal());
-  }
+  // @override
+  // DateTime getEndTime(int index) {
+  //   final Event event = appointments![index];
+  //   return event.endTimeUnspecified != null && event.endTimeUnspecified!
+  //       ? (event.start?.date ?? event.start!.dateTime!.toLocal())
+  //       : (event.end?.date != null
+  //           ? event.end!.date!.add(const Duration(days: -1))
+  //           : event.end!.dateTime!.toLocal());
+  // }
 
-  @override
-  String getLocation(int index) {
-    return appointments![index].location ?? '';
-  }
+  // @override
+  // String getLocation(int index) {
+  //   return appointments![index].location ?? '';
+  // }
 
-  @override
-  String getNotes(int index) {
-    return appointments![index].description ?? '';
-  }
+  // @override
+  // String getNotes(int index) {
+  //   return appointments![index].description ?? '';
+  // }
 
-  @override
-  String getSubject(int index) {
-    final Event event = appointments![index];
-    return event.summary == null || event.summary!.isEmpty
-        ? 'No Title'
-        : event.summary!;
-  }
+  // @override
+  // String getSubject(int index) {
+  //   final Event event = appointments![index];
+  //   return event.summary == null || event.summary!.isEmpty
+  //       ? 'No Title'
+  //       : event.summary!;
+  // }
 }
 
 class DataSource extends CalendarDataSource {
@@ -398,18 +305,3 @@ class DataSource extends CalendarDataSource {
     appointments = source;
   }
 }
-
-// class GoogleAPIClient extends IOClient {
-//   final Map<String, String> _headers;
-
-//   GoogleAPIClient(this._headers) : super();
-
-//   @override
-//   Future<IOStreamedResponse> send(BaseRequest request) =>
-//       super.send(request..headers.addAll(_headers));
-
-//   @override
-//   Future<Response> head(Uri url, {Map<String, String>? headers}) =>
-//       super.head(url,
-//           headers: (headers != null ? (headers..addAll(_headers)) : headers));
-// }
