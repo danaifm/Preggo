@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:preggo/screens/CommunityPage.dart';
 import 'package:preggo/viewAppointment.dart';
+import 'package:preggo/view_reminders.dart';
 
 class ToolsPage extends StatefulWidget {
   const ToolsPage({super.key});
@@ -153,7 +154,7 @@ class _ToolsPage extends State<ToolsPage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              CommunityPage())); // Reminders page
+                              viewReminders())); // Reminders page
                 },
                 child: Container(
                     //3-reminders
