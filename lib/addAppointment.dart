@@ -155,7 +155,9 @@ class _addAppointmentState extends State<addAppointment> {
                               child: Center(
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    Navigator.pop(context);
+                                    int count = 0;
+                                    Navigator.of(context)
+                                        .popUntil((_) => count++ >= 2);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: blackColor,
@@ -210,7 +212,7 @@ class _addAppointmentState extends State<addAppointment> {
     //     timeRed ? Color.fromRGBO(255, 100, 100, 1) : Color(0xFFD77D7C);
 
     Color timeColor = timeRed
-        ? Color.fromRGBO(255, 100, 100, 1)
+        ? Theme.of(context).colorScheme.error
         : Color.fromARGB(255, 0, 0, 0);
     var textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontSize: 12.0,
@@ -251,12 +253,11 @@ class _addAppointmentState extends State<addAppointment> {
             alignment: AlignmentDirectional.centerStart,
             child: IconButton(
               onPressed: () {
-                // Navigator.push(context,  MaterialPageRoute(
-                //                         builder: (context) => PregnancyTracking()));
+                Navigator.pop(context);
               },
               icon: const Icon(
                 Icons.arrow_back,
-                color: Color.fromARGB(255, 0, 0, 0),
+                color: blackColor,
               ),
             ),
           ),

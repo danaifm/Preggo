@@ -1,10 +1,11 @@
+// ignore_for_file: avoid_print
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:preggo/colors.dart';
-import 'package:preggo/login_screen.dart';
 import 'package:preggo/reminder.dart';
 import 'package:preggo/view_reminders.dart';
 
@@ -382,12 +383,9 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                           child: Center(
                             child: ElevatedButton(
                               onPressed: () {
-                                Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(builder: (context) {
-                                    return viewReminders();
-                                  }),
-                                  (route) => false,
-                                );
+                                int count = 0;
+                                Navigator.of(context)
+                                    .popUntil((_) => count++ >= 2);
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: blackColor,
@@ -866,7 +864,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                                       return Padding(
                                                         padding:
                                                             const EdgeInsets
-                                                                .symmetric(
+                                                                    .symmetric(
                                                                 horizontal:
                                                                     5.0),
                                                         child: Text(

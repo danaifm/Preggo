@@ -1,9 +1,10 @@
+// ignore_for_file: must_be_immutable, library_prefixes, avoid_unnecessary_containers, no_leading_underscores_for_local_identifiers, unnecessary_const
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/login_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:preggo/addAppointment.dart';
 import 'package:googleapis/calendar/v3.dart' as Cal;
 
 class ProfileScreen extends StatelessWidget {
