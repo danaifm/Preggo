@@ -10,4 +10,5 @@ const Color textFieldBorderColor = Color(0xffE8ECF4);
 const Color textFieldBackgroundColor = Color(0xffF7F8F9);
 const Color whiteColor = Color(0xffFFFFFF);
 const Color green = Colors.green;
-const Color NavBraGrayColor = Color.fromARGB(255,158,158,158);
+const Color NavBraGrayColor = Color.fromARGB(255, 158, 158, 158);
+const Color transparent = Colors.transparent;

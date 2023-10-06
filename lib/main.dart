@@ -4,7 +4,6 @@ import 'package:preggo/SplashScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:preggo/colors.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -31,8 +30,6 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -47,7 +44,7 @@ class MyApp extends StatelessWidget {
       ),
       // the root widget
       home:
-          const SplashScreen(), // each class representes a page or a screen, if you want to display the login class(page) you just call it form here
+          viewAppointment(), // each class representes a page or a screen, if you want to display the login class(page) you just call it form here
     );
   }
 }
