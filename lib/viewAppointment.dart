@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_const, prefer_final_fields
+// ignore_for_file: unnecessary_const, prefer_final_fields, prefer_const_constructors, avoid_print
 
 import 'dart:math';
 
@@ -131,13 +131,22 @@ class _viewAppointment extends State<viewAppointment> {
     final Events calEvents = await googleCalendarApi.events.list(id!);
 
     final List<Event> appointments = <Event>[];
+    List<Appointment> appts = <Appointment>[];
     if (calEvents.items != null) {
       for (int i = 0; i < calEvents.items!.length; i++) {
         final Event event = calEvents.items![i];
         if (event.start == null) {
           continue;
         }
+        print(event.start!.dateTime);
+        Appointment appt = Appointment(
+            startTime: event.start!.dateTime!,
+            endTime: event.end!.dateTime!,
+            subject: event.summary!,
+            color: pinkColor);
+        // event.colorId = '6';
         appointments.add(event);
+        appts.add(appt);
       }
     }
 
@@ -152,7 +161,7 @@ class _viewAppointment extends State<viewAppointment> {
     //   }
     // }
 
-    return appointments;
+    return appts;
   }
 
   // Future<List<GoogleAPI.Event>> getGoogleEventsData() async {
@@ -204,7 +213,7 @@ class _viewAppointment extends State<viewAppointment> {
                 width: 20,
               ),
               Text(
-                "Appointments",
+                "  Appointments",
                 style: TextStyle(
                   color: Color(0xFFD77D7C),
                   fontSize: 32,
@@ -247,6 +256,7 @@ class _viewAppointment extends State<viewAppointment> {
                             view: CalendarView.month,
                             cellBorderColor: backGroundPink,
                             initialDisplayDate: DateTime.now(),
+                            initialSelectedDate: DateTime.now(), //dana add
                             selectionDecoration: BoxDecoration(
                               color: transparent,
                               border:
@@ -285,12 +295,13 @@ class _viewAppointment extends State<viewAppointment> {
                             todayHighlightColor: pinkColor,
 
                             //End of design
-                            dataSource: GoogleDataSource(events: snapshot.data),
+                            dataSource: DataSource(snapshot.data),
                           ),
                           snapshot.data != null
                               ? Container()
                               : Center(
-                                  child: CircularProgressIndicator(),
+                                  child: CircularProgressIndicator(
+                                      color: pinkColor),
                                 ),
                           //add reminder button
                           Align(
@@ -379,6 +390,12 @@ class GoogleDataSource extends CalendarDataSource {
     return event.summary == null || event.summary!.isEmpty
         ? 'No Title'
         : event.summary!;
+  }
+}
+
+class DataSource extends CalendarDataSource {
+  DataSource(List<Appointment> source) {
+    appointments = source;
   }
 }
 
