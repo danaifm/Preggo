@@ -6,6 +6,7 @@ import 'package:jiffy/jiffy.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/login_screen.dart';
 import 'package:preggo/reminder.dart';
+import 'package:preggo/view_reminders.dart';
 
 class AddReminderScreen extends StatefulWidget {
   const AddReminderScreen({super.key});
@@ -284,7 +285,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
               date: selectedDate,
             );
           });
-   // NUHA'S OFFICIAL END OF CODE
+          // NUHA'S OFFICIAL END OF CODE
           if (mounted) {
             _successDialog();
           }
@@ -383,7 +384,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                               onPressed: () {
                                 Navigator.of(context).pushAndRemoveUntil(
                                   MaterialPageRoute(builder: (context) {
-                                    return const LoginScreen();
+                                    return viewReminders();
                                   }),
                                   (route) => false,
                                 );
