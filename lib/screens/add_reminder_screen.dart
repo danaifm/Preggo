@@ -145,8 +145,6 @@ class AddReminderScreenState extends State<AddReminderScreen> {
     final initial = DateTime.now().isBefore(selectedDate);
     print("Selected initial:# $initial #");
 
-    final today = DateTime(DateTime.now().year, DateTime.now().month,
-        DateTime.now().day, DateTime.now().hour, DateTime.now().minute);
     final isToday = selectedDate.year == DateTime.now().year &&
         selectedDate.month == DateTime.now().month &&
         selectedDate.day == DateTime.now().day;
@@ -200,8 +198,9 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                   selectedTime.minute == DateTime.now().minute ||
               selectedTime.hour > DateTime.now().hour &&
                   selectedTime.minute > DateTime.now().minute;
-      final isSelectedTimeValid =
-          isDateAfterToday || isSelectedTimeEqualOrGraterThanNow;
+      final isSelectedTimeValid = isDateAfterToday ||
+          isSelectedTimeEqualOrGraterThanNow ||
+          selectedTime.isAfter(DateTime.now());
       print("today:: $today #");
       print("isDateAfterToday:: $isDateAfterToday #");
       print("isSelectedTimeValid:: $isSelectedTimeValid #");
