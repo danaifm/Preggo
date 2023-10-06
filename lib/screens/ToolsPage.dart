@@ -41,7 +41,7 @@ class _ToolsPage extends State<ToolsPage> {
           child: GridView(
             children: [
               Container(
-                  //1
+                  //1-Appointments
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
@@ -81,7 +81,7 @@ class _ToolsPage extends State<ToolsPage> {
                     ],
                   )),
               Container(
-                  //2
+                  //2- weight
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
@@ -105,7 +105,47 @@ class _ToolsPage extends State<ToolsPage> {
                             ),
                             children: <TextSpan>[
                               TextSpan(
-                                  text: '   My Weight\n',
+                                  text: '    My Weight\n',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700)),
+                              TextSpan(
+                                  text:
+                                      '  Track your weekly  \n          weight ',
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 96, 95, 95))),
+                            ]),
+                      )
+                    ],
+                  )),
+              Container(
+                  //3-reminders
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          const Color.fromARGB(255, 229, 171, 170),
+                          const Color.fromARGB(255, 251, 233, 234),
+                        ],
+                        begin: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    //crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Image.asset(
+                        "assets/images/reminders.png",
+                        height: 120,
+                      ),
+                      RichText(
+                        text: const TextSpan(
+                            style: TextStyle(
+                              fontFamily: 'Urbanist',
+                            ),
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: '   \n   Reminders\n',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 18,
@@ -120,16 +160,7 @@ class _ToolsPage extends State<ToolsPage> {
                     ],
                   )),
               Container(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          const Color.fromARGB(255, 229, 171, 170),
-                          const Color.fromARGB(255, 251, 233, 234),
-                        ],
-                        begin: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(20))),
-              Container(
+                  //4-contaraction timer
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
@@ -138,7 +169,36 @@ class _ToolsPage extends State<ToolsPage> {
                         ],
                         begin: Alignment.bottomRight,
                       ),
-                      borderRadius: BorderRadius.circular(20)))
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    //crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Image.asset(
+                        "assets/images/timer.png",
+                        height: 100,
+                      ),
+                      RichText(
+                        text: const TextSpan(
+                            style: TextStyle(
+                              fontFamily: 'Urbanist',
+                            ),
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: '   Contraction timer\n',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700)),
+                              TextSpan(
+                                  text:
+                                      '  Track you weekly  \n          weight ',
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 96, 95, 95))),
+                            ]),
+                      )
+                    ],
+                  )),
             ],
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
