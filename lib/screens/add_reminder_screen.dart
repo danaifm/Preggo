@@ -19,7 +19,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
   DateTime selectedDate = DateTime.now();
   DateTime selectedTime = DateTime.now();
   DateTime _minDate = DateTime.now();
-  DateTime _minTime = DateTime.now();
+
   var timeFormat = Jiffy.now().format(pattern: "hh:mm a");
   var errorMessage = "";
 
@@ -120,8 +120,6 @@ class AddReminderScreenState extends State<AddReminderScreen> {
         mode: CupertinoDatePickerMode.date,
         // This is called when the user changes the date.
         onDateTimeChanged: (DateTime newDate) {
-          print("abc");
-          print(newDate);
           setState(
             () {
               selectedDate = DateTime(
@@ -134,7 +132,6 @@ class AddReminderScreenState extends State<AddReminderScreen> {
               );
               print("::: Selected date is: $selectedDate #");
               _minDate = DateTime.now();
-              print(selectedDate);
             },
           );
         },
@@ -147,30 +144,36 @@ class AddReminderScreenState extends State<AddReminderScreen> {
     print("Selected DATE:# $selectedDate #");
     final initial = DateTime.now().isBefore(selectedDate);
     print("Selected initial:# $initial #");
+
+    final today = DateTime(DateTime.now().year, DateTime.now().month,
+        DateTime.now().day, DateTime.now().hour, DateTime.now().minute);
+    final isToday = selectedDate.year == DateTime.now().year &&
+        selectedDate.month == DateTime.now().month &&
+        selectedDate.day == DateTime.now().day;
     _showDialog(
       CupertinoDatePicker(
         initialDateTime: DateTime.now().isBefore(selectedDate) ||
                 DateTime.now().isBefore(selectedTime)
             ? selectedTime
             : DateTime.now(),
-        minimumDate: selectedDate.isAfter(DateTime.now()) ||
-                selectedDate.minute == DateTime.now().minute
-            ? null
-            : DateTime.now(),
+        minimumDate: isToday
+            ? DateTime(
+                DateTime.now().year,
+                DateTime.now().month,
+                DateTime.now().day,
+                DateTime.now().hour,
+                DateTime.now().minute,
+              )
+            : null,
         mode: CupertinoDatePickerMode.time,
         onDateTimeChanged: (DateTime newTime) {
           setState(() {
-            print("aliyah");
-            print(newTime);
-            selectedDate = DateTime(selectedDate.year, selectedDate.month,
-                selectedDate.day, newTime.hour, newTime.minute);
-            // _minTime = DateTime.now();
-            _minTime = DateTime(
-              DateTime.now().year,
-              DateTime.now().month,
-              DateTime.now().day,
-              DateTime.now().hour,
-              DateTime.now().minute,
+            selectedTime = DateTime(
+              newTime.year,
+              newTime.month,
+              newTime.day,
+              newTime.hour,
+              newTime.minute,
             );
           });
           print(newTime.toString());
@@ -182,18 +185,56 @@ class AddReminderScreenState extends State<AddReminderScreen> {
     );
   }
 
+  Future<void> addReminder() async {}
+
   Future<void> addNewReminder() async {
     try {
-      final today = DateTime.now();
-      final isToday = selectedDate.year == today.year &&
-          selectedDate.month == today.month &&
-          selectedDate.day == today.day;
+      /// If selected date is after today || selected date is today and the time is after/equal DateTime.now().
+      // final isSelectedTimeValid = selectedDate.isBefore(now);
 
+      final today = DateTime(DateTime.now().year, DateTime.now().month,
+          DateTime.now().day, DateTime.now().hour, DateTime.now().minute);
+      final isDateAfterToday = selectedDate.isAfter(today);
+      final isSelectedTimeEqualOrGraterThanNow =
+          selectedTime.hour == DateTime.now().hour &&
+                  selectedTime.minute == DateTime.now().minute ||
+              selectedTime.hour > DateTime.now().hour &&
+                  selectedTime.minute > DateTime.now().minute;
+      final isSelectedTimeValid =
+          isDateAfterToday || isSelectedTimeEqualOrGraterThanNow;
+      print("today:: $today #");
+      print("isDateAfterToday:: $isDateAfterToday #");
+      print("isSelectedTimeValid:: $isSelectedTimeValid #");
+      print("selectedDate:: $selectedDate #");
+      print("selectedTime:: $selectedTime #");
+
+      // bool isSelectedDateEqualToNow = selectedDate.day == DateTime.now().day &&
+      //     selectedDate.month == DateTime.now().month &&
+      //     selectedDate.year == DateTime.now().year;
+      // bool isValidTime = isSelectedDateEqualToNow &&
+      //     (selectedTime.hour < (DateTime.now().hour) ||
+      //         (selectedTime.hour == DateTime.now().hour &&
+      //             selectedTime.minute < DateTime.now().minute));
+      DateTime dateTime = DateTime(
+          selectedDate.month, selectedDate.day, selectedDate.year, 12, 4);
+      //NUHA'S CODE =================PAY ATTENSION!!!=================
+      //  try {
+      // addReminderToSystem(
+      //  dateTime: dateTime,
+      //    title: _reminderTitleController.text.trim(),
+      //    body: _reminderDescriptionController.text.trim(),
+      //  );
+      //END OF NUHA'S CODE =================PAY ATTENSION!!!=================
+
+      /// Get user uuid
+      /// Create new reminders collection
+      /// Insert all data
       final String? currentUserUuid = FirebaseAuth.instance.currentUser?.uid;
+      // final String userUid = "5ALfd5zhZnOsB8mdc5hN9MbhLry1";
 
       if (currentUserUuid != null &&
           _formKey.currentState!.validate() &&
-          !selectedDate.isBefore(DateTime.now())) {
+          isSelectedTimeValid == true) {
         setState(() {
           isLoading = true;
           errorMessage = "";
@@ -224,108 +265,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
 
           /// Show dialog | start of message
           if (mounted) {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return Center(
-                    child: SizedBox(
-                      height: MediaQuery.sizeOf(context).height * 0.40,
-                      width: MediaQuery.sizeOf(context).width * 0.85,
-                      child: Dialog(
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(20),
-                            ),
-                          ),
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const SizedBox(height: 20),
-                                Container(
-                                  padding: const EdgeInsets.all(15),
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: green,
-                                    // color: pinkColor,
-                                    // border: Border.all(
-                                    //   width: 1.3,
-                                    //   color: Colors.black,
-                                    // ),
-                                  ),
-                                  child: const Icon(
-                                    Icons.check,
-                                    color: Colors.white,
-                                    size: 35,
-                                  ),
-                                ),
-                                const SizedBox(height: 25),
-
-                                // Done
-                                const Text(
-                                  "Reminder added successfully!",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Color.fromARGB(255, 0, 0, 0),
-                                    fontSize: 17,
-                                    fontFamily: 'Urbanist',
-                                    fontWeight: FontWeight.w700,
-                                    height: 1.30,
-                                    letterSpacing: -0.28,
-                                  ),
-                                ),
-
-                                const SizedBox(height: 20),
-
-                                /// OK Button
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10),
-                                  width:
-                                      MediaQuery.sizeOf(context).width * 0.80,
-                                  height: 45.0,
-                                  child: Center(
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.of(context)
-                                            .pushAndRemoveUntil(
-                                          MaterialPageRoute(builder: (context) {
-                                            return const LoginScreen();
-                                          }),
-                                          (route) => false,
-                                        );
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: blackColor,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(40)),
-                                        padding: const EdgeInsets.only(
-                                            left: 70,
-                                            top: 15,
-                                            right: 70,
-                                            bottom: 15),
-                                      ),
-                                      child: const Text("OK",
-                                          style: TextStyle(
-                                            fontFamily: 'Urbanist',
-                                          )),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                });
+            _successDialog();
           }
           // Show dialog | end of message
           setState(() {
@@ -337,19 +277,16 @@ class AddReminderScreenState extends State<AddReminderScreen> {
             selectedTime = DateTime.now();
           });
         });
-      } else if (currentUserUuid != null &&
-          selectedDate.isBefore(DateTime.now())) {
+      } else if (isSelectedTimeValid == false) {
         setState(() {
           errorMessage = "Time cannot be in the past.";
         });
       } else {
         setState(() {
-          isLoading = true;
+          isLoading = false;
           errorMessage = "";
         });
       }
-
-      print(selectedTime);
     } catch (error) {
       setState(() {
         isLoading = false;
@@ -358,200 +295,103 @@ class AddReminderScreenState extends State<AddReminderScreen> {
     }
   }
 
-  // Future<void> addNewReminder() async {
-  //   try {
-  //     final isTimeInvalid = selectedDate.isBefore(DateTime.now());
-  //     print("selectedTime:: $selectedTime #");
-  //     print("selectedDate:: $selectedDate #");
-  //     print("isTimeInvalid:: $isTimeInvalid #");
+  Future<dynamic> _successDialog() {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return Center(
+            child: SizedBox(
+              height: MediaQuery.sizeOf(context).height * 0.40,
+              width: MediaQuery.sizeOf(context).width * 0.85,
+              child: Dialog(
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(height: 20),
+                        Container(
+                          padding: const EdgeInsets.all(15),
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: green,
+                            // color: pinkColor,
+                            // border: Border.all(
+                            //   width: 1.3,
+                            //   color: Colors.black,
+                            // ),
+                          ),
+                          child: const Icon(
+                            Icons.check,
+                            color: Colors.white,
+                            size: 35,
+                          ),
+                        ),
+                        const SizedBox(height: 25),
 
-  //     // bool isSelectedDateEqualToNow = selectedDate.day == DateTime.now().day &&
-  //     //     selectedDate.month == DateTime.now().month &&
-  //     //     selectedDate.year == DateTime.now().year;
-  //     // bool isValidTime = isSelectedDateEqualToNow &&
-  //     //     (selectedTime.hour < (DateTime.now().hour) ||
-  //     //         (selectedTime.hour == DateTime.now().hour &&
-  //     //             selectedTime.minute < DateTime.now().minute));
-  //     DateTime dateTime = DateTime(
-  //         selectedDate.month, selectedDate.day, selectedDate.year, 12, 4);
-  //     //NUHA'S CODE =================PAY ATTENSION!!!=================
-  //     //  try {
-  //     // addReminderToSystem(
-  //     //  dateTime: dateTime,
-  //     //    title: _reminderTitleController.text.trim(),
-  //     //    body: _reminderDescriptionController.text.trim(),
-  //     //  );
-  //     //END OF NUHA'S CODE =================PAY ATTENSION!!!=================
+                        // Done
+                        const Text(
+                          "Reminder added successfully!",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 0, 0, 0),
+                            fontSize: 17,
+                            fontFamily: 'Urbanist',
+                            fontWeight: FontWeight.w700,
+                            height: 1.30,
+                            letterSpacing: -0.28,
+                          ),
+                        ),
 
-  //     /// Get user uuid
-  //     /// Create new reminders collection
-  //     /// Insert all data
-  //     final String? currentUserUuid = FirebaseAuth.instance.currentUser?.uid;
-  //     // final String userUid = "5ALfd5zhZnOsB8mdc5hN9MbhLry1";
+                        const SizedBox(height: 20),
 
-  //     if (currentUserUuid != null &&
-  //         _formKey.currentState!.validate() &&
-  //         isTimeInvalid == false) {
-  //       setState(() {
-  //         isLoading = true;
-  //         errorMessage = "";
-  //       });
-  //       final remindersCollection = FirebaseFirestore.instance
-  //           .collection("users")
-  //           .doc(currentUserUuid)
-  //           .collection("reminders");
-
-  //       // final docId = await remindersCollection.get();
-  //       await remindersCollection.add(
-  //         {
-  //           "id": "",
-  //           "title": _reminderTitleController.text.trim(),
-  //           "description": _reminderDescriptionController.text.trim(),
-  //           "date":
-  //               "${selectedDate.month}-${selectedDate.day}-${selectedDate.year}",
-  //           "time": TimeOfDay.fromDateTime(selectedTime).format(context),
-  //           "repeat": selectedDays,
-  //         },
-  //       ).then((value) async {
-  //         await remindersCollection.doc(value.id).set(
-  //           {
-  //             "id": value.id,
-  //           },
-  //           SetOptions(merge: true),
-  //         );
-
-  //         /// Show dialog | start of message
-  //         if (mounted) {
-  //           showDialog(
-  //               context: context,
-  //               builder: (context) {
-  //                 return Center(
-  //                   child: SizedBox(
-  //                     height: MediaQuery.sizeOf(context).height * 0.40,
-  //                     width: MediaQuery.sizeOf(context).width * 0.85,
-  //                     child: Dialog(
-  //                       child: Container(
-  //                         padding: const EdgeInsets.all(10),
-  //                         decoration: const BoxDecoration(
-  //                           color: Colors.white,
-  //                           borderRadius: BorderRadius.all(
-  //                             Radius.circular(20),
-  //                           ),
-  //                         ),
-  //                         child: Center(
-  //                           child: Column(
-  //                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //                             mainAxisSize: MainAxisSize.min,
-  //                             children: [
-  //                               const SizedBox(height: 20),
-  //                               Container(
-  //                                 padding: const EdgeInsets.all(15),
-  //                                 decoration: const BoxDecoration(
-  //                                   shape: BoxShape.circle,
-  //                                   color: green,
-  //                                   // color: pinkColor,
-  //                                   // border: Border.all(
-  //                                   //   width: 1.3,
-  //                                   //   color: Colors.black,
-  //                                   // ),
-  //                                 ),
-  //                                 child: const Icon(
-  //                                   Icons.check,
-  //                                   color: Colors.white,
-  //                                   size: 35,
-  //                                 ),
-  //                               ),
-  //                               const SizedBox(height: 25),
-
-  //                               // Done
-  //                               const Text(
-  //                                 "Reminder added successfully!",
-  //                                 textAlign: TextAlign.center,
-  //                                 style: TextStyle(
-  //                                   color: Color.fromARGB(255, 0, 0, 0),
-  //                                   fontSize: 17,
-  //                                   fontFamily: 'Urbanist',
-  //                                   fontWeight: FontWeight.w700,
-  //                                   height: 1.30,
-  //                                   letterSpacing: -0.28,
-  //                                 ),
-  //                               ),
-
-  //                               const SizedBox(height: 20),
-
-  //                               /// OK Button
-  //                               Container(
-  //                                 padding: const EdgeInsets.symmetric(
-  //                                     horizontal: 10),
-  //                                 width:
-  //                                     MediaQuery.sizeOf(context).width * 0.80,
-  //                                 height: 45.0,
-  //                                 child: Center(
-  //                                   child: ElevatedButton(
-  //                                     onPressed: () {
-  //                                       // Navigator.of(context)
-  //                                       //     .pushAndRemoveUntil(
-  //                                       //   MaterialPageRoute(builder: (context) {
-  //                                       //     return const LoginScreen();
-  //                                       //   }),
-  //                                       //   (route) => false,
-  //                                       // );
-  //                                     },
-  //                                     style: ElevatedButton.styleFrom(
-  //                                       backgroundColor: blackColor,
-  //                                       shape: RoundedRectangleBorder(
-  //                                           borderRadius:
-  //                                               BorderRadius.circular(40)),
-  //                                       padding: const EdgeInsets.only(
-  //                                           left: 70,
-  //                                           top: 15,
-  //                                           right: 70,
-  //                                           bottom: 15),
-  //                                     ),
-  //                                     child: const Text("OK",
-  //                                         style: TextStyle(
-  //                                           fontFamily: 'Urbanist',
-  //                                         )),
-  //                                   ),
-  //                                 ),
-  //                               ),
-  //                               const SizedBox(height: 20),
-  //                             ],
-  //                           ),
-  //                         ),
-  //                       ),
-  //                     ),
-  //                   ),
-  //                 );
-  //               });
-  //         }
-  //         // Show dialog | end of message
-  //         setState(() {
-  //           isLoading = false;
-  //           _reminderTitleController.clear();
-  //           _reminderDescriptionController.clear();
-
-  //           selectedDate = DateTime.now();
-  //           selectedTime = DateTime.now();
-  //         });
-  //       });
-  //     } else if (isTimeInvalid) {
-  //       setState(() {
-  //         errorMessage = "Time cannot be in the past.";
-  //       });
-  //     } else {
-  //       setState(() {
-  //         isLoading = false;
-  //         errorMessage = "";
-  //       });
-  //     }
-  //   } catch (error) {
-  //     setState(() {
-  //       isLoading = false;
-  //       errorMessage = "";
-  //     });
-  //   }
-  // }
+                        /// OK Button
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          width: MediaQuery.sizeOf(context).width * 0.80,
+                          height: 45.0,
+                          child: Center(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(builder: (context) {
+                                    return const LoginScreen();
+                                  }),
+                                  (route) => false,
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: blackColor,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(40)),
+                                padding: const EdgeInsets.only(
+                                    left: 70, top: 15, right: 70, bottom: 15),
+                              ),
+                              child: const Text("OK",
+                                  style: TextStyle(
+                                    fontFamily: 'Urbanist',
+                                  )),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
 
   // GlobalKey<FormState> formstate = GlobalKey<FormState>();
   final _formKey = GlobalKey<FormState>();
@@ -601,7 +441,13 @@ class AddReminderScreenState extends State<AddReminderScreen> {
   Widget build(BuildContext context) {
     var textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontSize: 12.0,
-          fontFamily: 'Urbanist',
+          //fontFamily: 'Urbanist',
+          color: Theme.of(context).colorScheme.error,
+          fontWeight: FontWeight.normal,
+        );
+
+    var textStyleError = Theme.of(context).textTheme.bodyMedium?.copyWith(
+          fontSize: 12.0,
           color: Theme.of(context).colorScheme.error,
           fontWeight: FontWeight.normal,
         );
@@ -692,45 +538,28 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                       fontFamily: 'Urbanist',
                                       // color: pinkColor,
                                     ),
+
                                     decoration: InputDecoration(
+                                      errorStyle: textStyleError,
                                       contentPadding:
                                           const EdgeInsets.symmetric(
                                               vertical: 15.0, horizontal: 15),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                        gapPadding: 0.5,
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide: const BorderSide(
-                                          width: 0.50,
-                                          color:
-                                              Color.fromRGBO(255, 100, 100, 1),
-                                        ),
+                                      border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12.0),
                                       ),
-                                      errorBorder: OutlineInputBorder(
-                                        gapPadding: 0.5,
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide: const BorderSide(
-                                          width: 0.50,
-                                          color:
-                                              Color.fromRGBO(255, 100, 100, 1),
-                                        ),
+                                      enabledBorder: const OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(12.0)),
+                                        borderSide: BorderSide(
+                                            color: textFieldBorderColor),
                                       ),
-                                      enabledBorder: OutlineInputBorder(
-                                        gapPadding: 0.5,
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide: const BorderSide(
-                                          width: 0.50,
-                                          color: Color.fromARGB(
-                                              255, 221, 225, 232),
-                                        ),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        // gapPadding: 100,
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide: const BorderSide(
-                                          width: 0.50,
-                                          color: Color.fromARGB(
-                                              255, 221, 225, 232),
-                                        ),
+                                      focusedBorder: const OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(12.0)),
+                                        borderSide:
+                                            BorderSide(color: darkGrayColor),
+                                        // borderSide: BorderSide(color: darkGrayColor),
                                       ),
                                       filled: true,
                                       fillColor: const Color(0xFFF7F8F9),
@@ -935,7 +764,9 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                               /// Time Color
                                               color: errorMessage.isEmpty
                                                   ? Colors.black
-                                                  : pinkColor,
+                                                  : Theme.of(context)
+                                                      .colorScheme
+                                                      .error,
                                             ),
                                           ),
                                         ),
@@ -1178,7 +1009,8 @@ class AddReminderScreenState extends State<AddReminderScreen> {
 
                                 Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text(errorMessage, style: textStyle),
+                                  child:
+                                      Text(errorMessage, style: textStyleError),
                                 ),
                                 const SizedBox(height: 30),
                                 SizedBox(
@@ -1287,6 +1119,7 @@ class _DaysDialogState extends State<DaysDialog> {
           "Select",
           style: TextStyle(
             fontFamily: 'Urbanist',
+            fontSize: 17,
           ),
         ),
         contentPadding: EdgeInsets.zero,
@@ -1342,6 +1175,10 @@ class _DaysDialogState extends State<DaysDialog> {
                     activeColor: pinkColor,
                     title: Text(
                       widget.days[i]['day'],
+                      style: const TextStyle(
+                        fontSize: 15.0,
+                        fontFamily: 'Urbanist',
+                      ),
                     ),
                     value: widget.days[i]['selected'],
                     onChanged: (value) {
