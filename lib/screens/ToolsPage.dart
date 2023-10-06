@@ -37,15 +37,16 @@ class _ToolsPage extends State<ToolsPage> {
         Container(
           // the boxes
           margin: EdgeInsets.only(top: 85),
-          padding: EdgeInsets.all(15), // the spaces between the boxes
+          padding: EdgeInsets.all(17), // the spaces between the boxes
           child: GridView(
             children: [
               Container(
+                  //1
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          Color.fromARGB(255, 81, 159, 224),
-                          Color.fromARGB(255, 165, 194, 217)
+                          Color.fromARGB(255, 215, 125, 124),
+                          const Color.fromARGB(255, 251, 233, 234)
                         ],
                         begin: Alignment.bottomRight,
                       ),
@@ -56,14 +57,65 @@ class _ToolsPage extends State<ToolsPage> {
                     children: [
                       Image.asset(
                         "assets/images/schedule.png",
-                        height: 100,
+                        height: 150,
                       ),
-                      Text(
-                        "Appointments",
-                        style: TextStyle(
-                            fontFamily: "Urbainst",
-                            fontSize: 16,
-                            color: whiteColor),
+                      RichText(
+                        text: const TextSpan(
+                            style: TextStyle(
+                              fontFamily: 'Urbanist',
+                            ),
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: ' Appointments\n',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700)),
+                              TextSpan(
+                                  text:
+                                      '    Add new dates \n         and times ',
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 96, 95, 95))),
+                            ]),
+                      )
+                    ],
+                  )),
+              Container(
+                  //2
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Color.fromARGB(255, 224, 156, 155),
+                          const Color.fromARGB(255, 251, 233, 234),
+                        ],
+                        begin: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    //crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Image.asset(
+                        "assets/images/weight-scale.png",
+                      ),
+                      RichText(
+                        text: const TextSpan(
+                            style: TextStyle(
+                              fontFamily: 'Urbanist',
+                            ),
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: '   My Weight\n',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700)),
+                              TextSpan(
+                                  text:
+                                      '  Track you weekly  \n          weight ',
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 96, 95, 95))),
+                            ]),
                       )
                     ],
                   )),
@@ -71,8 +123,8 @@ class _ToolsPage extends State<ToolsPage> {
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          const Color.fromARGB(255, 221, 129, 123),
-                          Color.fromARGB(255, 211, 155, 151)
+                          const Color.fromARGB(255, 229, 171, 170),
+                          const Color.fromARGB(255, 251, 233, 234),
                         ],
                         begin: Alignment.bottomRight,
                       ),
@@ -81,18 +133,8 @@ class _ToolsPage extends State<ToolsPage> {
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          Colors.green,
-                          Color.fromARGB(255, 142, 210, 145)
-                        ],
-                        begin: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(20))),
-              Container(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          const Color.fromARGB(255, 221, 208, 95),
-                          Color.fromARGB(255, 219, 215, 186)
+                          const Color.fromARGB(255, 236, 194, 193),
+                          const Color.fromARGB(255, 251, 233, 234),
                         ],
                         begin: Alignment.bottomRight,
                       ),
