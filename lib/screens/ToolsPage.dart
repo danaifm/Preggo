@@ -1,6 +1,9 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/screens/CommunityPage.dart';
+import 'package:preggo/viewAppointment.dart';
 
 class ToolsPage extends StatefulWidget {
   const ToolsPage({super.key});
@@ -40,6 +43,11 @@ class _ToolsPage extends State<ToolsPage> {
           margin: EdgeInsets.only(top: 85),
           padding: EdgeInsets.all(17), // the spaces between the boxes
           child: GridView(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 20,
+                crossAxisSpacing: 10,
+                childAspectRatio: 0.60),
             children: [
               InkWell(
                 onTap: () {
@@ -47,7 +55,7 @@ class _ToolsPage extends State<ToolsPage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              CommunityPage())); // Appointment page
+                              viewAppointment())); // Appointment page
                 },
                 child: Container(
                     //1-Appointments
@@ -241,11 +249,6 @@ class _ToolsPage extends State<ToolsPage> {
                     )),
               ),
             ],
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 20,
-                crossAxisSpacing: 10,
-                childAspectRatio: 0.60),
           ),
         )
       ],

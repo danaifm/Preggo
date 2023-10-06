@@ -30,6 +30,8 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -44,7 +46,7 @@ class MyApp extends StatelessWidget {
       ),
       // the root widget
       home:
-          viewAppointment(), // each class representes a page or a screen, if you want to display the login class(page) you just call it form here
+          const SplashScreen(), // each class representes a page or a screen, if you want to display the login class(page) you just call it form here
     );
   }
 }

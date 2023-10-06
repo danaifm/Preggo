@@ -1,15 +1,14 @@
-// ignore_for_file: unnecessary_const, prefer_final_fields, prefer_const_constructors, avoid_print
-
-import 'dart:math';
+// ignore_for_file: unnecessary_const, prefer_final_fields, prefer_const_constructors, avoid_print, camel_case_types, unused_element
 
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:googleapis/calendar/v3.dart';
 import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
 import 'package:preggo/colors.dart';
-import 'package:preggo/screens/ToolsPage.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
+import 'addAppointment.dart';
 
 class viewAppointment extends StatefulWidget {
   @override
@@ -44,10 +43,13 @@ class _viewAppointment extends State<viewAppointment> {
   getAppointments() async {
     print('in get appts');
     // _googleSignIn.signOut();
-    print("AA first: " + (await _googleSignIn.isSignedIn()).toString());
+    print("AA first: ${await _googleSignIn.isSignedIn()}");
     // await _googleSignIn.signOut();
     await _googleSignIn.signIn();
-    print("AA second: " + (await _googleSignIn.isSignedIn()).toString());
+    while (await _googleSignIn.isSignedIn() == false) {
+      await _googleSignIn.signIn();
+    } //mandatory to log in with google!!
+    print("AA second: ${await _googleSignIn.isSignedIn()}");
     print('before await');
     final auth.AuthClient? client = await _googleSignIn.authenticatedClient();
     print(client);
@@ -66,7 +68,7 @@ class _viewAppointment extends State<viewAppointment> {
     }
 
     if (exists == false) {
-      Calendar preggoCalendar = new Calendar(summary: "Preggo Calendar");
+      Calendar preggoCalendar = Calendar(summary: "Preggo Calendar");
       googleCalendarApi.calendars.insert(preggoCalendar);
       for (CalendarListEntry entry in items) {
         if (entry.summary == "Preggo Calendar") {
@@ -225,7 +227,7 @@ class _viewAppointment extends State<viewAppointment> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => ToolsPage(),
+                                    builder: (context) => addAppointment(),
                                   ),
                                 );
                               },

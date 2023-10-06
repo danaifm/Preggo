@@ -8,7 +8,6 @@ import 'package:string_validator/string_validator.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:preggo/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:phone_form_field/phone_form_field.dart';
 import 'SplashScreen.dart';
 
 class SignUp extends StatefulWidget {
@@ -25,7 +24,6 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  PhoneController _phoneControllerCC = PhoneController(null);
   final TextEditingController _phoneController = TextEditingController();
   final GlobalKey<FormFieldState> _usernameKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> _emailKey = GlobalKey<FormFieldState>();
@@ -42,9 +40,6 @@ class _SignUpState extends State<SignUp> {
   @override
   void initState() {
     super.initState();
-    _phoneControllerCC.addListener(() {
-      print(_phoneControllerCC.value);
-    });
   }
 
   @override
