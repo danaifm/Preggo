@@ -10,6 +10,9 @@ import 'package:preggo/pregnancyInfo.dart';
 import 'package:preggo/reminder.dart';
 import 'package:preggo/screens/add_reminder_screen.dart';
 import 'package:preggo/start_Journey.dart';
+import 'package:preggo/screens/add_reminder_screen.dart';
+import 'package:preggo/view_reminders.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

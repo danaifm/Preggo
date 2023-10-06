@@ -40,13 +40,13 @@ class _startJourney extends State<startJourney>{
               child: Column(
                 children: [
                   Center(
-            child: Padding(
-              padding: EdgeInsets.only(top: 90),
-              child: Image.asset('assets/images/calendar.png', height: 280, width: 280,
-              
-              ),
-            ),
-          ),             
+                  child: Padding(
+                  padding: EdgeInsets.only(top: 90),
+                  child: Image.asset('assets/images/calendar.png', height: 280, width: 280,
+                  
+                  ),
+                ),
+              ),             
           SizedBox(height: 50,),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 25),
@@ -116,9 +116,9 @@ class _startJourney extends State<startJourney>{
                   shape: const CircleBorder(),
                   backgroundColor: darkBlackColor,
                 ),
-                child: const Text(
-                  '+',
-                  style: TextStyle(fontSize: 38),
+                child: Icon(
+                  Icons.add,
+                  color: Colors.white,
                 ),
               ),
               ),
