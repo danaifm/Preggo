@@ -361,8 +361,6 @@ class _addAppointmentState extends State<addAppointment> {
                                     filled: true,
                                     fillColor: Color(0xFFF7F8F9),
                                   ),
-                                  autovalidateMode:
-                                      AutovalidateMode.onUserInteraction,
                                   validator: (value) {
                                     if (value!.isEmpty) {
                                       return "This field cannot be empty.";
@@ -442,8 +440,6 @@ class _addAppointmentState extends State<addAppointment> {
                                     filled: true,
                                     fillColor: Color(0xFFF7F8F9),
                                   ),
-                                  autovalidateMode:
-                                      AutovalidateMode.onUserInteraction,
                                   validator: (value) {
                                     if (value!.isEmpty) {
                                       return "This field cannot be empty.";
@@ -523,8 +519,6 @@ class _addAppointmentState extends State<addAppointment> {
                                     filled: true,
                                     fillColor: Color(0xFFF7F8F9),
                                   ),
-                                  autovalidateMode:
-                                      AutovalidateMode.onUserInteraction,
                                   validator: (value) {
                                     if (value!.isEmpty) {
                                       return "This field cannot be empty.";

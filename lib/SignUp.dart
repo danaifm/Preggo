@@ -158,6 +158,8 @@ class _SignUpState extends State<SignUp> {
                             height: 85,
                             constraints: BoxConstraints(maxHeight: 100),
                             child: TextFormField(
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
                               maxLength: 25,
                               controller: _usernameController,
                               key: _usernameKey,
@@ -219,6 +221,8 @@ class _SignUpState extends State<SignUp> {
                             height: 85,
                             constraints: BoxConstraints(maxHeight: 100),
                             child: TextFormField(
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
                               maxLength: 50,
                               controller: _emailController,
                               key: _emailKey,
@@ -319,6 +323,8 @@ class _SignUpState extends State<SignUp> {
                             height: 85,
                             constraints: BoxConstraints(maxHeight: 100),
                             child: TextFormField(
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
                               maxLength: 10,
                               controller: _phoneController,
                               key: _phoneKey,
@@ -397,6 +403,8 @@ class _SignUpState extends State<SignUp> {
                             height: 95,
                             constraints: BoxConstraints(maxHeight: 95),
                             child: TextFormField(
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
                               controller: _passwordController,
                               maxLength: 50,
 
