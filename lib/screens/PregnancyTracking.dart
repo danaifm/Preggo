@@ -271,6 +271,8 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                         ),
                       ),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+
                         children: [
                           //weight icon
                           Container(
@@ -365,23 +367,25 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                 borderRadius: BorderRadius.circular(500),
                               ),
                             ),
-                            Column(
-                              children: [
-                                Slider(
-                                  value: currentWeekProgress.toDouble(),
-                                  min: 0,
-                                  max: 270,
-                                  onChanged: (double value) {},
-                                  activeColor: pinkColor,
-                                  inactiveColor: NavBraGrayColor,
-                                ),
-                                Text(
-                                  "You’re currently pregnant in week $data",
-                                  style: TextStyle(
-                                    fontSize: 12,
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  Slider(
+                                    value: currentWeekProgress.toDouble(),
+                                    min: 0,
+                                    max: 270,
+                                    onChanged: (double value) {},
+                                    activeColor: pinkColor,
+                                    inactiveColor: NavBraGrayColor,
                                   ),
-                                ),
-                              ],
+                                  Text(
+                                    "You’re currently pregnant in week $data",
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             Container(
                               //baby pic
