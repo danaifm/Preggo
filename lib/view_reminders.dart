@@ -36,7 +36,7 @@ class _viewReminders extends State<viewReminders> {
     return user!.uid;
   }
 
-  Future<Container> getReminders(
+  Future<Widget> getReminders(
       String reminderDate, String dayOfWeek, String dayShortName) async {
     //FirebaseFirestore firestore = FirebaseFirestore.instance;
     String userUid = getUserId();
@@ -61,9 +61,9 @@ class _viewReminders extends State<viewReminders> {
             Center(
               //notification bell image
               child: Padding(
-                padding: EdgeInsets.only(top: 100),
+                padding: EdgeInsets.only(top: 120),
                 child: Image.asset(
-                  'assets/images/notification.png',
+                  'assets/images/noReminder.png',
                   height: 100,
                   width: 100,
                 ),
@@ -99,82 +99,87 @@ class _viewReminders extends State<viewReminders> {
         return dateTimeA.compareTo(dateTimeB);
       });
 
-      return Container(
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: reminderResult.length,
-          itemBuilder: (context, index) {
-            String id = reminderResult[index].data()['id'] ?? '';
-            String title = reminderResult[index].data()['title'] ?? '';
-            String time = reminderResult[index].data()['time'] ?? '';
-
-            return Container(
-              margin: EdgeInsets.all(8),
-              //padding: EdgeInsets.all(10),
-
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 17),
-                    decoration: BoxDecoration(
-                      color: backGroundPink.withOpacity(0.3),
-                      border: Border.all(color: backGroundPink, width: 2),
-                      borderRadius: BorderRadius.circular(13),
-                    ),
-                    child: Row(children: [
-                      Container(
-                        width: 85,
-                        child: Text(
-                          '$time',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Urbanist',
-                          ),
-                        ),
+      return SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
+        scrollDirection: Axis.vertical,
+        child: Container(
+          height: 505,
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: reminderResult.length,
+            itemBuilder: (context, index) {
+              String id = reminderResult[index].data()['id'] ?? '';
+              String title = reminderResult[index].data()['title'] ?? '';
+              String time = reminderResult[index].data()['time'] ?? '';
+        
+              return Container(
+                margin: EdgeInsets.all(8),
+                //padding: EdgeInsets.all(10),
+        
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 17),
+                      decoration: BoxDecoration(
+                        color: backGroundPink.withOpacity(0.3),
+                        border: Border.all(color: backGroundPink, width: 2),
+                        borderRadius: BorderRadius.circular(13),
                       ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Expanded(
-                        child: Text(
-                          '$title',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Urbanist',
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          String documentId = id;
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => reminderDetails(),
-                              settings: RouteSettings(arguments: documentId),
+                      child: Row(children: [
+                        Container(
+                          width: 85,
+                          child: Text(
+                            '$time',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Urbanist',
                             ),
-                          );
-                        },
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Icon(
-                            Icons.arrow_forward_ios,
-                            color: Colors.black,
-                            size: 20,
                           ),
                         ),
-                      )
-                    ]),
-                  ),
-                ],
-              ),
-            );
-          },
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Expanded(
+                          child: Text(
+                            '$title',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Urbanist',
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            String documentId = id;
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => reminderDetails(),
+                                settings: RouteSettings(arguments: documentId),
+                              ),
+                            );
+                          },
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.black,
+                              size: 20,
+                            ),
+                          ),
+                        )
+                      ]),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       );
     }
@@ -252,7 +257,7 @@ class _viewReminders extends State<viewReminders> {
                                   int day = int.parse(dateComponents[2]);
                                   formattedDate =
                                       "${month.toStringAsFixed(0)}-${day.toStringAsFixed(0)}-$year";
-
+              
                                   weekDay = selectedDate.weekday; //monday is 1
                                   if (weekDay == 1) {
                                     //monday
@@ -283,7 +288,7 @@ class _viewReminders extends State<viewReminders> {
                                     dayInDB = 1;
                                     dayShortName = "Sun";
                                   }
-
+              
                                   dayOfWeek = dayInDB.toString();
                                 });
                               },
@@ -308,19 +313,20 @@ class _viewReminders extends State<viewReminders> {
                                 separatorPadding: 16.0, // padding between days
                               ),
                             ),
-                            FutureBuilder<Widget>(
-                              future: getReminders(
-                                  formattedDate, dayOfWeek, dayShortName),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<Widget> snapshot) {
-                                if (snapshot.hasData) {
-                                  return snapshot.data!;
-                                }
 
-                                return CircularProgressIndicator(
-                                    color: pinkColor);
-                              },
-                            ),
+                            FutureBuilder<Widget>(
+                            future: getReminders(
+                                formattedDate, dayOfWeek, dayShortName),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<Widget> snapshot) {
+                              if (snapshot.hasData) {
+                                return snapshot.data!;
+                              }
+                                      
+                              return CircularProgressIndicator(
+                                  color: pinkColor);
+                            },
+                              ),
                           ],
                         ),
                       ),
