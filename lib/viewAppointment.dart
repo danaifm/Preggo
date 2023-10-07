@@ -422,13 +422,13 @@ class _viewAppointment extends State<viewAppointment> {
                           child: Padding(
                             padding: EdgeInsets.fromLTRB(0, 20, 5, 50),
                             child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => addAppointment(),
-                                  ),
-                                );
+                              onPressed: () async {
+                                await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        //  maintainState: false,
+                                        builder: (context) =>
+                                            addAppointment())).then(onGoBack);
                               },
                               style: ElevatedButton.styleFrom(
                                 fixedSize: const Size(55, 55),
@@ -452,6 +452,16 @@ class _viewAppointment extends State<viewAppointment> {
         ],
       ),
     );
+  }
+
+  int id = 0;
+  refreshData() {
+    id++;
+  }
+
+  onGoBack(dynamic value) {
+    refreshData();
+    setState(() {});
   }
 }
 

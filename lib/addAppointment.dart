@@ -154,9 +154,8 @@ class _addAppointmentState extends State<addAppointment> {
                               child: Center(
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    int count = 0;
-                                    Navigator.of(context)
-                                        .popUntil((_) => count++ >= 2);
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pop();
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: blackColor,
