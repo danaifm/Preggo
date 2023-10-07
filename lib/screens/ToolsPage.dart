@@ -101,11 +101,11 @@ class _ToolsPage extends State<ToolsPage> {
               ),
               InkWell(
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              CommunityPage())); // Track Weight page
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) =>
+                  //             CommunityPage())); // Track Weight page
                 },
                 child: Container(
                     //2- weight
@@ -200,11 +200,11 @@ class _ToolsPage extends State<ToolsPage> {
               ),
               InkWell(
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              CommunityPage())); // Contraction timer page
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) =>
+                  //             CommunityPage())); // Contraction timer page
                 },
                 child: Container(
                     //4-contaraction timer
