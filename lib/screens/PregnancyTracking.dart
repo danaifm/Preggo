@@ -204,27 +204,15 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                 ),
                                 children: <TextSpan>[
                                   TextSpan(
-                                      text: 'Baby Tracker\n',
+                                      text: 'Baby Tracker',
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 35,
                                           fontWeight: FontWeight.w400)),
-                                  TextSpan(
-                                    text:
-                                        'Get insight of pregnancy weekly developments.',
-                                    style: TextStyle(
-                                      color: Color.fromARGB(
-                                        255,
-                                        121,
-                                        119,
-                                        119,
-                                      ),
-                                    ),
-                                  ),
                                 ]),
                           )),
                       Container(
-                        height: 100,
+                        height: 130,
                         //alignment: Alignment.topCenter,
                         child: RotatedBox(
                           quarterTurns: -1,
@@ -436,7 +424,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            Text(motherChanges() * 2)
+                            Text(motherChanges())
                           ],
                         ),
                       ),

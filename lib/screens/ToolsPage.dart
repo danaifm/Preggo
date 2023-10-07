@@ -62,8 +62,8 @@ class _ToolsPage extends State<ToolsPage> {
                     decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Color.fromARGB(255, 215, 125, 124),
-                            const Color.fromARGB(255, 251, 233, 234)
+                            const Color.fromARGB(255, 236, 194, 193),
+                            const Color.fromARGB(255, 251, 233, 234),
                           ],
                           begin: Alignment.bottomRight,
                         ),
@@ -112,7 +112,7 @@ class _ToolsPage extends State<ToolsPage> {
                     decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Color.fromARGB(255, 224, 156, 155),
+                            const Color.fromARGB(255, 236, 194, 193),
                             const Color.fromARGB(255, 251, 233, 234),
                           ],
                           begin: Alignment.bottomRight,
@@ -161,7 +161,7 @@ class _ToolsPage extends State<ToolsPage> {
                     decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            const Color.fromARGB(255, 229, 171, 170),
+                            const Color.fromARGB(255, 236, 194, 193),
                             const Color.fromARGB(255, 251, 233, 234),
                           ],
                           begin: Alignment.bottomRight,
