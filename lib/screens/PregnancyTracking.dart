@@ -195,6 +195,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                   child: Column(
                     children: [
                       Container(
+                          alignment: Alignment.centerLeft,
                           margin: EdgeInsets.only(left: 20, top: 45),
                           child: RichText(
                             text: const TextSpan(
@@ -203,14 +204,14 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                 ),
                                 children: <TextSpan>[
                                   TextSpan(
-                                      text: 'Pregnancy tracking\n',
+                                      text: 'Baby Tracker\n',
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 35,
                                           fontWeight: FontWeight.w400)),
                                   TextSpan(
                                     text:
-                                        'Track your pregnancy and get insight of weekly development.',
+                                        'Get insight of pregnancy weekly developments.',
                                     style: TextStyle(
                                       color: Color.fromARGB(
                                         255,
