@@ -454,9 +454,9 @@ class _viewAppointment extends State<viewAppointment> {
     );
   }
 
-  int id = 0;
+  int count = 0;
   refreshData() {
-    id++;
+    count++;
   }
 
   onGoBack(dynamic value) {
