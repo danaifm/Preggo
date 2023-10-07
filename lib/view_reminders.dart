@@ -334,11 +334,15 @@ class _viewReminders extends State<viewReminders> {
               child: Padding(
                 padding: EdgeInsets.fromLTRB(0, 20, 20, 50),
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
+                  onPressed: () async {
+                    await Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const AddReminderScreen()));
+                            builder: (context) =>
+                                const AddReminderScreen())).then((value) {
+                      getReminders(formattedDate, dayOfWeek, dayShortName);
+                      setState(() {});
+                    });
                   },
                   style: ElevatedButton.styleFrom(
                     fixedSize: const Size(55, 55),
