@@ -24,7 +24,12 @@ class _viewReminders extends State<viewReminders> {
   int dayInDB = 0;
   String dayOfWeek = "";
   String dayShortName = "";
-  late String formattedDate = "";
+  String todayMonth = DateTime.now().month.toString();
+  String todayDay = DateTime.now().day.toString();
+  String todayYear = DateTime.now().year.toString();
+  String formattedDate =
+      '${DateTime.now().month}-${DateTime.now().day}-${DateTime.now().year}';
+  // "${month.toStringAsFixed(0)}-${day.toStringAsFixed(0)}-$year";
 
   String getUserId() {
     User? user = FirebaseAuth.instance.currentUser;
@@ -35,7 +40,7 @@ class _viewReminders extends State<viewReminders> {
       String reminderDate, String dayOfWeek, String dayShortName) async {
     //FirebaseFirestore firestore = FirebaseFirestore.instance;
     String userUid = getUserId();
-
+    print('Reminder date is $reminderDate');
     QuerySnapshot result = await FirebaseFirestore.instance
         .collection('users')
         .doc(userUid)
@@ -46,7 +51,8 @@ class _viewReminders extends State<viewReminders> {
             Filter('repeat',
                 arrayContains: {'id': dayOfWeek, 'short': dayShortName})))
         .get();
-
+    print(result.docs.length);
+    print('printed');
     if (result.docs.isEmpty) //no reminders for this date
     {
       return Container(
@@ -311,7 +317,8 @@ class _viewReminders extends State<viewReminders> {
                                   return snapshot.data!;
                                 }
 
-                                return CircularProgressIndicator();
+                                return CircularProgressIndicator(
+                                    color: pinkColor);
                               },
                             ),
                           ],
