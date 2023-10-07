@@ -6,6 +6,7 @@ import 'package:preggo/colors.dart';
 import 'package:preggo/login_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/calendar/v3.dart' as Cal;
+import 'package:awesome_notifications/awesome_notifications.dart';
 
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({super.key});
@@ -329,7 +330,7 @@ class ProfileScreen extends StatelessWidget {
                                           style: TextStyle(color: Colors.white),
                                         ),
                                       ),
-                                      onTap: () {
+                                      onTap: () async {
                                         const _scopes = const [
                                           Cal.CalendarApi.calendarScope
                                         ]; //scope to CREATE EVENT in calendar
@@ -343,18 +344,20 @@ class ProfileScreen extends StatelessWidget {
                                         _googleSignIn.disconnect();
 
                                         //disconnect the authorized google account on logging out
-                                        auth.signOut().then(
-                                          (value) {
-                                            Navigator.push(
+                                           await auth.signOut();
+                                        await AwesomeNotifications()
+                                            .cancelAll();
+                                        if(context.mounted){        Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
                                                     const LoginScreen(),
                                               ),
-                                            );
+                                            );}
+                                    
                                           },
-                                        );
-                                      },
+                                        
+                                      
                                     ),
                                   ],
                                 ),
