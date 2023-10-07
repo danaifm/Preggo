@@ -1,7 +1,6 @@
 // ignore_for_file: camel_case_types, prefer_const_literals_to_create_immutables, prefer_const_constructors, use_key_in_widget_constructors, unnecessary_const, unnecessary_new, prefer_final_fields, avoid_print, no_leading_underscores_for_local_identifiers, file_names,
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:preggo/viewAppointment.dart';
 import 'colors.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:googleapis/calendar/v3.dart';

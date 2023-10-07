@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/reminder.dart';
-import 'package:preggo/view_reminders.dart';
 
 class AddReminderScreen extends StatefulWidget {
   const AddReminderScreen({super.key});

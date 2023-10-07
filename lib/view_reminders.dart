@@ -20,165 +20,160 @@ class viewReminders extends StatefulWidget {
 
 class _viewReminders extends State<viewReminders> {
   late final String userId;
-  int weekDay = 0; 
-  int dayInDB =0;
-  String dayOfWeek = ""; 
-  String dayShortName = ""; 
-  late String formattedDate = ""; 
-  
+  int weekDay = 0;
+  int dayInDB = 0;
+  String dayOfWeek = "";
+  String dayShortName = "";
+  late String formattedDate = "";
 
   String getUserId() {
     User? user = FirebaseAuth.instance.currentUser;
     return user!.uid;
   }
 
-  Future<Container> getReminders(String reminderDate , String dayOfWeek, String dayShortName ) async {
-
+  Future<Container> getReminders(
+      String reminderDate, String dayOfWeek, String dayShortName) async {
     //FirebaseFirestore firestore = FirebaseFirestore.instance;
     String userUid = getUserId();
 
     QuerySnapshot result = await FirebaseFirestore.instance
-    .collection('users').doc(userUid)
-    .collection('reminders')
-    //.where('repeat', arrayContains: {'id': dayOfWeek})
-    .where(
-    Filter.or(
-      Filter('date', isEqualTo: reminderDate),
-      Filter('repeat', arrayContains: {'id': dayOfWeek , 'short':dayShortName})
-    ))
-    .get();
+        .collection('users')
+        .doc(userUid)
+        .collection('reminders')
+        //.where('repeat', arrayContains: {'id': dayOfWeek})
+        .where(Filter.or(
+            Filter('date', isEqualTo: reminderDate),
+            Filter('repeat',
+                arrayContains: {'id': dayOfWeek, 'short': dayShortName})))
+        .get();
 
-    
-    if(result.docs.isEmpty) //no reminders for this date 
+    if (result.docs.isEmpty) //no reminders for this date
     {
       return Container(
         child: Column(
           children: [
-            Center( //notification bell image 
-            child: Padding(
-              padding: EdgeInsets.only(top: 100),
-              child: Image.asset('assets/images/notification.png', height: 100, width: 100,),
-              
+            Center(
+              //notification bell image
+              child: Padding(
+                padding: EdgeInsets.only(top: 100),
+                child: Image.asset(
+                  'assets/images/notification.png',
+                  height: 100,
+                  width: 100,
+                ),
               ),
             ),
-            
-            Container( //message 
-              margin: EdgeInsets.fromLTRB(30,35,30,80),
-              child: Text('No Reminders', 
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 26,
-                fontFamily: 'Urbanist',
-                fontWeight: FontWeight.w600,
-                letterSpacing: -0.28,),
-              )
-          ),
-        ],
+            Container(
+                //message
+                margin: EdgeInsets.fromLTRB(30, 35, 30, 80),
+                child: Text(
+                  'No Reminders',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: -0.28,
+                  ),
+                )),
+          ],
         ),
-        );
-    }
-    else{ //reminders exist for this day
-    List reminderResult = result.docs;
-    //sort the reminders based on the time of the day first 
-    reminderResult.sort((a, b) {
-    String timeA = a.data()['time'] ?? '';
-    String timeB = b.data()['time'] ?? '';
-    // Convert 'time' strings to DateTime objects for comparison
-    DateFormat format=DateFormat("hh:mm a");
-    DateTime dateTimeA = format.parse(timeA);
-    DateTime dateTimeB = format.parse(timeB);
-    return dateTimeA.compareTo(dateTimeB);
-    });
-    
+      );
+    } else {
+      //reminders exist for this day
+      List reminderResult = result.docs;
+      //sort the reminders based on the time of the day first
+      reminderResult.sort((a, b) {
+        String timeA = a.data()['time'] ?? '';
+        String timeB = b.data()['time'] ?? '';
+        // Convert 'time' strings to DateTime objects for comparison
+        DateFormat format = DateFormat("hh:mm a");
+        DateTime dateTimeA = format.parse(timeA);
+        DateTime dateTimeB = format.parse(timeB);
+        return dateTimeA.compareTo(dateTimeB);
+      });
+
       return Container(
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: reminderResult.length,
+          itemBuilder: (context, index) {
+            String id = reminderResult[index].data()['id'] ?? '';
+            String title = reminderResult[index].data()['title'] ?? '';
+            String time = reminderResult[index].data()['time'] ?? '';
 
-    child: ListView.builder(
-      shrinkWrap: true,
+            return Container(
+              margin: EdgeInsets.all(8),
+              //padding: EdgeInsets.all(10),
 
-      itemCount: reminderResult.length,
-
-      itemBuilder: (context, index) {
-        String id = reminderResult[index].data()['id'] ?? '';
-        String title = reminderResult[index].data()['title'] ?? '';
-        String time = reminderResult[index].data()['time'] ?? '';
-
-        return Container(
-          
-          margin: EdgeInsets.all(8),
-          //padding: EdgeInsets.all(10),
-        
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-            
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 17),
-                decoration: BoxDecoration(
-                  color: backGroundPink.withOpacity(0.3),
-                  border: Border.all(color: backGroundPink, width: 2),
-                  borderRadius: BorderRadius.circular(13),
-                 
-                ),
-                child: Row(
-                  children: [
-                    
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Container(
-                    width: 85,
-                    child: Text(
-                      '$time',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Urbanist',
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 17),
+                    decoration: BoxDecoration(
+                      color: backGroundPink.withOpacity(0.3),
+                      border: Border.all(color: backGroundPink, width: 2),
+                      borderRadius: BorderRadius.circular(13),
+                    ),
+                    child: Row(children: [
+                      Container(
+                        width: 85,
+                        child: Text(
+                          '$time',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Urbanist',
+                          ),
+                        ),
                       ),
-                  
-                    ),
-                  ),
-                  SizedBox(width: 20,),
-                  Expanded(
-                    child: Text(
-                      '$title',
-                      style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Urbanist',
-                    ),
-                    
-                    ),
-                  ),
-                 
-                  GestureDetector(
-                    onTap: () {
-                    String documentId= id;
-                    Navigator.push(context,MaterialPageRoute(
-                    builder: (context) => reminderDetails(),
-                    settings: RouteSettings(arguments: documentId),
-                    ),
-                    );
-                  },
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.black,
-                        size: 20,
+                      SizedBox(
+                        width: 20,
                       ),
-                    ),
-                  )
-                ] 
-                ),
+                      Expanded(
+                        child: Text(
+                          '$title',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Urbanist',
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          String documentId = id;
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => reminderDetails(),
+                              settings: RouteSettings(arguments: documentId),
+                            ),
+                          );
+                        },
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.black,
+                            size: 20,
+                          ),
+                        ),
+                      )
+                    ]),
+                  ),
+                ],
               ),
-            ],
-          ),
-        );
-      },
-    ),
-
-  );
+            );
+          },
+        ),
+      );
+    }
   }
-}
+
   //////////////////////////////////////////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
@@ -203,7 +198,9 @@ class _viewReminders extends State<viewReminders> {
                         color: Colors.black,
                       ),
                     ),
-                    SizedBox(width: 60,),
+                    SizedBox(
+                      width: 60,
+                    ),
                     Text(
                       "Reminders",
                       style: TextStyle(
@@ -232,138 +229,123 @@ class _viewReminders extends State<viewReminders> {
                         top: Radius.circular(45.0),
                       ),
                     ),
-
                     child: SingleChildScrollView(
                       padding: EdgeInsets.only(top: 15),
-                    
-                      child:
+                      child: Container(
+                        child: Column(
+                          children: [
+                            EasyDateTimeLine(
+                              initialDate: DateTime.now(),
+                              onDateChange: (selectedDate) {
+                                setState(() {
+                                  var dateOnly = selectedDate.toString();
+                                  dateOnly = dateOnly.substring(0, 10);
+                                  List dateComponents = dateOnly.split("-");
+                                  int year = int.parse(dateComponents[0]);
+                                  int month = int.parse(dateComponents[1]);
+                                  int day = int.parse(dateComponents[2]);
+                                  formattedDate =
+                                      "${month.toStringAsFixed(0)}-${day.toStringAsFixed(0)}-$year";
 
-                        Container(
+                                  weekDay = selectedDate.weekday; //monday is 1
+                                  if (weekDay == 1) {
+                                    //monday
+                                    dayInDB = 2;
+                                    dayShortName = "Mon";
+                                  } else if (weekDay == 2) {
+                                    //tuesday
+                                    dayInDB = 3;
+                                    dayShortName = "Tue";
+                                  } else if (weekDay == 3) {
+                                    //wednesday
+                                    dayInDB = 4;
+                                    dayShortName = "Wed";
+                                  } else if (weekDay == 4) {
+                                    //thursday
+                                    dayInDB = 5;
+                                    dayShortName = "Thu";
+                                  } else if (weekDay == 5) {
+                                    //friday
+                                    dayInDB = 6;
+                                    dayShortName = "Fri";
+                                  } else if (weekDay == 6) {
+                                    //saturday
+                                    dayInDB = 7;
+                                    dayShortName = "Sat";
+                                  } else {
+                                    //sunday
+                                    dayInDB = 1;
+                                    dayShortName = "Sun";
+                                  }
 
-                          child:Column(
-                            children: [
-                              EasyDateTimeLine(
-                                initialDate: DateTime.now(),
-                                onDateChange: (selectedDate) { 
-                                  setState(() {
-                                    
-                                    var dateOnly = selectedDate.toString();
-                                    dateOnly= dateOnly.substring(0,10);
-                                    List dateComponents = dateOnly.split("-"); 
-                                    int year = int.parse(dateComponents[0]); 
-                                    int month = int.parse(dateComponents[1]); 
-                                    int day = int.parse(dateComponents[2]); 
-                                    formattedDate = "${month.toStringAsFixed(0)}-${day.toStringAsFixed(0)}-$year";
-                                    
-                                    weekDay=selectedDate.weekday; //monday is 1 
-                                    if (weekDay == 1){ //monday 
-                                      dayInDB = 2;
-                                      dayShortName = "Mon";
-                                    }
-                                    else if (weekDay == 2){ //tuesday 
-                                      dayInDB = 3;
-                                      dayShortName = "Tue";
-                                    }
-                                    else if (weekDay == 3){ //wednesday 
-                                      dayInDB = 4;
-                                      dayShortName = "Wed";
-                                    }
-                                    else if (weekDay == 4){ //thursday 
-                                      dayInDB = 5;
-                                      dayShortName = "Thu";
-                                    }
-                                    else if (weekDay == 5){ //friday 
-                                      dayInDB = 6;
-                                      dayShortName = "Fri";
-                                    }
-                                    else if (weekDay == 6){ //saturday 
-                                      dayInDB = 7;
-                                      dayShortName = "Sat";
-                                    }
-                                    else{ //sunday 
-                                      dayInDB = 1;
-                                      dayShortName = "Sun";
-                                    }
-
-                                    dayOfWeek=dayInDB.toString(); 
-                                  });
-                                  
-                                },
-                                activeColor: pinkColor,
-                                headerProps: const EasyHeaderProps(
+                                  dayOfWeek = dayInDB.toString();
+                                });
+                              },
+                              activeColor: pinkColor,
+                              headerProps: const EasyHeaderProps(
                                 monthPickerType: MonthPickerType.dropDown,
-                                selectedDateFormat: SelectedDateFormat.fullDateDMonthAsStrY,
+                                selectedDateFormat:
+                                    SelectedDateFormat.fullDateDMonthAsStrY,
                               ),
-                                              
-                                dayProps: const EasyDayProps(
+                              dayProps: const EasyDayProps(
                                 activeDayStyle: DayStyle(
                                   borderRadius: 12.0,
                                 ),
                                 inactiveDayStyle: DayStyle(
                                   borderRadius: 12.0,
                                 ),
-                                todayHighlightStyle: TodayHighlightStyle.withBorder,
-                                          
+                                todayHighlightStyle:
+                                    TodayHighlightStyle.withBorder,
                               ),
-                                timeLineProps: const EasyTimeLineProps(
+                              timeLineProps: const EasyTimeLineProps(
                                 hPadding: 16.0, // padding from left and right
                                 separatorPadding: 16.0, // padding between days
-                                ),
                               ),
+                            ),
+                            FutureBuilder<Widget>(
+                              future: getReminders(
+                                  formattedDate, dayOfWeek, dayShortName),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<Widget> snapshot) {
+                                if (snapshot.hasData) {
+                                  return snapshot.data!;
+                                }
 
-                              
-
-                              FutureBuilder<Widget>(
-                                future: getReminders(formattedDate,dayOfWeek,dayShortName), 
-                                builder: (BuildContext context , AsyncSnapshot<Widget> snapshot){
-                                  if(snapshot.hasData) {
-                                    return snapshot.data!;
-                                  }
-                                  
                                 return CircularProgressIndicator();
-                                },
-                              ),
-                            
-                              
-                              
-                            ],
-                          ),
+                              },
+                            ),
+                          ],
                         ),
-
-                        
                       ),
-                    
                     ),
                   ),
-                
-                
+                ),
               ],
             ),
             Align(
               alignment: Alignment.bottomRight,
               child: Padding(
-                padding: EdgeInsets.fromLTRB(0, 20, 20, 80),
+                padding: EdgeInsets.fromLTRB(0, 20, 20, 50),
                 child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                    builder: (context) => const AddReminderScreen()));
-                },
-                style: ElevatedButton.styleFrom(
-                  fixedSize: const Size(55, 55),
-                  shape: const CircleBorder(),
-                  backgroundColor: darkBlackColor,
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AddReminderScreen()));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    fixedSize: const Size(55, 55),
+                    shape: const CircleBorder(),
+                    backgroundColor: darkBlackColor,
+                  ),
+                  child: Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
                 ),
-                child: Icon(
-                  Icons.add,
-                  color: Colors.white,
-                ),
-              ),
               ),
             ),
           ],
-        )
-      );
+        ));
   }
 }
