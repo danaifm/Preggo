@@ -559,7 +559,6 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                       fontFamily: 'Urbanist',
                                       // color: pinkColor,
                                     ),
-
                                     decoration: InputDecoration(
                                       errorStyle: textStyleError,
                                       contentPadding:
@@ -585,10 +584,11 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                       filled: true,
                                       fillColor: const Color(0xFFF7F8F9),
                                     ),
-                                    // autovalidateMode:
-                                    //     AutovalidateMode.onUserInteraction,
+                                    autovalidateMode:
+                                        AutovalidateMode.onUserInteraction,
                                     validator: (value) {
-                                      if (value == null || value.isEmpty) {
+                                      if (value == null ||
+                                          value.trim().isEmpty) {
                                         return "This field cannot be empty.";
                                       }
                                       return null;
@@ -866,7 +866,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                                       return Padding(
                                                         padding:
                                                             const EdgeInsets
-                                                                .symmetric(
+                                                                    .symmetric(
                                                                 horizontal:
                                                                     5.0),
                                                         child: Text(

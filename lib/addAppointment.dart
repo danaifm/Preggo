@@ -364,7 +364,7 @@ class _addAppointmentState extends State<addAppointment> {
                                     fillColor: Color(0xFFF7F8F9),
                                   ),
                                   validator: (value) {
-                                    if (value!.isEmpty) {
+                                    if (value!.trim().isEmpty) {
                                       return "This field cannot be empty.";
                                     }
                                     if (!RegExp(r'^[a-z A-Z0-9]+$')
@@ -445,7 +445,7 @@ class _addAppointmentState extends State<addAppointment> {
                                     fillColor: Color(0xFFF7F8F9),
                                   ),
                                   validator: (value) {
-                                    if (value!.isEmpty) {
+                                    if (value!.trim().isEmpty) {
                                       return "This field cannot be empty.";
                                     }
                                     if (!RegExp(r'^[a-z A-Z0-9]+$')
@@ -526,7 +526,7 @@ class _addAppointmentState extends State<addAppointment> {
                                     fillColor: Color(0xFFF7F8F9),
                                   ),
                                   validator: (value) {
-                                    if (value!.isEmpty) {
+                                    if (value!.trim().isEmpty) {
                                       return "This field cannot be empty.";
                                     }
                                     if (!RegExp(r'^[a-z A-Z0-9]+$')
@@ -785,6 +785,7 @@ class _addAppointmentState extends State<addAppointment> {
                                                 endTime.minute)) {
                                       setState(() {
                                         print('start after end');
+
                                         final FormState form =
                                             _formKey.currentState!;
                                         form.validate();
