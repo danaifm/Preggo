@@ -262,10 +262,10 @@ class _SignUpState extends State<SignUp> {
                                   if (specialchar.hasMatch(value)) {
                                     return "Incorrect email format.";
                                   }
-                                  var dot = '.'.allMatches(value).length;
-                                  if (dot > 1) {
-                                    return "Incorrect email format.";
-                                  } //could be removed in the future if we can fix firebase invalid-email exception
+                                  // var dot = '.'.allMatches(value).length;
+                                  // if (dot > 1) {
+                                  //   return "Incorrect email format.";
+                                  // } //could be removed in the future if we can fix firebase invalid-email exception
                                   if (value
                                           .substring(value.indexOf('.') + 1)
                                           .length <
@@ -500,6 +500,8 @@ class _SignUpState extends State<SignUp> {
                               borderRadius: BorderRadius.circular(40.0),
                             ),
                             onPressed: () async {
+                              final FormState form = _formKey.currentState!;
+                              form.validate();
                               usernameTaken = await uniqueUsername(
                                   _usernameKey.currentState!.value);
                               setState(() {});
