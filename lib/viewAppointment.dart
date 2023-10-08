@@ -45,6 +45,7 @@ class _viewAppointment extends State<viewAppointment> {
       _dateText = '', //date
       _hospitalText = '', //hospital
       _drText = ''; //dr name
+  int isCreating = 0;
 
   getAppointments() async {
     print('in get appts');
@@ -79,6 +80,9 @@ class _viewAppointment extends State<viewAppointment> {
       for (CalendarListEntry entry in items) {
         if (entry.summary == "Preggo Calendar") {
           id = entry.id;
+          setState(() {
+            isCreating++;
+          });
           break;
         }
       }
@@ -410,7 +414,8 @@ class _viewAppointment extends State<viewAppointment> {
                           //End of design
                           dataSource: DataSource(snapshot.data ?? []),
                         ),
-                        snapshot.hasData
+                        snapshot.hasData ||
+                                snapshot.connectionState == ConnectionState.done
                             ? Container()
                             : Center(
                                 child:
