@@ -785,6 +785,9 @@ class _addAppointmentState extends State<addAppointment> {
                                                 endTime.minute)) {
                                       setState(() {
                                         print('start after end');
+                                        final FormState form =
+                                            _formKey.currentState!;
+                                        form.validate();
                                         errorMessage =
                                             "Start time cannot be after end time.";
                                         valid = false;
@@ -793,6 +796,9 @@ class _addAppointmentState extends State<addAppointment> {
                                     } else if (startTime.hour == endTime.hour &&
                                         startTime.minute == endTime.minute) {
                                       print('start = end');
+                                      final FormState form =
+                                          _formKey.currentState!;
+                                      form.validate();
                                       setState(() {
                                         errorMessage =
                                             "Start time cannot be equal to end time.";
@@ -807,6 +813,9 @@ class _addAppointmentState extends State<addAppointment> {
                                                 startTime.minute <
                                                     today.minute))) {
                                       setState(() {
+                                        final FormState form =
+                                            _formKey.currentState!;
+                                        form.validate();
                                         errorMessage =
                                             "Time cannot be in the past.";
                                         valid = false;
