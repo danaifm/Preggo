@@ -318,6 +318,8 @@ class _addAppointmentState extends State<addAppointment> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 0.0),
                                 child: TextFormField(
+                                  // autovalidateMode:
+                                  //     AutovalidateMode.onUserInteraction,
                                   key: _apptNameKey,
                                   controller: _apptNameController,
                                   maxLength: 25,
@@ -397,6 +399,8 @@ class _addAppointmentState extends State<addAppointment> {
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 0.0),
                                 child: TextFormField(
+                                  // autovalidateMode:
+                                  //     AutovalidateMode.onUserInteraction,
                                   key: _hospitalKey,
                                   controller: _hospitalController,
                                   maxLength: 25,
@@ -476,6 +480,8 @@ class _addAppointmentState extends State<addAppointment> {
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 0.0),
                                 child: TextFormField(
+                                  // autovalidateMode:
+                                  //     AutovalidateMode.onUserInteraction,
                                   key: _drKey,
                                   controller: _drController,
                                   maxLength: 25,
@@ -773,8 +779,12 @@ class _addAppointmentState extends State<addAppointment> {
                                 padding: const EdgeInsets.only(top: 10.0),
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    if (startTime.isAfter(endTime)) {
+                                    if (startTime.hour > endTime.hour ||
+                                        (startTime.hour == endTime.hour &&
+                                            startTime.minute >
+                                                endTime.minute)) {
                                       setState(() {
+                                        print('start after end');
                                         errorMessage =
                                             "Start time cannot be after end time.";
                                         valid = false;
@@ -782,6 +792,7 @@ class _addAppointmentState extends State<addAppointment> {
                                       });
                                     } else if (startTime.hour == endTime.hour &&
                                         startTime.minute == endTime.minute) {
+                                      print('start = end');
                                       setState(() {
                                         errorMessage =
                                             "Start time cannot be equal to end time.";
@@ -802,10 +813,16 @@ class _addAppointmentState extends State<addAppointment> {
                                         timeRed = true;
                                       });
                                     } else if (_apptNameController
-                                        .text.isEmpty) {
-                                      errorMessage = "";
-                                      valid = false;
-                                      timeRed = false;
+                                            .text.isEmpty ||
+                                        _drController.text.isEmpty ||
+                                        _hospitalController.text.isEmpty) {
+                                      setState(() {
+                                        errorMessage =
+                                            "Please fill all fields.";
+                                        valid = false;
+                                        timeRed = false;
+                                      });
+
                                       print("not added because empty name");
                                     } else {
                                       setState(() {
