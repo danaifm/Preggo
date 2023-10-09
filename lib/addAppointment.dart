@@ -239,6 +239,82 @@ class _addAppointmentState extends State<addAppointment> {
       );
     }
 
+    backButton() {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+            content: SizedBox(
+              height: 130,
+              child: Column(
+                children: <Widget>[
+                  Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 10, bottom: 30),
+                      child: Text(
+                        'Are you sure you want to go back?',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 5),
+                        height: 45.0,
+                        child: Center(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: blackColor,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(40)),
+                              padding: const EdgeInsets.only(
+                                  left: 30, top: 15, right: 30, bottom: 15),
+                            ),
+                            child: const Text(
+                              "No",
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 5),
+                        height: 45.0,
+                        child: Center(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.error,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(40)),
+                              padding: const EdgeInsets.only(
+                                  left: 30, top: 15, right: 30, bottom: 15),
+                            ),
+                            child: const Text(
+                              "Yes",
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    }
+
     return Scaffold(
       backgroundColor: backGroundPink,
       resizeToAvoidBottomInset: true,
@@ -250,9 +326,7 @@ class _addAppointmentState extends State<addAppointment> {
           Container(
             alignment: AlignmentDirectional.centerStart,
             child: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
+              onPressed: backButton,
               icon: const Icon(
                 Icons.arrow_back,
                 color: blackColor,

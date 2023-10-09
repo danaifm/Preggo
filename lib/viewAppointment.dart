@@ -320,26 +320,6 @@ class _viewAppointment extends State<viewAppointment> {
       builder: (BuildContext context) {
         return AlertDialog(
           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-          // title: Container(
-          //   height: 45,
-          //   color: backGroundPink,
-          //   child: Row(
-          //     children: [
-          //       IconButton(
-          //         icon: Icon(Icons.close),
-          //         onPressed: () {
-          //           Navigator.of(context).pop();
-          //         },
-          //       ),
-          //       Center(
-          //         child: Text(
-          //           'Appointment Details',
-          //           style: TextStyle(fontWeight: FontWeight.bold),
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
           content: SizedBox(
             height: 130,
             child: Column(
@@ -540,16 +520,7 @@ class _viewAppointment extends State<viewAppointment> {
         break;
       }
     }
-    // final Events calEvents = await googleCalendarApi.events.list(id!);
-    // var calItems = calEvents.items;
-    // var preggoCalendar = googleCalendarApi.calendars.get(id);
     googleCalendarApi.events.delete(id!, eventID);
-
-    // for(Event e in calItems!){
-    //   if(e.id == eventID){
-    //     calEvents.
-    //   }
-    // }
   }
 
   @override
@@ -565,7 +536,7 @@ class _viewAppointment extends State<viewAppointment> {
             children: [
               IconButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 },
                 icon: const Icon(
                   Icons.arrow_back,
