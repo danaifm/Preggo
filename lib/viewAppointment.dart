@@ -44,7 +44,8 @@ class _viewAppointment extends State<viewAppointment> {
       _endTimeText = '', //end time
       _dateText = '', //date
       _hospitalText = '', //hospital
-      _drText = ''; //dr name
+      _drText = '', //dr name
+      _eventID = '';
   int isCreating = 0;
 
   getAppointments() async {
@@ -80,9 +81,9 @@ class _viewAppointment extends State<viewAppointment> {
       for (CalendarListEntry entry in items) {
         if (entry.summary == "Preggo Calendar") {
           id = entry.id;
-          setState(() {
-            isCreating++;
-          });
+          // setState(() {
+          //   isCreating++;
+          // });
           break;
         }
       }
@@ -103,6 +104,8 @@ class _viewAppointment extends State<viewAppointment> {
             subject: event.summary!,
             location: event.location, //hospital
             notes: event.description, //dr name
+            id: event
+                .id, //NEW: id to specify which calendar i'm editing / deleting
             color: pinkColor);
         // appointments.add(event); >>>same thing
         appts.add(appt);
@@ -131,6 +134,8 @@ class _viewAppointment extends State<viewAppointment> {
       _hospitalText = appointmentDetails.location;
 
       _drText = appointmentDetails.notes;
+
+      _eventID = appointmentDetails.id.toString();
 
       showDialog(
           context: context,
@@ -274,7 +279,10 @@ class _viewAppointment extends State<viewAppointment> {
                           height: 45.0,
                           child: Center(
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                deletePopUp(_eventID);
+                              },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:
                                     Theme.of(context).colorScheme.error,
@@ -304,6 +312,244 @@ class _viewAppointment extends State<viewAppointment> {
             );
           });
     }
+  }
+
+  deletePopUp(eventID) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          // title: Container(
+          //   height: 45,
+          //   color: backGroundPink,
+          //   child: Row(
+          //     children: [
+          //       IconButton(
+          //         icon: Icon(Icons.close),
+          //         onPressed: () {
+          //           Navigator.of(context).pop();
+          //         },
+          //       ),
+          //       Center(
+          //         child: Text(
+          //           'Appointment Details',
+          //           style: TextStyle(fontWeight: FontWeight.bold),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
+          content: SizedBox(
+            height: 130,
+            child: Column(
+              children: <Widget>[
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 10, bottom: 30),
+                    child: Text(
+                      'Are you sure you want to delete this appointment?',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      height: 45.0,
+                      child: Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: blackColor,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40)),
+                            padding: const EdgeInsets.only(
+                                left: 30, top: 15, right: 30, bottom: 15),
+                          ),
+                          child: const Text(
+                            "Cancel",
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      height: 45.0,
+                      child: Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            //deleting happens here
+                            deleteEvent(eventID);
+                            if (mounted) {
+                              setState(() {});
+                              Navigator.of(context).pop();
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return Center(
+                                      child: SizedBox(
+                                        height:
+                                            MediaQuery.sizeOf(context).height *
+                                                0.40,
+                                        width:
+                                            MediaQuery.sizeOf(context).width *
+                                                0.85,
+                                        child: Dialog(
+                                          child: Container(
+                                            padding: const EdgeInsets.all(10),
+                                            decoration: const BoxDecoration(
+                                              color: Color.fromRGBO(
+                                                  255, 255, 255, 1),
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(20),
+                                              ),
+                                            ),
+                                            child: Center(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  const SizedBox(height: 20),
+                                                  Container(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            15),
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: green,
+                                                    ),
+                                                    child: const Icon(
+                                                      Icons.check,
+                                                      color: Color.fromRGBO(
+                                                          255, 255, 255, 1),
+                                                      size: 35,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 25),
+
+                                                  // Done
+                                                  const Text(
+                                                    "Appointment deleted successfully!",
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      color: Color.fromARGB(
+                                                          255, 0, 0, 0),
+                                                      fontSize: 17,
+                                                      fontFamily: 'Urbanist',
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      height: 1.30,
+                                                      letterSpacing: -0.28,
+                                                    ),
+                                                  ),
+
+                                                  const SizedBox(height: 20),
+
+                                                  /// OK Button
+                                                  Container(
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 10),
+                                                    width: MediaQuery.sizeOf(
+                                                                context)
+                                                            .width *
+                                                        0.80,
+                                                    height: 45.0,
+                                                    child: Center(
+                                                      child: ElevatedButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                        style: ElevatedButton
+                                                            .styleFrom(
+                                                          backgroundColor:
+                                                              blackColor,
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          40)),
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 70,
+                                                                  top: 15,
+                                                                  right: 70,
+                                                                  bottom: 15),
+                                                        ),
+                                                        child: const Text(
+                                                          "OK",
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 20),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  });
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.error,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40)),
+                            padding: const EdgeInsets.only(
+                                left: 30, top: 15, right: 30, bottom: 15),
+                          ),
+                          child: const Text(
+                            "Delete",
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  deleteEvent(eventID) async {
+    String? id = '';
+    final auth.AuthClient? client = await _googleSignIn.authenticatedClient();
+    final CalendarApi googleCalendarApi = CalendarApi(client!);
+
+    var list = await googleCalendarApi.calendarList.list();
+    var items = list.items;
+    for (CalendarListEntry entry in items!) {
+      if (entry.summary == "Preggo Calendar") {
+        id = entry.id;
+        break;
+      }
+    }
+    // final Events calEvents = await googleCalendarApi.events.list(id!);
+    // var calItems = calEvents.items;
+    // var preggoCalendar = googleCalendarApi.calendars.get(id);
+    googleCalendarApi.events.delete(id!, eventID);
+
+    // for(Event e in calItems!){
+    //   if(e.id == eventID){
+    //     calEvents.
+    //   }
+    // }
   }
 
   @override
