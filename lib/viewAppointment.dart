@@ -270,8 +270,8 @@ class _viewAppointment extends State<viewAppointment> {
                                   MaterialPageRoute(
                                     builder: (context) =>
                                         editAppt(appointmentDetails),
-                                    settings: RouteSettings(
-                                        arguments: appointmentDetails),
+                                    // settings: RouteSettings(
+                                    //     arguments: appointmentDetails),
                                   ),
                                 ).then(onGoBack);
                               },
