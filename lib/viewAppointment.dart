@@ -6,6 +6,7 @@ import 'package:googleapis/calendar/v3.dart';
 import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
 import 'package:preggo/colors.dart';
 import 'package:preggo/editAppointment.dart';
+import 'package:preggo/editAppt.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
@@ -263,13 +264,15 @@ class _viewAppointment extends State<viewAppointment> {
                             child: ElevatedButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
-                                print('REDIRECTING WITH EVENT ID $_eventID');
+                                print(
+                                    'REDIRECTING FROM VIEW APPTS WITH EVENT ID $_eventID');
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => editAppointment(),
-                                    settings:
-                                        RouteSettings(arguments: _eventID),
+                                    builder: (context) =>
+                                        editAppt(appointmentDetails),
+                                    settings: RouteSettings(
+                                        arguments: appointmentDetails),
                                   ),
                                 );
                               },

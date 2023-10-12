@@ -9,6 +9,8 @@ import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 
 class editAppointment extends StatefulWidget {
+  final String eventID;
+  editAppointment(this.eventID);
   @override
   State<StatefulWidget> createState() {
     return _editAppointment();
@@ -18,10 +20,18 @@ class editAppointment extends StatefulWidget {
 class _editAppointment extends State<editAppointment> {
   // late String apptName, hospitalName, drName;
   // late DateTime apptDate, apptStart, apptEnd;
+  late String receivedid;
 
   @override
   void initState() {
+    // String idwithArgument =
+    //     ModalRoute.of(context)?.settings.arguments as String;
     super.initState();
+    print("INIT STATE OF EDIT APPT WITH ID ${widget.eventID}");
+    // futureEvent = getEventObjectFromGoogle(widget.eventID);
+    receivedid = widget.eventID;
+    // print('EVENT TO BE EDITED IS $futureEvent');
+    // print('IS EVENT NULL? ${futureEvent.isNull}');
     _googleSignIn.signInSilently();
   }
 
@@ -220,8 +230,8 @@ class _editAppointment extends State<editAppointment> {
 
   @override
   Widget build(BuildContext context) {
-    eventID = ModalRoute.of(context)?.settings.arguments as String;
-    print('EDIT PAGE EVENT ID $eventID');
+    Future<Event> futureEvent = getEventObjectFromGoogle(widget.eventID);
+
     Color timeColor = timeRed
         ? Theme.of(context).colorScheme.error
         : Color.fromARGB(255, 0, 0, 0);
@@ -328,6 +338,8 @@ class _editAppointment extends State<editAppointment> {
       );
     }
 
+    String newAppt = '', newHospital = '', newDr = '';
+
     return Scaffold(
       backgroundColor: backGroundPink,
       resizeToAvoidBottomInset: true,
@@ -377,705 +389,747 @@ class _editAppointment extends State<editAppointment> {
                 child: Container(
                   margin: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                   child: FutureBuilder(
-                      future: getEventObjectFromGoogle(eventID),
+                      future: futureEvent,
+                      // future: getEventObjectFromGoogle(widget.eventID),
                       builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(top: 5.0),
-                                child: Form(
-                                  key: _formKey,
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        //Appointment name label
-                                        margin:
-                                            EdgeInsets.only(top: 30, left: 5),
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          "Appointment Name",
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            color: Color.fromARGB(255, 0, 0, 0),
-                                            fontSize: 17,
-                                            fontFamily: 'Urbanist',
-                                            fontWeight: FontWeight.w700,
-                                            height: 1.30,
-                                            letterSpacing: -0.28,
+                        print('IN EDIT FUTURE BUILDER');
+                        print("SNAPSHOT DATA IS ${snapshot.data}");
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          print('CONNECTION STATE DONE');
+                          if (snapshot.hasData) {
+                            print('SNAPSHOT HAS DATA $snapshot');
+                            date = snapshot.data!.start!.dateTime!.toLocal();
+                            startTime =
+                                snapshot.data!.start!.dateTime!.toLocal();
+                            startFormat = Jiffy.parse(startTime.toString())
+                                .format(pattern: "hh:mm a");
+                            endTime = snapshot.data!.end!.dateTime!.toLocal();
+                            endFormat = Jiffy.parse(endTime.toString())
+                                .format(pattern: "hh:mm a");
+                            String hospital = snapshot.data!.location!,
+                                dr = snapshot.data!.description!,
+                                appt = snapshot.data!.summary!;
+
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5.0),
+                                  child: Form(
+                                    key: _formKey,
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          //Appointment name label
+                                          margin:
+                                              EdgeInsets.only(top: 30, left: 5),
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            "Appointment Name",
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              color:
+                                                  Color.fromARGB(255, 0, 0, 0),
+                                              fontSize: 17,
+                                              fontFamily: 'Urbanist',
+                                              fontWeight: FontWeight.w700,
+                                              height: 1.30,
+                                              letterSpacing: -0.28,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(top: 0.0),
-                                        child: TextFormField(
-                                          initialValue: snapshot.data!.summary!,
-                                          autovalidateMode: AutovalidateMode
-                                              .onUserInteraction,
-                                          key: _apptNameKey,
-                                          //  controller: _apptNameController,
-                                          maxLength: 25,
-                                          decoration: InputDecoration(
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                                    vertical: 15.0,
-                                                    horizontal: 15),
-                                            focusedErrorBorder:
-                                                OutlineInputBorder(
-                                              gapPadding: 0.5,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              borderSide: BorderSide(
-                                                width: 0.50,
-                                                color: Color.fromRGBO(
-                                                    255, 100, 100, 1),
-                                              ),
-                                            ),
-                                            errorBorder: OutlineInputBorder(
-                                              gapPadding: 0.5,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              borderSide: BorderSide(
-                                                width: 0.50,
-                                                color: Color.fromRGBO(
-                                                    255, 100, 100, 1),
-                                              ),
-                                            ),
-                                            enabledBorder: OutlineInputBorder(
-                                              gapPadding: 0.5,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              borderSide: BorderSide(
-                                                width: 0.50,
-                                                color: Color.fromARGB(
-                                                    255, 221, 225, 232),
-                                              ),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              // gapPadding: 100,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              borderSide: BorderSide(
-                                                width: 0.50,
-                                                color: Color.fromARGB(
-                                                    255, 221, 225, 232),
-                                              ),
-                                            ),
-                                            filled: true,
-                                            fillColor: Color(0xFFF7F8F9),
-                                          ),
-                                          validator: (value) {
-                                            if (value!.trim().isEmpty) {
-                                              return "This field cannot be empty.";
-                                            }
-                                            if (!RegExp(r'^[a-z A-Z0-9]+$')
-                                                .hasMatch(value)) {
-                                              //allow alphanumerical only AND SPACE
-                                              return "Please enter letters only.";
-                                            } else {
-                                              return null;
-                                            }
-                                          },
-                                        ),
-                                      ),
-                                      Container(
-                                        //hospital name label
-                                        margin: EdgeInsets.only(left: 5),
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          "Hospital Name",
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            color: Color.fromARGB(255, 0, 0, 0),
-                                            fontSize: 17,
-                                            fontFamily: 'Urbanist',
-                                            fontWeight: FontWeight.w700,
-                                            height: 1.30,
-                                            letterSpacing: -0.28,
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        //baby name text field
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 0.0),
-                                        child: TextFormField(
-                                          autovalidateMode: AutovalidateMode
-                                              .onUserInteraction,
-                                          key: _hospitalKey,
-                                          controller: _hospitalController,
-                                          maxLength: 25,
-                                          decoration: InputDecoration(
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                                    vertical: 15.0,
-                                                    horizontal: 15),
-                                            focusedErrorBorder:
-                                                OutlineInputBorder(
-                                              gapPadding: 0.5,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              borderSide: BorderSide(
-                                                width: 0.50,
-                                                color: Color.fromRGBO(
-                                                    255, 100, 100, 1),
-                                              ),
-                                            ),
-                                            errorBorder: OutlineInputBorder(
-                                              gapPadding: 0.5,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              borderSide: BorderSide(
-                                                width: 0.50,
-                                                color: Color.fromRGBO(
-                                                    255, 100, 100, 1),
-                                              ),
-                                            ),
-                                            enabledBorder: OutlineInputBorder(
-                                              gapPadding: 0.5,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              borderSide: BorderSide(
-                                                width: 0.50,
-                                                color: Color.fromARGB(
-                                                    255, 221, 225, 232),
-                                              ),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              // gapPadding: 100,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              borderSide: BorderSide(
-                                                width: 0.50,
-                                                color: Color.fromARGB(
-                                                    255, 221, 225, 232),
-                                              ),
-                                            ),
-                                            filled: true,
-                                            fillColor: Color(0xFFF7F8F9),
-                                          ),
-                                          validator: (value) {
-                                            if (value!.trim().isEmpty) {
-                                              return "This field cannot be empty.";
-                                            }
-                                            if (!RegExp(r'^[a-z A-Z0-9]+$')
-                                                .hasMatch(value)) {
-                                              //allow alphanumerical only AND SPACE
-                                              return "Please enter letters only.";
-                                            } else {
-                                              return null;
-                                            }
-                                          },
-                                        ),
-                                      ), //end of hospital name text field
-                                      Container(
-                                        //doctor name label
-                                        margin: EdgeInsets.only(left: 5),
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          "Doctor's Name",
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            color: Color.fromARGB(255, 0, 0, 0),
-                                            fontSize: 17,
-                                            fontFamily: 'Urbanist',
-                                            fontWeight: FontWeight.w700,
-                                            height: 1.30,
-                                            letterSpacing: -0.28,
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        //dr name text field
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 0.0),
-                                        child: TextFormField(
-                                          autovalidateMode: AutovalidateMode
-                                              .onUserInteraction,
-                                          key: _drKey,
-                                          controller: _drController,
-                                          maxLength: 25,
-                                          decoration: InputDecoration(
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                                    vertical: 15.0,
-                                                    horizontal: 15),
-                                            focusedErrorBorder:
-                                                OutlineInputBorder(
-                                              gapPadding: 0.5,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              borderSide: BorderSide(
-                                                width: 0.50,
-                                                color: Color.fromRGBO(
-                                                    255, 100, 100, 1),
-                                              ),
-                                            ),
-                                            errorBorder: OutlineInputBorder(
-                                              gapPadding: 0.5,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              borderSide: BorderSide(
-                                                width: 0.50,
-                                                color: Color.fromRGBO(
-                                                    255, 100, 100, 1),
-                                              ),
-                                            ),
-                                            enabledBorder: OutlineInputBorder(
-                                              gapPadding: 0.5,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              borderSide: BorderSide(
-                                                width: 0.50,
-                                                color: Color.fromARGB(
-                                                    255, 221, 225, 232),
-                                              ),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              // gapPadding: 100,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              borderSide: BorderSide(
-                                                width: 0.50,
-                                                color: Color.fromARGB(
-                                                    255, 221, 225, 232),
-                                              ),
-                                            ),
-                                            filled: true,
-                                            fillColor: Color(0xFFF7F8F9),
-                                          ),
-                                          validator: (value) {
-                                            if (value!.trim().isEmpty) {
-                                              return "This field cannot be empty.";
-                                            }
-                                            if (!RegExp(r'^[a-z A-Z0-9]+$')
-                                                .hasMatch(value)) {
-                                              //allow alphanumerical only AND SPACE
-                                              return "Please enter letters only.";
-                                            } else {
-                                              return null;
-                                            }
-                                          },
-                                        ),
-                                      ), //end of dr name text field
-                                      Container(
-                                        margin: EdgeInsets.only(top: 10),
-                                        child: _DatePickerItem(
-                                          children: <Widget>[
-                                            const Text(
-                                              'Date',
-                                              style: TextStyle(
-                                                color: Color.fromARGB(
-                                                    255, 0, 0, 0),
-                                                fontSize: 17,
-                                                fontFamily: 'Urbanist',
-                                                fontWeight: FontWeight.w700,
-                                                height: 1.30,
-                                                letterSpacing: -0.28,
-                                              ),
-                                            ),
-                                            CupertinoButton(
-                                              padding: EdgeInsets.zero,
-                                              // Display a CupertinoDatePicker in date picker mode.
-                                              onPressed: () => _showDialog(
-                                                CupertinoDatePicker(
-                                                  // initialDateTime:
-                                                  //     date.add(Duration(seconds: 1)),
-                                                  initialDateTime: date.isAfter(
-                                                          DateTime.now())
-                                                      ? date
-                                                      : DateTime.now(),
-                                                  // minimumDate: DateTime.now(),
-                                                  // maximumDate: DateTime.now()
-                                                  //     .add(Duration(days: 3650)),
-                                                  minimumDate: _minDate,
-                                                  maximumDate:
-                                                      DateTime.now().copyWith(
-                                                    year: DateTime.now().year +
-                                                        10,
-                                                    month: 12,
-                                                    day: 31,
-                                                  ),
-                                                  mode: CupertinoDatePickerMode
-                                                      .date,
-                                                  use24hFormat: false,
-                                                  // This is called when the user changes the date.
-                                                  onDateTimeChanged:
-                                                      (DateTime newDate) {
-                                                    setState(
-                                                        () => date = newDate);
-                                                  },
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 0.0),
+                                          child: TextFormField(
+                                            onChanged: (value) {
+                                              // setState(() {
+                                              newAppt = value;
+                                              appt = '';
+                                              // });
+                                            },
+                                            initialValue:
+                                                snapshot.data!.summary!,
+                                            autovalidateMode: AutovalidateMode
+                                                .onUserInteraction,
+                                            key: _apptNameKey,
+                                            //  controller: _apptNameController,
+                                            maxLength: 25,
+                                            decoration: InputDecoration(
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                      vertical: 15.0,
+                                                      horizontal: 15),
+                                              focusedErrorBorder:
+                                                  OutlineInputBorder(
+                                                gapPadding: 0.5,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                borderSide: BorderSide(
+                                                  width: 0.50,
+                                                  color: Color.fromRGBO(
+                                                      255, 100, 100, 1),
                                                 ),
                                               ),
-                                              // In this example, the date is formatted manually. You can
-                                              // use the intl package to format the value based on the
-                                              // user's locale settings.
-                                              child: Row(
+                                              errorBorder: OutlineInputBorder(
+                                                gapPadding: 0.5,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                borderSide: BorderSide(
+                                                  width: 0.50,
+                                                  color: Color.fromRGBO(
+                                                      255, 100, 100, 1),
+                                                ),
+                                              ),
+                                              enabledBorder: OutlineInputBorder(
+                                                gapPadding: 0.5,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                borderSide: BorderSide(
+                                                  width: 0.50,
+                                                  color: Color.fromARGB(
+                                                      255, 221, 225, 232),
+                                                ),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                // gapPadding: 100,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                borderSide: BorderSide(
+                                                  width: 0.50,
+                                                  color: Color.fromARGB(
+                                                      255, 221, 225, 232),
+                                                ),
+                                              ),
+                                              filled: true,
+                                              fillColor: Color(0xFFF7F8F9),
+                                            ),
+                                            validator: (value) {
+                                              if (value!.trim().isEmpty) {
+                                                return "This field cannot be empty.";
+                                              }
+                                              if (!RegExp(r'^[a-z A-Z0-9]+$')
+                                                  .hasMatch(value)) {
+                                                //allow alphanumerical only AND SPACE
+                                                return "Please enter letters only.";
+                                              } else {
+                                                return null;
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                        Container(
+                                          //hospital name label
+                                          margin: EdgeInsets.only(left: 5),
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            "Hospital Name",
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              color:
+                                                  Color.fromARGB(255, 0, 0, 0),
+                                              fontSize: 17,
+                                              fontFamily: 'Urbanist',
+                                              fontWeight: FontWeight.w700,
+                                              height: 1.30,
+                                              letterSpacing: -0.28,
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          //hospital name text field
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 0.0),
+                                          child: TextFormField(
+                                            initialValue:
+                                                snapshot.data!.location,
+                                            autovalidateMode: AutovalidateMode
+                                                .onUserInteraction,
+                                            key: _hospitalKey,
+                                            // controller: _hospitalController,
+                                            maxLength: 25,
+                                            decoration: InputDecoration(
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                      vertical: 15.0,
+                                                      horizontal: 15),
+                                              focusedErrorBorder:
+                                                  OutlineInputBorder(
+                                                gapPadding: 0.5,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                borderSide: BorderSide(
+                                                  width: 0.50,
+                                                  color: Color.fromRGBO(
+                                                      255, 100, 100, 1),
+                                                ),
+                                              ),
+                                              errorBorder: OutlineInputBorder(
+                                                gapPadding: 0.5,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                borderSide: BorderSide(
+                                                  width: 0.50,
+                                                  color: Color.fromRGBO(
+                                                      255, 100, 100, 1),
+                                                ),
+                                              ),
+                                              enabledBorder: OutlineInputBorder(
+                                                gapPadding: 0.5,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                borderSide: BorderSide(
+                                                  width: 0.50,
+                                                  color: Color.fromARGB(
+                                                      255, 221, 225, 232),
+                                                ),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                // gapPadding: 100,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                borderSide: BorderSide(
+                                                  width: 0.50,
+                                                  color: Color.fromARGB(
+                                                      255, 221, 225, 232),
+                                                ),
+                                              ),
+                                              filled: true,
+                                              fillColor: Color(0xFFF7F8F9),
+                                            ),
+                                            validator: (value) {
+                                              if (value!.trim().isEmpty) {
+                                                return "This field cannot be empty.";
+                                              }
+                                              if (!RegExp(r'^[a-z A-Z0-9]+$')
+                                                  .hasMatch(value)) {
+                                                //allow alphanumerical only AND SPACE
+                                                return "Please enter letters only.";
+                                              } else {
+                                                return null;
+                                              }
+                                            },
+                                          ),
+                                        ), //end of hospital name text field
+                                        Container(
+                                          //doctor name label
+                                          margin: EdgeInsets.only(left: 5),
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            "Doctor's Name",
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              color:
+                                                  Color.fromARGB(255, 0, 0, 0),
+                                              fontSize: 17,
+                                              fontFamily: 'Urbanist',
+                                              fontWeight: FontWeight.w700,
+                                              height: 1.30,
+                                              letterSpacing: -0.28,
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          //dr name text field
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 0.0),
+                                          child: TextFormField(
+                                            initialValue:
+                                                snapshot.data!.description,
+                                            autovalidateMode: AutovalidateMode
+                                                .onUserInteraction,
+                                            key: _drKey,
+                                            // controller: _drController,
+                                            maxLength: 25,
+                                            decoration: InputDecoration(
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                      vertical: 15.0,
+                                                      horizontal: 15),
+                                              focusedErrorBorder:
+                                                  OutlineInputBorder(
+                                                gapPadding: 0.5,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                borderSide: BorderSide(
+                                                  width: 0.50,
+                                                  color: Color.fromRGBO(
+                                                      255, 100, 100, 1),
+                                                ),
+                                              ),
+                                              errorBorder: OutlineInputBorder(
+                                                gapPadding: 0.5,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                borderSide: BorderSide(
+                                                  width: 0.50,
+                                                  color: Color.fromRGBO(
+                                                      255, 100, 100, 1),
+                                                ),
+                                              ),
+                                              enabledBorder: OutlineInputBorder(
+                                                gapPadding: 0.5,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                borderSide: BorderSide(
+                                                  width: 0.50,
+                                                  color: Color.fromARGB(
+                                                      255, 221, 225, 232),
+                                                ),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                // gapPadding: 100,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                borderSide: BorderSide(
+                                                  width: 0.50,
+                                                  color: Color.fromARGB(
+                                                      255, 221, 225, 232),
+                                                ),
+                                              ),
+                                              filled: true,
+                                              fillColor: Color(0xFFF7F8F9),
+                                            ),
+                                            validator: (value) {
+                                              if (value!.trim().isEmpty) {
+                                                return "This field cannot be empty.";
+                                              }
+                                              if (!RegExp(r'^[a-z A-Z0-9]+$')
+                                                  .hasMatch(value)) {
+                                                //allow alphanumerical only AND SPACE
+                                                return "Please enter letters only.";
+                                              } else {
+                                                return null;
+                                              }
+                                            },
+                                          ),
+                                        ), //end of dr name text field
+                                        Container(
+                                          margin: EdgeInsets.only(top: 10),
+                                          child: _DatePickerItem(
+                                            children: <Widget>[
+                                              const Text(
+                                                'Date',
+                                                style: TextStyle(
+                                                  color: Color.fromARGB(
+                                                      255, 0, 0, 0),
+                                                  fontSize: 17,
+                                                  fontFamily: 'Urbanist',
+                                                  fontWeight: FontWeight.w700,
+                                                  height: 1.30,
+                                                  letterSpacing: -0.28,
+                                                ),
+                                              ),
+                                              CupertinoButton(
+                                                padding: EdgeInsets.zero,
+                                                // Display a CupertinoDatePicker in date picker mode.
+                                                onPressed: () => _showDialog(
+                                                  CupertinoDatePicker(
+                                                    // initialDateTime:
+                                                    //     date.add(Duration(seconds: 1)),
+                                                    initialDateTime: snapshot
+                                                        .data!.start!.dateTime!
+                                                        .toLocal(),
+                                                    // minimumDate: DateTime.now(),
+                                                    // maximumDate: DateTime.now()
+                                                    //     .add(Duration(days: 3650)),
+                                                    //  minimumDate: _minDate,
+                                                    maximumDate:
+                                                        DateTime.now().copyWith(
+                                                      year:
+                                                          DateTime.now().year +
+                                                              10,
+                                                      month: 12,
+                                                      day: 31,
+                                                    ),
+                                                    mode:
+                                                        CupertinoDatePickerMode
+                                                            .date,
+                                                    use24hFormat: false,
+                                                    // This is called when the user changes the date.
+                                                    onDateTimeChanged:
+                                                        (DateTime newDate) {
+                                                      print(snapshot.data!
+                                                          .start!.dateTime!
+                                                          .toLocal());
+                                                      date = newDate;
+                                                      //   setState(
+                                                      //       () => date = newDate);
+                                                    },
+                                                  ),
+                                                ),
+                                                // In this example, the date is formatted manually. You can
+                                                // use the intl package to format the value based on the
+                                                // user's locale settings.
+                                                child: Row(
+                                                  children: [
+                                                    Text(
+                                                      '${date.month}-${date.day}-${date.year}',
+                                                      style: const TextStyle(
+                                                        fontSize: 16.0,
+                                                        fontFamily: 'Urbanist',
+                                                        color: Color.fromARGB(
+                                                            255, 0, 0, 0),
+                                                      ),
+                                                    ),
+                                                    const Padding(
+                                                      padding:
+                                                          EdgeInsetsDirectional
+                                                              .only(end: 0),
+                                                      child: Icon(
+                                                          Icons
+                                                              .keyboard_arrow_down,
+                                                          color: blackColor),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          margin:
+                                              EdgeInsets.symmetric(vertical: 0),
+                                          child: _DatePickerItem(
+                                            children: <Widget>[
+                                              Text(
+                                                'Start Time',
+                                                style: TextStyle(
+                                                  color: Color.fromARGB(
+                                                      255, 0, 0, 0),
+                                                  fontSize: 17,
+                                                  fontFamily: 'Urbanist',
+                                                  fontWeight: FontWeight.w700,
+                                                  height: 1.30,
+                                                  letterSpacing: -0.28,
+                                                ),
+                                              ),
+                                              CupertinoButton(
+                                                padding: EdgeInsets.zero,
+                                                // Display a CupertinoDatePicker in time picker mode.
+                                                onPressed: () => _showDialog(
+                                                  CupertinoDatePicker(
+                                                    initialDateTime: startTime,
+                                                    // startTime.isAfter(DateTime.now())
+                                                    //     ? startTime
+                                                    //     : DateTime.now(),
+                                                    // minimumDate: date.day ==
+                                                    //             DateTime.now()
+                                                    //                 .day &&
+                                                    //         date.month ==
+                                                    //             DateTime.now()
+                                                    //                 .month &&
+                                                    //         date.year ==
+                                                    //             DateTime.now()
+                                                    //                 .year
+                                                    //     ? _minTime
+                                                    //     : null,
+                                                    mode:
+                                                        CupertinoDatePickerMode
+                                                            .time,
+                                                    use24hFormat: false,
+                                                    // This is called when the user changes the time.
+                                                    onDateTimeChanged:
+                                                        (DateTime newTime) {
+                                                      // setState(() =>
+                                                      startTime = newTime;
+                                                      // );
+                                                      print(
+                                                          "NEW TIME IS $newTime");
+                                                      var jiffy = Jiffy.parse(
+                                                          newTime.toString());
+                                                      startFormat =
+                                                          jiffy.format(
+                                                              pattern:
+                                                                  "hh:mm a");
+                                                      print(startFormat);
+                                                    },
+                                                  ),
+                                                ),
+                                                // In this example, the time value is formatted manually.
+                                                // You can use the intl package to format the value based on
+                                                // the user's locale settings.
+                                                child: Row(
+                                                  children: [
+                                                    Text(
+                                                      startFormat,
+                                                      style: TextStyle(
+                                                        fontSize: 16.0,
+                                                        fontFamily: 'Urbanist',
+                                                        color: timeColor,
+                                                        // color: Color(0xFFD77D7C),
+                                                      ),
+                                                    ),
+                                                    const Padding(
+                                                      padding:
+                                                          EdgeInsetsDirectional
+                                                              .only(start: 0),
+                                                      child: Icon(
+                                                          Icons
+                                                              .keyboard_arrow_down,
+                                                          color: blackColor),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          margin:
+                                              EdgeInsets.symmetric(vertical: 0),
+                                          child: _DatePickerItem(
+                                            children: <Widget>[
+                                              Row(
                                                 children: [
                                                   Text(
-                                                    '${date.month}-${date.day}-${date.year}',
-                                                    style: const TextStyle(
-                                                      fontSize: 16.0,
-                                                      fontFamily: 'Urbanist',
+                                                    'End Time',
+                                                    style: TextStyle(
                                                       color: Color.fromARGB(
                                                           255, 0, 0, 0),
-                                                    ),
-                                                  ),
-                                                  const Padding(
-                                                    padding:
-                                                        EdgeInsetsDirectional
-                                                            .only(end: 0),
-                                                    child: Icon(
-                                                        Icons
-                                                            .keyboard_arrow_down,
-                                                        color: blackColor),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            // Container(
-                                            //   margin: EdgeInsets.only(left: 50),
-                                            // ),
-                                            // const Padding(
-                                            //   padding:
-                                            //       EdgeInsetsDirectional.only(start: 5),
-                                            //   child: Icon(Icons.keyboard_arrow_down),
-                                            // ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        margin:
-                                            EdgeInsets.symmetric(vertical: 0),
-                                        child: _DatePickerItem(
-                                          children: <Widget>[
-                                            Text(
-                                              'Start Time',
-                                              style: TextStyle(
-                                                color: Color.fromARGB(
-                                                    255, 0, 0, 0),
-                                                fontSize: 17,
-                                                fontFamily: 'Urbanist',
-                                                fontWeight: FontWeight.w700,
-                                                height: 1.30,
-                                                letterSpacing: -0.28,
-                                              ),
-                                            ),
-                                            CupertinoButton(
-                                              padding: EdgeInsets.zero,
-                                              // Display a CupertinoDatePicker in time picker mode.
-                                              onPressed: () => _showDialog(
-                                                CupertinoDatePicker(
-                                                  initialDateTime: startTime,
-                                                  // startTime.isAfter(DateTime.now())
-                                                  //     ? startTime
-                                                  //     : DateTime.now(),
-                                                  minimumDate: date.day ==
-                                                              DateTime.now()
-                                                                  .day &&
-                                                          date.month ==
-                                                              DateTime.now()
-                                                                  .month &&
-                                                          date.year ==
-                                                              DateTime.now()
-                                                                  .year
-                                                      ? _minTime
-                                                      : null,
-                                                  mode: CupertinoDatePickerMode
-                                                      .time,
-                                                  use24hFormat: false,
-                                                  // This is called when the user changes the time.
-                                                  onDateTimeChanged:
-                                                      (DateTime newTime) {
-                                                    setState(() =>
-                                                        startTime = newTime);
-                                                    print(newTime.toString());
-                                                    var jiffy = Jiffy.parse(
-                                                        newTime.toString());
-                                                    startFormat = jiffy.format(
-                                                        pattern: "hh:mm a");
-                                                    print(startFormat);
-                                                  },
-                                                ),
-                                              ),
-                                              // In this example, the time value is formatted manually.
-                                              // You can use the intl package to format the value based on
-                                              // the user's locale settings.
-                                              child: Row(
-                                                children: [
-                                                  Text(
-                                                    startFormat,
-                                                    style: TextStyle(
-                                                      fontSize: 16.0,
+                                                      fontSize: 17,
                                                       fontFamily: 'Urbanist',
-                                                      color: timeColor,
-                                                      // color: Color(0xFFD77D7C),
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      height: 1.30,
+                                                      letterSpacing: -0.28,
                                                     ),
-                                                  ),
-                                                  const Padding(
-                                                    padding:
-                                                        EdgeInsetsDirectional
-                                                            .only(start: 0),
-                                                    child: Icon(
-                                                        Icons
-                                                            .keyboard_arrow_down,
-                                                        color: blackColor),
                                                   ),
                                                 ],
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        margin:
-                                            EdgeInsets.symmetric(vertical: 0),
-                                        child: _DatePickerItem(
-                                          children: <Widget>[
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  'End Time',
-                                                  style: TextStyle(
-                                                    color: Color.fromARGB(
-                                                        255, 0, 0, 0),
-                                                    fontSize: 17,
-                                                    fontFamily: 'Urbanist',
-                                                    fontWeight: FontWeight.w700,
-                                                    height: 1.30,
-                                                    letterSpacing: -0.28,
+                                              CupertinoButton(
+                                                padding: EdgeInsets.zero,
+                                                // Display a CupertinoDatePicker in time picker mode.
+                                                onPressed: () => _showDialog(
+                                                  CupertinoDatePicker(
+                                                    initialDateTime: endTime,
+                                                    // endTime.isAfter(DateTime.now())
+                                                    //     ? endTime
+                                                    //     : DateTime.now(),
+                                                    minimumDate: date.day ==
+                                                                DateTime.now()
+                                                                    .day &&
+                                                            date.month ==
+                                                                DateTime.now()
+                                                                    .month &&
+                                                            date.year ==
+                                                                DateTime.now()
+                                                                    .year
+                                                        ? _minTime
+                                                        : null,
+                                                    mode:
+                                                        CupertinoDatePickerMode
+                                                            .time,
+                                                    use24hFormat: false,
+                                                    // This is called when the user changes the time.
+                                                    onDateTimeChanged:
+                                                        (DateTime newTime) {
+                                                      // setState(() =>
+                                                      endTime = newTime;
+                                                      // );
+                                                      print(newTime.toString());
+                                                      var jiffy = Jiffy.parse(
+                                                          newTime.toString());
+                                                      endFormat = jiffy.format(
+                                                          pattern: "hh:mm a");
+                                                      print(startFormat);
+                                                    },
                                                   ),
                                                 ),
-                                              ],
-                                            ),
-                                            CupertinoButton(
-                                              padding: EdgeInsets.zero,
-                                              // Display a CupertinoDatePicker in time picker mode.
-                                              onPressed: () => _showDialog(
-                                                CupertinoDatePicker(
-                                                  initialDateTime: endTime,
-                                                  // endTime.isAfter(DateTime.now())
-                                                  //     ? endTime
-                                                  //     : DateTime.now(),
-                                                  minimumDate: date.day ==
-                                                              DateTime.now()
-                                                                  .day &&
-                                                          date.month ==
-                                                              DateTime.now()
-                                                                  .month &&
-                                                          date.year ==
-                                                              DateTime.now()
-                                                                  .year
-                                                      ? _minTime
-                                                      : null,
-                                                  mode: CupertinoDatePickerMode
-                                                      .time,
-                                                  use24hFormat: false,
-                                                  // This is called when the user changes the time.
-                                                  onDateTimeChanged:
-                                                      (DateTime newTime) {
-                                                    setState(() =>
-                                                        endTime = newTime);
-                                                    print(newTime.toString());
-                                                    var jiffy = Jiffy.parse(
-                                                        newTime.toString());
-                                                    endFormat = jiffy.format(
-                                                        pattern: "hh:mm a");
-                                                    print(startFormat);
-                                                  },
-                                                ),
-                                              ),
-                                              // In this example, the time value is formatted manually.
-                                              // You can use the intl package to format the value based on
-                                              // the user's locale settings.
-                                              child: Row(
-                                                children: [
-                                                  Text(
-                                                    endFormat,
-                                                    style: TextStyle(
-                                                      fontSize: 16.0,
-                                                      fontFamily: 'Urbanist',
-                                                      color: timeColor,
-                                                      // color: Color(0xFFD77D7C),
+                                                // In this example, the time value is formatted manually.
+                                                // You can use the intl package to format the value based on
+                                                // the user's locale settings.
+                                                child: Row(
+                                                  children: [
+                                                    Text(
+                                                      endFormat,
+                                                      style: TextStyle(
+                                                        fontSize: 16.0,
+                                                        fontFamily: 'Urbanist',
+                                                        color: timeColor,
+                                                        // color: Color(0xFFD77D7C),
+                                                      ),
                                                     ),
-                                                  ),
-                                                  const Padding(
-                                                    padding:
-                                                        EdgeInsetsDirectional
-                                                            .only(end: 0),
-                                                    child: Icon(
-                                                        Icons
-                                                            .keyboard_arrow_down,
-                                                        color: blackColor),
-                                                  ),
-                                                ],
+                                                    const Padding(
+                                                      padding:
+                                                          EdgeInsetsDirectional
+                                                              .only(end: 0),
+                                                      child: Icon(
+                                                          Icons
+                                                              .keyboard_arrow_down,
+                                                          color: blackColor),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        margin: EdgeInsets.only(top: 5),
-                                        child: Text(errorMessage,
-                                            style: textStyle),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(top: 10.0),
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            if (startTime.hour > endTime.hour ||
-                                                (startTime.hour ==
-                                                        endTime.hour &&
-                                                    startTime.minute >
-                                                        endTime.minute)) {
-                                              setState(() {
-                                                print('start after end');
+                                        Container(
+                                          alignment: Alignment.centerLeft,
+                                          margin: EdgeInsets.only(top: 5),
+                                          child: Text(errorMessage,
+                                              style: textStyle),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 10.0),
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              if (startTime.hour >
+                                                      endTime.hour ||
+                                                  (startTime.hour ==
+                                                          endTime.hour &&
+                                                      startTime.minute >
+                                                          endTime.minute)) {
+                                                setState(() {
+                                                  print('start after end');
 
+                                                  final FormState form =
+                                                      _formKey.currentState!;
+                                                  form.validate();
+                                                  errorMessage =
+                                                      "Start time cannot be after end time.";
+                                                  valid = false;
+                                                  timeRed = true;
+                                                });
+                                              } else if (startTime.hour ==
+                                                      endTime.hour &&
+                                                  startTime.minute ==
+                                                      endTime.minute) {
+                                                print('start = end');
                                                 final FormState form =
                                                     _formKey.currentState!;
                                                 form.validate();
-                                                errorMessage =
-                                                    "Start time cannot be after end time.";
-                                                valid = false;
-                                                timeRed = true;
-                                              });
-                                            } else if (startTime.hour ==
-                                                    endTime.hour &&
-                                                startTime.minute ==
-                                                    endTime.minute) {
-                                              print('start = end');
-                                              final FormState form =
-                                                  _formKey.currentState!;
-                                              form.validate();
-                                              setState(() {
-                                                errorMessage =
-                                                    "Start time cannot be equal to end time.";
-                                                valid = false;
-                                                timeRed = true;
-                                              });
-                                            } else if (date.day == today.day &&
-                                                date.month == today.month &&
-                                                date.year == today.year &&
-                                                (startTime.hour <
-                                                        (today.hour) ||
-                                                    (startTime.hour ==
-                                                            today.hour &&
-                                                        startTime.minute <
-                                                            today.minute))) {
-                                              setState(() {
+                                                setState(() {
+                                                  errorMessage =
+                                                      "Start time cannot be equal to end time.";
+                                                  valid = false;
+                                                  timeRed = true;
+                                                });
+                                              } else if (date.day ==
+                                                      today.day &&
+                                                  date.month == today.month &&
+                                                  date.year == today.year &&
+                                                  (startTime.hour <
+                                                          (today.hour) ||
+                                                      (startTime.hour ==
+                                                              today.hour &&
+                                                          startTime.minute <
+                                                              today.minute))) {
+                                                setState(() {
+                                                  final FormState form =
+                                                      _formKey.currentState!;
+                                                  form.validate();
+                                                  errorMessage =
+                                                      "Time cannot be in the past.";
+                                                  valid = false;
+                                                  timeRed = true;
+                                                });
+                                                // } else if (_apptNameController
+                                                //         .text.isEmpty ||
+                                                //     _drController.text.isEmpty ||
+                                                //     _hospitalController.text.isEmpty) {
+                                                //   setState(() {
+                                                //     errorMessage =
+                                                //         "Please fill all fields.";
+                                                //     valid = false;
+                                                //     timeRed = false;
+                                                //   });
+
+                                                //   print("not added because empty name");
+                                              } else {
+                                                setState(() {
+                                                  timeRed = false;
+                                                  errorMessage = "";
+                                                  // _handleSignIn();
+                                                  valid = true;
+                                                });
                                                 final FormState form =
                                                     _formKey.currentState!;
-                                                form.validate();
-                                                errorMessage =
-                                                    "Time cannot be in the past.";
-                                                valid = false;
-                                                timeRed = true;
-                                              });
-                                              // } else if (_apptNameController
-                                              //         .text.isEmpty ||
-                                              //     _drController.text.isEmpty ||
-                                              //     _hospitalController.text.isEmpty) {
-                                              //   setState(() {
-                                              //     errorMessage =
-                                              //         "Please fill all fields.";
-                                              //     valid = false;
-                                              //     timeRed = false;
-                                              //   });
+                                                print(form);
+                                                if (valid == true &&
+                                                    form.validate()) {
+                                                  print("now signed in");
+                                                  Event event =
+                                                      Event(); // Create object of event
+                                                  event.summary = appt == ''
+                                                      ? appt
+                                                      : newAppt; //Setting summary of object (name of event)
+                                                  event.location = _hospitalKey
+                                                      .toString()
+                                                      .trim();
+                                                  event.description =
+                                                      _drKey.toString().trim();
 
-                                              //   print("not added because empty name");
-                                            } else {
-                                              setState(() {
-                                                timeRed = false;
-                                                errorMessage = "";
-                                                // _handleSignIn();
-                                                valid = true;
-                                              });
-                                              final FormState form =
-                                                  _formKey.currentState!;
-                                              print(form);
-                                              if (valid == true &&
-                                                  form.validate()) {
-                                                print("now signed in");
-                                                Event event =
-                                                    Event(); // Create object of event
-                                                event.summary = _apptNameController
-                                                    .text
-                                                    .trim(); //Setting summary of object (name of event)
-                                                event.location =
-                                                    _hospitalController.text
-                                                        .trim();
-                                                event.description =
-                                                    _drController.text.trim();
+                                                  EventDateTime start =
+                                                      new EventDateTime();
+                                                  // start.date = date; //setting start time
+                                                  start.dateTime = startTime;
+                                                  start.timeZone = DateTime
+                                                          .now()
+                                                      .timeZoneName; //local timezone
+                                                  event.start = EventDateTime(
+                                                      // date: date,
+                                                      dateTime: DateTime(
+                                                          date.year,
+                                                          date.month,
+                                                          date.day,
+                                                          startTime.hour,
+                                                          startTime.minute,
+                                                          startTime.second),
+                                                      timeZone: DateTime.now()
+                                                          .timeZoneName);
+                                                  // event.start!.date = date;
 
-                                                EventDateTime start =
-                                                    new EventDateTime();
-                                                // start.date = date; //setting start time
-                                                start.dateTime = startTime;
-                                                start.timeZone = DateTime.now()
-                                                    .timeZoneName; //local timezone
-                                                event.start = EventDateTime(
-                                                    // date: date,
-                                                    dateTime: DateTime(
-                                                        date.year,
-                                                        date.month,
-                                                        date.day,
-                                                        startTime.hour,
-                                                        startTime.minute,
-                                                        startTime.second),
-                                                    timeZone: DateTime.now()
-                                                        .timeZoneName);
-                                                // event.start!.date = date;
+                                                  EventDateTime end =
+                                                      new EventDateTime();
+                                                  // end.date = date; //setting end time
+                                                  end.timeZone = DateTime.now()
+                                                      .timeZoneName; //local timezone
+                                                  end.dateTime = endTime;
+                                                  event.end = EventDateTime(
+                                                      // date: date,
+                                                      dateTime: DateTime(
+                                                          date.year,
+                                                          date.month,
+                                                          date.day,
+                                                          endTime.hour,
+                                                          endTime.minute,
+                                                          endTime.second),
+                                                      timeZone: DateTime.now()
+                                                          .timeZoneName);
+                                                  // event.end!.date = date;
 
-                                                EventDateTime end =
-                                                    new EventDateTime();
-                                                // end.date = date; //setting end time
-                                                end.timeZone = DateTime.now()
-                                                    .timeZoneName; //local timezone
-                                                end.dateTime = endTime;
-                                                event.end = EventDateTime(
-                                                    // date: date,
-                                                    dateTime: DateTime(
-                                                        date.year,
-                                                        date.month,
-                                                        date.day,
-                                                        endTime.hour,
-                                                        endTime.minute,
-                                                        endTime.second),
-                                                    timeZone: DateTime.now()
-                                                        .timeZoneName);
-                                                // event.end!.date = date;
-
-                                                insertEvent(event);
-                                                print('now event inserted');
-                                              }
-                                            } //if valid then submit
-                                          }, //end onPressed()
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: blackColor,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(40)),
-                                            padding: EdgeInsets.only(
-                                                left: 85,
-                                                top: 15,
-                                                right: 85,
-                                                bottom: 15),
+                                                  insertEvent(event);
+                                                  print('now event inserted');
+                                                }
+                                              } //if valid then submit
+                                            }, //end onPressed()
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: blackColor,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          40)),
+                                              padding: EdgeInsets.only(
+                                                  left: 85,
+                                                  top: 15,
+                                                  right: 85,
+                                                  bottom: 15),
+                                            ),
+                                            child: Text(
+                                              "Add Appointment",
+                                            ),
                                           ),
-                                          child: Text(
-                                            "Add Appointment",
-                                          ),
-                                        ),
-                                      )
-                                    ],
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          );
+                              ],
+                            );
+                          }
                         }
                         return CircularProgressIndicator(color: pinkColor);
                       }),
