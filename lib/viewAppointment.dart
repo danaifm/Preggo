@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:googleapis/calendar/v3.dart';
 import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
 import 'package:preggo/colors.dart';
-import 'package:preggo/editAppointment.dart';
 import 'package:preggo/editAppt.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -274,7 +273,7 @@ class _viewAppointment extends State<viewAppointment> {
                                     settings: RouteSettings(
                                         arguments: appointmentDetails),
                                   ),
-                                );
+                                ).then(onGoBack);
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: blackColor,

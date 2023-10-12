@@ -1,5 +1,4 @@
 // ignore_for_file: camel_case_types, prefer_const_literals_to_create_immutables, prefer_const_constructors, use_key_in_widget_constructors, unnecessary_const, unnecessary_new, prefer_final_fields, avoid_print, no_leading_underscores_for_local_identifiers, file_names,
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'colors.dart';
@@ -15,16 +14,32 @@ class editAppt extends StatefulWidget {
   editAppt(this.appt);
   @override
   State<StatefulWidget> createState() {
-    return _editApptState();
+    return _editApptState(this.appt);
   }
 }
 
 class _editApptState extends State<editAppt> {
+  _editApptState(Appointment appt) {
+    this.a = appt;
+  }
   late Appointment a;
+  // late Appointment a = widget.appt;
   @override
   void initState() {
     super.initState();
-    a = widget.appt;
+    date = a.startTime;
+    startTime = a.startTime;
+    endTime = a.endTime;
+    startFormat =
+        Jiffy.parse(a.startTime.toString()).format(pattern: "hh:mm a");
+    endFormat = Jiffy.parse(a.endTime.toString()).format(pattern: "hh:mm a");
+    errorMessage = "";
+    startTimeCounter = 0;
+    endTimeCounter = 0;
+    dateCounter = 0;
+    newappt = '';
+    newhospital = '';
+    newdr = '';
     _googleSignIn.signInSilently();
   }
 
@@ -145,7 +160,7 @@ class _editApptState extends State<editAppt> {
 
                           // Done
                           const Text(
-                            "Appointment added successfully!",
+                            "Appointment edited successfully!",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Color.fromARGB(255, 0, 0, 0),
@@ -202,39 +217,27 @@ class _editApptState extends State<editAppt> {
   GlobalKey<FormState> formstate = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormFieldState> _apptNameKey = GlobalKey<FormFieldState>();
-  final TextEditingController _apptNameController = TextEditingController();
-
   final GlobalKey<FormFieldState> _hospitalKey = GlobalKey<FormFieldState>();
-  final TextEditingController _hospitalController = TextEditingController();
-
   final GlobalKey<FormFieldState> _drKey = GlobalKey<FormFieldState>();
-  final TextEditingController _drController = TextEditingController();
 
   bool timeRed = false;
   bool valid = false;
 
+  late DateTime date;
+  late DateTime startTime;
+  late DateTime endTime;
+  late String startFormat;
+  late String endFormat;
+  var errorMessage = "";
+  late int startTimeCounter, endTimeCounter, dateCounter;
+  // DateTime _minDate = DateTime.now();
+  // DateTime _minTime = DateTime.now();
+  DateTime today = DateTime.now();
+  late String newappt, newhospital, newdr;
+
   @override
   Widget build(BuildContext context) {
-    DateTime date = a.startTime;
-    DateTime startTime = a.startTime;
-    DateTime endTime = a.endTime;
-    var startFormat =
-        Jiffy.parse(a.startTime.toString()).format(pattern: "hh:mm a");
-    var endFormat =
-        Jiffy.parse(a.endTime.toString()).format(pattern: "hh:mm a");
-    var errorMessage = "";
-    DateTime _minDate = DateTime.now();
-    DateTime _minTime = DateTime.now();
     DateTime today = DateTime.now();
-
-    String newappt = '', newhospital = '', newdr = '';
-
-    // Appointment a = ModalRoute.of(context)?.settings.arguments as Appointment;
-    // print("APPOINTMENT ID IS ${a.id}");
-
-    // Color timeColor =
-    //     timeRed ? Color.fromRGBO(255, 100, 100, 1) : Color(0xFFD77D7C);
-
     Color timeColor = timeRed
         ? Theme.of(context).colorScheme.error
         : Color.fromARGB(255, 0, 0, 0);
@@ -360,7 +363,7 @@ class _editApptState extends State<editAppt> {
             ),
           ),
           Text(
-            "Add a new appointment",
+            "Edit appointment",
             style: TextStyle(
               color: Color(0xFFD77D7C),
               fontSize: 30,
@@ -422,8 +425,8 @@ class _editApptState extends State<editAppt> {
                                   onChanged: (value) {
                                     setState(() {
                                       newappt = value;
-                                      print('NEW NAME $newappt');
                                     });
+                                    print('NEW NAME $newappt');
                                   },
                                   autovalidateMode:
                                       AutovalidateMode.onUserInteraction,
@@ -510,8 +513,8 @@ class _editApptState extends State<editAppt> {
                                   onChanged: (value) {
                                     setState(() {
                                       newhospital = value;
-                                      print("NEW HOSPITAL $newhospital");
                                     });
+                                    print("NEW HOSPITAL $newhospital");
                                   },
                                   autovalidateMode:
                                       AutovalidateMode.onUserInteraction,
@@ -598,8 +601,8 @@ class _editApptState extends State<editAppt> {
                                   onChanged: (value) {
                                     setState(() {
                                       newdr = value;
-                                      print('NEW DR $newdr');
                                     });
+                                    print('NEW DR $newdr');
                                   },
                                   autovalidateMode:
                                       AutovalidateMode.onUserInteraction,
@@ -682,8 +685,10 @@ class _editApptState extends State<editAppt> {
                                         CupertinoDatePicker(
                                           // initialDateTime:
                                           //     date.add(Duration(seconds: 1)),
-                                          initialDateTime: a
-                                              .startTime, //this sets the initial selected date on the popup
+                                          initialDateTime: dateCounter > 0
+                                              ? date
+                                              : a.startTime,
+                                          //this sets the initial selected date on the popup
                                           //REMOVED MINIMUM DATE FOR EDIT BUT MAYBE WILL CHANGE
                                           // minimumDate: _minDate,
                                           maximumDate: DateTime.now().copyWith(
@@ -696,9 +701,13 @@ class _editApptState extends State<editAppt> {
                                           // This is called when the user changes the date.
                                           onDateTimeChanged:
                                               (DateTime newDate) {
-                                            setState(() => date = newDate);
+                                            setState(() {
+                                              date = newDate;
+                                              dateCounter = dateCounter + 1;
+                                              print('IN DATE SET STATE');
+                                            });
                                             print(
-                                                "DATE AFTER SETSTATE IS ${date.toString()}");
+                                                "DATE AFTER SET STATE IS ${date.toString()}");
                                           },
                                         ),
                                       ),
@@ -749,7 +758,9 @@ class _editApptState extends State<editAppt> {
                                       // Display a CupertinoDatePicker in time picker mode.
                                       onPressed: () => _showDialog(
                                         CupertinoDatePicker(
-                                          initialDateTime: a.startTime,
+                                          initialDateTime: startTimeCounter > 0
+                                              ? startTime
+                                              : a.startTime,
                                           // minimumDate: date.day ==
                                           //             DateTime.now().day &&
                                           //         date.month ==
@@ -763,7 +774,13 @@ class _editApptState extends State<editAppt> {
                                           // This is called when the user changes the time.
                                           onDateTimeChanged:
                                               (DateTime newTime) {
-                                            setState(() => startTime = newTime);
+                                            setState(() {
+                                              startTime = newTime;
+                                              startTimeCounter =
+                                                  startTimeCounter + 1;
+                                              print('IN START TIME SET STATE');
+                                            });
+                                            // startTime = newTime;
                                             print(
                                                 'NEW START TIME AFTER SET STATE IS ${startTime.toString()}');
                                             var jiffy =
@@ -825,7 +842,10 @@ class _editApptState extends State<editAppt> {
                                       // Display a CupertinoDatePicker in time picker mode.
                                       onPressed: () => _showDialog(
                                         CupertinoDatePicker(
-                                          initialDateTime: a.endTime,
+                                          initialDateTime: endTimeCounter > 0
+                                              ? endTime
+                                              : a.endTime,
+
                                           // minimumDate: date.day ==
                                           //             DateTime.now().day &&
                                           //         date.month ==
@@ -839,7 +859,12 @@ class _editApptState extends State<editAppt> {
                                           // This is called when the user changes the time.
                                           onDateTimeChanged:
                                               (DateTime newTime) {
-                                            setState(() => endTime = newTime);
+                                            setState(() {
+                                              endTime = newTime;
+                                              endTimeCounter =
+                                                  endTimeCounter + 1;
+                                              print('IN END TIME SET STATE');
+                                            });
                                             print(
                                                 'NEW END TIME AFTER SET STATE IS ${endTime.toString()}');
                                             var jiffy =
@@ -962,15 +987,25 @@ class _editApptState extends State<editAppt> {
                                         event.summary = newappt.isEmpty
                                             ? a.subject
                                             : newappt;
+                                        print('NEWAPPT = $newappt');
+                                        print(
+                                            'EVENT SUMMARY IS ${event.summary}');
                                         // event.location =
                                         //     _hospitalController.text.trim();
                                         event.location = newhospital.isEmpty
                                             ? a.location
                                             : newhospital;
+
+                                        print(
+                                            'EVENT LOCATION IS ${event.location}');
+
                                         // event.description =
                                         //     _drController.text.trim();
                                         event.description =
                                             newdr.isEmpty ? a.notes : newdr;
+
+                                        print(
+                                            'EVENT DESCRIPTION IS ${event.description}');
 
                                         EventDateTime start =
                                             new EventDateTime();
@@ -989,6 +1024,9 @@ class _editApptState extends State<editAppt> {
                                                 startTime.second),
                                             timeZone:
                                                 DateTime.now().timeZoneName);
+
+                                        print(
+                                            'EVENT START IS ${event.start!.dateTime}');
                                         // event.start!.date = date;
 
                                         EventDateTime end = new EventDateTime();
@@ -1007,6 +1045,9 @@ class _editApptState extends State<editAppt> {
                                                 endTime.second),
                                             timeZone:
                                                 DateTime.now().timeZoneName);
+                                        print(
+                                            'EVENT END IS ${event.end!.dateTime}');
+
                                         // event.end!.date = date;
 
                                         updateEvent(event, a.id.toString());
@@ -1026,7 +1067,7 @@ class _editApptState extends State<editAppt> {
                                         bottom: 15),
                                   ),
                                   child: Text(
-                                    "Add Appointment",
+                                    "Edit Appointment",
                                   ),
                                 ),
                               )
