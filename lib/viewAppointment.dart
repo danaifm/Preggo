@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:googleapis/calendar/v3.dart';
 import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
 import 'package:preggo/colors.dart';
+import 'package:preggo/editAppointment.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
@@ -260,7 +261,18 @@ class _viewAppointment extends State<viewAppointment> {
                           height: 45.0,
                           child: Center(
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                print('REDIRECTING WITH EVENT ID $_eventID');
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => editAppointment(),
+                                    settings:
+                                        RouteSettings(arguments: _eventID),
+                                  ),
+                                );
+                              },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: blackColor,
                                 shape: RoundedRectangleBorder(
