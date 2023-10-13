@@ -60,6 +60,7 @@ dependencies:
   easy_date_timeline: ^0.1.1
   intl: ^0.18.1
   syncfusion_flutter_calendar: ^23.1.38
+  flutter_toggle_tab: ^1.4.1
 
 
 
