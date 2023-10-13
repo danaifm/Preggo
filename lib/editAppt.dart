@@ -64,54 +64,23 @@ class _editApptState extends State<editAppt> {
         break;
       }
     }
-    googleCalendarApi.events.delete(calID, eventID);
-    googleCalendarApi.events.insert(event, calID).then((value) {
+
+    googleCalendarApi.events.update(event, calID, eventID).then((value) {
       print("ADDEDD_________________${value.status}");
       if (value.status == "confirmed") {
-        print('Event added in google calendar');
+        print('Event updated in google calendar');
       } else {
-        print("Unable to add event in google calendar");
+        print("Unable to update event in google calendar");
       }
     });
-
-    // googleCalendarApi.events.update(event, calID, eventID);
-
-    // final auth.AuthClient? client = await _googleSignIn.authenticatedClient();
-    // assert(client != null, 'Authenticated client missing!');
-    // print(client);
-    // print("printed client");
-    // final CalendarApi googleCalendarApi = CalendarApi(client!);
-    // try {
-    //   String? id;
-    //   bool exists = false;
-    //   var list = await googleCalendarApi.calendarList.list();
-    //   var items = list.items;
-    //   for (CalendarListEntry entry in items!) {
-    //     print(entry.summary);
-    //     if (entry.summary == "Preggo Calendar") {
-    //       id = entry.id;
-    //       exists = true;
-    //       break;
-    //     }
+    // googleCalendarApi.events.delete(calID, eventID);
+    // googleCalendarApi.events.insert(event, calID).then((value) {
+    //   print("ADDEDD_________________${value.status}");
+    //   if (value.status == "confirmed") {
+    //     print('Event added in google calendar');
+    //   } else {
+    //     print("Unable to add event in google calendar");
     //   }
-    //   if (exists == false) {
-    //     Calendar preggoCalendar = new Calendar(summary: "Preggo Calendar");
-    //     googleCalendarApi.calendars.insert(preggoCalendar);
-    //     for (CalendarListEntry entry in items) {
-    //       if (entry.summary == "Preggo Calendar") {
-    //         id = entry.id;
-    //         break;
-    //       }
-    //     }
-    //   }
-
-    //   googleCalendarApi.events.insert(event, id!).then((value) {
-    //     print("ADDEDD_________________${value.status}");
-    //     if (value.status == "confirmed") {
-    //       print('Event added in google calendar');
-    //     } else {
-    //       print("Unable to add event in google calendar");
-    //     }
     // });
 
 //SUCCESS POPUP
