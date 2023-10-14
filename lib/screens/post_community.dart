@@ -149,6 +149,7 @@ class PostCommunityScreenState extends State<PostCommunityScreen> {
         final date = DateTime.now();
         final String formatedDate =
             DateFormat("yyyy/MM/dd hh:mm a").format(date);
+        int comments = 0;
 
         // final DateTime myDate =
         //     DateFormat("yyyy/MM/dd hh:mm a").parse(formatedDate);
@@ -160,6 +161,7 @@ class PostCommunityScreenState extends State<PostCommunityScreen> {
           "timestamp": formatedDate,
           "userID": userUid,
           "username": username,
+          "comments": comments,
         };
         final communityCollection =
             FirebaseFirestore.instance.collection("community");
