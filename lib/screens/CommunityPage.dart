@@ -31,6 +31,7 @@ Future<QuerySnapshot<Map<String, dynamic>>> getMyPosts() async {
       .collection('community')
       .where('userID', isEqualTo: uid)
       .get();
+
   return result;
 }
 
@@ -80,6 +81,7 @@ class _CommunityPage extends State<CommunityPage> {
             //   ),
             // ),
           ),
+          communityWidget(_tabTextIndexSelected),
           Align(
             alignment: Alignment.bottomRight,
             child: Padding(
@@ -102,7 +104,6 @@ class _CommunityPage extends State<CommunityPage> {
               ),
             ),
           ),
-          communityWidget(_tabTextIndexSelected),
           Container(
             padding: EdgeInsets.only(top: 50, left: 65),
             child: FlutterToggleTab(
@@ -187,7 +188,7 @@ Widget allPosts() {
           return SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
             scrollDirection: Axis.vertical,
-            child: Container(
+            child: SizedBox(
               height: 800,
               child: ListView.builder(
                 itemCount: allPosts.length + 2,
@@ -202,6 +203,12 @@ Widget allPosts() {
                     String stamp = allPosts[index - 1].data()['timestamp'];
                     String postID =
                         snapshot.data!.docs[index - 1].reference.id.toString();
+                    String commentsNum =
+                        allPosts[index - 1].data()['comments'].toString() ==
+                                'null'
+                            ? '0'
+                            : allPosts[index - 1].data()['comments'].toString();
+                    // String commentsNum = snapshot.data!.docs[index - 1];
                     return GestureDetector(
                       onTap: () {
                         print(postID);
@@ -229,7 +236,7 @@ Widget allPosts() {
                         child: Row(
                           children: [
                             Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 SizedBox(
                                   height: 10,
@@ -253,7 +260,7 @@ Widget allPosts() {
                               ],
                             ),
                             SizedBox(
-                              width: 30,
+                              width: 25,
                             ),
                             Expanded(
                               child: Column(
@@ -294,20 +301,58 @@ Widget allPosts() {
                                   SizedBox(
                                     height: 4,
                                   ),
-                                  Align(
-                                    alignment: Alignment.bottomLeft,
-                                    child: Text(
-                                      stamp,
-                                      style: TextStyle(
-                                        color:
-                                            Color.fromARGB(200, 121, 113, 113),
-                                        fontSize: 9,
-                                        fontFamily: 'Urbanist',
-                                        fontWeight: FontWeight.w700,
-                                        height: 1.30,
-                                        letterSpacing: -0.28,
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 50,
+                                        height: 10,
+                                        child: Align(
+                                          alignment: Alignment.bottomLeft,
+                                          child: Text(
+                                            stamp,
+                                            style: TextStyle(
+                                              color: Color.fromARGB(
+                                                  200, 121, 113, 113),
+                                              fontSize: 9,
+                                              fontFamily: 'Urbanist',
+                                              fontWeight: FontWeight.w700,
+                                              height: 1.30,
+                                              letterSpacing: -0.28,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                      SizedBox(width: 130),
+                                      Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: Row(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 1.0),
+                                              child: Icon(
+                                                Icons.chat_bubble_outline,
+                                                color: Color.fromARGB(
+                                                    200, 121, 113, 113),
+                                                size: 15,
+                                              ),
+                                            ),
+                                            Text(
+                                              commentsNum,
+                                              style: TextStyle(
+                                                color: Color.fromARGB(
+                                                    200, 121, 113, 113),
+                                                fontSize: 12,
+                                                fontFamily: 'Urbanist',
+                                                fontWeight: FontWeight.w700,
+                                                height: 1.30,
+                                                letterSpacing: -0.28,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -388,7 +433,7 @@ Widget myPosts() {
           return SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
             scrollDirection: Axis.vertical,
-            child: Container(
+            child: SizedBox(
               height: 800,
               child: ListView.builder(
                 itemCount: myPosts.length + 1,
@@ -405,6 +450,12 @@ Widget myPosts() {
                     String stamp = myPosts[index - 1].data()['timestamp'];
                     String postID =
                         snapshot.data!.docs[index - 1].reference.id.toString();
+                    String commentsNum =
+                        myPosts[index - 1].data()['comments'].toString() ==
+                                'null'
+                            ? '0'
+                            : myPosts[index - 1].data()['comments'].toString();
+
                     return GestureDetector(
                       onTap: () {
                         print(postID);
@@ -432,7 +483,7 @@ Widget myPosts() {
                         child: Row(
                           children: [
                             Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 SizedBox(
                                   height: 10,
@@ -456,7 +507,7 @@ Widget myPosts() {
                               ],
                             ),
                             SizedBox(
-                              width: 30,
+                              width: 25,
                             ),
                             Expanded(
                               child: Column(
@@ -497,20 +548,58 @@ Widget myPosts() {
                                   SizedBox(
                                     height: 4,
                                   ),
-                                  Align(
-                                    alignment: Alignment.bottomLeft,
-                                    child: Text(
-                                      stamp,
-                                      style: TextStyle(
-                                        color:
-                                            Color.fromARGB(200, 121, 113, 113),
-                                        fontSize: 9,
-                                        fontFamily: 'Urbanist',
-                                        fontWeight: FontWeight.w700,
-                                        height: 1.30,
-                                        letterSpacing: -0.28,
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 50,
+                                        height: 10,
+                                        child: Align(
+                                          alignment: Alignment.bottomLeft,
+                                          child: Text(
+                                            stamp,
+                                            style: TextStyle(
+                                              color: Color.fromARGB(
+                                                  200, 121, 113, 113),
+                                              fontSize: 9,
+                                              fontFamily: 'Urbanist',
+                                              fontWeight: FontWeight.w700,
+                                              height: 1.30,
+                                              letterSpacing: -0.28,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                      SizedBox(width: 130),
+                                      Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: Row(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 1.0),
+                                              child: Icon(
+                                                Icons.chat_bubble_outline,
+                                                color: Color.fromARGB(
+                                                    200, 121, 113, 113),
+                                                size: 15,
+                                              ),
+                                            ),
+                                            Text(
+                                              commentsNum,
+                                              style: TextStyle(
+                                                color: Color.fromARGB(
+                                                    200, 121, 113, 113),
+                                                fontSize: 12,
+                                                fontFamily: 'Urbanist',
+                                                fontWeight: FontWeight.w700,
+                                                height: 1.30,
+                                                letterSpacing: -0.28,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
