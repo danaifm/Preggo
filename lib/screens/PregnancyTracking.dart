@@ -475,8 +475,8 @@ class _PregnancyTracking extends State<PregnancyTracking> {
           return Scaffold(
             body: Center(
               child: Container(
-                height: 200,
-                width: 200,
+                // height: 200,
+                // width: 200,
                 child: CircularProgressIndicator(
                   color: pinkColor,
                   strokeWidth: 5,
