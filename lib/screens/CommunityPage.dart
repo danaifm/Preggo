@@ -304,7 +304,7 @@ Widget allPosts() {
                                   Row(
                                     children: [
                                       SizedBox(
-                                        width: 50,
+                                        width: 90,
                                         height: 10,
                                         child: Align(
                                           alignment: Alignment.bottomLeft,
@@ -322,7 +322,7 @@ Widget allPosts() {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(width: 130),
+                                      SizedBox(width: 90),
                                       Align(
                                         alignment: Alignment.bottomRight,
                                         child: Row(
@@ -551,7 +551,7 @@ Widget myPosts() {
                                   Row(
                                     children: [
                                       SizedBox(
-                                        width: 50,
+                                        width: 90,
                                         height: 10,
                                         child: Align(
                                           alignment: Alignment.bottomLeft,
@@ -569,7 +569,7 @@ Widget myPosts() {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(width: 130),
+                                      SizedBox(width: 90),
                                       Align(
                                         alignment: Alignment.bottomRight,
                                         child: Row(
