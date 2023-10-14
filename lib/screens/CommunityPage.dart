@@ -86,7 +86,6 @@ class _CommunityPage extends State<CommunityPage> {
               padding: EdgeInsets.fromLTRB(0, 20, 20, 50),
               child: ElevatedButton(
                 onPressed: () {
-                  onGoBack;
                   // Navigator.push(context, MaterialPageRoute(builder: builder))
                   //     .then(onGoBack);
                   //TODO: ALIYAH'S PAGE THEN REFRESH
