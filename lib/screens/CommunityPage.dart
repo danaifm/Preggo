@@ -112,6 +112,7 @@ Widget communityWidget(_tabTextIndexSelected) {
   } else //My posts
   {
     return myPosts();
+    // return Center(child: Text('hi'));
   }
 }
 
@@ -146,7 +147,8 @@ Widget allPosts() {
                         print('tapped');
                       }, //TODO: rana's page
                       child: Container(
-                        margin: EdgeInsets.all(20),
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         padding: EdgeInsets.symmetric(
                           horizontal: 20,
                           vertical: 10,
@@ -249,7 +251,7 @@ Widget allPosts() {
                       ),
                     );
                   } else {
-                    return Container(height: 100);
+                    return Container(height: 110);
                   }
                 },
               ),
@@ -275,29 +277,30 @@ Widget myPosts() {
       builder: (context, snapshot) {
         if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
           //there are posts
-          List allPosts = snapshot.data!.docs; //TODO: SORT BY LATEST
+          List myPosts = snapshot.data!.docs; //TODO: SORT BY LATEST
           return SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
             scrollDirection: Axis.vertical,
             child: Container(
               height: 800,
               child: ListView.builder(
-                itemCount: allPosts.length + 1,
+                itemCount: myPosts.length + 1,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
                   if (index == 0) {
-                    return Container(
-                      height: 70,
-                    );
-                  } else if (index > 0 && index < allPosts.length) {
-                    String username = allPosts[index - 1].data()['username'];
-                    String postTitle = allPosts[index - 1].data()['title'];
-                    String postBody = allPosts[index - 1].data()['body'];
-                    String stamp = allPosts[index - 1].data()['timestamp'];
+                    print('index 0');
+                    return Container(height: 70);
+                  } else if (index > 0 && index < myPosts.length + 1) {
+                    print('at least 1 in my posts');
+                    String username = myPosts[index - 1].data()['username'];
+                    String postTitle = myPosts[index - 1].data()['title'];
+                    String postBody = myPosts[index - 1].data()['body'];
+                    String stamp = myPosts[index - 1].data()['timestamp'];
                     return GestureDetector(
                       onTap: () {}, //TODO: rana's page
                       child: Container(
-                        margin: EdgeInsets.all(20),
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         padding: EdgeInsets.symmetric(
                           horizontal: 20,
                           vertical: 10,
@@ -400,7 +403,7 @@ Widget myPosts() {
                       ),
                     );
                   } else {
-                    return Container(height: 100);
+                    return Container(height: 110);
                   }
                 },
               ),
@@ -408,7 +411,8 @@ Widget myPosts() {
           );
         } else if (snapshot.hasData && snapshot.data!.docs.isEmpty) {
           //TODO: there are no posts
-          return Center(child: Text('no posts'));
+          print('no my posts');
+          return Center(child: Text('none in my posts'));
         } else {
           return Center(
               child: CircularProgressIndicator()); //TODO: still loading
