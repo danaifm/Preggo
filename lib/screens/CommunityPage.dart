@@ -44,6 +44,17 @@ class _CommunityPage extends State<CommunityPage> {
 
   @override
   Widget build(BuildContext context) {
+    int count = 0;
+    refreshData() {
+      count++;
+      print(count);
+    }
+
+    onGoBack(dynamic value) {
+      refreshData();
+      setState(() {});
+    }
+
     return Scaffold(
       body: Stack(
         children: [
@@ -54,8 +65,7 @@ class _CommunityPage extends State<CommunityPage> {
             //     style: TextStyle(
             //       fontFamily: 'Urbanist',
             //     ),
-            //     children:
-            //      <TextSpan>[
+            //     children: <TextSpan>[
             //       TextSpan(
             //           text: 'Community\n',
             //           style: TextStyle(
@@ -69,6 +79,29 @@ class _CommunityPage extends State<CommunityPage> {
             //     ],
             //   ),
             // ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(0, 20, 20, 50),
+              child: ElevatedButton(
+                onPressed: () {
+                  onGoBack;
+                  // Navigator.push(context, MaterialPageRoute(builder: builder))
+                  //     .then(onGoBack);
+                  //TODO: ALIYAH'S PAGE THEN REFRESH
+                },
+                style: ElevatedButton.styleFrom(
+                  fixedSize: const Size(55, 55),
+                  shape: const CircleBorder(),
+                  backgroundColor: darkBlackColor,
+                ),
+                child: Icon(
+                  Icons.add,
+                  color: Colors.white,
+                ),
+              ),
+            ),
           ),
           communityWidget(_tabTextIndexSelected),
           Container(
@@ -112,7 +145,6 @@ Widget communityWidget(_tabTextIndexSelected) {
   } else //My posts
   {
     return myPosts();
-    // return Center(child: Text('hi'));
   }
 }
 
@@ -123,7 +155,36 @@ Widget allPosts() {
       builder: (context, snapshot) {
         if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
           //there are posts
-          List allPosts = snapshot.data!.docs; //TODO: SORT BY LATEST
+          List allPosts = snapshot.data!.docs;
+          allPosts.sort((a, b) {
+            //SORT BY LATEST
+            // Convert 'timestamp' strings to DateTime objects for comparison
+            DateFormat tF = DateFormat("hh:mm a");
+            DateFormat dF = DateFormat("yyyy-MM-dd");
+
+            DateTime timeA =
+                tF.parse(a.data()['timestamp'].toString().substring(11));
+            DateTime timeB =
+                tF.parse(b.data()['timestamp'].toString().substring(11));
+
+            DateTime dateA = dF.parse(a
+                .data()['timestamp']
+                .toString()
+                .substring(0, 10)
+                .replaceAll('/', '-'));
+            DateTime dateB = dF.parse(b
+                .data()['timestamp']
+                .toString()
+                .substring(0, 10)
+                .replaceAll('/', '-'));
+
+            if (dateA.compareTo(dateB) != 0) {
+              return dateB.compareTo(dateA);
+            } else {
+              return timeB.compareTo(timeA);
+            }
+          });
+
           return SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
             scrollDirection: Axis.vertical,
@@ -134,17 +195,23 @@ Widget allPosts() {
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
                   if (index == 0) {
-                    return Container(
-                      height: 70,
-                    );
+                    return Container(height: 70);
                   } else if (index > 0 && index < allPosts.length + 1) {
                     String username = allPosts[index - 1].data()['username'];
                     String postTitle = allPosts[index - 1].data()['title'];
                     String postBody = allPosts[index - 1].data()['body'];
                     String stamp = allPosts[index - 1].data()['timestamp'];
+                    String postID =
+                        snapshot.data!.docs[index - 1].reference.id.toString();
                     return GestureDetector(
                       onTap: () {
-                        print('tapped');
+                        print(postID);
+                        //  Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //         builder: (context) => (RANAS PAGE)
+                        //         settings: RouteSettings(arguments: postID),
+                        //       ),).then(onGoBack);
                       }, //TODO: rana's page
                       child: Container(
                         margin:
@@ -259,10 +326,23 @@ Widget allPosts() {
           );
         } else if (snapshot.hasData && snapshot.data!.docs.isEmpty) {
           //TODO: there are no posts
-          return Center(child: Text('no posts'));
+          return Center(
+            child: Text(
+              'No Posts Yet',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 26,
+                fontFamily: 'Urbanist',
+                fontWeight: FontWeight.w600,
+                letterSpacing: -0.28,
+              ),
+            ),
+          );
         } else {
           return Center(
-              child: CircularProgressIndicator()); //TODO: still loading
+              child: CircularProgressIndicator(
+            color: pinkColor,
+          ));
         }
       },
     ),
@@ -277,7 +357,35 @@ Widget myPosts() {
       builder: (context, snapshot) {
         if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
           //there are posts
-          List myPosts = snapshot.data!.docs; //TODO: SORT BY LATEST
+          List myPosts = snapshot.data!.docs;
+          myPosts.sort((a, b) {
+            //SORT BY LATEST
+            // Convert 'timestamp' strings to DateTime objects for comparison
+            DateFormat tF = DateFormat("hh:mm a");
+            DateFormat dF = DateFormat("yyyy-MM-dd");
+
+            DateTime timeA =
+                tF.parse(a.data()['timestamp'].toString().substring(11));
+            DateTime timeB =
+                tF.parse(b.data()['timestamp'].toString().substring(11));
+
+            DateTime dateA = dF.parse(a
+                .data()['timestamp']
+                .toString()
+                .substring(0, 10)
+                .replaceAll('/', '-'));
+            DateTime dateB = dF.parse(b
+                .data()['timestamp']
+                .toString()
+                .substring(0, 10)
+                .replaceAll('/', '-'));
+
+            if (dateA.compareTo(dateB) != 0) {
+              return dateB.compareTo(dateA);
+            } else {
+              return timeB.compareTo(timeA);
+            }
+          });
           return SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
             scrollDirection: Axis.vertical,
@@ -296,8 +404,18 @@ Widget myPosts() {
                     String postTitle = myPosts[index - 1].data()['title'];
                     String postBody = myPosts[index - 1].data()['body'];
                     String stamp = myPosts[index - 1].data()['timestamp'];
+                    String postID =
+                        snapshot.data!.docs[index - 1].reference.id.toString();
                     return GestureDetector(
-                      onTap: () {}, //TODO: rana's page
+                      onTap: () {
+                        print(postID);
+                        //  Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //         builder: (context) => (RANAS PAGE)
+                        //         settings: RouteSettings(arguments: postID),
+                        //       ),).then(onGoBack);
+                      }, //TODO: rana's page
                       child: Container(
                         margin:
                             EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -411,18 +529,22 @@ Widget myPosts() {
           );
         } else if (snapshot.hasData && snapshot.data!.docs.isEmpty) {
           //TODO: there are no posts
-          print('no my posts');
-          return Center(child: Text('none in my posts'));
-        } else {
           return Center(
-              child: CircularProgressIndicator()); //TODO: still loading
+            child: Text(
+              'No Posts Yet',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 26,
+                fontFamily: 'Urbanist',
+                fontWeight: FontWeight.w600,
+                letterSpacing: -0.28,
+              ),
+            ),
+          );
+        } else {
+          return Center(child: CircularProgressIndicator(color: pinkColor));
         }
       },
     ),
   );
-}
-
-String getTimestamp(DateTime stamp) {
-  String formattedStamp = DateFormat('yyyy/MM/dd hh:mm a').format(stamp);
-  return formattedStamp;
 }
