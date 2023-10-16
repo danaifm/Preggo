@@ -8,6 +8,8 @@ import 'package:preggo/SignUp.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/forget_password_screen.dart';
 import 'package:preggo/reminder.dart';
+import 'package:preggo/screens/post_community.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -88,6 +90,9 @@ class _LoginScreenState extends State<LoginScreen> {
         );
 
         if (credential?.user != null) {
+          /// Save Username local
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setString("username", _usernameFieldController.text.trim());
           await getRemainders();
           setState(() {
             isUserValid = true;
@@ -95,7 +100,8 @@ class _LoginScreenState extends State<LoginScreen> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => NavBar(),
+                    //builder: (context) => PostCommunityScreen(),
+                     builder: (context) => NavBar(),
                   ));
             }
           });
