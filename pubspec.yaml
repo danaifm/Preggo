@@ -60,6 +60,8 @@ dependencies:
   easy_date_timeline: ^0.1.1
   intl: ^0.18.1
   syncfusion_flutter_calendar: ^23.1.38
+  bloc: ^8.1.0
+  flutter_bloc: ^8.1.1
 
 
 
