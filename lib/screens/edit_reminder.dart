@@ -274,7 +274,7 @@ class EditReminderScreenState extends State<EditReminderScreen> {
                         ),
                         const SizedBox(height: 25),
                         const Text(
-                          "Reminder updated successfully!",
+                          "Reminder edited successfully!",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Color.fromARGB(255, 0, 0, 0),
