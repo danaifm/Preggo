@@ -214,16 +214,11 @@ class _CommunityPage extends State<CommunityPage> {
                       String postTitle = allPosts[index - 1].data()['title'];
                       String postBody = allPosts[index - 1].data()['body'];
                       String stamp = allPosts[index - 1].data()['timestamp'];
+                      String comments =
+                          allPosts[index - 1].data()['comments'].toString();
                       String postID = snapshot
                           .data!.docs[index - 1].reference.id
                           .toString();
-                      String commentsNum = allPosts[index - 1]
-                                  .data()['comments']
-                                  .toString() ==
-                              'null'
-                          ? '0'
-                          : allPosts[index - 1].data()['comments'].toString();
-                      // String commentsNum = snapshot.data!.docs[index - 1];
                       return GestureDetector(
                         onTap: () {
                           print(postID);
@@ -353,7 +348,7 @@ class _CommunityPage extends State<CommunityPage> {
                                                 ),
                                               ),
                                               Text(
-                                                commentsNum,
+                                                comments,
                                                 style: TextStyle(
                                                   color: Color.fromARGB(
                                                       200, 121, 113, 113),
@@ -466,12 +461,8 @@ class _CommunityPage extends State<CommunityPage> {
                       String postID = snapshot
                           .data!.docs[index - 1].reference.id
                           .toString();
-                      String commentsNum = myPosts[index - 1]
-                                  .data()['comments']
-                                  .toString() ==
-                              'null'
-                          ? '0'
-                          : myPosts[index - 1].data()['comments'].toString();
+                      String comments =
+                          myPosts[index - 1].data()['comments'].toString();
 
                       return GestureDetector(
                         onTap: () {
@@ -602,7 +593,7 @@ class _CommunityPage extends State<CommunityPage> {
                                                 ),
                                               ),
                                               Text(
-                                                commentsNum,
+                                                comments,
                                                 style: TextStyle(
                                                   color: Color.fromARGB(
                                                       200, 121, 113, 113),
