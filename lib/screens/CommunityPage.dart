@@ -377,7 +377,7 @@ class _CommunityPage extends State<CommunityPage> {
                         ),
                       );
                     } else {
-                      return Container(height: 110);
+                      return Container(height: 185);
                     }
                   },
                 ),
@@ -626,7 +626,7 @@ class _CommunityPage extends State<CommunityPage> {
                         ),
                       );
                     } else {
-                      return Container(height: 110);
+                      return Container(height: 185);
                     }
                   },
                 ),
