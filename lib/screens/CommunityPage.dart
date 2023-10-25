@@ -6,6 +6,7 @@ import '../colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+import 'post_community.dart';
 
 class CommunityPage extends StatefulWidget {
   const CommunityPage({super.key});
@@ -88,8 +89,12 @@ class _CommunityPage extends State<CommunityPage> {
               padding: EdgeInsets.fromLTRB(0, 20, 20, 50),
               child: ElevatedButton(
                 onPressed: () {
-                  // Navigator.push(context, MaterialPageRoute(builder: builder))
-                  //     .then(onGoBack);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: ((context) => PostCommunityScreen()),
+                        maintainState: false,
+                      )).then(onGoBack);
                   //TODO: ALIYAH'S PAGE THEN REFRESH
                 },
                 style: ElevatedButton.styleFrom(
