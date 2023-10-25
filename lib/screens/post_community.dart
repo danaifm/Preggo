@@ -368,7 +368,7 @@ class PostCommunityScreenState extends State<PostCommunityScreen> {
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pop();
-                            Navigator.of(context).pop();
+                            Navigator.of(context).pop(true);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
