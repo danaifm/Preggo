@@ -3,15 +3,34 @@ import 'package:flutter/material.dart';
 import 'package:googleapis/servicemanagement/v1.dart';
 import 'package:preggo/colors.dart';
 
-class weight extends StatefulWidget {
-  const weight({super.key});
+class ViewWeight extends StatefulWidget {
+  const ViewWeight({super.key});
 
   @override
-  _weight createState() => _weight();
+  _ViewWeight createState() => _ViewWeight();
 }
 
-class _weight extends State<weight> {
+class _ViewWeight extends State<ViewWeight> {
   final _formKey = GlobalKey<FormState>();
+
+  String? validateWeight(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'This field cannot be empty.';
+    }
+    if (value.length > 3 || value.length <= 1) {
+      return 'Please enter a correct weight.';
+    }
+
+    return null;
+  }
+
+  void submitForm() {
+    if (_formKey.currentState!.validate()) {
+      //if form is valid perform the next action
+      print("The form is validated");
+    }
+  }
+
   openAddDialog(Context) {
     //the weight form
     return showDialog(
@@ -42,37 +61,21 @@ class _weight extends State<weight> {
                       width: 125,
                       height: 40,
                       child: TextFormField(
-                        style: TextStyle(fontSize: 15, color: blackColor),
-                        decoration: InputDecoration(
-                          hintText: "In Kg",
-                          border: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(width: 1, color: blackColor)),
-                        ),
-                        // The validator receives the text that the user has entered.
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          return null;
-                        },
-                      ),
+                          style: TextStyle(fontSize: 15, color: blackColor),
+                          decoration: InputDecoration(
+                            hintText: "In Kg",
+                            border: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(width: 1, color: blackColor)),
+                          ),
+                          // The validator receives the text that the user has entered.
+                          validator: validateWeight),
                     ),
-                    Container(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // Validate returns true if the form is valid, or false otherwise.
-                          if (_formKey.currentState!.validate()) {
-                            // If the form is valid, display a snackbar. In the real world,
-                            // you'd often call a server or save the information in a database.
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Processing Data')),
-                            );
-                          }
-                        },
-                        child: const Text('Submit'),
-                      ),
-                    ),
+
+                    ElevatedButton(
+                        onPressed: () => {(ViewWeight())},
+                        child: const Text('Submit')),
+
                     // Container( I need to add a submit button
                     //   child: IconButton,
                     // )
