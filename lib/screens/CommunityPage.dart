@@ -465,12 +465,16 @@ Widget myPosts() {
                     return GestureDetector(
                       onTap: () {
                         print(postID);
-                        //  Navigator.push(
-                        //       context,
-                        //       MaterialPageRoute(
-                        //         builder: (context) => (RANAS PAGE)
-                        //         settings: RouteSettings(arguments: postID),
-                        //       ),).then(onGoBack);
+                          Navigator.push(
+                               context,
+                               MaterialPageRoute(
+                                 builder: (context) => postReply(),
+                                 settings: RouteSettings(arguments: postID),
+                               ),
+                               )
+                               //.then(onGoBack)
+                               ;
+                      
                       }, //TODO: rana's page
                       child: Container(
                         margin:
