@@ -12,3 +12,4 @@ const Color whiteColor = Color(0xffFFFFFF);
 const Color green = Colors.green;
 const Color NavBraGrayColor = Color.fromARGB(255, 158, 158, 158);
 const Color transparent = Colors.transparent;
+const Color redColor = Colors.redAccent;
