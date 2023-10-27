@@ -6,6 +6,7 @@ abstract class ProfileState {}
 class ProfileInitial extends ProfileState {}
 class UserDataSuccess extends ProfileState {}
 class PasswordChangedSuccess extends ProfileState {}
+class WrongPassword extends ProfileState {}
 class UpdateDataSuccess extends ProfileState {}
 class DataLoading extends ProfileState {}
 class DeleteUserSuccess extends ProfileState {}

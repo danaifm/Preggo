@@ -34,7 +34,112 @@ class _ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: backGroundPink,
       body: BlocConsumer<ProfileCubit, ProfileState>(
         listener: (context, state) {
-          // TODO: implement listener
+          if (state is DeleteUserSuccess) {
+            showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (context) {
+                  return Center(
+                    child: SizedBox(
+                      height: MediaQuery.sizeOf(context).height * 0.40,
+                      width: MediaQuery.sizeOf(context).width * 0.85,
+                      child: Dialog(
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: const BoxDecoration(
+                            color: Color.fromRGBO(255, 255, 255, 1),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20),
+                            ),
+                          ),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const SizedBox(height: 20),
+                                Container(
+                                  padding: const EdgeInsets.all(15),
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: green,
+                                    //color: pinkColor,
+                                    // border: Border.all(
+                                    //   width: 1.3,
+                                    //   color: Colors.black,
+                                    // ),
+                                  ),
+                                  child: const Icon(
+                                    Icons.check,
+                                    color: Color.fromRGBO(255, 255, 255, 1),
+                                    size: 35,
+                                  ),
+                                ),
+                                const SizedBox(height: 25),
+
+                                // Done
+                                const Text(
+                                  "Profile deleted successfully!",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 0, 0, 0),
+                                    fontSize: 17,
+                                    fontFamily: 'Urbanist',
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.30,
+                                    letterSpacing: -0.28,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 20),
+
+                                /// OK Button
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  width:
+                                      MediaQuery.sizeOf(context).width * 0.80,
+                                  height: 45.0,
+                                  child: Center(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        if (mounted) {
+                                          Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    const LoginScreen()),
+                                            (route) => false,
+                                          );
+                                        }
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: blackColor,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(40)),
+                                        padding: const EdgeInsets.only(
+                                            left: 70,
+                                            top: 15,
+                                            right: 70,
+                                            bottom: 15),
+                                      ),
+                                      child: const Text(
+                                        "OK",
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 20),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                });
+          }
         },
         builder: (context, state) {
           var user = ProfileCubit.get(context).userData;
@@ -55,17 +160,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     // InkWell(
                     // onTap: ()=> Navigator.pop(context),
                     //  child: Image.asset("assets/images/arrow-left.png")),
-                    Row(
-                      children: [
-                        Expanded(
-                            child: Container(
-                                child: const Center(
-                                    child: Text("Profile",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 35,
-                                            fontWeight: FontWeight.w400))))),
-                      ],
+                    Container(
+                      alignment: Alignment.topCenter,
+                      padding: const EdgeInsets.only(top: 40),
+                      child: const Text(
+                        "Profile",
+                        style: TextStyle(
+                          color: Color(0xFFD77D7C),
+                          fontSize: 38,
+                          fontFamily: 'Urbanist',
+                          fontWeight: FontWeight.w700,
+                          height: 1.30,
+                          letterSpacing: -0.28,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -242,33 +350,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             )),
                           ),
                           SizedBox(
-                            height: 80,
+                            height: babyData.length<=1?40:65,
                             child: ListView.separated(
-                              physics: babyData.length > 1
-                                  ? AlwaysScrollableScrollPhysics()
-                                  : NeverScrollableScrollPhysics(),
+                              padding: EdgeInsets.all(8),
                               itemCount: babyData.length,
                               itemBuilder: (BuildContext context, int index) =>
-                                  Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
-                                child: Row(
-                                  children: [
-                                    Image.asset(
-                                      'assets/images/person.png',
-                                      height: 25,
-                                      width: 25,
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      babyData[index].babyName,
-                                      style: const TextStyle(fontSize: 16),
-                                    ),
-                                    const Spacer(),
-                                    const Icon(Icons.navigate_next_sharp),
-                                  ],
+                                  InkWell(
+                                onTap: () {
+                                  /*         Navigator.push(context,
+                                          MaterialPageRoute(builder: (_) =>));*/
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0),
+                                  child: Row(
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/person.png',
+                                        height: 25,
+                                        width: 25,
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        babyData[index].babyName,
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                      const Spacer(),
+                                      const Icon(Icons.navigate_next_sharp),
+                                    ],
+                                  ),
                                 ),
                               ),
                               separatorBuilder:
@@ -445,7 +557,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         children: <Widget>[
                                           Center(
                                             child: Text(
-                                              'Are you sure you want to \nDelete Your Account?',
+                                              'Are you sure you want to \ndelete your account?',
                                               textAlign: TextAlign.center,
                                             ),
                                           ),
@@ -485,8 +597,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               padding: const EdgeInsets.only(
                                                   top: 10,
                                                   bottom: 10,
-                                                  left: 20,
-                                                  right: 20),
+                                                  left: 25,
+                                                  right: 25),
                                               decoration: BoxDecoration(
                                                   color: Colors.red,
                                                   borderRadius:
@@ -501,14 +613,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             onTap: () async {
                                               await ProfileCubit.get(context)
                                                   .deleteAccount();
-                                              await auth.signOut();
-                                              if (mounted) {
-                                                Navigator.pushReplacement(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (_) =>
-                                                            const LoginScreen()));
-                                              }
                                             },
                                           ),
                                         ],
@@ -533,7 +637,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     width: 10,
                                   ),
                                   Text(
-                                    "Delete Account",
+                                    "Delete Acount",
                                     style: TextStyle(
                                         fontSize: 16, color: Colors.red),
                                   ),

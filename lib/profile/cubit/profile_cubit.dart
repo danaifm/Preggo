@@ -39,7 +39,8 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
-  Future<void> changePassword(String currentPassword,String newPassword, BuildContext context) async {
+  Future<void> changePassword(
+      String currentPassword, String newPassword, BuildContext context) async {
     try {
       if (newPassword.isEmpty) return;
       // Get the current user object from Firebase Authentication.
@@ -51,7 +52,8 @@ class ProfileCubit extends Cubit<ProfileState> {
       }
 
       // Create a credential object with the user's current password.
-      final credential = EmailAuthProvider.credential(email: user.email!, password: currentPassword);
+      final credential = EmailAuthProvider.credential(
+          email: user.email!, password: currentPassword);
 
       // Reauthenticate the user with their current password.
       await user.reauthenticateWithCredential(credential);
@@ -61,8 +63,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       emit(PasswordChangedSuccess());
     } on FirebaseAuthException catch (e) {
       if (e.code == "wrong-password") {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text("wrong password")));
+      emit(WrongPassword());
       }
       print(e.toString());
     }
@@ -85,6 +86,20 @@ class ProfileCubit extends Cubit<ProfileState> {
         if (phone.isNotEmpty) "phone": phone,
       });
 
+      var community =
+          await FirebaseFirestore.instance.collection('community').get();
+      for (var element in community.docs) {
+        if (element.data()["userID"] ==
+            FirebaseAuth.instance.currentUser!.uid) {
+          await FirebaseFirestore.instance
+              .collection('community')
+              .doc(element.id)
+              .update({
+            if (userName.isNotEmpty) "username": userName,
+          });
+        }
+      }
+
       log('+++++++++++++++++++++++++++++');
       emit(UpdateDataSuccess());
     } on Exception catch (e) {
@@ -99,19 +114,61 @@ class ProfileCubit extends Cubit<ProfileState> {
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid);
 
+    CollectionReference subCollectionRef =
+        userDocRef // replace with your document ID
+            .collection('pregnancyInfo');
+    QuerySnapshot subCollectionQuery = await subCollectionRef.get();
+
+    for (QueryDocumentSnapshot doc in subCollectionQuery.docs) {
+      DocumentReference docRef = subCollectionRef.doc(doc.id);
+      await docRef.delete();
+    }
+       CollectionReference subCollectionRefReminder =
+        userDocRef // replace with your document ID
+            .collection('reminders');
+    QuerySnapshot subCollectionQueryReminder = await subCollectionRefReminder.get();
+
+    for (QueryDocumentSnapshot doc in subCollectionQueryReminder.docs) {
+      DocumentReference docRefReminder = subCollectionRefReminder.doc(doc.id);
+      await docRefReminder.delete();
+    }
+    var community =
+    await FirebaseFirestore.instance.collection('community').get();
+    for (var element in community.docs) {
+      if (element.data()["userID"] ==
+          FirebaseAuth.instance.currentUser!.uid) {
+       var communityDocs = await FirebaseFirestore.instance
+            .collection('community');
+
+       communityDocs.doc(element.id).delete();
+
+       var replies = communityDocs
+            .doc(element.id).collection("Replies");
+        QuerySnapshot subCollectionQueryReplies = await replies.get();
+
+        for (QueryDocumentSnapshot doc in subCollectionQueryReplies.docs) {
+          DocumentReference docRef = replies.doc(doc.id);
+          await docRef.delete();
+        }
+      }
+    }
+
     // Delete the user's document from the `users` collection.
     await userDocRef.delete();
 
     // Delete the user's account from Firebase Authentication.
     await FirebaseAuth.instance.currentUser!.delete();
+
+    await FirebaseAuth.instance.signOut();
     emit(DeleteUserSuccess());
     // Return a success message.
   }
 
-  List<PregnancyInfoModel>? pregnancyInfoModel;
+  List<PregnancyInfoModel> pregnancyInfoModel = [];
 
   Future getPregnancyInfoData() async {
-    if (pregnancyInfoModel != null) return;
+    pregnancyInfoModel = [];
+    emit(DataLoading());
     print("+++++++++++++++++++++++++${FirebaseAuth.instance.currentUser!.uid}");
     try {
       var response = await FirebaseFirestore.instance
@@ -123,10 +180,8 @@ class ProfileCubit extends Cubit<ProfileState> {
       log(response.toString());
       for (var element in response.docs) {
         log(element.data().toString());
-        pregnancyInfoModel ??= [];
-        pregnancyInfoModel!.add(PregnancyInfoModel.fromJson(element.data()));
+        pregnancyInfoModel.add(PregnancyInfoModel.fromJson(element.data()));
       }
-
       log(response.toString());
       log('+++++++++++++++++++++++++++++');
       emit(UserDataSuccess());

@@ -35,6 +35,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController oldPasswordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormFieldState> _usernameKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> _emailKey = GlobalKey<FormFieldState>();
@@ -97,19 +98,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Scaffold(
       backgroundColor: backGroundPink,
       appBar: AppBar(
-        title: const Text("Edit Profile",
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 35,
-                fontWeight: FontWeight.w400)),
         backgroundColor: backGroundPink,
+        leading: IconButton(
+            onPressed: () {
+              //dialog
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            )),
         elevation: 0,
-        centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.black),
-        /*    leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {},
-        ),*/
       ),
       body: BlocConsumer<ProfileCubit, ProfileState>(
         listener: (context, state) {
@@ -157,7 +156,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                                 // Done
                                 const Text(
-                                  "Profile Edited successfully!",
+                                  "Profile edited successfully!",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Color.fromARGB(255, 0, 0, 0),
@@ -201,7 +200,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: 20),
+                                const SizedBox(height: 20),
                               ],
                             ),
                           ),
@@ -255,7 +254,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                                 // Done
                                 const Text(
-                                  "Appointment added successfully!",
+                                  "Profile edited successfully!",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Color.fromARGB(255, 0, 0, 0),
@@ -299,7 +298,104 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: 20),
+                                const SizedBox(height: 20),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                });
+          }
+          if (state is WrongPassword) {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return Center(
+                    child: SizedBox(
+                      height: MediaQuery.sizeOf(context).height * 0.40,
+                      width: MediaQuery.sizeOf(context).width * 0.85,
+                      child: Dialog(
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: const BoxDecoration(
+                            color: Color.fromRGBO(255, 255, 255, 1),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20),
+                            ),
+                          ),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const SizedBox(height: 20),
+                                Container(
+                                  padding: const EdgeInsets.all(15),
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.red,
+                                    //color: pinkColor,
+                                    // border: Border.all(
+                                    //   width: 1.3,
+                                    //   color: Colors.black,
+                                    // ),
+                                  ),
+                                  child: const Icon(
+                                    Icons.error,
+                                    color: Color.fromRGBO(255, 255, 255, 1),
+                                    size: 35,
+                                  ),
+                                ),
+                                const SizedBox(height: 25),
+
+                                // Done
+                                const Text(
+                                  "Password is Wrong!",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 0, 0, 0),
+                                    fontSize: 17,
+                                    fontFamily: 'Urbanist',
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.30,
+                                    letterSpacing: -0.28,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 30),
+
+                                /// OK Button
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  width:
+                                      MediaQuery.sizeOf(context).width * 0.80,
+                                  height: 45.0,
+                                  child: Center(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: blackColor,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(40)),
+                                        padding: const EdgeInsets.only(
+                                            left: 70,
+                                            top: 15,
+                                            right: 70,
+                                            bottom: 15),
+                                      ),
+                                      child: const Text(
+                                        "OK",
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
                               ],
                             ),
                           ),
@@ -322,6 +418,40 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             key: _formKey,
             child: Column(
               children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 25, left: 20, right: 20, bottom: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // InkWell(
+                      // onTap: ()=> Navigator.pop(context),
+                      //  child: Image.asset("assets/images/arrow-left.png")),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Center(
+                            child: Container(
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.only(top: 0),
+                              child: const Text(
+                                "Edit Profile",
+                                style: TextStyle(
+                                  color: Color(0xFFD77D7C),
+                                  fontSize: 38,
+                                  fontFamily: 'Urbanist',
+                                  fontWeight: FontWeight.w700,
+                                  height: 1.30,
+                                  letterSpacing: -0.28,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
                 Stack(
                   alignment: AlignmentDirectional.bottomCenter,
                   children: [
@@ -783,9 +913,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   obscureText: hidePassword ? true : false,
                                   autocorrect: false,
                                   validator: (pass) {
-                                    if (pass!.isNotEmpty) {
+                                        if(oldPasswordController.text.trim().isNotEmpty){
+                                          if(pass!.isEmpty){
+                                            return "Field is empty";
+                                          }
                                       print(pass);
-                                      print(pass.trim().length);
+                                      print(pass!.trim().length);
                                       if (pass.trim().length < 8) {
                                         return "Password must be at least 8 characters.";
                                       } else {
@@ -805,7 +938,91 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                           return "Password must contain at least one uppercase \nletter and one digit.";
                                         }
                                       }
-                                    } //and else
+                                    }
+                                    //and else
+                                    return null;
+                                  },
+                                ),
+                              ),
+                              Container(
+                                // padding: EdgeInsets.only(bottom: 10),
+                                height: 95,
+                                constraints:
+                                    const BoxConstraints(maxHeight: 95),
+                                child: TextFormField(
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  controller: confirmPasswordController,
+                                  maxLength: 50,
+
+                                  /*
+                                        password validations
+                                        1- 8 digits or more
+                                        2- at least one capital
+                                        3- at least one number
+                                        */
+
+                                  decoration: InputDecoration(
+                                    errorMaxLines: 2,
+                                    helperText:
+                                        'Password should be at least 8 characters long',
+                                    prefixIcon: const Icon(
+                                      Icons.lock,
+                                      color: Colors.grey,
+                                    ),
+                                    hintText: 'Confirm Password',
+                                    labelStyle: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
+                                      color: grayColor,
+                                    ),
+                                    filled: true,
+                                    fillColor: textFieldBackgroundColor,
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12.0),
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0)),
+                                      borderSide: BorderSide(
+                                          color: textFieldBorderColor),
+                                    ),
+                                    focusedBorder: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0)),
+                                      borderSide:
+                                          BorderSide(color: darkGrayColor),
+                                    ),
+                                    suffixIcon: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          hidePassword = !hidePassword;
+                                        });
+                                      },
+                                      child: hidePassword
+                                          ? const Icon(
+                                              Icons.visibility_off,
+                                              color: Colors.grey,
+                                            )
+                                          : const Icon(
+                                              Icons.visibility,
+                                              color: Colors.grey,
+                                            ),
+                                    ),
+                                  ),
+                                  obscureText: hidePassword ? true : false,
+                                  autocorrect: false,
+                                  validator: (pass) {
+                                    if(oldPasswordController.text.trim().isNotEmpty){
+                                      if (newPasswordController.text.trim() !=
+                                          confirmPasswordController.text.trim()) {
+                                        return "Unidentical new passwords";
+                                      }
+                                      if(pass!.isEmpty){
+                                        return "Field is empty";
+                                      }
+                                    }
+                                    //and else
                                     return null;
                                   },
                                 ),
