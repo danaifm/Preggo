@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:preggo/screens/CommunityPage.dart';
 import 'package:preggo/viewAppointment.dart';
 import 'package:preggo/view_reminders.dart';
-import 'package:preggo/viewWeight.dart';
+import 'package:preggo/weightFeature/viewWeight.dart';
 
 class ToolsPage extends StatefulWidget {
   const ToolsPage({super.key});
