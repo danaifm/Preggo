@@ -512,7 +512,9 @@ class _reminderDetails extends State<reminderDetails> {
                     width: 12,
                   ),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      await deleteReminderById(
+                          reminderId: reminderId, context: context);
                       //change later to route to delete reminder page
                       /*Navigator.of(context)
                         .pushAndRemoveUntil(

@@ -8,6 +8,197 @@ import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:preggo/colors.dart';
 
+Future<void> deleteReminderSuccess(
+  BuildContext context,
+) async {
+  //deleting happens here
+
+  showDialog(
+      context: context,
+      builder: (context) {
+        return Center(
+          child: SizedBox(
+            height: MediaQuery.sizeOf(context).height * 0.40,
+            width: MediaQuery.sizeOf(context).width * 0.85,
+            child: Dialog(
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: const BoxDecoration(
+                  color: Color.fromRGBO(255, 255, 255, 1),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(20),
+                  ),
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(height: 20),
+                      Container(
+                        padding: const EdgeInsets.all(15),
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: green,
+                        ),
+                        child: const Icon(
+                          Icons.check,
+                          color: Color.fromRGBO(255, 255, 255, 1),
+                          size: 35,
+                        ),
+                      ),
+                      const SizedBox(height: 25),
+
+                      // Done
+                      const Text(
+                        "reminder deleted successfully!",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 0, 0, 0),
+                          fontSize: 17,
+                          fontFamily: 'Urbanist',
+                          fontWeight: FontWeight.w700,
+                          height: 1.30,
+                          letterSpacing: -0.28,
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      /// OK Button
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        width: MediaQuery.sizeOf(context).width * 0.80,
+                        height: 45.0,
+                        child: Center(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: blackColor,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(40)),
+                              padding: const EdgeInsets.only(
+                                  left: 70, top: 15, right: 70, bottom: 15),
+                            ),
+                            child: const Text(
+                              "OK",
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      });
+}
+
+Future<void> deleteReminderById({
+  required String reminderId,
+  required BuildContext context,
+}) async {
+  await showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+        content: SizedBox(
+          height: 130,
+          child: Column(
+            children: <Widget>[
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 10, bottom: 30),
+                  child: Text(
+                    'Are you sure you want to delete this reminder?',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    height: 45.0,
+                    child: Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: blackColor,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(40)),
+                          padding: const EdgeInsets.only(
+                              left: 30, top: 15, right: 30, bottom: 15),
+                        ),
+                        child: const Text(
+                          "Cancel",
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    height: 45.0,
+                    child: Center(
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          try {
+                            final usersCollection =
+                                FirebaseFirestore.instance.collection("users");
+                            final String? currentUserId =
+                                FirebaseAuth.instance.currentUser?.uid;
+                            final reminderCollection = usersCollection
+                                .doc(currentUserId)
+                                .collection("reminders");
+
+                            /// Delete now
+                            await reminderCollection
+                                .doc(reminderId)
+                                .delete()
+                                .then((value) async {
+                              if (context.mounted) {
+                                Navigator.of(context).pop();
+                                await deleteReminderSuccess(context);
+                              }
+                            });
+                          } catch (error) {
+                            print("Delete reminder:: $error ##");
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).colorScheme.error,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(40)),
+                          padding: const EdgeInsets.only(
+                              left: 30, top: 15, right: 30, bottom: 15),
+                        ),
+                        child: const Text(
+                          "Delete",
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
 class EditReminderScreen extends StatefulWidget {
   const EditReminderScreen({
     super.key,
@@ -93,7 +284,8 @@ class EditReminderScreenState extends State<EditReminderScreen> {
   _showDatePicker() {
     _showDialog(
       CupertinoDatePicker(
-        // initialDateTime: selectedDate,
+        initialDateTime:
+            selectedDate.isAfter(DateTime.now()) ? selectedDate : null,
         minimumDate: DateTime.now(),
         maximumDate: DateTime.now().copyWith(
           year: DateTime.now().year + 10,
@@ -500,7 +692,7 @@ class EditReminderScreenState extends State<EditReminderScreen> {
               ),
             ),
             const Text(
-              "Add a new reminder",
+              "Edit the reminder",
               style: TextStyle(
                 color: Color(0xFFD77D7C),
                 fontSize: 32,
