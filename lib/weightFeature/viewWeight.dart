@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:googleapis/servicemanagement/v1.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/pregnancyInfo.dart';
+import 'package:preggo/weightFeature/addWeight.dart';
 import 'package:preggo/weightFeature/editWeight.dart';
 
 class ViewWeight extends StatefulWidget {
@@ -19,18 +20,14 @@ class ViewWeight extends StatefulWidget {
 class _ViewWeight extends State<ViewWeight> {
   late final String userId;
 
-  String weightDate = "";
-  String weight = "";
-
   String getUserId() {
     User? user = FirebaseAuth.instance.currentUser;
     return user!.uid;
   }
 
-  Future<Widget> getWeight(String weightDate, String weight) async {
+  Future<Widget> getWeight() async {
     //FirebaseFirestore firestore = FirebaseFirestore.instance;
     String userUid = getUserId();
-    print('weight date is $weightDate');
     QuerySnapshot result = await FirebaseFirestore.instance
         .collection('users')
         .doc(userUid)
@@ -86,10 +83,9 @@ class _ViewWeight extends State<ViewWeight> {
             shrinkWrap: true,
             itemCount: weightResult.length,
             itemBuilder: (context, index) {
-              String id = weightResult[index].data()['id'] ?? '';
-              String weightNumber = weightResult[index].data()['weight'] ?? '';
-              String date = weightResult[index].data()['date'] ?? '';
-              String time = weightResult[index].data()['time'] ?? '';
+              //String id = weightResult[index].data()['id'] ?? '';
+              String weight = weightResult[index].data()['weight'] ?? '';
+              Timestamp dateTime = weightResult[index].data()['dateTime'] ?? '';
 
               return Container(
                 margin: EdgeInsets.all(8),
@@ -110,7 +106,7 @@ class _ViewWeight extends State<ViewWeight> {
                         Container(
                           width: 85,
                           child: Text(
-                            '$date , $time',
+                            '$dateTime',
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 16,
@@ -124,7 +120,7 @@ class _ViewWeight extends State<ViewWeight> {
                         ),
                         Expanded(
                           child: Text(
-                            '$weightNumber',
+                            '$weight',
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 17,
@@ -312,7 +308,7 @@ class _ViewWeight extends State<ViewWeight> {
                   child: Column(
                     children: [
                       FutureBuilder<Widget>(
-                        future: getWeight(weightDate, weight),
+                        future: getWeight(),
                         builder: (BuildContext context,
                             AsyncSnapshot<Widget> snapshot) {
                           if (snapshot.hasData) {
@@ -326,7 +322,32 @@ class _ViewWeight extends State<ViewWeight> {
                 ),
               ),
             ),
-          )
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(0, 20, 20, 50),
+              child: ElevatedButton(
+                onPressed: () async {
+                  await Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => addWeight()))
+                      .then((value) {
+                    getWeight();
+                    setState(() {});
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  fixedSize: const Size(55, 55),
+                  shape: const CircleBorder(),
+                  backgroundColor: darkBlackColor,
+                ),
+                child: Icon(
+                  Icons.add,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
