@@ -51,7 +51,7 @@ Future<void> deleteReminderSuccess(
 
                       // Done
                       const Text(
-                        "reminder deleted successfully!",
+                        "Reminder deleted successfully!",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Color.fromARGB(255, 0, 0, 0),
