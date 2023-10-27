@@ -692,7 +692,7 @@ class EditReminderScreenState extends State<EditReminderScreen> {
               ),
             ),
             const Text(
-              "Edit the reminder",
+              "Edit reminder",
               style: TextStyle(
                 color: Color(0xFFD77D7C),
                 fontSize: 32,
