@@ -19,6 +19,20 @@ class ViewWeight extends StatefulWidget {
 
 class _ViewWeight extends State<ViewWeight> {
   late final String userId;
+  var _numberToMonthMap = {
+    1: "Jan",
+    2: "Feb",
+    3: "Mar",
+    4: "Apr",
+    5: "May",
+    6: "Jun",
+    7: "Jul",
+    8: "Aug",
+    9: "Sep",
+    10: "Oct",
+    11: "Nov",
+    12: "Dec",
+  };
 
   String getUserId() {
     User? user = FirebaseAuth.instance.currentUser;
@@ -86,6 +100,7 @@ class _ViewWeight extends State<ViewWeight> {
               //String id = weightResult[index].data()['id'] ?? '';
               String weight = weightResult[index].data()['weight'] ?? '';
               Timestamp dateTime = weightResult[index].data()['dateTime'] ?? '';
+              DateTime date = dateTime.toDate();
 
               return Container(
                 margin: EdgeInsets.all(8),
@@ -106,7 +121,7 @@ class _ViewWeight extends State<ViewWeight> {
                         Container(
                           width: 85,
                           child: Text(
-                            '$dateTime',
+                            '${_numberToMonthMap[date.month]} ${date.day} ${date.year} ${date.hour} ${date.minute} ',
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 16,
@@ -255,73 +270,78 @@ class _ViewWeight extends State<ViewWeight> {
       //       "Add weight",
       //       style: TextStyle(fontSize: 20, color: whiteColor),
       //     )),
-      body: Column(
+      body: Stack(
         children: [
-          SizedBox(
-            height: 40,
-          ),
-          Row(
+          Column(
             children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(
-                  Icons.arrow_back,
-                  color: blackColor,
-                ),
+              SizedBox(
+                height: 40,
+              ),
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: blackColor,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Text(
+                    "    My weights",
+                    style: TextStyle(
+                      color: Color(0xFFD77D7C),
+                      fontSize: 32,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      height: 1.30,
+                      letterSpacing: -0.28,
+                    ),
+                  ),
+                ],
               ),
               SizedBox(
-                width: 20,
+                height: 10,
               ),
-              Text(
-                "    My weights",
-                style: TextStyle(
-                  color: Color(0xFFD77D7C),
-                  fontSize: 32,
-                  fontFamily: 'Urbanist',
-                  fontWeight: FontWeight.w600,
-                  height: 1.30,
-                  letterSpacing: -0.28,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 18.0,
-                vertical: 0.0,
-              ),
-              decoration: BoxDecoration(
-                color: whiteColor,
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(80.0),
-                ),
-              ),
-              child: SingleChildScrollView(
-                padding: EdgeInsets.only(top: 15),
+              Expanded(
                 child: Container(
-                  child: Column(
-                    children: [
-                      FutureBuilder<Widget>(
-                        future: getWeight(),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<Widget> snapshot) {
-                          if (snapshot.hasData) {
-                            return snapshot.data!;
-                          }
-                          return CircularProgressIndicator(color: pinkColor);
-                        },
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18.0,
+                    vertical: 0.0,
+                  ),
+                  decoration: BoxDecoration(
+                    color: whiteColor,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(80.0),
+                    ),
+                  ),
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.only(top: 15),
+                    child: Container(
+                      child: Column(
+                        children: [
+                          FutureBuilder<Widget>(
+                            future: getWeight(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<Widget> snapshot) {
+                              if (snapshot.hasData) {
+                                return snapshot.data!;
+                              }
+                              return CircularProgressIndicator(
+                                  color: pinkColor);
+                            },
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
           Align(
             alignment: Alignment.bottomRight,

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:googleapis/servicemanagement/v1.dart';
 import 'package:preggo/colors.dart';
+import 'package:preggo/weightFeature/viewWeight.dart';
 
 class addWeight extends StatefulWidget {
   late final String userId;
@@ -16,14 +17,15 @@ class addWeight extends StatefulWidget {
 class _fillWeightForm extends State<addWeight> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormFieldState> _nameKey = GlobalKey<FormFieldState>();
-  final TextEditingController _babynameController = TextEditingController();
+  final TextEditingController _weightController = TextEditingController();
+  bool showError = false;
 
   String getUserId() {
     User? user = FirebaseAuth.instance.currentUser;
     return user!.uid;
   }
 
-  void addWeight(double weight, DateTime dateTime) {
+  void addWeight(String weight, DateTime dateTime) {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     String userUid = getUserId();
 
@@ -42,29 +44,105 @@ class _fillWeightForm extends State<addWeight> {
         .catchError((error) => print('failed to add info:$error'));
   }
 
+  void backButton() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          content: SizedBox(
+            height: 130,
+            child: Column(
+              children: <Widget>[
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 10, bottom: 30),
+                    child: Text(
+                      'Are you sure you want to go back?',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      height: 45.0,
+                      child: Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: blackColor,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40)),
+                            padding: const EdgeInsets.only(
+                                left: 30, top: 15, right: 30, bottom: 15),
+                          ),
+                          child: const Text(
+                            "No",
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      height: 45.0,
+                      child: Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.error,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40)),
+                            padding: const EdgeInsets.only(
+                                left: 30, top: 15, right: 30, bottom: 15),
+                          ),
+                          child: const Text(
+                            "Yes",
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: backGroundPink,
         body: Column(
           children: [
-            SizedBox(),
+            SizedBox(
+              height: 40,
+            ),
             Row(
               children: [
                 IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
+                  onPressed: backButton,
                   icon: const Icon(
                     Icons.arrow_back,
                     color: Colors.black,
                   ),
                 ),
                 SizedBox(
-                  width: 20,
+                  width: 25,
                 ),
                 Text(
-                  "Appointments",
+                  "Add new weight",
                   style: TextStyle(
                     color: Color(0xFFD77D7C),
                     fontSize: 32,
@@ -110,7 +188,7 @@ class _fillWeightForm extends State<addWeight> {
                                             EdgeInsets.only(top: 30, left: 5),
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          "Baby's name",
+                                          "Your weight",
                                           textAlign: TextAlign.left,
                                           style: TextStyle(
                                             color: Color.fromARGB(255, 0, 0, 0),
@@ -124,12 +202,12 @@ class _fillWeightForm extends State<addWeight> {
                                       ),
 
                                       Padding(
-                                        //baby name text field
+                                        //weight text field
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 10.0),
                                         child: TextFormField(
                                           key: _nameKey,
-                                          controller: _babynameController,
+                                          controller: _weightController,
                                           decoration: InputDecoration(
                                             contentPadding:
                                                 EdgeInsets.symmetric(
@@ -176,25 +254,65 @@ class _fillWeightForm extends State<addWeight> {
                                                     255, 221, 225, 232),
                                               ),
                                             ),
-                                            hintText: "Optional",
+                                            hintText: "in Kg",
                                             filled: true,
                                             fillColor: Color(0xFFF7F8F9),
                                           ),
                                           validator: (value) {
                                             if (value!.isEmpty) {
-                                              return null;
-                                            } //allow empty field
+                                              return "please enter your weight.";
+                                            }
 
-                                            if (!RegExp(r'^[a-z A-Z]+$')
+                                            //Bdoor change this
+                                            if (!RegExp(r'/^[0-9]+$/')
                                                 .hasMatch(value)) {
-                                              //allow upper and lower case alphabets and space if input is written
-                                              return "Please Enter letters only";
+                                              return "Please Enter numbers only.";
                                             } else {
                                               return null;
                                             }
                                           },
                                         ),
-                                      ), //end of baby name text field
+                                      ),
+                                      //end of weight text field
+
+                                      Padding(
+                                        //start journey button
+                                        padding:
+                                            const EdgeInsets.only(top: 30.0),
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              String weightNum =
+                                                  _weightController.text;
+
+                                              addWeight(
+                                                  weightNum, DateTime.now());
+
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          ViewWeight()));
+                                            }
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.black,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(40)),
+                                            padding: EdgeInsets.only(
+                                                left: 90,
+                                                top: 15,
+                                                right: 110,
+                                                bottom: 15),
+                                          ),
+                                          child: Text(
+                                            "Submit",
+                                            softWrap: false,
+                                          ),
+                                        ),
+                                      ),
                                     ]),
                                   ),
                                 ),
