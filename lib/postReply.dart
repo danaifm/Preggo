@@ -302,6 +302,21 @@ class _postReply extends State<postReply>{
 
   }
 
+  Future<String> getUsername(String id) async{
+    String username ="";
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final DocumentReference userDocRef = firestore.collection('users').doc(id);
+    final DocumentSnapshot userSnapshot = await userDocRef.get(); 
+    if(userSnapshot.exists){
+      final Map<String,dynamic> userData = userSnapshot.data() as Map<String,dynamic>;
+      username= userData['username'].toString();
+      //print(username);
+      return username; 
+    }
+    else 
+    {return username;}
+  }
+
   //DISPLAY ALL REPLIES OF THE POSTS 
   Future<Widget> getReplies(String postid) async {
     
@@ -346,23 +361,31 @@ class _postReply extends State<postReply>{
       );
     } else {
       //there are replies for this post 
-      List reminderResult = result.docs;
-      //sort the replies based on the date and time 
+      List replyResult = result.docs;
+
+      //sort the replies based on the date and time showing newest first 
+      replyResult.sort((a, b) { 
+        String timeA = a.data()['timestamp'] ?? '';
+        String timeB = b.data()['timestamp'] ?? '';
+        // Convert 'timestamp' strings to DateTime objects for comparison
+        DateFormat format = DateFormat("yyyy/MM/dd hh:mm a");
+        DateTime dateTimeA = format.parse(timeA);
+        DateTime dateTimeB = format.parse(timeB);
+        return dateTimeB.compareTo(dateTimeA);
+       });
       
 
-      return SingleChildScrollView(
-        physics: AlwaysScrollableScrollPhysics(),
-        scrollDirection: Axis.vertical,
-        child: Container(
-          //margin: EdgeInsets.only(top: 150),
-          height: 400,
-          child: ListView.builder(
+      return ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemCount: reminderResult.length,
+            itemCount: replyResult.length,
             itemBuilder: (context, index) {
-              String id = reminderResult[index].data()['userID'] ?? '';
-              String ReplyBody = reminderResult[index].data()['reply'] ?? '';
-              String Replytimestamp = reminderResult[index].data()['timestamp'] ?? '';
+              String id = replyResult[index].data()['userID'] ?? '';
+              String ReplyBody = replyResult[index].data()['reply'] ?? '';
+              String Replytimestamp = replyResult[index].data()['timestamp'] ?? '';
+              String username ='';
+              //getUsername(id).then((value){username=value;});
+              
         
               return Container(
                 margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
@@ -388,16 +411,25 @@ class _postReply extends State<postReply>{
                         Row(
                           children: [
                             Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 SizedBox(height: 10,),
-                                Icon(
-                                Icons.account_circle_outlined,
-                                color: Colors.black,
-                                size: 38,
-                              ),
+                                CircleAvatar(
+                                  radius: 19,
+                                  backgroundColor: pinkColor.withOpacity(0.5),
+                                  child: Text(
+                                    'A',
+                                    //username.substring(0,1).toUpperCase(),
+                                    style: TextStyle(
+                                      fontFamily: 'Urbanist',
+                                      fontSize: 22,
+                                      color: blackColor,
+                                    ),
+                                  ),
+                                ),
                               Text(
-                              "Rana",
+                              username,
                               style: TextStyle(
                               color: Colors.black,
                               fontSize: 14,
@@ -456,17 +488,12 @@ class _postReply extends State<postReply>{
                         ),
                               
                       ),
-                          
-                      ///////////////////////////
-                
-                      
+                     
                     ],
                   ),
                 ),
               );
             },
-          ),
-        ),
       );
     }
   }
@@ -522,23 +549,24 @@ class _postReply extends State<postReply>{
             },
           ),
 
-          FutureBuilder<Widget>(
-            future: getReplies(postId),
-            builder: (BuildContext context,
-                AsyncSnapshot<Widget> snapshot) {
-              if (snapshot.hasData) {
-                return snapshot.data!;
-              }
-                      
-              return Container();
-            },
+          Expanded(
+            child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              child: FutureBuilder<Widget>(
+                future: getReplies(postId),
+                builder: (BuildContext context,
+                    AsyncSnapshot<Widget> snapshot) {
+                  if (snapshot.hasData) {
+                    return snapshot.data!;
+                  }
+                          
+                  return Container();
+                },
+              ),
+            ),
           ),
-            ],
 
-          ),
-          
-
-          
           Align(
             alignment: Alignment.bottomCenter,
             child: Row(
@@ -623,6 +651,15 @@ class _postReply extends State<postReply>{
             ),
               
             ),
+            ],
+
+            
+
+          ),
+          
+
+          
+          
           
           
           
