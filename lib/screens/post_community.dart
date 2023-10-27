@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:preggo/colors.dart';
@@ -558,19 +559,27 @@ class PostCommunityScreenState extends State<PostCommunityScreen> {
                                     ),
                                   ),
                                 ),
-                                Padding(
+                                Container(
+                                  height: 500,
                                   //baby name text field
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 10.0),
                                   child: TextFormField(
-                                    maxLines: 3,
+                                    maxLines: 7,
+                                    minLines: 7,
                                     maxLength: 250,
+
                                     style: const TextStyle(
                                       fontSize: 15.0,
                                       fontFamily: 'Urbanist',
                                       // color: pinkColor,
                                     ),
+                                    // maxLengthEnforcement:
+                                    //     MaxLengthEnforcement.none,
+
                                     controller: _postDescriptionController,
+                                    // scrollPadding: EdgeInsets.zero,
+
                                     decoration: InputDecoration(
                                       hintText: "Optional",
                                       hintStyle: const TextStyle(
