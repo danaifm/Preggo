@@ -3,10 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:googleapis/servicemanagement/v1.dart';
 import 'package:preggo/colors.dart';
+import 'package:preggo/pregnancyInfo.dart';
 import 'package:preggo/weightFeature/editWeight.dart';
 
 class ViewWeight extends StatefulWidget {
-  const ViewWeight({super.key});
+  //final String pregnancyInfo_id;
+  const ViewWeight({
+    super.key,
+  });
 
   @override
   _ViewWeight createState() => _ViewWeight();
@@ -14,6 +18,9 @@ class ViewWeight extends StatefulWidget {
 
 class _ViewWeight extends State<ViewWeight> {
   late final String userId;
+
+  String weightDate = "";
+  String weight = "";
 
   String getUserId() {
     User? user = FirebaseAuth.instance.currentUser;
@@ -27,6 +34,8 @@ class _ViewWeight extends State<ViewWeight> {
     QuerySnapshot result = await FirebaseFirestore.instance
         .collection('users')
         .doc(userUid)
+        .collection('pregnancyInfo')
+        .doc("HMEBTKrnOYnmxPmBMHuV")
         .collection('weight')
         .get();
 
@@ -101,7 +110,7 @@ class _ViewWeight extends State<ViewWeight> {
                         Container(
                           width: 85,
                           child: Text(
-                            '$date',
+                            '$date , $time',
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 16,
@@ -115,7 +124,7 @@ class _ViewWeight extends State<ViewWeight> {
                         ),
                         Expanded(
                           child: Text(
-                            '$weight',
+                            '$weightNumber',
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 17,
@@ -298,9 +307,34 @@ class _ViewWeight extends State<ViewWeight> {
                 ),
               ),
               child: SingleChildScrollView(
-                  padding: EdgeInsets.only(top: 15),
-                  child: Container(child: Column(children: []))
-                  //   child: ListView.builder(
+                padding: EdgeInsets.only(top: 15),
+                child: Container(
+                  child: Column(
+                    children: [
+                      FutureBuilder<Widget>(
+                        future: getWeight(weightDate, weight),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<Widget> snapshot) {
+                          if (snapshot.hasData) {
+                            return snapshot.data!;
+                          }
+                          return CircularProgressIndicator(color: pinkColor);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+
+       //   child: ListView.builder(
                   //     itemCount: 3,
                   //     shrinkWrap: true,
                   //     //physics: NeverScrollableScrollPhysics(),
@@ -335,11 +369,3 @@ class _ViewWeight extends State<ViewWeight> {
 
                   //     //YOUR WORK GOES HERE
                   //   ),
-                  ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
