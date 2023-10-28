@@ -168,8 +168,7 @@ class _CommunityPage extends State<CommunityPage> {
         builder: (context, snapshot) {
           if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
             //there are posts
-            List allPosts = snapshot.data!.docs;
-            allPosts.sort((a, b) {
+            snapshot.data!.docs.sort((a, b) {
               //SORT BY LATEST
               // Convert 'timestamp' strings to DateTime objects for comparison
               DateFormat tF = DateFormat("hh:mm a");
@@ -204,18 +203,24 @@ class _CommunityPage extends State<CommunityPage> {
               child: SizedBox(
                 height: 800,
                 child: ListView.builder(
-                  itemCount: allPosts.length + 2,
+                  itemCount: snapshot.data!.docs.length + 2,
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
                     if (index == 0) {
                       return Container(height: 70);
-                    } else if (index > 0 && index < allPosts.length + 1) {
-                      String username = allPosts[index - 1].data()['username'];
-                      String postTitle = allPosts[index - 1].data()['title'];
-                      String postBody = allPosts[index - 1].data()['body'];
-                      String stamp = allPosts[index - 1].data()['timestamp'];
-                      String comments =
-                          allPosts[index - 1].data()['comments'].toString();
+                    } else if (index > 0 &&
+                        index < snapshot.data!.docs.length + 1) {
+                      String username =
+                          snapshot.data!.docs[index - 1].data()['username'];
+                      String postTitle =
+                          snapshot.data!.docs[index - 1].data()['title'];
+                      String postBody =
+                          snapshot.data!.docs[index - 1].data()['body'];
+                      String stamp =
+                          snapshot.data!.docs[index - 1].data()['timestamp'];
+                      String comments = snapshot.data!.docs[index - 1]
+                          .data()['comments']
+                          .toString();
                       String postID = snapshot
                           .data!.docs[index - 1].reference.id
                           .toString();
@@ -229,146 +234,154 @@ class _CommunityPage extends State<CommunityPage> {
                           //         settings: RouteSettings(arguments: postID),
                           //       ),).then(onGoBack);
                         }, //TODO: rana's page
-                        child: Container(
-                          margin: EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 10,
-                          ),
-                          height: 110,
-                          width: 350,
-                          decoration: BoxDecoration(
-                            color: backGroundPink.withOpacity(0.3),
-                            border: Border.all(color: backGroundPink, width: 2),
-                            borderRadius: BorderRadius.circular(13),
-                          ),
-                          child: Row(
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                        child: Row(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Icon(
+                                  Icons.account_circle_outlined,
+                                  color: Colors.black,
+                                  size: 38,
+                                ),
+                                Text(
+                                  username,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    fontFamily: 'Urbanist',
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.30,
+                                    letterSpacing: -0.28,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 10,
+                              ),
+                              height: 110,
+                              width: 350,
+                              decoration: BoxDecoration(
+                                color: backGroundPink.withOpacity(0.3),
+                                border:
+                                    Border.all(color: backGroundPink, width: 2),
+                                borderRadius: BorderRadius.circular(13),
+                              ),
+                              child: Row(
                                 children: [
                                   SizedBox(
-                                    height: 10,
+                                    width: 25,
                                   ),
-                                  Icon(
-                                    Icons.account_circle_outlined,
-                                    color: Colors.black,
-                                    size: 38,
-                                  ),
-                                  Text(
-                                    username,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                      fontFamily: 'Urbanist',
-                                      fontWeight: FontWeight.w700,
-                                      height: 1.30,
-                                      letterSpacing: -0.28,
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          postTitle,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                            fontFamily: 'Urbanist',
+                                            fontWeight: FontWeight.w800,
+                                            height: 1.30,
+                                            letterSpacing: -0.28,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            postBody,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 3,
+                                            softWrap: true,
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 11,
+                                              fontFamily: 'Urbanist',
+                                              fontWeight: FontWeight.w600,
+                                              height: 1.30,
+                                              letterSpacing: -0.28,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 4,
+                                        ),
+                                        Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 90,
+                                              height: 10,
+                                              child: Align(
+                                                alignment: Alignment.bottomLeft,
+                                                child: Text(
+                                                  stamp,
+                                                  style: TextStyle(
+                                                    color: Color.fromARGB(
+                                                        200, 121, 113, 113),
+                                                    fontSize: 9,
+                                                    fontFamily: 'Urbanist',
+                                                    fontWeight: FontWeight.w700,
+                                                    height: 1.30,
+                                                    letterSpacing: -0.28,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 90),
+                                            Align(
+                                              alignment: Alignment.bottomRight,
+                                              child: Row(
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 1.0),
+                                                    child: Icon(
+                                                      Icons.chat_bubble_outline,
+                                                      color: Color.fromARGB(
+                                                          200, 121, 113, 113),
+                                                      size: 15,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    comments,
+                                                    style: TextStyle(
+                                                      color: Color.fromARGB(
+                                                          200, 121, 113, 113),
+                                                      fontSize: 12,
+                                                      fontFamily: 'Urbanist',
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      height: 1.30,
+                                                      letterSpacing: -0.28,
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
-                              SizedBox(
-                                width: 25,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      postTitle,
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                        fontFamily: 'Urbanist',
-                                        fontWeight: FontWeight.w800,
-                                        height: 1.30,
-                                        letterSpacing: -0.28,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        postBody,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 3,
-                                        softWrap: true,
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 11,
-                                          fontFamily: 'Urbanist',
-                                          fontWeight: FontWeight.w600,
-                                          height: 1.30,
-                                          letterSpacing: -0.28,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 4,
-                                    ),
-                                    Row(
-                                      children: [
-                                        SizedBox(
-                                          width: 90,
-                                          height: 10,
-                                          child: Align(
-                                            alignment: Alignment.bottomLeft,
-                                            child: Text(
-                                              stamp,
-                                              style: TextStyle(
-                                                color: Color.fromARGB(
-                                                    200, 121, 113, 113),
-                                                fontSize: 9,
-                                                fontFamily: 'Urbanist',
-                                                fontWeight: FontWeight.w700,
-                                                height: 1.30,
-                                                letterSpacing: -0.28,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(width: 90),
-                                        Align(
-                                          alignment: Alignment.bottomRight,
-                                          child: Row(
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    right: 1.0),
-                                                child: Icon(
-                                                  Icons.chat_bubble_outline,
-                                                  color: Color.fromARGB(
-                                                      200, 121, 113, 113),
-                                                  size: 15,
-                                                ),
-                                              ),
-                                              Text(
-                                                comments,
-                                                style: TextStyle(
-                                                  color: Color.fromARGB(
-                                                      200, 121, 113, 113),
-                                                  fontSize: 12,
-                                                  fontFamily: 'Urbanist',
-                                                  fontWeight: FontWeight.w700,
-                                                  height: 1.30,
-                                                  letterSpacing: -0.28,
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       );
                     } else {
@@ -411,8 +424,7 @@ class _CommunityPage extends State<CommunityPage> {
         builder: (context, snapshot) {
           if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
             //there are posts
-            List myPosts = snapshot.data!.docs;
-            myPosts.sort((a, b) {
+            snapshot.data!.docs.sort((a, b) {
               //SORT BY LATEST
               // Convert 'timestamp' strings to DateTime objects for comparison
               DateFormat tF = DateFormat("hh:mm a");
@@ -446,23 +458,29 @@ class _CommunityPage extends State<CommunityPage> {
               child: SizedBox(
                 height: 800,
                 child: ListView.builder(
-                  itemCount: myPosts.length + 2,
+                  itemCount: snapshot.data!.docs.length + 2,
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
                     if (index == 0) {
                       print('index 0');
                       return Container(height: 70);
-                    } else if (index > 0 && index < myPosts.length + 1) {
+                    } else if (index > 0 &&
+                        index < snapshot.data!.docs.length + 1) {
                       print('at least 1 in my posts');
-                      String username = myPosts[index - 1].data()['username'];
-                      String postTitle = myPosts[index - 1].data()['title'];
-                      String postBody = myPosts[index - 1].data()['body'];
-                      String stamp = myPosts[index - 1].data()['timestamp'];
+                      String username =
+                          snapshot.data!.docs[index - 1].data()['username'];
+                      String postTitle =
+                          snapshot.data!.docs[index - 1].data()['title'];
+                      String postBody =
+                          snapshot.data!.docs[index - 1].data()['body'];
+                      String stamp =
+                          snapshot.data!.docs[index - 1].data()['timestamp'];
                       String postID = snapshot
                           .data!.docs[index - 1].reference.id
                           .toString();
-                      String comments =
-                          myPosts[index - 1].data()['comments'].toString();
+                      String comments = snapshot.data!.docs[index - 1]
+                          .data()['comments']
+                          .toString();
 
                       return GestureDetector(
                         onTap: () {
