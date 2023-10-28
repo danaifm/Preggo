@@ -185,8 +185,6 @@ class AddReminderScreenState extends State<AddReminderScreen> {
     );
   }
 
-  Future<void> addReminder() async {}
-
   Future<void> addNewReminder() async {
     try {
       /// If selected date is after today || selected date is today and the time is after/equal DateTime.now().
@@ -660,8 +658,6 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                       filled: true,
                                       fillColor: const Color(0xFFF7F8F9),
                                     ),
-                                    autovalidateMode:
-                                        AutovalidateMode.onUserInteraction,
                                     validator: (value) {
                                       if (value == null ||
                                           value.trim().isEmpty) {
@@ -760,8 +756,6 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                       filled: true,
                                       fillColor: const Color(0xFFF7F8F9),
                                     ),
-                                    // autovalidateMode:
-                                    //     AutovalidateMode.onUserInteraction,
                                     // validator: (value) {
                                     //   if (value!.isEmpty) {
                                     //     return "This field cannot be empty.";
@@ -942,7 +936,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                                       return Padding(
                                                         padding:
                                                             const EdgeInsets
-                                                                    .symmetric(
+                                                                .symmetric(
                                                                 horizontal:
                                                                     5.0),
                                                         child: Text(

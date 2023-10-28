@@ -318,22 +318,25 @@ class EditReminderScreenState extends State<EditReminderScreen> {
     print("Selected DATE:# $selectedDate #");
     final initial = DateTime.now().isBefore(selectedDate);
     print("Selected initial:# $initial #");
-
-    final isToday = selectedDate.year == DateTime.now().year &&
+    final isDateToday = selectedDate.year == DateTime.now().year &&
         selectedDate.month == DateTime.now().month &&
         selectedDate.day == DateTime.now().day;
+
     _showDialog(
       CupertinoDatePicker(
-        initialDateTime: selectedTime,
-        // minimumDate: isToday
-        //     ? DateTime(
-        //         DateTime.now().year,
-        //         DateTime.now().month,
-        //         DateTime.now().day,
-        //         DateTime.now().hour,
-        //         DateTime.now().minute,
-        //       )
-        //     : null,
+        initialDateTime: DateTime.now().isBefore(selectedDate) ||
+                DateTime.now().isBefore(selectedTime)
+            ? selectedTime
+            : DateTime.now(),
+        minimumDate: isDateToday
+            ? DateTime(
+                DateTime.now().year,
+                DateTime.now().month,
+                DateTime.now().day,
+                DateTime.now().hour,
+                DateTime.now().minute,
+              )
+            : null,
         mode: CupertinoDatePickerMode.time,
         onDateTimeChanged: (DateTime newTime) {
           setState(() {
@@ -356,6 +359,23 @@ class EditReminderScreenState extends State<EditReminderScreen> {
 
   Future<void> editReminder() async {
     try {
+      // final today = DateTime(DateTime.now().year, DateTime.now().month,
+      //     DateTime.now().day, DateTime.now().hour, DateTime.now().minute);
+      // final isDateAfterToday = selectedDate.isAfter(today);
+      // final isDateToday = selectedDate.year == DateTime.now().year &&
+      //     selectedDate.month == DateTime.now().month &&
+      //     selectedDate.day == DateTime.now().day;
+      // final isSelectedTimeEqualOrGraterThanNow =
+      //     selectedTime.hour == DateTime.now().hour &&
+      //             selectedTime.minute == DateTime.now().minute ||
+      //         selectedTime.hour > DateTime.now().hour &&
+      //             selectedTime.minute > DateTime.now().minute;
+      // final isSelectedTimeAfterNow = selectedTime.hour >= DateTime.now().hour &&
+      //     selectedTime.minute > DateTime.now().minute;
+      // final isSelectedTimeValid = isDateAfterToday ||
+      //     isSelectedTimeEqualOrGraterThanNow ||
+      //     isDateToday && isSelectedTimeAfterNow;
+
       final today = DateTime(DateTime.now().year, DateTime.now().month,
           DateTime.now().day, DateTime.now().hour, DateTime.now().minute);
       final isDateAfterToday = selectedDate.isAfter(today);
@@ -371,6 +391,7 @@ class EditReminderScreenState extends State<EditReminderScreen> {
       print("today:: $today #");
       print("isDateAfterToday:: $isDateAfterToday #");
       print("isSelectedTimeValid:: $isSelectedTimeValid #");
+      // print("isSelectedTimeAfterNow:: $isSelectedTimeAfterNow #");
       print("selectedDate:: $selectedDate #");
       print("selectedTime:: $selectedTime #");
 
@@ -633,8 +654,9 @@ class EditReminderScreenState extends State<EditReminderScreen> {
           TextEditingController(text: widget.description);
       selectedDate = DateFormat("MM-dd-yyyy").parse(widget.date);
       timeFormat = widget.time;
-      print("Selected Time:# ${widget.time} #");
-      selectedTime = DateFormat("hh:mm a").parse(widget.time);
+      final DateTime time = DateFormat("hh:mm a").parse(widget.time);
+      selectedTime =
+          DateTime.now().copyWith(hour: time.hour, minute: time.minute);
 
       print("Selected Time:####::: $selectedTime #after");
       setState(() {});
@@ -781,8 +803,6 @@ class EditReminderScreenState extends State<EditReminderScreen> {
                                       filled: true,
                                       fillColor: const Color(0xFFF7F8F9),
                                     ),
-                                    autovalidateMode:
-                                        AutovalidateMode.onUserInteraction,
                                     validator: (value) {
                                       if (value == null ||
                                           value.trim().isEmpty) {
