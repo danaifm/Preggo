@@ -234,41 +234,40 @@ class _CommunityPage extends State<CommunityPage> {
                           //         settings: RouteSettings(arguments: postID),
                           //       ),).then(onGoBack);
                         }, //TODO: rana's page
-                        child: Row(
+                        child: Column(
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Icon(
-                                  Icons.account_circle_outlined,
-                                  color: Colors.black,
-                                  size: 38,
-                                ),
-                                Text(
-                                  username,
-                                  style: TextStyle(
+                            Container(
+                              margin: EdgeInsets.only(left: 15, bottom: 1),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.account_circle_outlined,
                                     color: Colors.black,
-                                    fontSize: 14,
-                                    fontFamily: 'Urbanist',
-                                    fontWeight: FontWeight.w700,
-                                    height: 1.30,
-                                    letterSpacing: -0.28,
+                                    size: 40,
                                   ),
-                                ),
-                              ],
+                                  Text(
+                                    "  $username",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontFamily: 'Urbanist',
+                                      fontWeight: FontWeight.w700,
+                                      height: 1.30,
+                                      letterSpacing: -0.28,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             Container(
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
+                              margin: EdgeInsets.only(bottom: 14),
                               padding: EdgeInsets.symmetric(
                                 horizontal: 20,
                                 vertical: 10,
                               ),
                               height: 110,
-                              width: 350,
+                              width: 330,
                               decoration: BoxDecoration(
                                 color: backGroundPink.withOpacity(0.3),
                                 border:
@@ -277,9 +276,6 @@ class _CommunityPage extends State<CommunityPage> {
                               ),
                               child: Row(
                                 children: [
-                                  SizedBox(
-                                    width: 25,
-                                  ),
                                   Expanded(
                                     child: Column(
                                       mainAxisAlignment:
@@ -323,7 +319,7 @@ class _CommunityPage extends State<CommunityPage> {
                                         Row(
                                           children: [
                                             SizedBox(
-                                              width: 90,
+                                              width: 260,
                                               height: 10,
                                               child: Align(
                                                 alignment: Alignment.bottomLeft,
@@ -341,7 +337,6 @@ class _CommunityPage extends State<CommunityPage> {
                                                 ),
                                               ),
                                             ),
-                                            SizedBox(width: 90),
                                             Align(
                                               alignment: Alignment.bottomRight,
                                               child: Row(
