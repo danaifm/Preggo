@@ -387,12 +387,22 @@ class _postReply extends State<postReply>{
               String ReplyBody = replyResult[index].data()['reply'] ?? '';
               String Replytimestamp = replyResult[index].data()['timestamp'] ?? '';
               String replierUsername=''; 
+              bool isLoading = true;
               
               
               return FutureBuilder<String>( 
                 future: getUsername(id),
                 builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-                if (snapshot.hasData) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  if (isLoading && index == 0) {
+                    return Center(
+                      child: CircularProgressIndicator(color: pinkColor,),
+                    );
+                  } else {
+                    return SizedBox(); // Return an empty SizedBox while loading subsequent items
+                  }
+                }
+                else if (snapshot.hasData) {
                   String replierUsername = snapshot.data!;
 
                   return Container(
@@ -505,11 +515,11 @@ class _postReply extends State<postReply>{
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else {
-                  return Center(child: CircularProgressIndicator(color: pinkColor,));
+                  return SizedBox();
                 }
               },
             );
-                },
+          },
           );
         }
       }
