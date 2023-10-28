@@ -1,8 +1,10 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:preggo/SplashScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:preggo/colors.dart';
+import 'package:preggo/profile/cubit/profile_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +28,10 @@ void main() async {
     ],
   );
   //addReminderToSystem(dateTime: DateTime(2023,10,3,14,54), title: 'Title', body: 'Body');
-  runApp(const MyApp());
+  runApp(BlocProvider(
+    create: (BuildContext context) => ProfileCubit(),
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -46,7 +51,7 @@ class MyApp extends StatelessWidget {
       ),
       // the root widget
       home:
-          const SplashScreen(), // each class representes a page or a screen, if you want to display the login class(page) you just call it form here
+      const SplashScreen(), // each class representes a page or a screen, if you want to display the login class(page) you just call it form here
     );
   }
 }

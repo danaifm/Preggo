@@ -1,4 +1,4 @@
-import 'package:preggo/profile_screen.dart';
+import 'package:preggo/profile/profile_screen.dart';
 import 'package:preggo/screens/PregnancyTracking.dart';
 import 'package:preggo/screens/CommunityPage.dart';
 //import 'package:preggo/screens/ProfilePage.dart';
@@ -40,8 +40,8 @@ class _NavBar extends State<NavBar> {
             currentTab == 2 ? const Color(0xFFD77D7C) : Colors.grey,
         onPressed: () {
           setState(() {
-            currentScreen =
-                ProfileScreen(); //ProfileScreen() , //ProfileScreen(), //const ProfilePage();
+            currentScreen = ProfileScreen();
+               // ProfileScreen(); //ProfileScreen() , //ProfileScreen(), //const ProfilePage();
             currentTab = 2;
           });
         },
