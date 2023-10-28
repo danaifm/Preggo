@@ -10,6 +10,7 @@ import 'package:googleapis/calendar/v3.dart' as Cal;
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:preggo/profile/cubit/profile_cubit.dart';
 import 'package:preggo/profile/edit_profile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
   ProfileScreen({super.key});
@@ -350,7 +351,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             )),
                           ),
                           SizedBox(
-                            height: babyData.length<=1?40:65,
+                            height: babyData.length <= 1 ? 40 : 65,
                             child: ListView.separated(
                               padding: EdgeInsets.all(8),
                               itemCount: babyData.length,
@@ -488,6 +489,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               await auth.signOut();
                                               await AwesomeNotifications()
                                                   .cancelAll();
+
+                                              // TODO: POST COMMUNITY - CLEAR LOCAL PREFS
+                                              SharedPreferences prefs =
+                                                  await SharedPreferences
+                                                      .getInstance();
+                                              prefs.clear();
+                                              // End
                                               if (context.mounted) {
                                                 Navigator.push(
                                                   context,

@@ -8,6 +8,7 @@ import '../colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+import 'package:preggo/screens/post_community.dart';
 
 class CommunityPage extends StatefulWidget {
   const CommunityPage({super.key});
@@ -90,9 +91,11 @@ class _CommunityPage extends State<CommunityPage> {
               padding: EdgeInsets.fromLTRB(0, 20, 20, 50),
               child: ElevatedButton(
                 onPressed: () {
-                   Navigator.push(context, 
-                   MaterialPageRoute(builder: (context) => PostCommunityScreen(),))
-                       .then(onGoBack);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PostCommunityScreen(),
+                      )).then(onGoBack);
                   //TODO: ALIYAH'S PAGE THEN REFRESH
                 },
                 style: ElevatedButton.styleFrom(
@@ -215,15 +218,15 @@ Widget allPosts() {
                     return GestureDetector(
                       onTap: () {
                         print(postID);
-                          Navigator.push(
-                               context,
-                               MaterialPageRoute(
-                                 builder: (context) => postReply(),
-                                 settings: RouteSettings(arguments: postID),
-                               ),
-                               )
-                               //.then(onGoBack)
-                               ;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => postReply(),
+                            settings: RouteSettings(arguments: postID),
+                          ),
+                        )
+                            //.then(onGoBack)
+                            ;
                       }, //TODO: rana's page
                       child: Container(
                         margin:
@@ -465,16 +468,15 @@ Widget myPosts() {
                     return GestureDetector(
                       onTap: () {
                         print(postID);
-                          Navigator.push(
-                               context,
-                               MaterialPageRoute(
-                                 builder: (context) => postReply(),
-                                 settings: RouteSettings(arguments: postID),
-                               ),
-                               )
-                               //.then(onGoBack)
-                               ;
-                      
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => postReply(),
+                            settings: RouteSettings(arguments: postID),
+                          ),
+                        )
+                            //.then(onGoBack)
+                            ;
                       }, //TODO: rana's page
                       child: Container(
                         margin:
