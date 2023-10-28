@@ -1,7 +1,9 @@
-// ignore_for_file: use_key_in_widget_constructors, camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: use_key_in_widget_constructors, camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names
 
 
 import 'package:flutter/material.dart';
+import 'package:googleapis/admin/directory_v1.dart';
+import 'package:googleapis/cloudsearch/v1.dart';
 import 'package:googleapis/drive/v3.dart';
 import 'package:intl/intl.dart';
 import 'package:preggo/colors.dart';
@@ -20,7 +22,6 @@ class postReply extends StatefulWidget {
 class _postReply extends State<postReply>{
 
   String postId ='';
-
   var errorMessage = "";
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormFieldState> _nameKey = GlobalKey<FormFieldState>();
@@ -208,7 +209,7 @@ class _postReply extends State<postReply>{
                   //PROFILE PIC
                   CircleAvatar(
                     radius: 21,
-                    backgroundColor: backGroundPink.withOpacity(0.7),
+                    backgroundColor: pinkColor.withOpacity(0.5),
                     child: Text(
                       username.substring(0,1).toUpperCase(),
                       style: TextStyle(
@@ -302,21 +303,22 @@ class _postReply extends State<postReply>{
 
   }
 
-  Future<String> getUsername(String id) async{
-    String username ="";
+  Future<String> getUsername(String userID) async{
+    String replyUsername='';
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final DocumentReference userDocRef = firestore.collection('users').doc(id);
+    final DocumentReference userDocRef = firestore.collection('users').doc(userID);
     final DocumentSnapshot userSnapshot = await userDocRef.get(); 
     if(userSnapshot.exists){
       final Map<String,dynamic> userData = userSnapshot.data() as Map<String,dynamic>;
-      username= userData['username'].toString();
-      //print(username);
-      return username; 
+      replyUsername= userData['username'];
+      return replyUsername; 
+      
     }
     else 
-    {return username;}
+    {return replyUsername; }
   }
 
+  
   //DISPLAY ALL REPLIES OF THE POSTS 
   Future<Widget> getReplies(String postid) async {
     
@@ -373,7 +375,8 @@ class _postReply extends State<postReply>{
         DateTime dateTimeB = format.parse(timeB);
         return dateTimeB.compareTo(dateTimeA);
        });
-      
+
+       
 
       return ListView.builder(
             physics: NeverScrollableScrollPhysics(),
@@ -383,53 +386,44 @@ class _postReply extends State<postReply>{
               String id = replyResult[index].data()['userID'] ?? '';
               String ReplyBody = replyResult[index].data()['reply'] ?? '';
               String Replytimestamp = replyResult[index].data()['timestamp'] ?? '';
-              String username ='';
-              //getUsername(id).then((value){username=value;});
+              String replierUsername=''; 
               
-        
-              return Container(
-                margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-                //padding: EdgeInsets.all(10),
-        
-                child: Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                
-                      ////////////////////////////
-                      Container(
-                        margin: EdgeInsets.symmetric(vertical: 0,horizontal: 10),
-                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10,),
-                        height:100,
-                        width: 350,
-                        decoration: BoxDecoration(
-                          color: backGroundPink.withOpacity(0.3),
-                          border: Border.all(color: backGroundPink, width: 2),
-                          borderRadius: BorderRadius.circular(13),
-                        ),
-                        child: 
-                        Row(
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SizedBox(height: 10,),
-                                CircleAvatar(
-                                  radius: 19,
-                                  backgroundColor: pinkColor.withOpacity(0.5),
-                                  child: Text(
-                                    'A',
-                                    //username.substring(0,1).toUpperCase(),
-                                    style: TextStyle(
-                                      fontFamily: 'Urbanist',
-                                      fontSize: 22,
-                                      color: blackColor,
-                                    ),
-                                  ),
+              
+              return FutureBuilder<String>( 
+                future: getUsername(id),
+                builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                if (snapshot.hasData) {
+                  String replierUsername = snapshot.data!;
+
+                  return Container(
+                    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                    
+            
+                    child: Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                    
+                          Row( //PROFILE PIC AND USERNAME 
+                            children: [
+                            SizedBox(width: 8,),
+                            CircleAvatar(
+                              radius: 18,
+                              backgroundColor: pinkColor.withOpacity(0.5),
+                              child: Text(
+                                replierUsername.substring(0,1).toUpperCase(),
+                                style: TextStyle(
+                                  fontFamily: 'Urbanist',
+                                  fontSize: 22,
+                                  color: blackColor,
                                 ),
-                              Text(
-                              username,
+                              ),
+                            ),
+                            SizedBox(width: 10,),
+                            Text(  
+                              replierUsername.substring(0, 1).toUpperCase() +
+                              replierUsername.substring(1).toLowerCase(),
                               style: TextStyle(
                               color: Colors.black,
                               fontSize: 14,
@@ -438,65 +432,87 @@ class _postReply extends State<postReply>{
                               height: 1.30,
                               letterSpacing: -0.28,
                               ),
+                          ),
+
+                          ],
+                          ),
+                          SizedBox(height: 8,),
+
+                          Container(//ACTUAL POST REPLY AND TIMESTAMP 
+                            margin: EdgeInsets.symmetric(vertical: 0,horizontal: 10),
+                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10,),
+                            height:100,
+                            width: 350,
+                            decoration: BoxDecoration(
+                              color: backGroundPink.withOpacity(0.3),
+                              border: Border.all(color: backGroundPink, width: 2),
+                              borderRadius: BorderRadius.circular(13),
                             ),
-                            
+                            child: 
+                            Row(
+                              children: [
+                                
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      
+                                    Expanded(
+                                      child: Text(
+                                        ReplyBody,
+                                        //overflow: TextOverflow.visible,
+                                        //maxLines: 3,
+                                        softWrap: true,
+                                        style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 11,
+                                        fontFamily: 'Urbanist',
+                                        fontWeight: FontWeight.w600,
+                                        height: 1.30,
+                                        letterSpacing: -0.28,
+                                        ),
+                                      ),
+                                    ),
+                                    //SizedBox(height: 4,),
+                                    Align(
+                                      alignment: Alignment.bottomLeft,
+                                      child: Text(
+                                        Replytimestamp,
+                                        style: TextStyle(
+                                        color: Color.fromARGB(200, 121, 113, 113),
+                                        fontSize: 9,
+                                        fontFamily: 'Urbanist',
+                                        fontWeight: FontWeight.w700,
+                                        height: 1.30,
+                                        letterSpacing: -0.28,
+                                        ),
+                                      ),
+                                    ),
+                                        
+                                    ],
+                                    ),
+                                ),
                               ],
                             ),
-                            SizedBox(width: 30,),
-                            Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
                                   
-                                Expanded(
-                                  child: Text(
-                                    ReplyBody,
-                                    //overflow: TextOverflow.visible,
-                                    //maxLines: 3,
-                                    softWrap: true,
-                                    style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 11,
-                                    fontFamily: 'Urbanist',
-                                    fontWeight: FontWeight.w600,
-                                    height: 1.30,
-                                    letterSpacing: -0.28,
-                                    ),
-                                  ),
-                                ),
-                                //SizedBox(height: 4,),
-                                Align(
-                                  alignment: Alignment.bottomLeft,
-                                  child: Text(
-                                    Replytimestamp,
-                                    style: TextStyle(
-                                    color: Color.fromARGB(200, 121, 113, 113),
-                                    fontSize: 9,
-                                    fontFamily: 'Urbanist',
-                                    fontWeight: FontWeight.w700,
-                                    height: 1.30,
-                                    letterSpacing: -0.28,
-                                    ),
-                                  ),
-                                ),
-                                    
-                                ],
-                                ),
-                            ),
-                          ],
-                        ),
-                              
+                          ),
+                        
+                        ],
                       ),
-                     
-                    ],
-                  ),
-                ),
-              );
-            },
-      );
-    }
-  }
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return Center(child: CircularProgressIndicator(color: pinkColor,));
+                }
+              },
+            );
+                },
+          );
+        }
+      }
 
 
 
