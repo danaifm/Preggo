@@ -942,7 +942,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                                       return Padding(
                                                         padding:
                                                             const EdgeInsets
-                                                                    .symmetric(
+                                                                .symmetric(
                                                                 horizontal:
                                                                     5.0),
                                                         child: Text(
@@ -1130,7 +1130,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                           fontFamily: 'Urbanist',
                                         )),
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           ),

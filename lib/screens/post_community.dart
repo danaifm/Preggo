@@ -563,8 +563,9 @@ class PostCommunityScreenState extends State<PostCommunityScreen> {
                                     ),
                                   ),
                                 ),
-                                Container(
-                                  height: 500,
+
+                                Padding(
+                                  // height: 500,
                                   //baby name text field
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 10.0),
@@ -656,7 +657,7 @@ class PostCommunityScreenState extends State<PostCommunityScreen> {
                                   child:
                                       Text(errorMessage, style: textStyleError),
                                 ),
-                                const SizedBox(height: 30),
+                                // const SizedBox(height: 30),
                                 SizedBox(
                                   height: 45.0,
                                   child: ElevatedButton(
@@ -677,7 +678,32 @@ class PostCommunityScreenState extends State<PostCommunityScreen> {
                                           fontFamily: 'Urbanist',
                                         )),
                                   ),
-                                )
+                                ),
+
+                                /// With MediaQuery width
+                                // SizedBox(
+                                //   height: 45.0,
+                                //   width:
+                                //       MediaQuery.sizeOf(context).width * 0.30,
+                                //   child: ElevatedButton(
+                                //     onPressed: addNewPost,
+                                //     style: ElevatedButton.styleFrom(
+                                //       backgroundColor: blackColor,
+                                //       shape: RoundedRectangleBorder(
+                                //         borderRadius: BorderRadius.circular(40),
+                                //       ),
+                                //       // padding: const EdgeInsets.only(
+                                //       //     left: 85,
+                                //       //     top: 15,
+                                //       //     right: 85,
+                                //       //     bottom: 15),
+                                //     ),
+                                //     child: const Text("Add Post",
+                                //         style: TextStyle(
+                                //           fontFamily: 'Urbanist',
+                                //         )),
+                                //   ),
+                                // )
                               ],
                             ),
                           ),
