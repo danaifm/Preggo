@@ -575,7 +575,7 @@ class _SignUpState extends State<SignUp> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            PostCommunityScreen()));
+                                         startJourney()));
                               }
                             },
                             child: Text(

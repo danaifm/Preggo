@@ -40,8 +40,8 @@ class _NavBar extends State<NavBar> {
             currentTab == 2 ? const Color(0xFFD77D7C) : Colors.grey,
         onPressed: () {
           setState(() {
-            currentScreen = ProfileScreen();
-               // ProfileScreen(); //ProfileScreen() , //ProfileScreen(), //const ProfilePage();
+            currentScreen =
+                ProfileScreen(); //ProfileScreen() , //ProfileScreen(), //const ProfilePage();
             currentTab = 2;
           });
         },
