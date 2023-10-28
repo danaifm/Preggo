@@ -199,8 +199,9 @@ class _editApptState extends State<editAppt> {
   late String endFormat;
   var errorMessage = "";
   late int startTimeCounter, endTimeCounter, dateCounter;
-  // DateTime _minDate = DateTime.now();
-  // DateTime _minTime = DateTime.now();
+  DateTime _minDate = DateTime.now()
+      .copyWith(hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0);
+  DateTime _minTime = DateTime.now();
   DateTime today = DateTime.now();
   late String newappt, newhospital, newdr;
 
@@ -659,7 +660,7 @@ class _editApptState extends State<editAppt> {
                                               : a.startTime,
                                           //this sets the initial selected date on the popup
                                           //REMOVED MINIMUM DATE FOR EDIT BUT MAYBE WILL CHANGE
-                                          // minimumDate: _minDate,
+                                          minimumDate: _minDate,
                                           maximumDate: DateTime.now().copyWith(
                                             year: DateTime.now().year + 10,
                                             month: 12,
@@ -730,14 +731,14 @@ class _editApptState extends State<editAppt> {
                                           initialDateTime: startTimeCounter > 0
                                               ? startTime
                                               : a.startTime,
-                                          // minimumDate: date.day ==
-                                          //             DateTime.now().day &&
-                                          //         date.month ==
-                                          //             DateTime.now().month &&
-                                          //         date.year ==
-                                          //             DateTime.now().year
-                                          //     ? _minTime
-                                          //     : null,
+                                          minimumDate: date.day ==
+                                                      DateTime.now().day &&
+                                                  date.month ==
+                                                      DateTime.now().month &&
+                                                  date.year ==
+                                                      DateTime.now().year
+                                              ? _minTime
+                                              : null,
                                           mode: CupertinoDatePickerMode.time,
                                           use24hFormat: false,
                                           // This is called when the user changes the time.
@@ -815,14 +816,14 @@ class _editApptState extends State<editAppt> {
                                               ? endTime
                                               : a.endTime,
 
-                                          // minimumDate: date.day ==
-                                          //             DateTime.now().day &&
-                                          //         date.month ==
-                                          //             DateTime.now().month &&
-                                          //         date.year ==
-                                          //             DateTime.now().year
-                                          //     ? _minTime
-                                          //     : null,
+                                          minimumDate: date.day ==
+                                                      DateTime.now().day &&
+                                                  date.month ==
+                                                      DateTime.now().month &&
+                                                  date.year ==
+                                                      DateTime.now().year
+                                              ? _minTime
+                                              : null,
                                           mode: CupertinoDatePickerMode.time,
                                           use24hFormat: false,
                                           // This is called when the user changes the time.
