@@ -555,17 +555,13 @@ class _SignUpState extends State<SignUp> {
                                       .set(dataToSave);
                                   print('Registration successful with phone');
                                 }
-                                // TODO: POST COMMUNITY - SAVE USERNAME LOCAL
+                                // POST COMMUNITY - SAVE USERNAME LOCAL
                                 SharedPreferences prefs =
                                     await SharedPreferences.getInstance();
                                 prefs.setString(
-                                    "username",
-                                    _usernameController.text
-                                            .trim()[0]
-                                            .toUpperCase() +
-                                        _usernameController.text
-                                            .trim()
-                                            .substring(1));
+                                  "username",
+                                  _usernameController.text.trim(),
+                                );
                                 // End
                                 /* Navigator.push(
                                     context,

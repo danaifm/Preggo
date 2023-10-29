@@ -95,9 +95,9 @@ class _LoginScreenState extends State<LoginScreen> {
           /// Save Username local
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setString(
-              "username",
-              _usernameFieldController.text.trim()[0].toUpperCase() +
-                  _usernameFieldController.text.trim().substring(1));
+            "username",
+            _usernameFieldController.text.trim().capitalizeAnyWord,
+          );
 
           await getRemainders();
           setState(() {
@@ -107,8 +107,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => PostCommunityScreen(),
-                    // builder: (context) => NavBar(),
-                    //builder: (context) => PostCommunityScreen(),
                   ));
             }
           });
