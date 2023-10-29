@@ -25,7 +25,7 @@ class _fillWeightForm extends State<addWeight> {
     return user!.uid;
   }
 
-  void addWeight(String weight, DateTime dateTime) {
+  void addWeight(String weight, Timestamp dateTime) {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     String userUid = getUserId();
 
@@ -37,7 +37,7 @@ class _fillWeightForm extends State<addWeight> {
         .collection('weight');
     subCollectionRef
         .add({
-          'dateTime': dateTime,
+          'Timestamp': FieldValue.serverTimestamp(),
           'weight': weight,
         })
         .then((value) => print('info added successfully'))
@@ -264,7 +264,7 @@ class _fillWeightForm extends State<addWeight> {
                                             }
 
                                             //Bdoor change this
-                                            if (!RegExp(r'/^[0-9]+$/')
+                                            if (RegExp(r'^[a-zA-Z]+$')
                                                 .hasMatch(value)) {
                                               return "Please Enter numbers only.";
                                             } else {
@@ -281,13 +281,17 @@ class _fillWeightForm extends State<addWeight> {
                                             const EdgeInsets.only(top: 30.0),
                                         child: ElevatedButton(
                                           onPressed: () {
+                                            print("here");
+
                                             if (_formKey.currentState!
                                                 .validate()) {
                                               String weightNum =
                                                   _weightController.text;
 
-                                              addWeight(
-                                                  weightNum, DateTime.now());
+                                              Timestamp Date_Time =
+                                                  Timestamp.now();
+
+                                              addWeight(weightNum, Date_Time);
 
                                               Navigator.push(
                                                   context,
