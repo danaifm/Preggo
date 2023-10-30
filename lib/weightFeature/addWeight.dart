@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:googleapis/servicemanagement/v1.dart';
+import 'package:intl/intl.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/weightFeature/viewWeight.dart';
 
@@ -25,7 +26,13 @@ class _fillWeightForm extends State<addWeight> {
     return user!.uid;
   }
 
-  void addWeight(String weight, Timestamp dateTime) {
+  String getTimestamp() {
+    DateTime stamp = DateTime.now();
+    String formattedStamp = DateFormat('yyyy/MM/dd hh:mm a').format(stamp);
+    return formattedStamp;
+  }
+
+  void addWeight(String weight, String dateTime) {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     String userUid = getUserId();
 
@@ -37,7 +44,7 @@ class _fillWeightForm extends State<addWeight> {
         .collection('weight');
     subCollectionRef
         .add({
-          'Timestamp': FieldValue.serverTimestamp(),
+          'dateTime': getTimestamp(),
           'weight': weight,
         })
         .then((value) => print('info added successfully'))
@@ -288,8 +295,7 @@ class _fillWeightForm extends State<addWeight> {
                                               String weightNum =
                                                   _weightController.text;
 
-                                              Timestamp Date_Time =
-                                                  Timestamp.now();
+                                              String Date_Time = getTimestamp();
 
                                               addWeight(weightNum, Date_Time);
 
