@@ -1,5 +1,3 @@
-import 'dart:js_util';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +7,7 @@ import 'package:preggo/pregnancyInfo.dart';
 import 'package:preggo/screens/ToolsPage.dart';
 import 'package:preggo/weightFeature/addWeight.dart';
 import 'package:preggo/weightFeature/editWeight.dart';
+import 'package:intl/intl.dart';
 
 class ViewWeight extends StatefulWidget {
   //final String pregnancyInfo_id;
@@ -90,7 +89,15 @@ class _ViewWeight extends State<ViewWeight> {
     } else {
       //reminders exist for this day
       List weightResult = result.docs;
-      //sort the reminders based on the time of the day first
+      // weightResult.sort((a, b) {
+      //   String timeA = a.data()['time'] ?? '';
+      //   String timeB = b.data()['time'] ?? '';
+      //   // Convert 'time' strings to DateTime objects for comparison
+      //   DateFormat format = DateFormat("hh:mm a");
+      //   DateTime dateTimeA = format.parse(timeA);
+      //   DateTime dateTimeB = format.parse(timeB);
+      //   return dateTimeB.compareTo(dateTimeA);
+      // });
       return SingleChildScrollView(
         physics: AlwaysScrollableScrollPhysics(),
         scrollDirection: Axis.vertical,
@@ -286,7 +293,11 @@ class _ViewWeight extends State<ViewWeight> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      ToolsPage();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ToolsPage(),
+                          ));
                     },
                     icon: const Icon(
                       Icons.arrow_back,
@@ -310,7 +321,7 @@ class _ViewWeight extends State<ViewWeight> {
                 ],
               ),
               SizedBox(
-                height: 10,
+                height: 15,
               ),
               Expanded(
                 child: Container(
@@ -351,7 +362,7 @@ class _ViewWeight extends State<ViewWeight> {
           Align(
             alignment: Alignment.bottomRight,
             child: Padding(
-              padding: EdgeInsets.fromLTRB(0, 20, 20, 50),
+              padding: EdgeInsets.fromLTRB(0, 100, 20, 50),
               child: ElevatedButton(
                 onPressed: () async {
                   await Navigator.push(context,
