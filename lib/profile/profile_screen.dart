@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable, library_prefixes, avoid_unnecessary_containers, no_leading_underscores_for_local_identifiers, unnecessary_const
 
 import 'package:firebase_auth/firebase_auth.dart';
+import '../screens/CommunityPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:preggo/colors.dart';
@@ -10,6 +11,7 @@ import 'package:googleapis/calendar/v3.dart' as Cal;
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:preggo/profile/cubit/profile_cubit.dart';
 import 'package:preggo/profile/edit_profile.dart';
+import 'package:preggo/screens/post_community.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 extension StringExtension on String {
   String capitalize() {
