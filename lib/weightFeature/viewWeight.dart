@@ -41,6 +41,28 @@ class _ViewWeight extends State<ViewWeight> {
     return user!.uid;
   }
 
+  // Future<String> getPregnancyInfoId() async {
+  //   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  //   String userUid = getUserId();
+  //   QuerySnapshot usersSnapshot = await firestore.collection('users').get();
+
+  //   for (QueryDocumentSnapshot userDoc in usersSnapshot.docs) {
+  //     QuerySnapshot pregnancyInfoSnapshot = await firestore
+  //         .collection('users')
+  //         .doc(userDoc.id)
+  //         .collection('pregnancyInfo')
+  //         .get();
+
+  //     for (QueryDocumentSnapshot pregnancyDoc in pregnancyInfoSnapshot.docs) {
+  //       String Pid = pregnancyDoc.id;
+  //       return Pid;
+  //     }
+
+  //     // Add a default return statement
+  //   }
+  //   return "";
+  // }
+
   Future<Widget> getWeight() async {
     //FirebaseFirestore firestore = FirebaseFirestore.instance;
     String userUid = getUserId();

@@ -32,6 +32,39 @@ class _fillWeightForm extends State<addWeight> {
     return formattedStamp;
   }
 
+  // void addWeight(String weight, String dateTime) async {
+  //   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  //   String userUid = getUserId();
+  //   QuerySnapshot usersSnapshot = await firestore.collection('users').get();
+
+  //   for (QueryDocumentSnapshot userDoc in usersSnapshot.docs) {
+  //     QuerySnapshot pregnancyInfoSnapshot = await firestore
+  //         .collection('users')
+  //         .doc(userDoc.id)
+  //         .collection('pregnancyInfo')
+  //         .get();
+
+  //     for (QueryDocumentSnapshot pregnancyDoc in pregnancyInfoSnapshot.docs) {
+  //       String PregnancyInfoId = pregnancyDoc.id;
+
+  //       CollectionReference subCollectionRef = firestore
+  //           .collection('users')
+  //           .doc(userUid)
+  //           .collection('pregnancyInfo')
+  //           .doc(PregnancyInfoId)
+  //           .collection('weight');
+  //       subCollectionRef.add({
+  //         'dateTime': getTimestamp(),
+  //         'weight': weight,
+  //       }).then((value) {
+  //         _successDialog();
+  //         // setState(() {
+  //         //   _weightController.clear();
+  //         // });
+  //       }).catchError((error) => print('failed to add info:$error'));
+  //     }
+  //   }
+
   void addWeight(String weight, String dateTime) {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     String userUid = getUserId();
