@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:preggo/model/pregnancy_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/user_model.dart';
 
@@ -39,18 +40,18 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
-  Future<void> changePassword(
+  Future<bool> changePassword(
       String currentPassword, String newPassword, BuildContext context) async {
+    if (currentPassword.isEmpty) return true;
     try {
-      if (newPassword.isEmpty) return;
+      if (newPassword.isEmpty) return false;
       // Get the current user object from Firebase Authentication.
       final user = FirebaseAuth.instance.currentUser;
 
       // If the user is not signed in, return.
       if (user == null) {
-        return;
+        return false;
       }
-
       // Create a credential object with the user's current password.
       final credential = EmailAuthProvider.credential(
           email: user.email!, password: currentPassword);
@@ -60,12 +61,15 @@ class ProfileCubit extends Cubit<ProfileState> {
 
       // Update the user's password with the new password.
       await user.updatePassword(newPassword);
+
       emit(PasswordChangedSuccess());
+      return true;
     } on FirebaseAuthException catch (e) {
       if (e.code == "wrong-password") {
-      emit(WrongPassword());
+        print(e.toString());
+        emit(WrongPassword());
       }
-      print(e.toString());
+      return false;
     }
   }
 
@@ -99,8 +103,8 @@ class ProfileCubit extends Cubit<ProfileState> {
           });
         }
       }
-
-      log('+++++++++++++++++++++++++++++');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      if (userName.isNotEmpty) prefs.setString("username", userName);
       emit(UpdateDataSuccess());
     } on Exception catch (e) {
       print(e.toString());
@@ -123,27 +127,26 @@ class ProfileCubit extends Cubit<ProfileState> {
       DocumentReference docRef = subCollectionRef.doc(doc.id);
       await docRef.delete();
     }
-       CollectionReference subCollectionRefReminder =
+    CollectionReference subCollectionRefReminder =
         userDocRef // replace with your document ID
             .collection('reminders');
-    QuerySnapshot subCollectionQueryReminder = await subCollectionRefReminder.get();
+    QuerySnapshot subCollectionQueryReminder =
+        await subCollectionRefReminder.get();
 
     for (QueryDocumentSnapshot doc in subCollectionQueryReminder.docs) {
       DocumentReference docRefReminder = subCollectionRefReminder.doc(doc.id);
       await docRefReminder.delete();
     }
     var community =
-    await FirebaseFirestore.instance.collection('community').get();
+        await FirebaseFirestore.instance.collection('community').get();
     for (var element in community.docs) {
-      if (element.data()["userID"] ==
-          FirebaseAuth.instance.currentUser!.uid) {
-       var communityDocs = await FirebaseFirestore.instance
-            .collection('community');
+      if (element.data()["userID"] == FirebaseAuth.instance.currentUser!.uid) {
+        var communityDocs =
+            await FirebaseFirestore.instance.collection('community');
 
-       communityDocs.doc(element.id).delete();
+        communityDocs.doc(element.id).delete();
 
-       var replies = communityDocs
-            .doc(element.id).collection("Replies");
+        var replies = communityDocs.doc(element.id).collection("Replies");
         QuerySnapshot subCollectionQueryReplies = await replies.get();
 
         for (QueryDocumentSnapshot doc in subCollectionQueryReplies.docs) {

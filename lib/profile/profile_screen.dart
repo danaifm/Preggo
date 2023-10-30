@@ -11,7 +11,11 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:preggo/profile/cubit/profile_cubit.dart';
 import 'package:preggo/profile/edit_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";
+  }
+}
 class ProfileScreen extends StatefulWidget {
   ProfileScreen({super.key});
 
@@ -284,7 +288,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       width: 10,
                                     ),
                                     Text(
-                                      user.userName,
+                                      user.userName.capitalize(),
                                       style: const TextStyle(fontSize: 16),
                                     )
                                   ],
