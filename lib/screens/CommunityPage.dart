@@ -383,17 +383,23 @@ class _CommunityPage extends State<CommunityPage> {
             ),
           );
         } else if (snapshot.hasData && snapshot.data!.docs.isEmpty) {
-          //TODO: there are no posts
+          //no posts
           return Center(
-            child: Text(
-              'No Posts Yet',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 26,
-                fontFamily: 'Urbanist',
-                fontWeight: FontWeight.w600,
-                letterSpacing: -0.28,
-              ),
+            child: Column(
+              children: [
+                SizedBox(height: 350),
+                Icon(Icons.forum_outlined, size: 40),
+                Text(
+                  'No Posts Yet',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: -0.28,
+                  ),
+                ),
+              ],
             ),
           );
         } else {
@@ -632,17 +638,23 @@ class _CommunityPage extends State<CommunityPage> {
             ),
           );
         } else if (snapshot.hasData && snapshot.data!.docs.isEmpty) {
-          //TODO: there are no posts
+          //no posts
           return Center(
-            child: Text(
-              'No Posts Yet',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 26,
-                fontFamily: 'Urbanist',
-                fontWeight: FontWeight.w600,
-                letterSpacing: -0.28,
-              ),
+            child: Column(
+              children: [
+                SizedBox(height: 350),
+                Icon(Icons.forum_outlined, size: 40),
+                Text(
+                  'No Posts Yet',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: -0.28,
+                  ),
+                ),
+              ],
             ),
           );
         } else {
