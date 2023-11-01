@@ -198,14 +198,28 @@ class _postReply extends State<postReply>{
       timestamp = postData['timestamp'];
 
       return Container(
+        decoration: BoxDecoration(
+          color: backGroundPink.withOpacity(0.2),
+          
+        ),
         
         child: Column(
           children: [
             
             Padding(
-              padding: EdgeInsets.fromLTRB(60, 40, 0, 10),
+              padding: EdgeInsets.fromLTRB(0, 40, 0, 10),
               child: Row(
                 children: [
+                  IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: Colors.black,
+                ),
+            ),
+
                   //PROFILE PIC
                   CircleAvatar(
                     radius: 21,
@@ -221,24 +235,44 @@ class _postReply extends State<postReply>{
                   ),
                   SizedBox(width: 15,),
                   //POST TITLE 
-                  Expanded(
-                    child: Text(
-                      title,
-                      style: TextStyle(
-                      color: pinkColor,
-                      fontSize: 21,
-                      fontFamily: 'Urbanist',
-                      fontWeight: FontWeight.w700,
-                      height: 1.30,
-                      letterSpacing: -0.28,
-                      ),
+                  Text(
+                    username,
+                    style: TextStyle(
+                    color: pinkColor,
+                    fontSize: 21,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w700,
+                    height: 1.30,
+                    letterSpacing: -0.28,
                     ),
                   ),
-            
-            
+                  
                 ],
               ),
             ),
+
+            Padding(
+              padding: EdgeInsets.fromLTRB(20, 10, 15, 10),
+              child: Row(
+                
+                children: [
+                  //POST TITLE 
+                  Expanded(
+                    child: Text(
+                      title, 
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: blackColor,
+                        fontFamily: 'Urbanist',
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: -0.28,),
+                      )
+                  ),
+                  
+                ],
+              ),
+            ),
+
             Padding(
               padding: EdgeInsets.fromLTRB(20, 10, 15, 10),
               child: Row(
@@ -249,7 +283,7 @@ class _postReply extends State<postReply>{
                     child: Text(
                       body, 
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 15.5,
                         color: blackColor,
                         fontFamily: 'Urbanist',
                         fontWeight: FontWeight.w500,
@@ -270,7 +304,7 @@ class _postReply extends State<postReply>{
                   Expanded(
                     child: Text(
                       timestamp, 
-                      textAlign: TextAlign.right,
+                      textAlign: TextAlign.left,
                       style: TextStyle(
                         fontSize: 12,
                         color: grayColor,
@@ -283,6 +317,7 @@ class _postReply extends State<postReply>{
                 ],
               ),
             ),
+            SizedBox(height: 10,),
           ],
         ),
       );
@@ -331,11 +366,11 @@ class _postReply extends State<postReply>{
     
     if (result.docs.isEmpty) //no replies for this date
     {
-      return Container(
+      return Center(
         child: Column(
           children: [
             Center(
-              //notification bell image
+              //no replies image
               child: Padding(
                 padding: EdgeInsets.only(top: 100),
                 child: Image.asset(
@@ -349,7 +384,7 @@ class _postReply extends State<postReply>{
                 //message
                 margin: EdgeInsets.fromLTRB(30, 20, 30, 80),
                 child: Text(
-                  'No Replies',
+                  'No Replies Yet',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 24,
@@ -451,59 +486,53 @@ class _postReply extends State<postReply>{
                           Container(//ACTUAL POST REPLY AND TIMESTAMP 
                             margin: EdgeInsets.symmetric(vertical: 0,horizontal: 10),
                             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10,),
-                            height:100,
-                            width: 350,
+                            
                             decoration: BoxDecoration(
                               color: backGroundPink.withOpacity(0.3),
                               border: Border.all(color: backGroundPink, width: 2),
                               borderRadius: BorderRadius.circular(13),
                             ),
                             child: 
-                            Row(
-                              children: [
-                                
+                            IntrinsicHeight(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  
                                 Expanded(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      
-                                    Expanded(
-                                      child: Text(
-                                        ReplyBody,
-                                        //overflow: TextOverflow.visible,
-                                        //maxLines: 3,
-                                        softWrap: true,
-                                        style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 11,
-                                        fontFamily: 'Urbanist',
-                                        fontWeight: FontWeight.w600,
-                                        height: 1.30,
-                                        letterSpacing: -0.28,
-                                        ),
-                                      ),
+                                  child: Text(
+                                    ReplyBody,
+                                    //overflow: TextOverflow.visible,
+                                    //maxLines: 3,
+                                    softWrap: true,
+                                    style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 11.5,
+                                    fontFamily: 'Urbanist',
+                                    fontWeight: FontWeight.w600,
+                                    height: 1.30,
+                                    letterSpacing: -0.28,
                                     ),
-                                    //SizedBox(height: 4,),
-                                    Align(
-                                      alignment: Alignment.bottomLeft,
-                                      child: Text(
-                                        Replytimestamp,
-                                        style: TextStyle(
-                                        color: Color.fromARGB(200, 121, 113, 113),
-                                        fontSize: 9,
-                                        fontFamily: 'Urbanist',
-                                        fontWeight: FontWeight.w700,
-                                        height: 1.30,
-                                        letterSpacing: -0.28,
-                                        ),
-                                      ),
-                                    ),
-                                        
-                                    ],
-                                    ),
+                                  ),
                                 ),
-                              ],
+                                SizedBox(height: 10,),
+                                Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text(
+                                    Replytimestamp,
+                                    style: TextStyle(
+                                    color: Color.fromARGB(200, 121, 113, 113),
+                                    fontSize: 9,
+                                    fontFamily: 'Urbanist',
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.30,
+                                    letterSpacing: -0.28,
+                                    ),
+                                  ),
+                                ),
+                                    
+                                ],
+                                ),
                             ),
                                   
                           ),
@@ -544,25 +573,12 @@ class _postReply extends State<postReply>{
       body: Stack(
         children: [
           
-          Padding(
-            padding: EdgeInsets.fromLTRB(0, 40, 0, 5),
-            child: 
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(
-                  Icons.arrow_back,
-                  color: Colors.black,
-                ),
-            ),
-          ),
-
+          
           Column(
             children: [
               FutureBuilder<Widget>(
-            future: displayPost(postId),
-            builder: (BuildContext context,
+              future: displayPost(postId),
+              builder: (BuildContext context,
                 AsyncSnapshot<Widget> snapshot) {
               if (snapshot.hasData) {
                 return snapshot.data!;
