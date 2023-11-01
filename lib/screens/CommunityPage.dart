@@ -238,10 +238,17 @@ class _CommunityPage extends State<CommunityPage> {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Icon(
-                                  Icons.account_circle_outlined,
-                                  color: Colors.black,
-                                  size: 40,
+                                CircleAvatar(
+                                  radius: 18,
+                                  backgroundColor: pinkColor.withOpacity(0.5),
+                                  child: Text(
+                                    username.substring(0, 1).toUpperCase(),
+                                    style: TextStyle(
+                                      fontFamily: 'Urbanist',
+                                      fontSize: 22,
+                                      color: blackColor,
+                                    ),
+                                  ),
                                 ),
                                 Text(
                                   "  $username",
@@ -256,6 +263,9 @@ class _CommunityPage extends State<CommunityPage> {
                                 ),
                               ],
                             ),
+                          ),
+                          SizedBox(
+                            height: 8,
                           ),
                           Container(
                             margin: EdgeInsets.only(bottom: 14),
@@ -498,10 +508,17 @@ class _CommunityPage extends State<CommunityPage> {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Icon(
-                                  Icons.account_circle_outlined,
-                                  color: Colors.black,
-                                  size: 40,
+                                CircleAvatar(
+                                  radius: 18,
+                                  backgroundColor: pinkColor.withOpacity(0.5),
+                                  child: Text(
+                                    username.substring(0, 1).toUpperCase(),
+                                    style: TextStyle(
+                                      fontFamily: 'Urbanist',
+                                      fontSize: 22,
+                                      color: blackColor,
+                                    ),
+                                  ),
                                 ),
                                 Text(
                                   "  $username",
@@ -516,6 +533,9 @@ class _CommunityPage extends State<CommunityPage> {
                                 ),
                               ],
                             ),
+                          ),
+                          SizedBox(
+                            height: 8,
                           ),
                           Container(
                             margin: EdgeInsets.only(bottom: 14),
