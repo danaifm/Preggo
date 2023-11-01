@@ -249,7 +249,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        '\nweek\n \n   ${x + 1}',
+                                        '\nweek\n \n    ${x + 1}',
                                         // so it starts from week 1
                                         style:
                                             TextStyle(fontFamily: 'Urbanist'),
@@ -272,7 +272,6 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-
                         children: [
                           //weight icon
                           Container(
@@ -476,8 +475,8 @@ class _PregnancyTracking extends State<PregnancyTracking> {
           return Scaffold(
             body: Center(
               child: Container(
-                height: 200,
-                width: 200,
+                // height: 200,
+                // width: 200,
                 child: CircularProgressIndicator(
                   color: pinkColor,
                   strokeWidth: 5,

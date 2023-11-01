@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:googleapis/calendar/v3.dart';
 import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
 import 'package:preggo/colors.dart';
+import 'package:preggo/editAppt.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
@@ -253,27 +254,47 @@ class _viewAppointment extends State<viewAppointment> {
                       ),
                     ),
                     Row(
+                      //start edit and delete
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 5),
-                          height: 45.0,
-                          child: Center(
-                            child: ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: blackColor,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(40)),
-                                padding: const EdgeInsets.only(
-                                    left: 37, top: 15, right: 37, bottom: 15),
-                              ),
-                              child: const Text(
-                                "Edit",
-                              ),
-                            ),
-                          ),
-                        ),
+                        appointmentDetails.startTime.isAfter(DateTime.now())
+                            ? Container(
+                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                height: 45.0,
+                                child: Center(
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      print(
+                                          'REDIRECTING FROM VIEW APPTS WITH EVENT ID $_eventID');
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              editAppt(appointmentDetails),
+                                          // settings: RouteSettings(
+                                          //     arguments: appointmentDetails),
+                                        ),
+                                      ).then(onGoBack);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: blackColor,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(40)),
+                                      padding: const EdgeInsets.only(
+                                          left: 37,
+                                          top: 15,
+                                          right: 37,
+                                          bottom: 15),
+                                    ),
+                                    child: const Text(
+                                      "Edit",
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Container(),
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 5),
                           height: 45.0,
@@ -298,7 +319,7 @@ class _viewAppointment extends State<viewAppointment> {
                           ),
                         ),
                       ],
-                    ),
+                    ), //to this row : edit and delete
                   ],
                 ),
               ),
@@ -521,6 +542,7 @@ class _viewAppointment extends State<viewAppointment> {
       }
     }
     googleCalendarApi.events.delete(id!, eventID);
+    setState(() {});
   }
 
   @override

@@ -60,9 +60,8 @@ dependencies:
   syncfusion_flutter_calendar: ^23.1.38
   bloc: ^8.1.0
   flutter_bloc: ^8.1.1
-  flutter_toggle_tab: ^1.4.1
   shared_preferences: ^2.2.1
-
+  flutter_toggle_tab: ^1.4.1
 
 
 dev_dependencies:

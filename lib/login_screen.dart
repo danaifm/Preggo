@@ -12,6 +12,9 @@ import 'package:preggo/screens/post_community.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:preggo/screens/post_community.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:preggo/screens/CommunityPage.dart';
+import 'package:preggo/screens/post_community.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -94,11 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (credential?.user != null) {
           /// Save Username local
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setString(
-            "username",
-            _usernameFieldController.text.trim().capitalizeAnyWord,
-          );
-
+          prefs.setString("username", _usernameFieldController.text.trim());
           await getRemainders();
           setState(() {
             isUserValid = true;
