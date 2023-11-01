@@ -6,12 +6,15 @@ import 'package:preggo/colors.dart';
 import 'package:preggo/pregnancyInfo.dart';
 import 'package:preggo/screens/ToolsPage.dart';
 import 'package:preggo/weightFeature/addWeight.dart';
+import 'package:preggo/weightFeature/deleteWeight.dart';
 import 'package:preggo/weightFeature/editWeight.dart';
 import 'package:intl/intl.dart';
 
 class ViewWeight extends StatefulWidget {
+  late DocumentReference _documentReference;
+
   //final String pregnancyInfo_id;
-  const ViewWeight({
+  ViewWeight({
     super.key,
   });
 
@@ -67,7 +70,7 @@ class _ViewWeight extends State<ViewWeight> {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     //String Pid = getPregnancyInfoId() as String;
     String userUid = getUserId();
-
+    //to get pregnancy info document ID
     QuerySnapshot pregnancyInfoSnapshot = await firestore
         .collection('users')
         .doc(userUid)
@@ -76,6 +79,17 @@ class _ViewWeight extends State<ViewWeight> {
 
     DocumentSnapshot firstDocument = pregnancyInfoSnapshot.docs[0];
     String Pid = firstDocument.id;
+
+    // to get weight id
+    // QuerySnapshot  = await firestore
+    //     .collection('users')
+    //     .doc(userUid)
+    //     .collection('pregnancyInfo')
+    //     .doc(Pid)
+    //     .collection('weight')
+    //     .get();
+
+    //     String weightId =
 
     QuerySnapshot result = await firestore
         .collection('users')
@@ -140,7 +154,7 @@ class _ViewWeight extends State<ViewWeight> {
             shrinkWrap: true,
             itemCount: weightResult.length,
             itemBuilder: (context, index) {
-              //String id = weightResult[index].data()['id'] ?? '';
+              String id = weightResult[index].data()['id'] ?? '';
               String weight = weightResult[index].data()['weight'] ?? '';
               String dateTime = weightResult[index].data()['dateTime'] ?? '';
               //DateTime date = dateTime.toDate();
@@ -189,58 +203,22 @@ class _ViewWeight extends State<ViewWeight> {
                           ),
                         ),
 
-                        //delete button
-                        Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: GestureDetector(
-                            onTap: () {
-                              //String documentId = id;
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => addWeight(),
-
-                                  //settings: RouteSettings(arguments: documentId)
-                                ),
-                              );
-                            },
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Text(
-                                "delete |",
-                                style: TextStyle(
-                                  color: Colors.redAccent,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: 'Urbanist',
-                                ),
-                              ),
-                              // child: Icon(
-                              //   Icons.delete,
-                              //   color: Colors.redAccent,
-                              //   size: 20,
-                              // ),
-                            ),
-                          ),
-                        ),
-
                         //edit button
                         GestureDetector(
                           onTap: () {
-                            //String documentId = id;
+                            String documentId = id;
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => addWeight(),
-
-                                //settings: RouteSettings(arguments: documentId)
-                              ),
+                                  builder: (context) => addWeight(),
+                                  settings:
+                                      RouteSettings(arguments: documentId)),
                             );
                           },
                           child: Align(
                             alignment: Alignment.centerRight,
                             child: Text(
-                              "edit ",
+                              "edit | ",
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 16,
@@ -251,6 +229,39 @@ class _ViewWeight extends State<ViewWeight> {
                             // child: Icon(
                             //   Icons.edit,
                             //   color: Colors.black,
+                            //   size: 20,
+                            // ),
+                          ),
+                        ),
+
+                        //delete button
+                        GestureDetector(
+                          onTap: () {
+                            String documentId = id;
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => deleteWeight(),
+                                settings: RouteSettings(arguments: documentId),
+                              ),
+                            ).then((value) {
+                              setState(() {});
+                            });
+                          },
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              "delete ",
+                              style: TextStyle(
+                                color: Colors.redAccent,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: 'Urbanist',
+                              ),
+                            ),
+                            // child: Icon(
+                            //   Icons.delete,
+                            //   color: Colors.redAccent,
                             //   size: 20,
                             // ),
                           ),
@@ -465,39 +476,38 @@ class _ViewWeight extends State<ViewWeight> {
   }
 }
 
+//   child: ListView.builder(
+//     itemCount: 3,
+//     shrinkWrap: true,
+//     //physics: NeverScrollableScrollPhysics(),
+//     itemBuilder: (context, Index) {
+//       return Padding(
+//         padding: const EdgeInsets.only(left: 8, top: 8),
+//         child: Card(
+//           elevation: 4,
+//           shape: RoundedRectangleBorder(
+//               borderRadius: BorderRadius.circular(15)),
+//           child: ListTile(
+//             leading: Image(
+//               height: 50,
+//               width: 30,
+//               image: AssetImage("assets/images/dumbbell.png"),
+//             ),
+//             title: Text(
+//               "65 Kg",
+//               style: TextStyle(
+//                 fontSize: 28,
+//                 color: blackColor,
+//               ),
+//             ),
+//             trailing: Icon(
+//               Icons.delete,
+//               color: redColor,
+//             ),
+//           ),
+//         ),
+//       );
+//     },
 
-       //   child: ListView.builder(
-                  //     itemCount: 3,
-                  //     shrinkWrap: true,
-                  //     //physics: NeverScrollableScrollPhysics(),
-                  //     itemBuilder: (context, Index) {
-                  //       return Padding(
-                  //         padding: const EdgeInsets.only(left: 8, top: 8),
-                  //         child: Card(
-                  //           elevation: 4,
-                  //           shape: RoundedRectangleBorder(
-                  //               borderRadius: BorderRadius.circular(15)),
-                  //           child: ListTile(
-                  //             leading: Image(
-                  //               height: 50,
-                  //               width: 30,
-                  //               image: AssetImage("assets/images/dumbbell.png"),
-                  //             ),
-                  //             title: Text(
-                  //               "65 Kg",
-                  //               style: TextStyle(
-                  //                 fontSize: 28,
-                  //                 color: blackColor,
-                  //               ),
-                  //             ),
-                  //             trailing: Icon(
-                  //               Icons.delete,
-                  //               color: redColor,
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       );
-                  //     },
-
-                  //     //YOUR WORK GOES HERE
-                  //   ),
+//     //YOUR WORK GOES HERE
+//   ),

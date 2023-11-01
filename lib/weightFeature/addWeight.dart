@@ -85,14 +85,21 @@ class _fillWeightForm extends State<addWeight> {
         .doc(Pid)
         .collection('weight');
     subCollectionRef.add({
+      "id": "",
       'dateTime': getTimestamp(),
       'weight': weight,
-    }).then((value) {
-      _successDialog();
+    }).then((value) async {
+      await subCollectionRef.doc(value.id).set({
+        "id": value.id, // to bring the weight document id
+      }, SetOptions(merge: true));
+      //_successDialog();
       // setState(() {
       //   _weightController.clear();
       // });
     }).catchError((error) => print('failed to add info:$error'));
+    if (mounted) {
+      _successDialog();
+    }
   }
 
   void backButton() {
