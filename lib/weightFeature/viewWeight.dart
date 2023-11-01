@@ -44,33 +44,44 @@ class _ViewWeight extends State<ViewWeight> {
   // Future<String> getPregnancyInfoId() async {
   //   FirebaseFirestore firestore = FirebaseFirestore.instance;
   //   String userUid = getUserId();
-  //   QuerySnapshot usersSnapshot = await firestore.collection('users').get();
 
-  //   for (QueryDocumentSnapshot userDoc in usersSnapshot.docs) {
   //     QuerySnapshot pregnancyInfoSnapshot = await firestore
   //         .collection('users')
-  //         .doc(userDoc.id)
+  //         .doc(userUid)
   //         .collection('pregnancyInfo')
   //         .get();
 
-  //     for (QueryDocumentSnapshot pregnancyDoc in pregnancyInfoSnapshot.docs) {
+  //          for (QueryDocumentSnapshot pregnancyDoc in pregnancyInfoSnapshot.docs[0]) {
   //       String Pid = pregnancyDoc.id;
   //       return Pid;
   //     }
 
-  //     // Add a default return statement
   //   }
-  //   return "";
+
+  //   return pregnancyInfoSnapshot;
+
+  //   // Add a default return statement
   // }
 
   Future<Widget> getWeight() async {
-    //FirebaseFirestore firestore = FirebaseFirestore.instance;
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    //String Pid = getPregnancyInfoId() as String;
     String userUid = getUserId();
-    QuerySnapshot result = await FirebaseFirestore.instance
+
+    QuerySnapshot pregnancyInfoSnapshot = await firestore
         .collection('users')
         .doc(userUid)
         .collection('pregnancyInfo')
-        .doc("HMEBTKrnOYnmxPmBMHuV")
+        .get();
+
+    DocumentSnapshot firstDocument = pregnancyInfoSnapshot.docs[0];
+    String Pid = firstDocument.id;
+
+    QuerySnapshot result = await firestore
+        .collection('users')
+        .doc(userUid)
+        .collection('pregnancyInfo')
+        .doc(Pid)
         .collection('weight')
         .get();
 
@@ -84,10 +95,10 @@ class _ViewWeight extends State<ViewWeight> {
             Center(
               //notification bell image
               child: Padding(
-                padding: EdgeInsets.only(top: 120),
+                padding: EdgeInsets.only(top: 90),
                 child: Image.asset(
-                  'assets/images/noReminder.png',
-                  height: 100,
+                  'assets/images/no-sport.png',
+                  height: 90,
                   width: 100,
                 ),
               ),
@@ -177,6 +188,43 @@ class _ViewWeight extends State<ViewWeight> {
                             ),
                           ),
                         ),
+
+                        //delete button
+                        Padding(
+                          padding: const EdgeInsets.only(right: 5),
+                          child: GestureDetector(
+                            onTap: () {
+                              //String documentId = id;
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => addWeight(),
+
+                                  //settings: RouteSettings(arguments: documentId)
+                                ),
+                              );
+                            },
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                "delete |",
+                                style: TextStyle(
+                                  color: Colors.redAccent,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: 'Urbanist',
+                                ),
+                              ),
+                              // child: Icon(
+                              //   Icons.delete,
+                              //   color: Colors.redAccent,
+                              //   size: 20,
+                              // ),
+                            ),
+                          ),
+                        ),
+
+                        //edit button
                         GestureDetector(
                           onTap: () {
                             //String documentId = id;
@@ -191,13 +239,22 @@ class _ViewWeight extends State<ViewWeight> {
                           },
                           child: Align(
                             alignment: Alignment.centerRight,
-                            child: Icon(
-                              Icons.edit,
-                              color: Colors.black,
-                              size: 20,
+                            child: Text(
+                              "edit ",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: 'Urbanist',
+                              ),
                             ),
+                            // child: Icon(
+                            //   Icons.edit,
+                            //   color: Colors.black,
+                            //   size: 20,
+                            // ),
                           ),
-                        )
+                        ),
                       ]),
                     ),
                   ],
@@ -315,11 +372,7 @@ class _ViewWeight extends State<ViewWeight> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ToolsPage(),
-                          ));
+                      Navigator.of(context).pop();
                     },
                     icon: const Icon(
                       Icons.arrow_back,

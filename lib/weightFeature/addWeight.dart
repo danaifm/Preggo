@@ -65,15 +65,24 @@ class _fillWeightForm extends State<addWeight> {
   //     }
   //   }
 
-  void addWeight(String weight, String dateTime) {
+  Future<void> addWeight(String weight, String dateTime) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     String userUid = getUserId();
+
+    QuerySnapshot pregnancyInfoSnapshot = await firestore
+        .collection('users')
+        .doc(userUid)
+        .collection('pregnancyInfo')
+        .get();
+
+    DocumentSnapshot firstDocument = pregnancyInfoSnapshot.docs[0];
+    String Pid = firstDocument.id;
 
     CollectionReference subCollectionRef = firestore
         .collection('users')
         .doc(userUid)
         .collection('pregnancyInfo')
-        .doc("HMEBTKrnOYnmxPmBMHuV")
+        .doc(Pid)
         .collection('weight');
     subCollectionRef.add({
       'dateTime': getTimestamp(),
@@ -397,7 +406,7 @@ class _fillWeightForm extends State<addWeight> {
                                             fillColor: Color(0xFFF7F8F9),
                                           ),
                                           validator: (value) {
-                                            if (value!.isEmpty) {
+                                            if (value!.trim().isEmpty) {
                                               return "please enter your weight.";
                                             }
 
@@ -424,7 +433,7 @@ class _fillWeightForm extends State<addWeight> {
                                             if (_formKey.currentState!
                                                 .validate()) {
                                               String weightNum =
-                                                  _weightController.text;
+                                                  _weightController.text.trim();
 
                                               String Date_Time = getTimestamp();
 
