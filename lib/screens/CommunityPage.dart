@@ -487,35 +487,20 @@ class _CommunityPage extends State<CommunityPage> {
                           //         settings: RouteSettings(arguments: postID),
                           //       ),).then(onGoBack);
                         }, //TODO: rana's page
-                        child: Container(
-                          margin: EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 10,
-                          ),
-                          height: 110,
-                          width: 350,
-                          decoration: BoxDecoration(
-                            color: backGroundPink.withOpacity(0.3),
-                            border: Border.all(color: backGroundPink, width: 2),
-                            borderRadius: BorderRadius.circular(13),
-                          ),
-                          child: Row(
-                            children: [
-                              Column(
+                        child: Column(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(left: 15, bottom: 1),
+                              child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  SizedBox(
-                                    height: 10,
-                                  ),
                                   Icon(
                                     Icons.account_circle_outlined,
                                     color: Colors.black,
-                                    size: 38,
+                                    size: 40,
                                   ),
                                   Text(
-                                    username,
+                                    "  $username",
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 14,
@@ -527,106 +512,124 @@ class _CommunityPage extends State<CommunityPage> {
                                   ),
                                 ],
                               ),
-                              SizedBox(
-                                width: 25,
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(bottom: 14),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 10,
                               ),
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      postTitle,
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                        fontFamily: 'Urbanist',
-                                        fontWeight: FontWeight.w800,
-                                        height: 1.30,
-                                        letterSpacing: -0.28,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        postBody,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 3,
-                                        softWrap: true,
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 11,
-                                          fontFamily: 'Urbanist',
-                                          fontWeight: FontWeight.w600,
-                                          height: 1.30,
-                                          letterSpacing: -0.28,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 4,
-                                    ),
-                                    Row(
+                              height: 110,
+                              width: 330,
+                              decoration: BoxDecoration(
+                                color: backGroundPink.withOpacity(0.3),
+                                border:
+                                    Border.all(color: backGroundPink, width: 2),
+                                borderRadius: BorderRadius.circular(13),
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
+                                        Text(
+                                          postTitle,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                            fontFamily: 'Urbanist',
+                                            fontWeight: FontWeight.w800,
+                                            height: 1.30,
+                                            letterSpacing: -0.28,
+                                          ),
+                                        ),
                                         SizedBox(
-                                          width: 90,
-                                          height: 10,
-                                          child: Align(
-                                            alignment: Alignment.bottomLeft,
-                                            child: Text(
-                                              stamp,
-                                              style: TextStyle(
-                                                color: Color.fromARGB(
-                                                    200, 121, 113, 113),
-                                                fontSize: 9,
-                                                fontFamily: 'Urbanist',
-                                                fontWeight: FontWeight.w700,
-                                                height: 1.30,
-                                                letterSpacing: -0.28,
-                                              ),
+                                          height: 5,
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            postBody,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 3,
+                                            softWrap: true,
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 11,
+                                              fontFamily: 'Urbanist',
+                                              fontWeight: FontWeight.w600,
+                                              height: 1.30,
+                                              letterSpacing: -0.28,
                                             ),
                                           ),
                                         ),
-                                        SizedBox(width: 90),
-                                        Align(
-                                          alignment: Alignment.bottomRight,
-                                          child: Row(
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    right: 1.0),
-                                                child: Icon(
-                                                  Icons.chat_bubble_outline,
-                                                  color: Color.fromARGB(
-                                                      200, 121, 113, 113),
-                                                  size: 15,
+                                        SizedBox(
+                                          height: 4,
+                                        ),
+                                        Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 260,
+                                              height: 10,
+                                              child: Align(
+                                                alignment: Alignment.bottomLeft,
+                                                child: Text(
+                                                  stamp,
+                                                  style: TextStyle(
+                                                    color: Color.fromARGB(
+                                                        200, 121, 113, 113),
+                                                    fontSize: 9,
+                                                    fontFamily: 'Urbanist',
+                                                    fontWeight: FontWeight.w700,
+                                                    height: 1.30,
+                                                    letterSpacing: -0.28,
+                                                  ),
                                                 ),
                                               ),
-                                              Text(
-                                                comments,
-                                                style: TextStyle(
-                                                  color: Color.fromARGB(
-                                                      200, 121, 113, 113),
-                                                  fontSize: 12,
-                                                  fontFamily: 'Urbanist',
-                                                  fontWeight: FontWeight.w700,
-                                                  height: 1.30,
-                                                  letterSpacing: -0.28,
-                                                ),
-                                              )
-                                            ],
-                                          ),
+                                            ),
+                                            Align(
+                                              alignment: Alignment.bottomRight,
+                                              child: Row(
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 1.0),
+                                                    child: Icon(
+                                                      Icons.chat_bubble_outline,
+                                                      color: Color.fromARGB(
+                                                          200, 121, 113, 113),
+                                                      size: 15,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    comments,
+                                                    style: TextStyle(
+                                                      color: Color.fromARGB(
+                                                          200, 121, 113, 113),
+                                                      fontSize: 12,
+                                                      fontFamily: 'Urbanist',
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      height: 1.30,
+                                                      letterSpacing: -0.28,
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       );
                     } else {
