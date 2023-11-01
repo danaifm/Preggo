@@ -1,5 +1,5 @@
-import 'dart:math';
-
+import 'dart:convert';
+import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +10,7 @@ import 'package:preggo/pregnancyInfo.dart';
 import 'package:preggo/screens/ToolsPage.dart';
 import 'package:preggo/weightFeature/addWeight.dart';
 import 'package:preggo/weightFeature/editWeight.dart';
+import 'package:preggo/weightFeature/viewWeight.dart';
 import 'package:intl/intl.dart';
 
 class deleteWeight extends StatefulWidget {
@@ -24,7 +25,7 @@ class _deleteWeight extends State<deleteWeight> {
   // void initState() {
   //   super.initState();
   //   WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-  //     documentId = ModalRoute.of(context)?.settings.arguments as String;
+  //     weightId = ModalRoute.of(context)?.settings.arguments as String;
   //     print("weight id :: $weightId ##");
   //     await DeleteWeight();
   //   });
@@ -42,7 +43,7 @@ class _deleteWeight extends State<deleteWeight> {
   // }
 
   Widget build(BuildContext context) {
-    // TODO: implement build
+    // weightid = ModalRoute.of(context)?.settings.arguments as String;
     throw UnimplementedError();
   }
 }

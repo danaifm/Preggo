@@ -66,6 +66,201 @@ class _ViewWeight extends State<ViewWeight> {
   //   // Add a default return statement
   // }
 
+  Future<void> deleteWeightSuccess(
+    BuildContext context,
+  ) async {
+    //deleting happens here
+
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Center(
+            child: SizedBox(
+              height: MediaQuery.sizeOf(context).height * 0.40,
+              width: MediaQuery.sizeOf(context).width * 0.85,
+              child: Dialog(
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: const BoxDecoration(
+                    color: Color.fromRGBO(255, 255, 255, 1),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(height: 20),
+                        Container(
+                          padding: const EdgeInsets.all(15),
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: green,
+                          ),
+                          child: const Icon(
+                            Icons.check,
+                            color: Color.fromRGBO(255, 255, 255, 1),
+                            size: 35,
+                          ),
+                        ),
+                        const SizedBox(height: 25),
+
+                        // Done
+                        const Text(
+                          "weight deleted successfully!",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 0, 0, 0),
+                            fontSize: 17,
+                            fontFamily: 'Urbanist',
+                            fontWeight: FontWeight.w700,
+                            height: 1.30,
+                            letterSpacing: -0.28,
+                          ),
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        /// OK Button
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          width: MediaQuery.sizeOf(context).width * 0.80,
+                          height: 45.0,
+                          child: Center(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pop();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: blackColor,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(40)),
+                                padding: const EdgeInsets.only(
+                                    left: 70, top: 15, right: 70, bottom: 15),
+                              ),
+                              child: const Text(
+                                "OK",
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  Future<void> deleteWeightById({
+    required String weightId,
+    required String pregnancyInfoId,
+    required BuildContext context,
+  }) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          content: SizedBox(
+            height: 130,
+            child: Column(
+              children: <Widget>[
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 10, bottom: 30),
+                    child: Text(
+                      'Are you sure you want to delete this weight?',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      height: 45.0,
+                      child: Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: blackColor,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40)),
+                            padding: const EdgeInsets.only(
+                                left: 30, top: 15, right: 30, bottom: 15),
+                          ),
+                          child: const Text(
+                            "Cancel",
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      height: 45.0,
+                      child: Center(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            try {
+                              final usersCollection = FirebaseFirestore.instance
+                                  .collection("users");
+                              final String? currentUserId =
+                                  FirebaseAuth.instance.currentUser?.uid;
+                              final reminderCollection = usersCollection
+                                  .doc(currentUserId)
+                                  .collection("pregnancyInfo")
+                                  .doc(pregnancyInfoId)
+                                  .collection("weight");
+
+                              /// Delete now
+                              await reminderCollection
+                                  .doc(weightId)
+                                  .delete()
+                                  .then((value) async {
+                                if (context.mounted) {
+                                  Navigator.of(context).pop();
+                                  await deleteWeightSuccess(context);
+                                }
+                              });
+                            } catch (error) {
+                              print("Delete weight:: $error ##");
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.error,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40)),
+                            padding: const EdgeInsets.only(
+                                left: 30, top: 15, right: 30, bottom: 15),
+                          ),
+                          child: const Text(
+                            "Delete",
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Future<Widget> getWeight() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     //String Pid = getPregnancyInfoId() as String;
@@ -218,7 +413,7 @@ class _ViewWeight extends State<ViewWeight> {
                           child: Align(
                             alignment: Alignment.centerRight,
                             child: Text(
-                              "edit | ",
+                              "edit |",
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 16,
@@ -233,25 +428,18 @@ class _ViewWeight extends State<ViewWeight> {
                             // ),
                           ),
                         ),
-
                         //delete button
                         GestureDetector(
                           onTap: () {
-                            String documentId = id;
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => deleteWeight(),
-                                settings: RouteSettings(arguments: documentId),
-                              ),
-                            ).then((value) {
-                              setState(() {});
-                            });
+                            deleteWeightById(
+                                weightId: id,
+                                pregnancyInfoId: Pid,
+                                context: context);
                           },
                           child: Align(
                             alignment: Alignment.centerRight,
                             child: Text(
-                              "delete ",
+                              " delete",
                               style: TextStyle(
                                 color: Colors.redAccent,
                                 fontSize: 16,
