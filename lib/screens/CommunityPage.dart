@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_toggle_tab/flutter_toggle_tab.dart';
-import 'package:googleapis/apigeeregistry/v1.dart';
 import '../colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -162,502 +161,494 @@ class _CommunityPage extends State<CommunityPage> {
   }
 
   Widget allPosts() {
-    return Container(
-      child: FutureBuilder(
-        future: _allPosts,
-        builder: (context, snapshot) {
-          if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-            //there are posts
-            snapshot.data!.docs.sort((a, b) {
-              //SORT BY LATEST
-              // Convert 'timestamp' strings to DateTime objects for comparison
-              DateFormat tF = DateFormat("hh:mm a");
-              DateFormat dF = DateFormat("yyyy-MM-dd");
+    return FutureBuilder(
+      future: _allPosts,
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+          //there are posts
+          snapshot.data!.docs.sort((a, b) {
+            //SORT BY LATEST
+            // Convert 'timestamp' strings to DateTime objects for comparison
+            DateFormat tF = DateFormat("hh:mm a");
+            DateFormat dF = DateFormat("yyyy-MM-dd");
 
-              DateTime timeA =
-                  tF.parse(a.data()['timestamp'].toString().substring(11));
-              DateTime timeB =
-                  tF.parse(b.data()['timestamp'].toString().substring(11));
+            DateTime timeA =
+                tF.parse(a.data()['timestamp'].toString().substring(11));
+            DateTime timeB =
+                tF.parse(b.data()['timestamp'].toString().substring(11));
 
-              DateTime dateA = dF.parse(a
-                  .data()['timestamp']
-                  .toString()
-                  .substring(0, 10)
-                  .replaceAll('/', '-'));
-              DateTime dateB = dF.parse(b
-                  .data()['timestamp']
-                  .toString()
-                  .substring(0, 10)
-                  .replaceAll('/', '-'));
+            DateTime dateA = dF.parse(a
+                .data()['timestamp']
+                .toString()
+                .substring(0, 10)
+                .replaceAll('/', '-'));
+            DateTime dateB = dF.parse(b
+                .data()['timestamp']
+                .toString()
+                .substring(0, 10)
+                .replaceAll('/', '-'));
 
-              if (dateA.compareTo(dateB) != 0) {
-                return dateB.compareTo(dateA);
-              } else {
-                return timeB.compareTo(timeA);
-              }
-            });
+            if (dateA.compareTo(dateB) != 0) {
+              return dateB.compareTo(dateA);
+            } else {
+              return timeB.compareTo(timeA);
+            }
+          });
 
-            return SingleChildScrollView(
-              physics: AlwaysScrollableScrollPhysics(),
-              scrollDirection: Axis.vertical,
-              child: SizedBox(
-                height: 800,
-                child: ListView.builder(
-                  itemCount: snapshot.data!.docs.length + 2,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      return Container(height: 70);
-                    } else if (index > 0 &&
-                        index < snapshot.data!.docs.length + 1) {
-                      String username =
-                          snapshot.data!.docs[index - 1].data()['username'];
-                      String postTitle =
-                          snapshot.data!.docs[index - 1].data()['title'];
-                      String postBody =
-                          snapshot.data!.docs[index - 1].data()['body'];
-                      String stamp =
-                          snapshot.data!.docs[index - 1].data()['timestamp'];
-                      String comments = snapshot.data!.docs[index - 1]
-                          .data()['comments']
-                          .toString();
-                      String postID = snapshot
-                          .data!.docs[index - 1].reference.id
-                          .toString();
-                      return GestureDetector(
-                        onTap: () {
-                          print(postID);
-                          //  Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //         builder: (context) => (RANAS PAGE)
-                          //         settings: RouteSettings(arguments: postID),
-                          //       ),).then(onGoBack);
-                        }, //TODO: rana's page
-                        child: Column(
-                          children: [
-                            Container(
-                              margin: EdgeInsets.only(left: 15, bottom: 1),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.account_circle_outlined,
+          return SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            child: SizedBox(
+              height: 800,
+              child: ListView.builder(
+                itemCount: snapshot.data!.docs.length + 2,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return Container(height: 70);
+                  } else if (index > 0 &&
+                      index < snapshot.data!.docs.length + 1) {
+                    String username =
+                        snapshot.data!.docs[index - 1].data()['username'];
+                    String postTitle =
+                        snapshot.data!.docs[index - 1].data()['title'];
+                    String postBody =
+                        snapshot.data!.docs[index - 1].data()['body'];
+                    String stamp =
+                        snapshot.data!.docs[index - 1].data()['timestamp'];
+                    String comments = snapshot.data!.docs[index - 1]
+                        .data()['comments']
+                        .toString();
+                    String postID =
+                        snapshot.data!.docs[index - 1].reference.id.toString();
+                    return GestureDetector(
+                      onTap: () {
+                        print(postID);
+                        //  Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //         builder: (context) => (RANAS PAGE)
+                        //         settings: RouteSettings(arguments: postID),
+                        //       ),).then(onGoBack);
+                      }, //TODO: rana's page
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(left: 15, bottom: 1),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.account_circle_outlined,
+                                  color: Colors.black,
+                                  size: 40,
+                                ),
+                                Text(
+                                  "  $username",
+                                  style: TextStyle(
                                     color: Colors.black,
-                                    size: 40,
+                                    fontSize: 14,
+                                    fontFamily: 'Urbanist',
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.30,
+                                    letterSpacing: -0.28,
                                   ),
-                                  Text(
-                                    "  $username",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                      fontFamily: 'Urbanist',
-                                      fontWeight: FontWeight.w700,
-                                      height: 1.30,
-                                      letterSpacing: -0.28,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                            Container(
-                              margin: EdgeInsets.only(bottom: 14),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 10,
-                              ),
-                              height: 110,
-                              width: 330,
-                              decoration: BoxDecoration(
-                                color: backGroundPink.withOpacity(0.3),
-                                border:
-                                    Border.all(color: backGroundPink, width: 2),
-                                borderRadius: BorderRadius.circular(13),
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          postTitle,
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 14),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 10,
+                            ),
+                            height: 110,
+                            width: 330,
+                            decoration: BoxDecoration(
+                              color: backGroundPink.withOpacity(0.3),
+                              border:
+                                  Border.all(color: backGroundPink, width: 2),
+                              borderRadius: BorderRadius.circular(13),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        postTitle,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontFamily: 'Urbanist',
+                                          fontWeight: FontWeight.w800,
+                                          height: 1.30,
+                                          letterSpacing: -0.28,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          postBody,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 3,
+                                          softWrap: true,
                                           style: TextStyle(
                                             color: Colors.black,
-                                            fontSize: 14,
+                                            fontSize: 11,
                                             fontFamily: 'Urbanist',
-                                            fontWeight: FontWeight.w800,
+                                            fontWeight: FontWeight.w600,
                                             height: 1.30,
                                             letterSpacing: -0.28,
                                           ),
                                         ),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Expanded(
-                                          child: Text(
-                                            postBody,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 3,
-                                            softWrap: true,
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 11,
-                                              fontFamily: 'Urbanist',
-                                              fontWeight: FontWeight.w600,
-                                              height: 1.30,
-                                              letterSpacing: -0.28,
+                                      ),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 260,
+                                            height: 10,
+                                            child: Align(
+                                              alignment: Alignment.bottomLeft,
+                                              child: Text(
+                                                stamp,
+                                                style: TextStyle(
+                                                  color: Color.fromARGB(
+                                                      200, 121, 113, 113),
+                                                  fontSize: 9,
+                                                  fontFamily: 'Urbanist',
+                                                  fontWeight: FontWeight.w700,
+                                                  height: 1.30,
+                                                  letterSpacing: -0.28,
+                                                ),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          height: 4,
-                                        ),
-                                        Row(
-                                          children: [
-                                            SizedBox(
-                                              width: 260,
-                                              height: 10,
-                                              child: Align(
-                                                alignment: Alignment.bottomLeft,
-                                                child: Text(
-                                                  stamp,
+                                          Align(
+                                            alignment: Alignment.bottomRight,
+                                            child: Row(
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 1.0),
+                                                  child: Icon(
+                                                    Icons.chat_bubble_outline,
+                                                    color: Color.fromARGB(
+                                                        200, 121, 113, 113),
+                                                    size: 15,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  comments,
                                                   style: TextStyle(
                                                     color: Color.fromARGB(
                                                         200, 121, 113, 113),
-                                                    fontSize: 9,
+                                                    fontSize: 12,
                                                     fontFamily: 'Urbanist',
                                                     fontWeight: FontWeight.w700,
                                                     height: 1.30,
                                                     letterSpacing: -0.28,
                                                   ),
-                                                ),
-                                              ),
+                                                )
+                                              ],
                                             ),
-                                            Align(
-                                              alignment: Alignment.bottomRight,
-                                              child: Row(
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            right: 1.0),
-                                                    child: Icon(
-                                                      Icons.chat_bubble_outline,
-                                                      color: Color.fromARGB(
-                                                          200, 121, 113, 113),
-                                                      size: 15,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    comments,
-                                                    style: TextStyle(
-                                                      color: Color.fromARGB(
-                                                          200, 121, 113, 113),
-                                                      fontSize: 12,
-                                                      fontFamily: 'Urbanist',
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                      height: 1.30,
-                                                      letterSpacing: -0.28,
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      );
-                    } else {
-                      return Container(height: 185);
-                    }
-                  },
-                ),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else {
+                    return Container(height: 185);
+                  }
+                },
               ),
-            );
-          } else if (snapshot.hasData && snapshot.data!.docs.isEmpty) {
-            //TODO: there are no posts
-            return Center(
-              child: Text(
-                'No Posts Yet',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 26,
-                  fontFamily: 'Urbanist',
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: -0.28,
-                ),
+            ),
+          );
+        } else if (snapshot.hasData && snapshot.data!.docs.isEmpty) {
+          //TODO: there are no posts
+          return Center(
+            child: Text(
+              'No Posts Yet',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 26,
+                fontFamily: 'Urbanist',
+                fontWeight: FontWeight.w600,
+                letterSpacing: -0.28,
               ),
-            );
-          } else {
-            return Center(
-                child: CircularProgressIndicator(
-              color: pinkColor,
-            ));
-          }
-        },
-      ),
+            ),
+          );
+        } else {
+          return Center(
+              child: CircularProgressIndicator(
+            color: pinkColor,
+          ));
+        }
+      },
     );
   }
 
   Widget myPosts() {
     print('my posts');
-    return Container(
-      child: FutureBuilder(
-        future: _myPosts,
-        builder: (context, snapshot) {
-          if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-            //there are posts
-            snapshot.data!.docs.sort((a, b) {
-              //SORT BY LATEST
-              // Convert 'timestamp' strings to DateTime objects for comparison
-              DateFormat tF = DateFormat("hh:mm a");
-              DateFormat dF = DateFormat("yyyy-MM-dd");
+    return FutureBuilder(
+      future: _myPosts,
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+          //there are posts
+          snapshot.data!.docs.sort((a, b) {
+            //SORT BY LATEST
+            // Convert 'timestamp' strings to DateTime objects for comparison
+            DateFormat tF = DateFormat("hh:mm a");
+            DateFormat dF = DateFormat("yyyy-MM-dd");
 
-              DateTime timeA =
-                  tF.parse(a.data()['timestamp'].toString().substring(11));
-              DateTime timeB =
-                  tF.parse(b.data()['timestamp'].toString().substring(11));
+            DateTime timeA =
+                tF.parse(a.data()['timestamp'].toString().substring(11));
+            DateTime timeB =
+                tF.parse(b.data()['timestamp'].toString().substring(11));
 
-              DateTime dateA = dF.parse(a
-                  .data()['timestamp']
-                  .toString()
-                  .substring(0, 10)
-                  .replaceAll('/', '-'));
-              DateTime dateB = dF.parse(b
-                  .data()['timestamp']
-                  .toString()
-                  .substring(0, 10)
-                  .replaceAll('/', '-'));
+            DateTime dateA = dF.parse(a
+                .data()['timestamp']
+                .toString()
+                .substring(0, 10)
+                .replaceAll('/', '-'));
+            DateTime dateB = dF.parse(b
+                .data()['timestamp']
+                .toString()
+                .substring(0, 10)
+                .replaceAll('/', '-'));
 
-              if (dateA.compareTo(dateB) != 0) {
-                return dateB.compareTo(dateA);
-              } else {
-                return timeB.compareTo(timeA);
-              }
-            });
-            return SingleChildScrollView(
-              physics: AlwaysScrollableScrollPhysics(),
-              scrollDirection: Axis.vertical,
-              child: SizedBox(
-                height: 800,
-                child: ListView.builder(
-                  itemCount: snapshot.data!.docs.length + 2,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      print('index 0');
-                      return Container(height: 70);
-                    } else if (index > 0 &&
-                        index < snapshot.data!.docs.length + 1) {
-                      print('at least 1 in my posts');
-                      String username =
-                          snapshot.data!.docs[index - 1].data()['username'];
-                      String postTitle =
-                          snapshot.data!.docs[index - 1].data()['title'];
-                      String postBody =
-                          snapshot.data!.docs[index - 1].data()['body'];
-                      String stamp =
-                          snapshot.data!.docs[index - 1].data()['timestamp'];
-                      String postID = snapshot
-                          .data!.docs[index - 1].reference.id
-                          .toString();
-                      String comments = snapshot.data!.docs[index - 1]
-                          .data()['comments']
-                          .toString();
+            if (dateA.compareTo(dateB) != 0) {
+              return dateB.compareTo(dateA);
+            } else {
+              return timeB.compareTo(timeA);
+            }
+          });
+          return SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            child: SizedBox(
+              height: 800,
+              child: ListView.builder(
+                itemCount: snapshot.data!.docs.length + 2,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    print('index 0');
+                    return Container(height: 70);
+                  } else if (index > 0 &&
+                      index < snapshot.data!.docs.length + 1) {
+                    print('at least 1 in my posts');
+                    String username =
+                        snapshot.data!.docs[index - 1].data()['username'];
+                    String postTitle =
+                        snapshot.data!.docs[index - 1].data()['title'];
+                    String postBody =
+                        snapshot.data!.docs[index - 1].data()['body'];
+                    String stamp =
+                        snapshot.data!.docs[index - 1].data()['timestamp'];
+                    String postID =
+                        snapshot.data!.docs[index - 1].reference.id.toString();
+                    String comments = snapshot.data!.docs[index - 1]
+                        .data()['comments']
+                        .toString();
 
-                      return GestureDetector(
-                        onTap: () {
-                          print(postID);
-                          //  Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //         builder: (context) => (RANAS PAGE)
-                          //         settings: RouteSettings(arguments: postID),
-                          //       ),).then(onGoBack);
-                        }, //TODO: rana's page
-                        child: Column(
-                          children: [
-                            Container(
-                              margin: EdgeInsets.only(left: 15, bottom: 1),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.account_circle_outlined,
+                    return GestureDetector(
+                      onTap: () {
+                        print(postID);
+                        //  Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //         builder: (context) => (RANAS PAGE)
+                        //         settings: RouteSettings(arguments: postID),
+                        //       ),).then(onGoBack);
+                      }, //TODO: rana's page
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(left: 15, bottom: 1),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.account_circle_outlined,
+                                  color: Colors.black,
+                                  size: 40,
+                                ),
+                                Text(
+                                  "  $username",
+                                  style: TextStyle(
                                     color: Colors.black,
-                                    size: 40,
+                                    fontSize: 14,
+                                    fontFamily: 'Urbanist',
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.30,
+                                    letterSpacing: -0.28,
                                   ),
-                                  Text(
-                                    "  $username",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                      fontFamily: 'Urbanist',
-                                      fontWeight: FontWeight.w700,
-                                      height: 1.30,
-                                      letterSpacing: -0.28,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                            Container(
-                              margin: EdgeInsets.only(bottom: 14),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 10,
-                              ),
-                              height: 110,
-                              width: 330,
-                              decoration: BoxDecoration(
-                                color: backGroundPink.withOpacity(0.3),
-                                border:
-                                    Border.all(color: backGroundPink, width: 2),
-                                borderRadius: BorderRadius.circular(13),
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          postTitle,
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 14),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 10,
+                            ),
+                            height: 110,
+                            width: 330,
+                            decoration: BoxDecoration(
+                              color: backGroundPink.withOpacity(0.3),
+                              border:
+                                  Border.all(color: backGroundPink, width: 2),
+                              borderRadius: BorderRadius.circular(13),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        postTitle,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontFamily: 'Urbanist',
+                                          fontWeight: FontWeight.w800,
+                                          height: 1.30,
+                                          letterSpacing: -0.28,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          postBody,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 3,
+                                          softWrap: true,
                                           style: TextStyle(
                                             color: Colors.black,
-                                            fontSize: 14,
+                                            fontSize: 11,
                                             fontFamily: 'Urbanist',
-                                            fontWeight: FontWeight.w800,
+                                            fontWeight: FontWeight.w600,
                                             height: 1.30,
                                             letterSpacing: -0.28,
                                           ),
                                         ),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Expanded(
-                                          child: Text(
-                                            postBody,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 3,
-                                            softWrap: true,
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 11,
-                                              fontFamily: 'Urbanist',
-                                              fontWeight: FontWeight.w600,
-                                              height: 1.30,
-                                              letterSpacing: -0.28,
+                                      ),
+                                      SizedBox(
+                                        height: 4,
+                                      ),
+                                      Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 260,
+                                            height: 10,
+                                            child: Align(
+                                              alignment: Alignment.bottomLeft,
+                                              child: Text(
+                                                stamp,
+                                                style: TextStyle(
+                                                  color: Color.fromARGB(
+                                                      200, 121, 113, 113),
+                                                  fontSize: 9,
+                                                  fontFamily: 'Urbanist',
+                                                  fontWeight: FontWeight.w700,
+                                                  height: 1.30,
+                                                  letterSpacing: -0.28,
+                                                ),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          height: 4,
-                                        ),
-                                        Row(
-                                          children: [
-                                            SizedBox(
-                                              width: 260,
-                                              height: 10,
-                                              child: Align(
-                                                alignment: Alignment.bottomLeft,
-                                                child: Text(
-                                                  stamp,
+                                          Align(
+                                            alignment: Alignment.bottomRight,
+                                            child: Row(
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 1.0),
+                                                  child: Icon(
+                                                    Icons.chat_bubble_outline,
+                                                    color: Color.fromARGB(
+                                                        200, 121, 113, 113),
+                                                    size: 15,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  comments,
                                                   style: TextStyle(
                                                     color: Color.fromARGB(
                                                         200, 121, 113, 113),
-                                                    fontSize: 9,
+                                                    fontSize: 12,
                                                     fontFamily: 'Urbanist',
                                                     fontWeight: FontWeight.w700,
                                                     height: 1.30,
                                                     letterSpacing: -0.28,
                                                   ),
-                                                ),
-                                              ),
+                                                )
+                                              ],
                                             ),
-                                            Align(
-                                              alignment: Alignment.bottomRight,
-                                              child: Row(
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            right: 1.0),
-                                                    child: Icon(
-                                                      Icons.chat_bubble_outline,
-                                                      color: Color.fromARGB(
-                                                          200, 121, 113, 113),
-                                                      size: 15,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    comments,
-                                                    style: TextStyle(
-                                                      color: Color.fromARGB(
-                                                          200, 121, 113, 113),
-                                                      fontSize: 12,
-                                                      fontFamily: 'Urbanist',
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                      height: 1.30,
-                                                      letterSpacing: -0.28,
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      );
-                    } else {
-                      return Container(height: 185);
-                    }
-                  },
-                ),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else {
+                    return Container(height: 185);
+                  }
+                },
               ),
-            );
-          } else if (snapshot.hasData && snapshot.data!.docs.isEmpty) {
-            //TODO: there are no posts
-            return Center(
-              child: Text(
-                'No Posts Yet',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 26,
-                  fontFamily: 'Urbanist',
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: -0.28,
-                ),
+            ),
+          );
+        } else if (snapshot.hasData && snapshot.data!.docs.isEmpty) {
+          //TODO: there are no posts
+          return Center(
+            child: Text(
+              'No Posts Yet',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 26,
+                fontFamily: 'Urbanist',
+                fontWeight: FontWeight.w600,
+                letterSpacing: -0.28,
               ),
-            );
-          } else {
-            return Center(child: CircularProgressIndicator(color: pinkColor));
-          }
-        },
-      ),
+            ),
+          );
+        } else {
+          return Center(child: CircularProgressIndicator(color: pinkColor));
+        }
+      },
     );
   }
 }
