@@ -165,33 +165,18 @@ class _CommunityPage extends State<CommunityPage> {
       builder: (context, snapshot) {
         if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
           //there are posts
-          snapshot.data!.docs.sort((a, b) {
+          List allPosts = snapshot.data!.docs;
+          allPosts.sort((a, b) {
+            print('data sorting by date');
             //SORT BY LATEST
             // Convert 'timestamp' strings to DateTime objects for comparison
-            DateFormat tF = DateFormat("hh:mm a");
-            DateFormat dF = DateFormat("yyyy-MM-dd");
-
-            DateTime timeA =
-                tF.parse(a.data()['timestamp'].toString().substring(11));
-            DateTime timeB =
-                tF.parse(b.data()['timestamp'].toString().substring(11));
-
-            DateTime dateA = dF.parse(a
-                .data()['timestamp']
-                .toString()
-                .substring(0, 10)
-                .replaceAll('/', '-'));
-            DateTime dateB = dF.parse(b
-                .data()['timestamp']
-                .toString()
-                .substring(0, 10)
-                .replaceAll('/', '-'));
-
-            if (dateA.compareTo(dateB) != 0) {
-              return dateB.compareTo(dateA);
-            } else {
-              return timeB.compareTo(timeA);
-            }
+            String timeA = a.data()['timestamp'] ?? '';
+            String timeB = b.data()['timestamp'] ?? '';
+            // Convert 'timestamp' strings to DateTime objects for comparison
+            DateFormat format = DateFormat("yyyy/MM/dd hh:mm a");
+            DateTime dateTimeA = format.parse(timeA);
+            DateTime dateTimeB = format.parse(timeB);
+            return dateTimeB.compareTo(dateTimeA);
           });
 
           return SingleChildScrollView(
@@ -207,19 +192,13 @@ class _CommunityPage extends State<CommunityPage> {
                     return Container(height: 70);
                   } else if (index > 0 &&
                       index < snapshot.data!.docs.length + 1) {
-                    String username =
-                        snapshot.data!.docs[index - 1].data()['username'];
-                    String postTitle =
-                        snapshot.data!.docs[index - 1].data()['title'];
-                    String postBody =
-                        snapshot.data!.docs[index - 1].data()['body'];
-                    String stamp =
-                        snapshot.data!.docs[index - 1].data()['timestamp'];
-                    String comments = snapshot.data!.docs[index - 1]
-                        .data()['comments']
-                        .toString();
-                    String postID =
-                        snapshot.data!.docs[index - 1].reference.id.toString();
+                    String username = allPosts[index - 1].data()['username'];
+                    String postTitle = allPosts[index - 1].data()['title'];
+                    String postBody = allPosts[index - 1].data()['body'];
+                    String stamp = allPosts[index - 1].data()['timestamp'];
+                    String comments =
+                        allPosts[index - 1].data()['comments'].toString();
+                    String postID = allPosts[index - 1].reference.id.toString();
                     return GestureDetector(
                       onTap: () {
                         print(postID);
@@ -432,34 +411,17 @@ class _CommunityPage extends State<CommunityPage> {
       future: _myPosts,
       builder: (context, snapshot) {
         if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+          List myPosts = snapshot.data!.docs;
           //there are posts
-          snapshot.data!.docs.sort((a, b) {
+          myPosts.sort((a, b) {
             //SORT BY LATEST
+            String timeA = a.data()['timestamp'] ?? '';
+            String timeB = b.data()['timestamp'] ?? '';
             // Convert 'timestamp' strings to DateTime objects for comparison
-            DateFormat tF = DateFormat("hh:mm a");
-            DateFormat dF = DateFormat("yyyy-MM-dd");
-
-            DateTime timeA =
-                tF.parse(a.data()['timestamp'].toString().substring(11));
-            DateTime timeB =
-                tF.parse(b.data()['timestamp'].toString().substring(11));
-
-            DateTime dateA = dF.parse(a
-                .data()['timestamp']
-                .toString()
-                .substring(0, 10)
-                .replaceAll('/', '-'));
-            DateTime dateB = dF.parse(b
-                .data()['timestamp']
-                .toString()
-                .substring(0, 10)
-                .replaceAll('/', '-'));
-
-            if (dateA.compareTo(dateB) != 0) {
-              return dateB.compareTo(dateA);
-            } else {
-              return timeB.compareTo(timeA);
-            }
+            DateFormat format = DateFormat("yyyy/MM/dd hh:mm a");
+            DateTime dateTimeA = format.parse(timeA);
+            DateTime dateTimeB = format.parse(timeB);
+            return dateTimeB.compareTo(dateTimeA);
           });
           return SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
@@ -475,20 +437,14 @@ class _CommunityPage extends State<CommunityPage> {
                     return Container(height: 70);
                   } else if (index > 0 &&
                       index < snapshot.data!.docs.length + 1) {
-                    print('at least 1 in my posts');
-                    String username =
-                        snapshot.data!.docs[index - 1].data()['username'];
-                    String postTitle =
-                        snapshot.data!.docs[index - 1].data()['title'];
-                    String postBody =
-                        snapshot.data!.docs[index - 1].data()['body'];
-                    String stamp =
-                        snapshot.data!.docs[index - 1].data()['timestamp'];
-                    String postID =
-                        snapshot.data!.docs[index - 1].reference.id.toString();
-                    String comments = snapshot.data!.docs[index - 1]
-                        .data()['comments']
-                        .toString();
+                    String username = myPosts[index - 1].data()['username'];
+                    String postTitle = myPosts[index - 1].data()['title'];
+                    String postBody = myPosts[index - 1].data()['body'];
+                    String stamp = myPosts[index - 1].data()['timestamp'];
+                    print(stamp);
+                    String postID = myPosts[index - 1].reference.id.toString();
+                    String comments =
+                        myPosts[index - 1].data()['comments'].toString();
 
                     return GestureDetector(
                       onTap: () {
