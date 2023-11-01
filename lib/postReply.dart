@@ -1,10 +1,7 @@
-// ignore_for_file: use_key_in_widget_constructors, camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names
+// ignore_for_file: use_key_in_widget_constructors, camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, unused_local_variable, avoid_print
 
 
 import 'package:flutter/material.dart';
-import 'package:googleapis/admin/directory_v1.dart';
-import 'package:googleapis/cloudsearch/v1.dart';
-import 'package:googleapis/drive/v3.dart';
 import 'package:intl/intl.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/main.dart';
@@ -55,15 +52,7 @@ class _postReply extends State<postReply>{
           await postDocRef.update({'comments':comments});
         }
 
-        //GET THE REPLIER'S USERNAME
-        /*final DocumentReference userDocRef = firestore.collection('users').doc(userUid);
-        final DocumentSnapshot userSnapshot = await userDocRef.get(); 
-        if(userSnapshot.exists){
-          final Map<String,dynamic> userData = userSnapshot.data() as Map<String,dynamic>;
-          username= userData['username'];
-          
-        }*/
-
+      
         //CREATE THE SUBCOLLECTION & ADD THE REPLY 
         CollectionReference repliesRef =
         firestore.collection('community').doc(post).collection('Replies');
@@ -89,7 +78,7 @@ class _postReply extends State<postReply>{
       
   }
 
-//SUCCESS DIALOG THAT SHOWS WHEN POST IS ADDED SUCCESSFULY 
+//SHOWS SUCCESS DIALOG WHEN POST IS ADDED SUCCESSFULY 
   Future<dynamic> _successDialog() {
     return showDialog(
         context: context,
@@ -178,7 +167,84 @@ class _postReply extends State<postReply>{
         });
   }
 
-  //DISPLAY THE POST THAT WAS CLICKED ON (PROFILE PIC, TITLE, BODY, TIMESTAMP)
+  //SHOWS CONFIRMATION MESSAGE WHEN LEAVING PAGE AND TEXT IS WRITTEN IN THE FIELD 
+  void backButton() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          content: SizedBox(
+            height: 130,
+            child: Column(
+              children: <Widget>[
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 10, bottom: 30),
+                    child: Text(
+                      'Are you sure you want to go back?',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      height: 45.0,
+                      child: Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: blackColor,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40)),
+                            padding: const EdgeInsets.only(
+                                left: 30, top: 15, right: 30, bottom: 15),
+                          ),
+                          child: const Text(
+                            "No",
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      height: 45.0,
+                      child: Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.error,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40)),
+                            padding: const EdgeInsets.only(
+                                left: 30, top: 15, right: 30, bottom: 15),
+                          ),
+                          child: const Text(
+                            "Yes",
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  //DISPLAY THE POST THAT WAS CLICKED ON (PROFILE PIC, USERNAME, TITLE, BODY, TIMESTAMP)
   Future<Widget> displayPost(String postid) async {
     String username = ''; 
     String title = '';
@@ -207,41 +273,80 @@ class _postReply extends State<postReply>{
           children: [
             
             Padding(
-              padding: EdgeInsets.fromLTRB(0, 40, 0, 10),
+              padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
               child: Row(
                 children: [
+                  ///////////////////////////////
                   IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(
-                  Icons.arrow_back,
-                  color: Colors.black,
+                    onPressed: () {
+                      if(_postReplyController.text.isNotEmpty)
+                      {backButton();}
+                      else 
+                      {Navigator.pop(context);}
+                    },
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.black,
+                    ),
                 ),
+
+                  //POST TITLE 
+                  Expanded(
+                    child: Text(
+                      title, 
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: blackColor,
+                        fontFamily: 'Urbanist',
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: -0.28,),
+                      ),
+                      
+                  ),
+                  
+                ],
+              ),
             ),
 
+            Padding(
+              padding: EdgeInsets.fromLTRB(20, 0, 15, 5),
+              child: Row(
+                
+                children: [
+                  
                   //PROFILE PIC
                   CircleAvatar(
-                    radius: 21,
+                    radius: 19,
                     backgroundColor: pinkColor.withOpacity(0.5),
                     child: Text(
                       username.substring(0,1).toUpperCase(),
                       style: TextStyle(
                         fontFamily: 'Urbanist',
-                        fontSize: 22,
+                        fontSize: 20,
                         color: blackColor,
                       ),
                     ),
                   ),
-                  SizedBox(width: 15,),
-                  //POST TITLE 
+                  SizedBox(width: 10,),
+                  //USERNAME  
                   Text(
                     username,
                     style: TextStyle(
                     color: pinkColor,
-                    fontSize: 21,
+                    fontSize: 19,
                     fontFamily: 'Urbanist',
                     fontWeight: FontWeight.w700,
+                    height: 1.30,
+                    letterSpacing: -0.28,
+                    ),
+                  ),
+                  Text(
+                    '  posted: ',
+                    style: TextStyle(
+                    color: blackColor,
+                    fontSize: 19,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
                     height: 1.30,
                     letterSpacing: -0.28,
                     ),
@@ -251,30 +356,12 @@ class _postReply extends State<postReply>{
               ),
             ),
 
-            Padding(
-              padding: EdgeInsets.fromLTRB(20, 10, 15, 10),
-              child: Row(
-                
-                children: [
-                  //POST TITLE 
-                  Expanded(
-                    child: Text(
-                      title, 
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: blackColor,
-                        fontFamily: 'Urbanist',
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: -0.28,),
-                      )
-                  ),
-                  
-                ],
-              ),
-            ),
 
+
+
+            /////////////////
             Padding(
-              padding: EdgeInsets.fromLTRB(20, 10, 15, 10),
+              padding: EdgeInsets.fromLTRB(20, 5, 15, 10),
               child: Row(
                 
                 children: [
@@ -338,6 +425,7 @@ class _postReply extends State<postReply>{
 
   }
 
+  //RETURNS USERNAME WHEN GIVEN THE ID 
   Future<String> getUsername(String userID) async{
     String replyUsername='';
     FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -454,13 +542,13 @@ class _postReply extends State<postReply>{
                             children: [
                             SizedBox(width: 8,),
                             CircleAvatar(
-                              radius: 18,
+                              radius: 17,
                               backgroundColor: pinkColor.withOpacity(0.5),
                               child: Text(
                                 replierUsername.substring(0,1).toUpperCase(),
                                 style: TextStyle(
                                   fontFamily: 'Urbanist',
-                                  fontSize: 22,
+                                  fontSize: 20,
                                   color: blackColor,
                                 ),
                               ),
@@ -695,15 +783,7 @@ class _postReply extends State<postReply>{
             ),
             ],
 
-            
-
           ),
-          
-
-          
-          
-          
-          
           
         ],
       ),
@@ -712,104 +792,4 @@ class _postReply extends State<postReply>{
   }
 
 }
-
-
-/*
-Center(
-            child: Container(
-              margin: EdgeInsets.all(20),
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10,),
-              height:110,
-              width: 350,
-              decoration: BoxDecoration(
-                color: backGroundPink.withOpacity(0.3),
-                border: Border.all(color: backGroundPink, width: 2),
-                borderRadius: BorderRadius.circular(13),
-              ),
-              child: 
-              Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 10,),
-                      Icon(
-                      Icons.account_circle_outlined,
-                      color: Colors.black,
-                      size: 38,
-                    ),
-                    Text(
-                    "$username ",
-                    style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w700,
-                    height: 1.30,
-                    letterSpacing: -0.28,
-                    ),
-                  ),
-                  
-                    ],
-                  ),
-                  SizedBox(width: 30,),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                        postTitle,
-                        style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                        fontFamily: 'Urbanist',
-                        fontWeight: FontWeight.w800,
-                        height: 1.30,
-                        letterSpacing: -0.28,
-                        ),
-                      ),
-                      SizedBox(height: 5,),
-                      Expanded(
-                        child: Text(
-                          postBody,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 3,
-                          softWrap: true,
-                          style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 11,
-                          fontFamily: 'Urbanist',
-                          fontWeight: FontWeight.w600,
-                          height: 1.30,
-                          letterSpacing: -0.28,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 4,),
-                      Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Text(
-                          getTimestamp(),
-                          style: TextStyle(
-                          color: Color.fromARGB(200, 121, 113, 113),
-                          fontSize: 9,
-                          fontFamily: 'Urbanist',
-                          fontWeight: FontWeight.w700,
-                          height: 1.30,
-                          letterSpacing: -0.28,
-                          ),
-                        ),
-                      ),
-                          
-                      ],
-                      ),
-                  ),
-                ],
-              ),
-                    
-            ),
-          ),
-
-*/
 
