@@ -274,10 +274,12 @@ class PostCommunityScreenState extends State<PostCommunityScreen> {
                             child: Center(
                               child: ElevatedButton(
                                 onPressed: () {
-                                  Navigator.of(context).push(
+                                  /*Navigator.of(context).push(
                                     MaterialPageRoute(
                                         builder: (context) => ProfileScreen()),
-                                  );
+                                  );*/
+                                  Navigator.of(context).pop();
+                                  Navigator.of(context).pop();
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: blackColor,

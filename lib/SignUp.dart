@@ -570,8 +570,7 @@ class _SignUpState extends State<SignUp> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            PostCommunityScreen()));
+                                        builder: (context) => startJourney()));
                               }
                             },
                             child: Text(
