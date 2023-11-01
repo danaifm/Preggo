@@ -6,6 +6,7 @@ import '../colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+import '../postReply.dart';
 import 'post_community.dart';
 
 class CommunityPage extends StatefulWidget {
@@ -100,8 +101,6 @@ class _CommunityPage extends State<CommunityPage> {
                       MaterialPageRoute(
                         builder: ((context) => PostCommunityScreen()),
                       )).then(onGoBack);
-                  //TODO: ALIYAH'S PAGE THEN REFRESH
-                  //not working :( !!!!!!!
                 },
                 style: ElevatedButton.styleFrom(
                   fixedSize: const Size(55, 55),
@@ -224,13 +223,14 @@ class _CommunityPage extends State<CommunityPage> {
                     return GestureDetector(
                       onTap: () {
                         print(postID);
-                        //  Navigator.push(
-                        //       context,
-                        //       MaterialPageRoute(
-                        //         builder: (context) => (RANAS PAGE)
-                        //         settings: RouteSettings(arguments: postID),
-                        //       ),).then(onGoBack);
-                      }, //TODO: rana's page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => postReply(),
+                            settings: RouteSettings(arguments: postID),
+                          ),
+                        ).then(onGoBack);
+                      },
                       child: Column(
                         children: [
                           Container(
@@ -479,13 +479,14 @@ class _CommunityPage extends State<CommunityPage> {
                     return GestureDetector(
                       onTap: () {
                         print(postID);
-                        //  Navigator.push(
-                        //       context,
-                        //       MaterialPageRoute(
-                        //         builder: (context) => (RANAS PAGE)
-                        //         settings: RouteSettings(arguments: postID),
-                        //       ),).then(onGoBack);
-                      }, //TODO: rana's page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => postReply(),
+                            settings: RouteSettings(arguments: postID),
+                          ),
+                        ).then(onGoBack);
+                      },
                       child: Column(
                         children: [
                           Container(
