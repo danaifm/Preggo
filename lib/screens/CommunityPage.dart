@@ -388,7 +388,11 @@ class _CommunityPage extends State<CommunityPage> {
             child: Column(
               children: [
                 SizedBox(height: 350),
-                Icon(Icons.forum_outlined, size: 40),
+                Image.asset(
+                  'assets/images/comment.png',
+                  height: 70,
+                  width: 70,
+                ),
                 Text(
                   'No Posts Yet',
                   textAlign: TextAlign.center,
@@ -644,7 +648,11 @@ class _CommunityPage extends State<CommunityPage> {
             child: Column(
               children: [
                 SizedBox(height: 350),
-                Icon(Icons.forum_outlined, size: 40),
+                Image.asset(
+                  'assets/images/comment.png',
+                  height: 70,
+                  width: 70,
+                ),
                 Text(
                   'No Posts Yet',
                   textAlign: TextAlign.center,
