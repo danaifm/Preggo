@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
-import 'package:preggo/screens/CommunityPage.dart';
 import 'package:preggo/viewAppointment.dart';
 import 'package:preggo/view_reminders.dart';
 

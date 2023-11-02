@@ -66,17 +66,17 @@ class _SignUpState extends State<SignUp> {
       return query.docs.isNotEmpty;
     }
 
-    Future<bool> uniquePhone(String phone) async {
-      print(phone);
-      QuerySnapshot query = await FirebaseFirestore.instance
-          .collection('users')
-          .where('phone', isEqualTo: phone)
-          .get();
-      if (query.docs.isNotEmpty) {
-        print("phone is taken");
-      }
-      return query.docs.isNotEmpty;
-    }
+    // Future<bool> uniquePhone(String phone) async {
+    //   print(phone);
+    //   QuerySnapshot query = await FirebaseFirestore.instance
+    //       .collection('users')
+    //       .where('phone', isEqualTo: phone)
+    //       .get();
+    //   if (query.docs.isNotEmpty) {
+    //     print("phone is taken");
+    //   }
+    //   return query.docs.isNotEmpty;
+    // }
 
     // bool hasSpecial(x) {
     //   RegExp _regExp = RegExp(r'^[0-9]');
@@ -176,7 +176,7 @@ class _SignUpState extends State<SignUp> {
                                         4- unique
                                         */
 
-                                if (value!.isEmpty == true) {
+                                if (value!.trim().isEmpty == true) {
                                   return "This field cannot be empty.";
                                 } else if (!validCharacters.hasMatch(value)) {
                                   return "Only alphanumerical values allowed."; //maybe change error message
@@ -229,7 +229,7 @@ class _SignUpState extends State<SignUp> {
                               controller: _emailController,
                               key: _emailKey,
                               validator: (value) {
-                                if (value!.isEmpty) {
+                                if (value!.trim().isEmpty) {
                                   return "This field cannot be empty.";
                                 } else if (!EmailValidator.validate(value)) {
                                   return "Incorrect email format.";
@@ -467,7 +467,7 @@ class _SignUpState extends State<SignUp> {
                               obscureText: hidePassword ? true : false,
                               autocorrect: false,
                               validator: (pass) {
-                                if (pass!.isEmpty == true) {
+                                if (pass!.trim().isEmpty == true) {
                                   return "This field cannot be empty.";
                                 } else if (pass.length < 8) {
                                   return "Password must be at least 8 characters.";
@@ -503,21 +503,22 @@ class _SignUpState extends State<SignUp> {
                             ),
                             onPressed: () async {
                               final FormState form = _formKey.currentState!;
-                              form.validate();
                               usernameTaken = await uniqueUsername(
-                                  _usernameKey.currentState!.value);
+                                  _usernameKey.currentState!.value.trim());
                               setState(() {});
                               emailTaken = await uniqueEmail(
-                                  _emailKey.currentState!.value);
+                                  _emailKey.currentState!.value.trim());
                               /*setState(() {});
                                 phoneTaken = await uniquePhone(
                                     _phoneKey.currentState?.value);*/
+                              form.validate();
+
                               setState(() {});
                               if (_formKey.currentState!.validate()) {
                                 try {
                                   userCredential = await FirebaseAuth.instance
                                       .createUserWithEmailAndPassword(
-                                          email: _emailController.text,
+                                          email: _emailController.text.trim(),
                                           password: _passwordController.text);
                                 } catch (error) {
                                   print(
@@ -525,12 +526,14 @@ class _SignUpState extends State<SignUp> {
                                   return null;
                                 }
                                 _formKey.currentState?.save();
-                                if (phoneNo.isEmpty) {
+                                if (_phoneController.text.trim().isEmpty) {
                                   Map<String, String> dataToSave = {
-                                    'username':
-                                        _usernameController.text.toLowerCase(),
-                                    'email':
-                                        _emailController.text.toLowerCase(),
+                                    'username': _usernameController.text
+                                        .toLowerCase()
+                                        .trim(),
+                                    'email': _emailController.text
+                                        .toLowerCase()
+                                        .trim(),
                                     'admin': '0'
                                   };
                                   FirebaseFirestore.instance
@@ -538,22 +541,24 @@ class _SignUpState extends State<SignUp> {
                                       .doc(userCredential.user!.uid)
                                       .set(dataToSave);
                                   print(
-                                      'Registration successful with no phone');
+                                      'Registration successful with NO PHONE');
                                 } else {
                                   Map<String, String> dataToSave = {
-                                    'username':
-                                        _usernameController.text.toLowerCase(),
-                                    'email':
-                                        _emailController.text.toLowerCase(),
+                                    'username': _usernameController.text
+                                        .toLowerCase()
+                                        .trim(),
+                                    'email': _emailController.text
+                                        .toLowerCase()
+                                        .trim(),
                                     //'password': _passwordController.text,
-                                    'phone': _phoneController.text,
+                                    'phone': _phoneController.text.trim(),
                                     'admin': '0'
                                   };
                                   FirebaseFirestore.instance
                                       .collection('users/')
                                       .doc(userCredential.user!.uid)
                                       .set(dataToSave);
-                                  print('Registration successful with phone');
+                                  print('Registration successful WITH PHONE');
                                 }
                                 // POST COMMUNITY - SAVE USERNAME LOCAL
                                 SharedPreferences prefs =

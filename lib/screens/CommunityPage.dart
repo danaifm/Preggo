@@ -6,7 +6,7 @@ import '../colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
-import '../postReply.dart';
+// import '../postReply.dart';
 import 'post_community.dart';
 
 class CommunityPage extends StatefulWidget {
@@ -167,9 +167,7 @@ class _CommunityPage extends State<CommunityPage> {
           //there are posts
           List allPosts = snapshot.data!.docs;
           allPosts.sort((a, b) {
-            print('data sorting by date');
-            //SORT BY LATEST
-            // Convert 'timestamp' strings to DateTime objects for comparison
+            //SORTING THE POSTS BY LATEST
             String timeA = a.data()['timestamp'] ?? '';
             String timeB = b.data()['timestamp'] ?? '';
             // Convert 'timestamp' strings to DateTime objects for comparison
@@ -195,20 +193,21 @@ class _CommunityPage extends State<CommunityPage> {
                     String username = allPosts[index - 1].data()['username'];
                     String postTitle = allPosts[index - 1].data()['title'];
                     String postBody = allPosts[index - 1].data()['body'];
-                    String stamp = allPosts[index - 1].data()['timestamp'];
+                    String timestamp = allPosts[index - 1].data()['timestamp'];
                     String comments =
                         allPosts[index - 1].data()['comments'].toString();
                     String postID = allPosts[index - 1].reference.id.toString();
                     return GestureDetector(
                       onTap: () {
                         print(postID);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => postReply(),
-                            settings: RouteSettings(arguments: postID),
-                          ),
-                        ).then(onGoBack);
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => postReply(),
+                        //     settings: RouteSettings(arguments: postID),
+                        //   ),
+                        // ).then(onGoBack);
+                        //rana's page ^^^^^
                       },
                       child: Column(
                         children: [
@@ -311,7 +310,7 @@ class _CommunityPage extends State<CommunityPage> {
                                               child: Align(
                                                 alignment: Alignment.bottomLeft,
                                                 child: Text(
-                                                  stamp,
+                                                  timestamp,
                                                   style: TextStyle(
                                                     color: Color.fromARGB(
                                                         200, 121, 113, 113),
@@ -415,7 +414,7 @@ class _CommunityPage extends State<CommunityPage> {
       builder: (context, snapshot) {
         if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
           List myPosts = snapshot.data!.docs;
-          //there are posts
+          //Posts exist. first we sort before displaying the posts:
           myPosts.sort((a, b) {
             //SORT BY LATEST
             String timeA = a.data()['timestamp'] ?? '';
@@ -443,8 +442,7 @@ class _CommunityPage extends State<CommunityPage> {
                     String username = myPosts[index - 1].data()['username'];
                     String postTitle = myPosts[index - 1].data()['title'];
                     String postBody = myPosts[index - 1].data()['body'];
-                    String stamp = myPosts[index - 1].data()['timestamp'];
-                    print(stamp);
+                    String timestamp = myPosts[index - 1].data()['timestamp'];
                     String postID = myPosts[index - 1].reference.id.toString();
                     String comments =
                         myPosts[index - 1].data()['comments'].toString();
@@ -452,13 +450,14 @@ class _CommunityPage extends State<CommunityPage> {
                     return GestureDetector(
                       onTap: () {
                         print(postID);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => postReply(),
-                            settings: RouteSettings(arguments: postID),
-                          ),
-                        ).then(onGoBack);
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => postReply(),
+                        //     settings: RouteSettings(arguments: postID),
+                        //   ),
+                        // ).then(onGoBack);
+                        //rana's page ^^^^
                       },
                       child: Column(
                         children: [
@@ -558,7 +557,7 @@ class _CommunityPage extends State<CommunityPage> {
                                               child: Align(
                                                 alignment: Alignment.bottomLeft,
                                                 child: Text(
-                                                  stamp,
+                                                  timestamp,
                                                   style: TextStyle(
                                                     color: Color.fromARGB(
                                                         200, 121, 113, 113),
