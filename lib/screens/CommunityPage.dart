@@ -193,8 +193,6 @@ class _CommunityPage extends State<CommunityPage> {
                   } else if (index > 0 &&
                       index < snapshot.data!.docs.length + 1) {
                     String username = allPosts[index - 1].data()['username'];
-                    username = username.substring(0, 1).toUpperCase() +
-                        username.substring(1).toLowerCase();
                     String postTitle = allPosts[index - 1].data()['title'];
                     String postBody = allPosts[index - 1].data()['body'];
                     String stamp = allPosts[index - 1].data()['timestamp'];
@@ -443,8 +441,6 @@ class _CommunityPage extends State<CommunityPage> {
                   } else if (index > 0 &&
                       index < snapshot.data!.docs.length + 1) {
                     String username = myPosts[index - 1].data()['username'];
-                    username = username.substring(0, 1).toUpperCase() +
-                        username.substring(1).toLowerCase();
                     String postTitle = myPosts[index - 1].data()['title'];
                     String postBody = myPosts[index - 1].data()['body'];
                     String stamp = myPosts[index - 1].data()['timestamp'];
