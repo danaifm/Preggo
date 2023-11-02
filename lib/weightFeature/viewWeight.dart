@@ -131,8 +131,15 @@ class _ViewWeight extends State<ViewWeight> {
                           child: Center(
                             child: ElevatedButton(
                               onPressed: () {
-                                Navigator.of(context).pop();
-                                Navigator.of(context).pop();
+                                // Navigator.of(context).pop();
+                                // Navigator.of(context).pop();
+
+                                Navigator.pop(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ViewWeight(),
+                                  ),
+                                );
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: blackColor,
@@ -639,13 +646,24 @@ class _ViewWeight extends State<ViewWeight> {
               padding: EdgeInsets.fromLTRB(0, 100, 20, 50),
               child: ElevatedButton(
                 onPressed: () async {
-                  await Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => addWeight()))
-                      .then((value) {
+                  await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          //  maintainState: false,
+                          builder: (context) => addWeight())).then((value) {
                     getWeight();
                     setState(() {});
                   });
                 },
+                // onPressed: () async {
+                //   await Navigator.push(context,
+                //           MaterialPageRoute(builder: (context) => addWeight()))
+                //       .then((value) {
+                //     getWeight();
+                //     setState(() {});
+                //   });
+                // },
+
                 style: ElevatedButton.styleFrom(
                   fixedSize: const Size(55, 55),
                   shape: const CircleBorder(),
