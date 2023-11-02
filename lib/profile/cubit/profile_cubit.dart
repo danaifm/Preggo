@@ -148,10 +148,21 @@ class ProfileCubit extends Cubit<ProfileState> {
 
         var replies = communityDocs.doc(element.id).collection("Replies");
         QuerySnapshot subCollectionQueryReplies = await replies.get();
-
         for (QueryDocumentSnapshot doc in subCollectionQueryReplies.docs) {
           DocumentReference docRef = replies.doc(doc.id);
           await docRef.delete();
+        }
+      }
+      var repliesInUser = await FirebaseFirestore.instance
+          .collection('community')
+          .doc(element.id)
+          .collection("Replies").get();
+      for (var replayData in repliesInUser.docs) {
+        if (replayData.data()["userID"] == FirebaseAuth.instance.currentUser!.uid){
+          await FirebaseFirestore.instance
+              .collection('community')
+              .doc(element.id)
+              .collection("Replies").doc(replayData.id).delete();
         }
       }
     }

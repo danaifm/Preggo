@@ -437,53 +437,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          InkWell(
-                                            child: Container(
-                                              padding: const EdgeInsets.only(
-                                                  top: 10,
-                                                  bottom: 10,
-                                                  left: 25,
-                                                  right: 25),
-                                              decoration: BoxDecoration(
-                                                  color: Colors.grey,
+                                          ElevatedButton(
+                                            onPressed: ()async {
+                                             Navigator.pop(context);
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: blackColor,
+                                              shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius.circular(
-                                                          10)),
-                                              child: const Text(
-                                                "Cancel",
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
+                                                  BorderRadius.circular(40)),
+                                              padding: const EdgeInsets.only(
+                                                  left: 30,
+                                                  top: 15,
+                                                  right: 30,
+                                                  bottom: 15),
                                             ),
-                                            onTap: () => Navigator.pop(context),
+                                            child: const Text(
+                                              "Cancel",
+                                            ),
                                           ),
                                           const SizedBox(
                                             width: 10,
                                           ),
-                                          InkWell(
-                                            child: Container(
-                                              padding: const EdgeInsets.only(
-                                                  top: 10,
-                                                  bottom: 10,
-                                                  left: 20,
-                                                  right: 20),
-                                              decoration: BoxDecoration(
-                                                  color: Colors.red,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10)),
-                                              child: const Text(
-                                                "Sign Out",
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                            onTap: () async {
+                                          ElevatedButton(
+                                            onPressed: ()async {
                                               const _scopes = const [
                                                 Cal.CalendarApi.calendarScope
                                               ]; //scope to CREATE EVENT in calendar
                                               GoogleSignIn _googleSignIn =
-                                                  GoogleSignIn(
+                                              GoogleSignIn(
                                                 // Optional clientId
                                                 // clientId: 'your-client_id.apps.googleusercontent.com',
                                                 scopes: _scopes,
@@ -498,8 +480,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                                               // TODO: POST COMMUNITY - CLEAR LOCAL PREFS
                                               SharedPreferences prefs =
-                                                  await SharedPreferences
-                                                      .getInstance();
+                                              await SharedPreferences
+                                                  .getInstance();
                                               prefs.clear();
                                               // End
                                               if (context.mounted) {
@@ -507,11 +489,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   context,
                                                   MaterialPageRoute(
                                                     builder: (context) =>
-                                                        const LoginScreen(),
+                                                    const LoginScreen(),
                                                   ),
                                                 );
                                               }
                                             },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.red,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                  BorderRadius.circular(40)),
+                                              padding: const EdgeInsets.only(
+                                                  left: 30,
+                                                  top: 15,
+                                                  right: 30,
+                                                  bottom: 15),
+                                            ),
+                                            child: const Text(
+                                              "Sign Out",
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -583,51 +579,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          InkWell(
-                                            child: Container(
-                                              padding: const EdgeInsets.only(
-                                                  top: 10,
-                                                  bottom: 10,
-                                                  left: 25,
-                                                  right: 25),
-                                              decoration: BoxDecoration(
-                                                  color: Colors.grey,
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: blackColor,
+                                              shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius.circular(
-                                                          10)),
-                                              child: const Text(
-                                                "Cancel",
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
+                                                  BorderRadius.circular(40)),
+                                              padding: const EdgeInsets.only(
+                                                  left: 30,
+                                                  top: 15,
+                                                  right: 30,
+                                                  bottom: 15),
                                             ),
-                                            onTap: () => Navigator.pop(context),
+                                            child: const Text(
+                                              "Cancel",
+                                            ),
                                           ),
                                           const SizedBox(
                                             width: 10,
                                           ),
-                                          InkWell(
-                                            child: Container(
-                                              padding: const EdgeInsets.only(
-                                                  top: 10,
-                                                  bottom: 10,
-                                                  left: 25,
-                                                  right: 25),
-                                              decoration: BoxDecoration(
-                                                  color: Colors.red,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10)),
-                                              child: const Text(
-                                                "Delete",
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                            onTap: () async {
+                                          ElevatedButton(
+                                            onPressed: ()async {
                                               await ProfileCubit.get(context)
                                                   .deleteAccount();
                                             },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.red,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                  BorderRadius.circular(40)),
+                                              padding: const EdgeInsets.only(
+                                                  left: 30,
+                                                  top: 15,
+                                                  right: 30,
+                                                  bottom: 15),
+                                            ),
+                                            child: const Text(
+                                              "Delete",
+                                            ),
                                           ),
                                         ],
                                       ),

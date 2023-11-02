@@ -5,6 +5,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:preggo/NavBar.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/login_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -106,13 +107,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 15),
                     content: SizedBox(
                       height: 130,
                       child: Column(
                         children: <Widget>[
-                          Center(
+                          const Center(
                             child: Padding(
                               padding: EdgeInsets.only(top: 10, bottom: 30),
                               child: Text(
@@ -125,7 +126,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Container(
-                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 5),
                                 height: 45.0,
                                 child: Center(
                                   child: ElevatedButton(
@@ -150,7 +152,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 ),
                               ),
                               Container(
-                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 5),
                                 height: 45.0,
                                 child: Center(
                                   child: ElevatedButton(
@@ -185,7 +188,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 },
               );
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: Colors.black,
             )),
@@ -261,8 +264,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   child: Center(
                                     child: ElevatedButton(
                                       onPressed: () {
-                                        Navigator.of(context).pop();
-                                        Navigator.of(context).pop();
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => const NavBar(
+                                              currentTab: 2,
+                                            ),
+                                          ),
+                                        );
                                       },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: blackColor,
@@ -514,7 +523,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     }
                                   },
                                   decoration: InputDecoration(
-                                    hintText:  user.userName.capitalize(),
+                                    hintText: user.userName.capitalize(),
                                     helperText: '',
                                     labelStyle: const TextStyle(
                                       fontSize: 15,

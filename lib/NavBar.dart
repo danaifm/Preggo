@@ -1,13 +1,19 @@
 import 'package:preggo/profile/profile_screen.dart';
 import 'package:preggo/screens/PregnancyTracking.dart';
 import 'package:preggo/screens/CommunityPage.dart';
+
 //import 'package:preggo/screens/ProfilePage.dart';
 import 'package:preggo/screens/ToolsPage.dart';
 import 'package:preggo/screens/ArticlesPage.dart';
 import 'package:flutter/material.dart';
 
 class NavBar extends StatefulWidget {
-  const NavBar({super.key});
+  const NavBar({
+    super.key,
+    this.currentTab = 0,
+  });
+
+  final int currentTab;
 
   @override
   _NavBar createState() => _NavBar();
@@ -16,7 +22,7 @@ class NavBar extends StatefulWidget {
 class _NavBar extends State<NavBar> {
   int currentTab = 0;
   final List<Widget> screens = [
-    PregnancyTracking(), //0
+    const PregnancyTracking(), //0
     const CommunityPage(), //1
     ProfileScreen(), //ProfilePage(), //2
     const ToolsPage(), //3
@@ -24,7 +30,17 @@ class _NavBar extends State<NavBar> {
   ];
 
   final PageStorageBucket bucket = PageStorageBucket();
-  Widget currentScreen = PregnancyTracking();
+  Widget currentScreen = const PregnancyTracking();
+@override
+  void initState() {
+  if (widget.currentTab == 2) {
+    setState(() {
+      currentTab = 2;
+      currentScreen = ProfileScreen();
+    });
+  }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +90,7 @@ class _NavBar extends State<NavBar> {
                     minWidth: 40,
                     onPressed: () {
                       setState(() {
-                        currentScreen = PregnancyTracking();
+                        currentScreen = const PregnancyTracking();
                         currentTab = 0;
                       });
                     },
