@@ -501,7 +501,6 @@ class _SignUpState extends State<SignUp> {
                             ),
                             onPressed: () async {
                               final FormState form = _formKey.currentState!;
-                              form.validate();
                               usernameTaken = await uniqueUsername(
                                   _usernameKey.currentState!.value.trim());
                               setState(() {});
@@ -510,6 +509,8 @@ class _SignUpState extends State<SignUp> {
                               /*setState(() {});
                                 phoneTaken = await uniquePhone(
                                     _phoneKey.currentState?.value);*/
+                              form.validate();
+
                               setState(() {});
                               if (_formKey.currentState!.validate()) {
                                 try {
