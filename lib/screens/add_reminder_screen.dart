@@ -1124,7 +1124,7 @@ class AddReminderScreenState extends State<AddReminderScreen> {
                                           fontFamily: 'Urbanist',
                                         )),
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           ),

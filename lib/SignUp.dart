@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:preggo/NavBar.dart';
 import 'package:preggo/login_screen.dart';
 import 'package:preggo/start_Journey.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:string_validator/string_validator.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:preggo/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'SplashScreen.dart';
+import 'package:preggo/screens/post_community.dart';
 
 class SignUp extends StatefulWidget {
   //const SignUp({Key? key}) : super(key: key);
@@ -553,7 +555,18 @@ class _SignUpState extends State<SignUp> {
                                       .set(dataToSave);
                                   print('Registration successful with phone');
                                 }
-
+                                // POST COMMUNITY - SAVE USERNAME LOCAL
+                                SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                prefs.setString(
+                                  "username",
+                                  _usernameController.text.trim(),
+                                );
+                                // End
+                                /* Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => startJourney())); */
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
