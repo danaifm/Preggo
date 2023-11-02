@@ -33,11 +33,12 @@ class AppointmentNotification {
   }
 
   Future scheduleNotification(
-      {int id = 0,
+      {required int id ,
       String? title,
       String? body,
       String? payLoad,
       required DateTime scheduledNotificationDateTime}) async {
+        print("-----------------------$id---------------------------");
     return notificationsPlugin.zonedSchedule(
         id,
         title,
@@ -49,6 +50,7 @@ class AppointmentNotification {
         await notificationDetails(),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime);
+          UILocalNotificationDateInterpretation.absoluteTime);
   }
+   
 }

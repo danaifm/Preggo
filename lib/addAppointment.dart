@@ -9,6 +9,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:preggo/appointmnet_notification.dart';
+import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 
 
@@ -26,7 +29,7 @@ class _addAppointmentState extends State<addAppointment> {
     _googleSignIn.signInSilently();
   }
 
-  //combines the final date and time of the set appointment to schedule the notification 
+  //COMBINES THE FINAL DATE AND TIME OF THE SET APPOINTMENT TO SCHEDULE THE NOTIFICATION 
   DateTime combineDateTime(DateTime date, DateTime time) {
   // Extract the date from the first DateTime object
   final combinedDate = DateTime(date.year, date.month, date.day);
@@ -45,6 +48,51 @@ class _addAppointmentState extends State<addAppointment> {
 
   return combinedDateTime;
 }
+
+  //CALCULATES THE NOTIFICATION TIME 
+  DateTime calculateNotificationTime(DateTime apptTime) {
+  DateTime notifTime;
+
+  DateTime currentTime = DateTime.now();
+  Duration oneDay = Duration(days: 1);
+  Duration twoHours = Duration(hours: 2);
+  Duration fiveSeconds = Duration(seconds: 5);
+
+
+  if (apptTime.isAfter(currentTime.add(oneDay))) {
+    notifTime = apptTime.subtract(oneDay);
+  } else if (apptTime.isAfter(currentTime.add(twoHours)) && apptTime.isBefore(currentTime.add(oneDay))) {
+    notifTime = apptTime.subtract(twoHours);
+  } else {
+    notifTime = currentTime.add(fiveSeconds);
+  }
+
+  return notifTime;
+}
+
+  //RETURNS UNIQUE ID FOR THE NOTIFICATION 
+  int generateUniqueId() {
+  final random = Random();
+  return random.nextInt(4294967296); // Generate a random number within the valid range
+}
+
+
+void storeAppointment(String eventID, int notificationID) async {
+  try {
+    notifId = notificationID;
+    CollectionReference appointmentsCollection = FirebaseFirestore.instance.collection('appointments');
+
+    await appointmentsCollection.doc().set({
+      'eventID': eventID,
+      'notificationID': notificationID,
+    });
+
+    print('Appointment stored in Firestore successfully');
+  } catch (e) {
+    print('Error storing appointment in Firestore: $e');
+  }
+}
+
 
 
 
@@ -105,6 +153,7 @@ class _addAppointmentState extends State<addAppointment> {
       googleCalendarApi.events.insert(event, id!).then((value) {
         print("ADDEDD_________________${value.status}");
         if (value.status == "confirmed") {
+          storeAppointment(id!, generateUniqueId());
           print('Event added in google calendar');
         } else {
           print("Unable to add event in google calendar");
@@ -211,6 +260,7 @@ class _addAppointmentState extends State<addAppointment> {
             });
       }
       // Show dialog | end of message
+      
     } catch (e) {
       print('Error creating event $e');
     }
@@ -229,6 +279,7 @@ class _addAppointmentState extends State<addAppointment> {
 
   bool timeRed = false;
   bool valid = false;
+  int notifId = 0;
   
 
   @override
@@ -343,6 +394,7 @@ class _addAppointmentState extends State<addAppointment> {
     }
 
     return Scaffold(
+      
       backgroundColor: backGroundPink,
       resizeToAvoidBottomInset: true,
       body: Column(
@@ -997,10 +1049,13 @@ class _addAppointmentState extends State<addAppointment> {
                                         print('now event inserted');
                                         
                                         DateTime apptDate = combineDateTime(date, startTime);
+                                        DateTime notifTime = calculateNotificationTime(apptDate);
                                         AppointmentNotification().scheduleNotification(
+                                          id: notifId,
                                           title: _apptNameController.text.trim(),
                                           body: 'Dont forget your appointment!',
-                                          scheduledNotificationDateTime: apptDate);
+                                          scheduledNotificationDateTime: notifTime
+                                        ); 
 
                                       }
                                     } //if valid then submit
