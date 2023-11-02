@@ -6,7 +6,7 @@ import '../colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
-import '../postReply.dart';
+// import '../postReply.dart';
 import 'post_community.dart';
 
 class CommunityPage extends StatefulWidget {
@@ -200,13 +200,14 @@ class _CommunityPage extends State<CommunityPage> {
                     return GestureDetector(
                       onTap: () {
                         print(postID);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => postReply(),
-                            settings: RouteSettings(arguments: postID),
-                          ),
-                        ).then(onGoBack);
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => postReply(),
+                        //     settings: RouteSettings(arguments: postID),
+                        //   ),
+                        // ).then(onGoBack);
+                        //rana's page ^^^^^
                       },
                       child: Column(
                         children: [
@@ -449,13 +450,14 @@ class _CommunityPage extends State<CommunityPage> {
                     return GestureDetector(
                       onTap: () {
                         print(postID);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => postReply(),
-                            settings: RouteSettings(arguments: postID),
-                          ),
-                        ).then(onGoBack);
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => postReply(),
+                        //     settings: RouteSettings(arguments: postID),
+                        //   ),
+                        // ).then(onGoBack);
+                        //rana's page ^^^^
                       },
                       child: Column(
                         children: [

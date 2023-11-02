@@ -8,8 +8,6 @@ import 'package:preggo/SignUp.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/forget_password_screen.dart';
 import 'package:preggo/reminder.dart';
-import 'package:preggo/screens/CommunityPage.dart';
-import 'package:preggo/screens/post_community.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
