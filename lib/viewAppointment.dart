@@ -9,6 +9,7 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
 import 'addAppointment.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class viewAppointment extends StatefulWidget {
   @override
@@ -32,8 +33,15 @@ class _viewAppointment extends State<viewAppointment> {
     }
   }
 
+  getToken() async{
+    String? myToken = await FirebaseMessaging.instance.getToken();
+    print("///////////////////////////////");
+    print(myToken);
+  }
+
   @override
   void initState() {
+    getToken();
     super.initState();
     print("START OF PAGE");
     print(_googleSignIn.currentUser);

@@ -62,6 +62,10 @@ dependencies:
   syncfusion_flutter_calendar: ^23.1.38
   flutter_toggle_tab: ^1.4.1
   shared_preferences: ^2.2.1
+  firebase_messaging: ^14.7.3
+  flutter_local_notifications: ^15.1.2
+  uuid: ^4.1.0
+  
 
 
 

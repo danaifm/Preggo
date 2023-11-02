@@ -1,4 +1,5 @@
 // ignore_for_file: camel_case_types, prefer_const_literals_to_create_immutables, prefer_const_constructors, use_key_in_widget_constructors, unnecessary_const, unnecessary_new, prefer_final_fields, avoid_print, no_leading_underscores_for_local_identifiers, file_names,
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'colors.dart';
@@ -7,6 +8,9 @@ import 'package:googleapis/calendar/v3.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
+import 'package:preggo/appointmnet_notification.dart';
+
+
 
 class addAppointment extends StatefulWidget {
   @override
@@ -21,6 +25,28 @@ class _addAppointmentState extends State<addAppointment> {
     super.initState();
     _googleSignIn.signInSilently();
   }
+
+  //combines the final date and time of the set appointment to schedule the notification 
+  DateTime combineDateTime(DateTime date, DateTime time) {
+  // Extract the date from the first DateTime object
+  final combinedDate = DateTime(date.year, date.month, date.day);
+
+  // Extract the time from the second DateTime object
+  final timeOfDay = TimeOfDay.fromDateTime(time);
+
+  // Combine the date and time
+  final combinedDateTime = DateTime(
+    combinedDate.year,
+    combinedDate.month,
+    combinedDate.day,
+    timeOfDay.hour,
+    timeOfDay.minute,
+  );
+
+  return combinedDateTime;
+}
+
+
 
   DateTime date = DateTime.now();
   DateTime startTime = DateTime.now();
@@ -203,6 +229,7 @@ class _addAppointmentState extends State<addAppointment> {
 
   bool timeRed = false;
   bool valid = false;
+  
 
   @override
   Widget build(BuildContext context) {
@@ -968,6 +995,13 @@ class _addAppointmentState extends State<addAppointment> {
 
                                         insertEvent(event);
                                         print('now event inserted');
+                                        
+                                        DateTime apptDate = combineDateTime(date, startTime);
+                                        AppointmentNotification().scheduleNotification(
+                                          title: _apptNameController.text.trim(),
+                                          body: 'Dont forget your appointment!',
+                                          scheduledNotificationDateTime: apptDate);
+
                                       }
                                     } //if valid then submit
                                   }, //end onPressed()
