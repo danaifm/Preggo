@@ -6,7 +6,6 @@ import 'package:preggo/colors.dart';
 import 'package:preggo/pregnancyInfo.dart';
 import 'package:preggo/screens/ToolsPage.dart';
 import 'package:preggo/weightFeature/addWeight.dart';
-import 'package:preggo/weightFeature/deleteWeight.dart';
 import 'package:preggo/weightFeature/editWeight.dart';
 import 'package:intl/intl.dart';
 
@@ -24,47 +23,11 @@ class ViewWeight extends StatefulWidget {
 
 class _ViewWeight extends State<ViewWeight> {
   late final String userId;
-  // var _numberToMonthMap = {
-  //   1: "Jan",
-  //   2: "Feb",
-  //   3: "Mar",
-  //   4: "Apr",
-  //   5: "May",
-  //   6: "Jun",
-  //   7: "Jul",
-  //   8: "Aug",
-  //   9: "Sep",
-  //   10: "Oct",
-  //   11: "Nov",
-  //   12: "Dec",
-  // };
 
   String getUserId() {
     User? user = FirebaseAuth.instance.currentUser;
     return user!.uid;
   }
-
-  // Future<String> getPregnancyInfoId() async {
-  //   FirebaseFirestore firestore = FirebaseFirestore.instance;
-  //   String userUid = getUserId();
-
-  //     QuerySnapshot pregnancyInfoSnapshot = await firestore
-  //         .collection('users')
-  //         .doc(userUid)
-  //         .collection('pregnancyInfo')
-  //         .get();
-
-  //          for (QueryDocumentSnapshot pregnancyDoc in pregnancyInfoSnapshot.docs[0]) {
-  //       String Pid = pregnancyDoc.id;
-  //       return Pid;
-  //     }
-
-  //   }
-
-  //   return pregnancyInfoSnapshot;
-
-  //   // Add a default return statement
-  // }
 
   Future<void> deleteWeightSuccess(
     BuildContext context,
@@ -134,12 +97,18 @@ class _ViewWeight extends State<ViewWeight> {
                                 // Navigator.of(context).pop();
                                 // Navigator.of(context).pop();
 
-                                Navigator.pop(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ViewWeight(),
-                                  ),
-                                );
+                                // Navigator.pop(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) => ViewWeight(),
+                                //   ),
+                                // );
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pop();
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ViewWeight()));
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: blackColor,
@@ -311,7 +280,7 @@ class _ViewWeight extends State<ViewWeight> {
             Center(
               //notification bell image
               child: Padding(
-                padding: EdgeInsets.only(top: 90),
+                padding: EdgeInsets.only(top: 180),
                 child: Image.asset(
                   'assets/images/no-sport.png',
                   height: 90,
@@ -321,17 +290,46 @@ class _ViewWeight extends State<ViewWeight> {
             ),
             Container(
                 //message
-                margin: EdgeInsets.fromLTRB(30, 35, 30, 80),
-                child: Text(
-                  'No weight',
+                margin: EdgeInsets.fromLTRB(30, 15, 30, 80),
+                child: RichText(
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: -0.28,
-                  ),
-                )),
+                  text: const TextSpan(
+                      style: TextStyle(
+                        fontFamily: 'Urbanist',
+                      ),
+                      children: [
+                        TextSpan(
+                            text: 'No weight\n',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 26,
+                                fontWeight: FontWeight.w600)),
+
+                        WidgetSpan(
+                            child: SizedBox(
+                          height: 20,
+                        )),
+
+                        ///this
+
+                        TextSpan(
+                            text:
+                                ' Start your weight tracking journey by adding a new weight',
+                            style: TextStyle(
+                                color: Color.fromARGB(255, 121, 119, 119))),
+                      ]),
+                )
+                // child: Text(
+                //   'No weight',
+                //   textAlign: TextAlign.center,
+                //   style: TextStyle(
+                //     fontSize: 26,
+                //     fontFamily: 'Urbanist',
+                //     fontWeight: FontWeight.w600,
+                //     letterSpacing: -0.28,
+                //   ),
+                // )
+                ),
           ],
         ),
       );

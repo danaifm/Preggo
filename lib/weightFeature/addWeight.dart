@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:googleapis/servicemanagement/v1.dart';
 import 'package:intl/intl.dart';
 import 'package:preggo/colors.dart';
-import 'package:preggo/weightFeature/viewWeight.dart';
+import 'package:preggo/weightFeature/view_delete_Weight.dart';
 
 class addWeight extends StatefulWidget {
   late final String userId;
@@ -444,11 +444,11 @@ class _fillWeightForm extends State<addWeight> {
 
                                               addWeight(weightNum, Date_Time);
 
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          ViewWeight()));
+                                              // Navigator.push(
+                                              //     context,
+                                              //     MaterialPageRoute(
+                                              //         builder: (context) =>
+                                              //             ViewWeight()));
                                             }
                                           },
                                           style: ElevatedButton.styleFrom(
