@@ -111,16 +111,17 @@ class _viewReminders extends State<viewReminders> {
               String id = reminderResult[index].data()['id'] ?? '';
               String title = reminderResult[index].data()['title'] ?? '';
               String time = reminderResult[index].data()['time'] ?? '';
-        
+
               return Container(
                 margin: EdgeInsets.all(8),
                 //padding: EdgeInsets.all(10),
-        
+
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 17),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 17),
                       decoration: BoxDecoration(
                         color: backGroundPink.withOpacity(0.3),
                         border: Border.all(color: backGroundPink, width: 2),
@@ -257,7 +258,7 @@ class _viewReminders extends State<viewReminders> {
                                   int day = int.parse(dateComponents[2]);
                                   formattedDate =
                                       "${month.toStringAsFixed(0)}-${day.toStringAsFixed(0)}-$year";
-              
+
                                   weekDay = selectedDate.weekday; //monday is 1
                                   if (weekDay == 1) {
                                     //monday
@@ -288,7 +289,7 @@ class _viewReminders extends State<viewReminders> {
                                     dayInDB = 1;
                                     dayShortName = "Sun";
                                   }
-              
+
                                   dayOfWeek = dayInDB.toString();
                                 });
                               },
@@ -313,20 +314,19 @@ class _viewReminders extends State<viewReminders> {
                                 separatorPadding: 16.0, // padding between days
                               ),
                             ),
-
                             FutureBuilder<Widget>(
-                            future: getReminders(
-                                formattedDate, dayOfWeek, dayShortName),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<Widget> snapshot) {
-                              if (snapshot.hasData) {
-                                return snapshot.data!;
-                              }
-                                      
-                              return CircularProgressIndicator(
-                                  color: pinkColor);
-                            },
-                              ),
+                              future: getReminders(
+                                  formattedDate, dayOfWeek, dayShortName),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<Widget> snapshot) {
+                                if (snapshot.hasData) {
+                                  return snapshot.data!;
+                                }
+
+                                return CircularProgressIndicator(
+                                    color: pinkColor);
+                              },
+                            ),
                           ],
                         ),
                       ),

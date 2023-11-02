@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:preggo/screens/CommunityPage.dart';
 import 'package:preggo/viewAppointment.dart';
 import 'package:preggo/view_reminders.dart';
-import 'package:preggo/weightFeature/viewWeight.dart';
+import 'package:preggo/weightFeature/view_delete_Weight.dart';
 
 class ToolsPage extends StatefulWidget {
   const ToolsPage({super.key});
@@ -106,7 +106,7 @@ class _ToolsPage extends State<ToolsPage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              ViewWeight())); // Track Weight page
+                              view_delete_Weight())); // Track Weight page
                 },
                 child: Container(
                     //2- weight

@@ -26,9 +26,15 @@ class _fillWeightForm extends State<addWeight> {
     return user!.uid;
   }
 
-  String getTimestamp() {
+  String getDate() {
     DateTime stamp = DateTime.now();
-    String formattedStamp = DateFormat.yMd().add_jm().format(stamp);
+    String formattedStamp = DateFormat.yMd().format(stamp);
+    return formattedStamp;
+  }
+
+  String getTime() {
+    DateTime stamp = DateTime.now();
+    String formattedStamp = DateFormat.jm().format(stamp);
     return formattedStamp;
   }
 
@@ -65,7 +71,7 @@ class _fillWeightForm extends State<addWeight> {
   //     }
   //   }
 
-  Future<void> addWeight(String weight, String dateTime) async {
+  Future<void> addWeight(double weight, String Date, String Time) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     String userUid = getUserId();
 
@@ -86,7 +92,8 @@ class _fillWeightForm extends State<addWeight> {
         .collection('weight');
     subCollectionRef.add({
       "id": "",
-      'dateTime': getTimestamp(),
+      'date': getDate(),
+      'time': getTime(),
       'weight': weight,
     }).then((value) async {
       await subCollectionRef.doc(value.id).set({
@@ -355,8 +362,8 @@ class _fillWeightForm extends State<addWeight> {
 
                                       Padding(
                                         //weight text field
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 10.0),
+                                        padding: const EdgeInsets.only(
+                                            top: 15, bottom: 20),
                                         child: TextFormField(
                                           key: _nameKey,
                                           controller: _weightController,
@@ -416,7 +423,8 @@ class _fillWeightForm extends State<addWeight> {
                                             }
 
                                             //Bdoor do if range > 3
-                                            if (RegExp(r'^[a-zA-Z]+$')
+                                            //r'^[0-9]+(\.[0-9]+)?$'
+                                            if (!RegExp(r'^[0-9]+(\.[0-9]+)?$')
                                                 .hasMatch(value)) {
                                               return "Please Enter numbers only.";
                                             } else {
@@ -426,6 +434,42 @@ class _fillWeightForm extends State<addWeight> {
                                         ),
                                       ),
                                       //end of weight text field
+                                      //start of date bar
+
+                                      Row(
+                                        children: [
+                                          Text.rich(
+                                            TextSpan(
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                              children: [
+                                                TextSpan(
+                                                  text: '  ',
+                                                ),
+                                                WidgetSpan(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 10),
+                                                    child: Icon(
+                                                        Icons.calendar_month),
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text: getDate(),
+                                                ),
+                                                TextSpan(
+                                                  text: ' | ',
+                                                ),
+                                                TextSpan(
+                                                  text: getTime(),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
 
                                       Padding(
                                         //start journey button
@@ -437,12 +481,13 @@ class _fillWeightForm extends State<addWeight> {
 
                                             if (_formKey.currentState!
                                                 .validate()) {
-                                              String weightNum =
-                                                  _weightController.text.trim();
+                                              double weightNum = double.parse(
+                                                  _weightController.text);
 
-                                              String Date_Time = getTimestamp();
+                                              String Date = getDate();
+                                              String Time = getTime();
 
-                                              addWeight(weightNum, Date_Time);
+                                              addWeight(weightNum, Date, Time);
 
                                               // Navigator.push(
                                               //     context,

@@ -9,24 +9,36 @@ import 'package:preggo/weightFeature/addWeight.dart';
 import 'package:preggo/weightFeature/editWeight.dart';
 import 'package:intl/intl.dart';
 
-class ViewWeight extends StatefulWidget {
+class view_delete_Weight extends StatefulWidget {
   late DocumentReference _documentReference;
 
   //final String pregnancyInfo_id;
-  ViewWeight({
+  view_delete_Weight({
     super.key,
   });
 
   @override
-  _ViewWeight createState() => _ViewWeight();
+  _view_delete_Weight createState() => _view_delete_Weight();
 }
 
-class _ViewWeight extends State<ViewWeight> {
+class _view_delete_Weight extends State<view_delete_Weight> {
   late final String userId;
 
   String getUserId() {
     User? user = FirebaseAuth.instance.currentUser;
     return user!.uid;
+  }
+
+  String getDate() {
+    DateTime stamp = DateTime.now();
+    String formattedStamp = DateFormat.yMd().format(stamp);
+    return formattedStamp;
+  }
+
+  String getTime() {
+    DateTime stamp = DateTime.now();
+    String formattedStamp = DateFormat.jm().format(stamp);
+    return formattedStamp;
   }
 
   Future<void> deleteWeightSuccess(
@@ -108,7 +120,8 @@ class _ViewWeight extends State<ViewWeight> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => ViewWeight()));
+                                        builder: (context) =>
+                                            view_delete_Weight()));
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: blackColor,
@@ -251,17 +264,6 @@ class _ViewWeight extends State<ViewWeight> {
     DocumentSnapshot firstDocument = pregnancyInfoSnapshot.docs[0];
     String Pid = firstDocument.id;
 
-    // to get weight id
-    // QuerySnapshot  = await firestore
-    //     .collection('users')
-    //     .doc(userUid)
-    //     .collection('pregnancyInfo')
-    //     .doc(Pid)
-    //     .collection('weight')
-    //     .get();
-
-    //     String weightId =
-
     QuerySnapshot result = await firestore
         .collection('users')
         .doc(userUid)
@@ -304,14 +306,10 @@ class _ViewWeight extends State<ViewWeight> {
                                 color: Colors.black,
                                 fontSize: 26,
                                 fontWeight: FontWeight.w600)),
-
                         WidgetSpan(
                             child: SizedBox(
                           height: 20,
                         )),
-
-                        ///this
-
                         TextSpan(
                             text:
                                 ' Start your weight tracking journey by adding a new weight',
@@ -355,9 +353,9 @@ class _ViewWeight extends State<ViewWeight> {
             itemCount: weightResult.length,
             itemBuilder: (context, index) {
               String id = weightResult[index].data()['id'] ?? '';
-              String weight = weightResult[index].data()['weight'] ?? '';
-              String dateTime = weightResult[index].data()['dateTime'] ?? '';
-              //DateTime date = dateTime.toDate();
+              double weight = weightResult[index].data()['weight'] ?? '';
+              String date = weightResult[index].data()['date'] ?? '';
+              String time = weightResult[index].data()['time'] ?? '';
 
               return Container(
                 margin: EdgeInsets.all(8),
@@ -378,12 +376,11 @@ class _ViewWeight extends State<ViewWeight> {
                         Container(
                           width: 85,
                           child: Text(
-                            '$dateTime',
-                            //'${_numberToMonthMap[date.month]} ${date.day} ${date.year} ${date.hour} ${date.minute} ',
+                            '$date \n  $time',
                             style: TextStyle(
                               color: Colors.black,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
                               fontFamily: 'Urbanist',
                             ),
                           ),
@@ -421,8 +418,8 @@ class _ViewWeight extends State<ViewWeight> {
                               "edit |",
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
+                                fontSize: 15.5,
+                                fontWeight: FontWeight.w600,
                                 fontFamily: 'Urbanist',
                               ),
                             ),
@@ -447,8 +444,8 @@ class _ViewWeight extends State<ViewWeight> {
                               " delete",
                               style: TextStyle(
                                 color: Colors.redAccent,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
+                                fontSize: 15.5,
+                                fontWeight: FontWeight.w600,
                                 fontFamily: 'Urbanist',
                               ),
                             ),
@@ -553,18 +550,6 @@ class _ViewWeight extends State<ViewWeight> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backGroundPink,
-      // floatingActionButton: Chip(
-      //     //the add button
-      //     backgroundColor: blackColor,
-      //     onDeleted: () => openAddDialog(context),
-      //     deleteIcon: Icon(
-      //       Icons.add,
-      //       color: whiteColor,
-      //     ),
-      //     label: Text(
-      //       "Add weight",
-      //       style: TextStyle(fontSize: 20, color: whiteColor),
-      //     )),
       body: Stack(
         children: [
           Column(
@@ -679,39 +664,3 @@ class _ViewWeight extends State<ViewWeight> {
     );
   }
 }
-
-//   child: ListView.builder(
-//     itemCount: 3,
-//     shrinkWrap: true,
-//     //physics: NeverScrollableScrollPhysics(),
-//     itemBuilder: (context, Index) {
-//       return Padding(
-//         padding: const EdgeInsets.only(left: 8, top: 8),
-//         child: Card(
-//           elevation: 4,
-//           shape: RoundedRectangleBorder(
-//               borderRadius: BorderRadius.circular(15)),
-//           child: ListTile(
-//             leading: Image(
-//               height: 50,
-//               width: 30,
-//               image: AssetImage("assets/images/dumbbell.png"),
-//             ),
-//             title: Text(
-//               "65 Kg",
-//               style: TextStyle(
-//                 fontSize: 28,
-//                 color: blackColor,
-//               ),
-//             ),
-//             trailing: Icon(
-//               Icons.delete,
-//               color: redColor,
-//             ),
-//           ),
-//         ),
-//       );
-//     },
-
-//     //YOUR WORK GOES HERE
-//   ),
