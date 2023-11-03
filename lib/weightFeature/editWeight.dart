@@ -282,7 +282,7 @@ class _fillWeightForm extends State<editWeight> {
                   width: 25,
                 ),
                 Text(
-                  "Edit weight",
+                  "   Edit weight",
                   style: TextStyle(
                     color: Color(0xFFD77D7C),
                     fontSize: 32,
@@ -380,7 +380,7 @@ class _fillWeightForm extends State<editWeight> {
                                           key: _nameKey,
                                           controller: _weightController,
                                           decoration: InputDecoration(
-                                            hintText: 'huhuu',
+                                            //hintText: 'huhuu',
                                             contentPadding:
                                                 EdgeInsets.symmetric(
                                                     vertical: 15.0,
