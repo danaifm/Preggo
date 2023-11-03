@@ -334,15 +334,19 @@ class _view_delete_Weight extends State<view_delete_Weight> {
     } else {
       //reminders exist for this day
       List weightResult = result.docs;
-      // weightResult.sort((a, b) {
-      //   String timeA = a.data()['time'] ?? '';
-      //   String timeB = b.data()['time'] ?? '';
-      //   // Convert 'time' strings to DateTime objects for comparison
-      //   DateFormat format = DateFormat("hh:mm a");
-      //   DateTime dateTimeA = format.parse(timeA);
-      //   DateTime dateTimeB = format.parse(timeB);
-      //   return dateTimeB.compareTo(dateTimeA);
-      // });
+      weightResult.sort((a, b) {
+        var dateTimeA = a['date']; //before -> var adate = a.expiry;
+        var dateTimeB = b['date']; //before -> var bdate = b.expiry;
+        //to get the order other way just switch `adate & bdate`
+        return dateTimeB.compareTo(dateTimeA);
+      });
+      weightResult.sort((a, b) {
+        var dateTimeC = a['time']; //before -> var adate = a.expiry;
+        var dateTimeD = b['time']; //before -> var bdate = b.expiry;
+        //to get the order other way just switch `adate & bdate`
+        return dateTimeD.compareTo(dateTimeC);
+      });
+
       return SingleChildScrollView(
         physics: AlwaysScrollableScrollPhysics(),
         scrollDirection: Axis.vertical,
@@ -466,6 +470,7 @@ class _view_delete_Weight extends State<view_delete_Weight> {
                             //   Icons.delete,
                             //   color: Colors.redAccent,
                             //   size: 20,
+
                             // ),
                           ),
                         ),
