@@ -472,6 +472,8 @@ class _fillWeightForm extends State<addWeight> {
                                             filled: true,
                                             fillColor: Color(0xFFF7F8F9),
                                           ),
+                                          autovalidateMode:
+                                          AutovalidateMode.onUserInteraction,
                                           validator: (value) {
                                             if (value!.trim().isEmpty) {
                                               return "please enter your weight.";

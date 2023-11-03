@@ -63,6 +63,7 @@ dependencies:
   flutter_toggle_tab: ^1.4.1
   shared_preferences: ^2.2.1
   flutter_local_notifications: ^15.1.2
+  numberpicker: ^2.1.2
   
   
 

@@ -351,7 +351,7 @@ class _view_delete_Weight extends State<view_delete_Weight> {
         physics: AlwaysScrollableScrollPhysics(),
         scrollDirection: Axis.vertical,
         child: Container(
-          height: 505,
+          height: 680,
           child: ListView.builder(
             shrinkWrap: true,
             itemCount: weightResult.length,
