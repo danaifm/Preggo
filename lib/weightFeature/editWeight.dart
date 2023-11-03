@@ -53,7 +53,7 @@ class _fillWeightForm extends State<editWeight> {
     return user!.uid;
   }
 
-  editWeight(double? weight, String weightid) async {
+  editWeight(double? weight, String weightid, String date, String time) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     String userUid = getUserId();
 
@@ -72,23 +72,22 @@ class _fillWeightForm extends State<editWeight> {
         .collection('pregnancyInfo')
         .doc(widget.Pid)
         .collection('weight');
-    subCollectionRef.add({
-      // "id": "",
-      // 'date': getDate(),
-      // 'time': getTime(),
+    await subCollectionRef.doc(widget.weightId).update({
+      'id': weightid,
       'weight': weight,
-    }).then((value) async {
-      await subCollectionRef.doc(value.id).set({
-        "id": value.id, // to bring the weight document id
-      }, SetOptions(merge: true));
-      //_successDialog();
-      // setState(() {
-      //   _weightController.clear();
-      // });
+      'date': date,
+      'time': time
     }).catchError((error) => print('failed to add info:$error'));
     if (mounted) {
       _successDialog();
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    double w = widget.weight;
+    _weightController.text = w.toString();
   }
 
   void backButton() {
@@ -211,7 +210,7 @@ class _fillWeightForm extends State<editWeight> {
 
                         // Done
                         const Text(
-                          "Weight added successfully!",
+                          "Weight edited successfully!",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Color.fromARGB(255, 0, 0, 0),
@@ -381,6 +380,7 @@ class _fillWeightForm extends State<editWeight> {
                                           key: _nameKey,
                                           controller: _weightController,
                                           decoration: InputDecoration(
+                                            hintText: 'huhuu',
                                             contentPadding:
                                                 EdgeInsets.symmetric(
                                                     vertical: 15.0,
@@ -426,7 +426,6 @@ class _fillWeightForm extends State<editWeight> {
                                                     255, 221, 225, 232),
                                               ),
                                             ),
-                                            hintText: "in Kg",
                                             filled: true,
                                             fillColor: Color(0xFFF7F8F9),
                                           ),
@@ -470,13 +469,13 @@ class _fillWeightForm extends State<editWeight> {
                                                   ),
                                                 ),
                                                 TextSpan(
-                                                  text: "",
+                                                  text: widget.date,
                                                 ),
                                                 TextSpan(
                                                   text: ' | ',
                                                 ),
                                                 TextSpan(
-                                                  text: "",
+                                                  text: widget.time,
                                                 )
                                               ],
                                             ),
@@ -501,13 +500,17 @@ class _fillWeightForm extends State<editWeight> {
 
                                             if (_formKey.currentState!
                                                 .validate()) {
-                                              // double weightNum = double.parse(
-                                              //     _weightController.text);
+                                              double weightNum = double.parse(
+                                                  _weightController.text);
 
                                               // String Date = getDate();
                                               // String Time = getTime();
 
-                                              // addWeight(weightNum, Date, Time);
+                                              editWeight(
+                                                  weightNum,
+                                                  widget.weightId,
+                                                  widget.date,
+                                                  widget.time);
 
                                               // Navigator.push(
                                               //     context,

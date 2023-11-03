@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/weightFeature/view_delete_Weight.dart';
 import 'package:numberpicker/numberpicker.dart';
-import 'package:flutter/cupertino.dart';
 
 class addWeight extends StatefulWidget {
   //late final String userId;
