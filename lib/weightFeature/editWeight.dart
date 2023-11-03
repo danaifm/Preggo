@@ -282,7 +282,7 @@ class _fillWeightForm extends State<editWeight> {
                   width: 25,
                 ),
                 Text(
-                  "Add new weight",
+                  "Edit weight",
                   style: TextStyle(
                     color: Color(0xFFD77D7C),
                     fontSize: 32,
