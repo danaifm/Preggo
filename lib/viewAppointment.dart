@@ -32,10 +32,8 @@ class _viewAppointment extends State<viewAppointment> {
     }
   }
 
-  
   @override
   void initState() {
-    
     super.initState();
     print("START OF PAGE");
     print(_googleSignIn.currentUser);
@@ -138,6 +136,7 @@ class _viewAppointment extends State<viewAppointment> {
       _drText = appointmentDetails.notes;
 
       _eventID = appointmentDetails.id.toString();
+      print("tapped event with id $_eventID");
 
       showDialog(
           context: context,
