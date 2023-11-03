@@ -404,13 +404,22 @@ class _view_delete_Weight extends State<view_delete_Weight> {
                         GestureDetector(
                           onTap: () {
                             String weightId = id;
-                            //String PregnancyInfoId = Pid;
+                            String PregnancyInfoId = Pid;
+                            double Weight = weight;
+                            String Date = date;
+                            String Time = time;
 
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => editWeight(),
-                                  settings: RouteSettings(arguments: weightId)),
+                                builder: (context) => editWeight(
+                                  weightId: weightId,
+                                  Pid: PregnancyInfoId,
+                                  weight: Weight,
+                                  date: Date,
+                                  time: Time,
+                                ),
+                              ),
                             );
                           },
                           child: Align(

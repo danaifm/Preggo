@@ -9,7 +9,7 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:flutter/cupertino.dart';
 
 class addWeight extends StatefulWidget {
-  late final String userId;
+  //late final String userId;
 
   @override
   State<StatefulWidget> createState() {

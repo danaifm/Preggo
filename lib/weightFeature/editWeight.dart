@@ -9,11 +9,21 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:flutter/cupertino.dart';
 
 class editWeight extends StatefulWidget {
-  late final String userId;
+  //late final String userId;
+  final String weightId;
+  final String Pid;
+  final double weight;
+  final String date;
+  final String time;
 
   //final String pregnancyInfo_id;
   editWeight({
     super.key,
+    required this.weightId,
+    required this.Pid,
+    required this.weight,
+    required this.date,
+    required this.time,
   });
 
   @override
@@ -23,7 +33,7 @@ class editWeight extends StatefulWidget {
 }
 
 class _fillWeightForm extends State<editWeight> {
-  String weightId = '';
+  //String weightId = '';
   // void initState() {
   //   super.initState();
   //   WidgetsBinding.instance.addPostFrameCallback((timeStamp)async {
@@ -37,14 +47,13 @@ class _fillWeightForm extends State<editWeight> {
   final TextEditingController _weightController = TextEditingController();
 
   //bool showError = false;
-  double weight = 0;
 
   String getUserId() {
     User? user = FirebaseAuth.instance.currentUser;
     return user!.uid;
   }
 
-  Future<void> editWeight(double? weight, String weightid) async {
+  editWeight(double? weight, String weightid) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     String userUid = getUserId();
 
@@ -54,14 +63,14 @@ class _fillWeightForm extends State<editWeight> {
         .collection('pregnancyInfo')
         .get();
 
-    DocumentSnapshot firstDocument = pregnancyInfoSnapshot.docs[0];
-    String Pid = firstDocument.id;
+    // DocumentSnapshot firstDocument = pregnancyInfoSnapshot.docs[0];
+    // String Pid = firstDocument.id;
 
     CollectionReference subCollectionRef = firestore
         .collection('users')
         .doc(userUid)
         .collection('pregnancyInfo')
-        .doc(Pid)
+        .doc(widget.Pid)
         .collection('weight');
     subCollectionRef.add({
       // "id": "",
@@ -254,18 +263,282 @@ class _fillWeightForm extends State<editWeight> {
 
   @override
   Widget build(BuildContext context) {
-    weightId = ModalRoute.of(context)?.settings.arguments as String;
     return Scaffold(
-      body: Stack(
-          // children: [
-          //   Column(
-          //     children: [
-          //       FutureBuilder(
-          //           future: editWeight(weight, weightId), builder:BuildContext initialData: context , )
-          //     ],
-          //   )
-          // ],
-          ),
-    );
+        backgroundColor: backGroundPink,
+        body: Column(
+          children: [
+            SizedBox(
+              height: 40,
+            ),
+            Row(
+              children: [
+                IconButton(
+                  onPressed: backButton,
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(
+                  width: 25,
+                ),
+                Text(
+                  "Add new weight",
+                  style: TextStyle(
+                    color: Color(0xFFD77D7C),
+                    fontSize: 32,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    height: 1.30,
+                    letterSpacing: -0.28,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Expanded(
+                child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18.0,
+                      vertical: 0.0,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(80.0),
+                      ),
+                    ),
+                    child: SingleChildScrollView(
+                        physics: NeverScrollableScrollPhysics(),
+                        child: Container(
+                          margin:
+                              EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5.0),
+                                  child: Form(
+                                    key: _formKey,
+                                    child: Column(children: [
+                                      Container(
+                                        //baby name label
+                                        margin:
+                                            EdgeInsets.only(top: 30, left: 5),
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          "Your weight",
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                            color: Color.fromARGB(255, 0, 0, 0),
+                                            fontSize: 20,
+                                            fontFamily: 'Urbanist',
+                                            fontWeight: FontWeight.w700,
+                                            height: 1.30,
+                                            letterSpacing: -0.28,
+                                          ),
+                                        ),
+                                      ),
+                                      // Padding(
+                                      //   padding: const EdgeInsets.only(
+                                      //       top: 5, bottom: 2, right: 90),
+                                      //   child: ListTile(
+                                      //     leading: new Image.asset(
+                                      //       "assets/images/scales.png",
+                                      //       height: 24,
+                                      //       width: 24,
+                                      //     ),
+                                      //     title: new Text('value: $weight'),
+                                      //     onTap: () =>
+                                      //         _showWeightPicker(context),
+                                      //   ),
+                                      // ),
+                                      // Visibility(
+                                      //   visible: showError,
+                                      //   child: Align(
+                                      //     alignment: Alignment.centerLeft,
+                                      //     child: Padding(
+                                      //         padding:
+                                      //             EdgeInsets.only(left: 12.5),
+                                      //         child: Text(
+                                      //           'Please select a weight',
+                                      //           style: TextStyle(
+                                      //               color: Color.fromARGB(
+                                      //                   255, 203, 51, 40),
+                                      //               fontSize: 13),
+                                      //           textAlign: TextAlign.left,
+                                      //         )),
+                                      //   ),
+                                      // ),
+
+                                      Padding(
+                                        //weight text field
+                                        padding: const EdgeInsets.only(
+                                            top: 15, bottom: 20),
+                                        child: TextFormField(
+                                          key: _nameKey,
+                                          controller: _weightController,
+                                          decoration: InputDecoration(
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                    vertical: 15.0,
+                                                    horizontal: 15),
+                                            focusedErrorBorder:
+                                                OutlineInputBorder(
+                                              gapPadding: 0.5,
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              borderSide: BorderSide(
+                                                width: 0.50,
+                                                color: Color.fromRGBO(
+                                                    255, 100, 100, 1),
+                                              ),
+                                            ),
+                                            errorBorder: OutlineInputBorder(
+                                              gapPadding: 0.5,
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              borderSide: BorderSide(
+                                                width: 0.50,
+                                                color: Color.fromRGBO(
+                                                    255, 100, 100, 1),
+                                              ),
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              gapPadding: 0.5,
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              borderSide: BorderSide(
+                                                width: 0.50,
+                                                color: Color.fromARGB(
+                                                    255, 221, 225, 232),
+                                              ),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              // gapPadding: 100,
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              borderSide: BorderSide(
+                                                width: 0.50,
+                                                color: Color.fromARGB(
+                                                    255, 221, 225, 232),
+                                              ),
+                                            ),
+                                            hintText: "in Kg",
+                                            filled: true,
+                                            fillColor: Color(0xFFF7F8F9),
+                                          ),
+                                          validator: (value) {
+                                            if (value!.trim().isEmpty) {
+                                              return "please enter your weight.";
+                                            }
+
+                                            //Bdoor do if range > 3
+                                            //r'^[0-9]+(\.[0-9]+)?$'
+                                            if (!RegExp(r'^[0-9]+(\.[0-9]+)?$')
+                                                .hasMatch(value)) {
+                                              return "Please Enter numbers only.";
+                                            } else {
+                                              return null;
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                      // end of weight text field
+                                      // start of date bar
+
+                                      Row(
+                                        children: [
+                                          Text.rich(
+                                            TextSpan(
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                              children: [
+                                                TextSpan(
+                                                  text: '  ',
+                                                ),
+                                                WidgetSpan(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 10),
+                                                    child: Icon(
+                                                        Icons.calendar_month),
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text: "",
+                                                ),
+                                                TextSpan(
+                                                  text: ' | ',
+                                                ),
+                                                TextSpan(
+                                                  text: "",
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+
+                                      Padding(
+                                        //start journey button
+                                        padding:
+                                            const EdgeInsets.only(top: 30.0),
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            // setState(() {
+                                            //   if (weight == null) {
+                                            //     showError = true;
+                                            //   } else {
+                                            //     showError = false;
+                                            //   }
+                                            // });
+                                            print("here");
+
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              // double weightNum = double.parse(
+                                              //     _weightController.text);
+
+                                              // String Date = getDate();
+                                              // String Time = getTime();
+
+                                              // addWeight(weightNum, Date, Time);
+
+                                              // Navigator.push(
+                                              //     context,
+                                              //     MaterialPageRoute(
+                                              //         builder: (context) =>
+                                              //             ViewWeight()));
+                                            }
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.black,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(40)),
+                                            padding: EdgeInsets.only(
+                                                left: 90,
+                                                top: 15,
+                                                right: 110,
+                                                bottom: 15),
+                                          ),
+                                          child: Text(
+                                            "Submit",
+                                            softWrap: false,
+                                          ),
+                                        ),
+                                      ),
+                                    ]),
+                                  ),
+                                ),
+                              ]),
+                        ))))
+          ],
+        ));
   }
 }
