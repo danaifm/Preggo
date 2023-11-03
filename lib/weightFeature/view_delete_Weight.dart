@@ -403,13 +403,14 @@ class _view_delete_Weight extends State<view_delete_Weight> {
                         //edit button
                         GestureDetector(
                           onTap: () {
-                            String documentId = id;
+                            String weightId = id;
+                            //String PregnancyInfoId = Pid;
+
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => addWeight(),
-                                  settings:
-                                      RouteSettings(arguments: documentId)),
+                                  builder: (context) => editWeight(),
+                                  settings: RouteSettings(arguments: weightId)),
                             );
                           },
                           child: Align(
@@ -468,88 +469,11 @@ class _view_delete_Weight extends State<view_delete_Weight> {
     }
   }
 
-  // final _formKey = GlobalKey<FormState>();
-
-  // String? validateWeight(String? value) {
-  //   if (value == null || value.isEmpty) {
-  //     return 'This field cannot be empty.';
-  //   }
-  //   if (value.length > 3 || value.length <= 1) {
-  //     return 'Please enter a correct weight.';
-  //   }
-
-  //   return null;
-  // }
-
-  // void submitForm() {
-  //   if (_formKey.currentState!.validate()) {
-  //     //if form is valid perform the next action
-  //     print("The form is validated");
-  //   }
-  // }
-
-  // openAddDialog(Context) {
-  //   //the weight form
-  //   return showDialog(
-  //     context: context,
-  //     builder: (context) {
-  //       return Dialog(
-  //         key: _formKey,
-  //         child: Container(
-  //           decoration: BoxDecoration(borderRadius: BorderRadius.circular(500)),
-  //           height: 150,
-  //           child: Padding(
-  //             padding: const EdgeInsets.only(top: 20),
-  //             child: Column(children: [
-  //               Text(
-  //                 "Add new weight",
-  //                 style: TextStyle(
-  //                     fontSize: 20,
-  //                     color: blackColor,
-  //                     fontWeight: FontWeight.w600),
-  //               ),
-  //               SizedBox(
-  //                 height: 15,
-  //               ),
-  //               Row(
-  //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //                 children: [
-  //                   Container(
-  //                     width: 125,
-  //                     height: 40,
-  //                     child: TextFormField(
-  //                         style: TextStyle(fontSize: 15, color: blackColor),
-  //                         decoration: InputDecoration(
-  //                           hintText: "In Kg",
-  //                           border: OutlineInputBorder(
-  //                               borderSide:
-  //                                   BorderSide(width: 1, color: blackColor)),
-  //                         ),
-  //                         // The validator receives the text that the user has entered.
-  //                         validator: validateWeight),
-  //                   ),
-
-  //                   ElevatedButton(
-  //                       onPressed: () => {(ViewWeight())},
-  //                       child: const Text('Submit')),
-
-  //                   // Container( I need to add a submit button
-  //                   //   child: IconButton,
-  //                   // )
-  //                 ],
-  //               )
-  //             ]),
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backGroundPink,
+      resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
           Column(
@@ -584,9 +508,7 @@ class _view_delete_Weight extends State<view_delete_Weight> {
                   ),
                 ],
               ),
-              SizedBox(
-                height: 15,
-              ),
+              SizedBox(height: 15),
               Expanded(
                 child: Container(
                   padding: const EdgeInsets.symmetric(
@@ -611,8 +533,17 @@ class _view_delete_Weight extends State<view_delete_Weight> {
                               if (snapshot.hasData) {
                                 return snapshot.data!;
                               }
-                              return CircularProgressIndicator(
-                                  color: pinkColor);
+                              return Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 100, vertical: 250),
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: CircularProgressIndicator(
+                                    color: pinkColor,
+                                    strokeWidth: 3,
+                                  ),
+                                ),
+                              );
                             },
                           ),
                         ],
