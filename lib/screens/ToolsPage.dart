@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:preggo/viewAppointment.dart';
 import 'package:preggo/view_reminders.dart';
+import 'package:preggo/weightFeature/view_delete_Weight.dart';
 
 class ToolsPage extends StatefulWidget {
   const ToolsPage({super.key});
@@ -100,11 +101,11 @@ class _ToolsPage extends State<ToolsPage> {
               ),
               InkWell(
                 onTap: () {
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (context) =>
-                  //             CommunityPage())); // Track Weight page
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              view_delete_Weight())); // Track Weight page
                 },
                 child: Container(
                     //2- weight
