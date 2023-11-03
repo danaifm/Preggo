@@ -434,13 +434,19 @@ class _fillWeightForm extends State<editWeight> {
                                               return "please enter your weight.";
                                             }
 
-                                            //Bdoor do if range > 3
-                                            //r'^[0-9]+(\.[0-9]+)?$'
                                             if (!RegExp(r'^[0-9]+(\.[0-9]+)?$')
                                                 .hasMatch(value)) {
                                               return "Please Enter numbers only.";
-                                            } else {
-                                              return null;
+                                            }
+
+                                            if (!RegExp(r'^\d+(\.\d{1})?$')
+                                                .hasMatch(value)) {
+                                              return "Please Enter weight with one decimal place only.";
+                                            }
+                                            if (!RegExp(
+                                                    r'^(?:2[0-4][0-9]|2[5-9]|[3-9][0-9]|1[0-9]{2}|25[0-9]|2[6-9][0-9]|300|200|250)(?:\.\d+)?$')
+                                                .hasMatch(value)) {
+                                              return "Please Enter weight between 25 and 300";
                                             }
                                           },
                                         ),

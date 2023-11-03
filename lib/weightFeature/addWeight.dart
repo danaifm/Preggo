@@ -477,8 +477,6 @@ class _fillWeightForm extends State<addWeight> {
                                               return "please enter your weight.";
                                             }
 
-                                            //Bdoor do if range > 3
-                                            //r'^[0-9]+(\.[0-9]+)?$'
                                             if (!RegExp(r'^[0-9]+(\.[0-9]+)?$')
                                                 .hasMatch(value)) {
                                               return "Please Enter numbers only.";
