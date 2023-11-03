@@ -137,6 +137,7 @@ class _viewAppointment extends State<viewAppointment> {
       _drText = appointmentDetails.notes;
 
       _eventID = appointmentDetails.id.toString();
+      print("tapped event with id $_eventID");
 
       showDialog(
           context: context,

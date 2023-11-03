@@ -1,4 +1,5 @@
 // ignore_for_file: camel_case_types, prefer_const_literals_to_create_immutables, prefer_const_constructors, use_key_in_widget_constructors, unnecessary_const, unnecessary_new, prefer_final_fields, avoid_print, no_leading_underscores_for_local_identifiers, file_names,
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'colors.dart';
@@ -7,6 +8,9 @@ import 'package:googleapis/calendar/v3.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
+import 'package:preggo/appointmnet_notification.dart';
+import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class addAppointment extends StatefulWidget {
   @override
@@ -20,6 +24,72 @@ class _addAppointmentState extends State<addAppointment> {
   void initState() {
     super.initState();
     _googleSignIn.signInSilently();
+  }
+
+  //COMBINES THE FINAL DATE AND TIME OF THE SET APPOINTMENT TO SCHEDULE THE NOTIFICATION
+  DateTime combineDateTime(DateTime date, DateTime time) {
+    // Extract the date from the first DateTime object
+    final combinedDate = DateTime(date.year, date.month, date.day);
+
+    // Extract the time from the second DateTime object
+    final timeOfDay = TimeOfDay.fromDateTime(time);
+
+    // Combine the date and time
+    final combinedDateTime = DateTime(
+      combinedDate.year,
+      combinedDate.month,
+      combinedDate.day,
+      timeOfDay.hour,
+      timeOfDay.minute,
+    );
+
+    return combinedDateTime;
+  }
+
+  //CALCULATES THE NOTIFICATION TIME
+  DateTime calculateNotificationTime(DateTime apptTime) {
+    DateTime notifTime;
+
+    DateTime currentTime = DateTime.now();
+    Duration oneDay = Duration(days: 1);
+    Duration twoHours = Duration(hours: 2);
+    Duration fiveSeconds = Duration(seconds: 5);
+
+    if (apptTime.isAfter(currentTime.add(oneDay))) {
+      notifTime = apptTime.subtract(oneDay);
+    } else if (apptTime.isAfter(currentTime.add(twoHours)) &&
+        apptTime.isBefore(currentTime.add(oneDay))) {
+      notifTime = apptTime.subtract(twoHours);
+    } else {
+      notifTime = currentTime.add(fiveSeconds);
+    }
+
+    return notifTime;
+  }
+
+  //RETURNS UNIQUE ID FOR THE NOTIFICATION
+  int generateUniqueId() {
+    final random = Random();
+    return random
+        .nextInt(4294967296); // Generate a random number within the valid range
+  }
+
+  void storeAppointment(String eventID, int notificationID) async {
+    try {
+      notifId = notificationID;
+      CollectionReference appointmentsCollection =
+          FirebaseFirestore.instance.collection('appointments');
+
+      await appointmentsCollection.doc(eventID).set({
+        'eventID': eventID,
+        'notificationID': notificationID,
+      });
+
+      print(
+          'Appointment stored in Firestore successfully with document id $eventID');
+    } catch (e) {
+      print('Error storing appointment in Firestore: $e');
+    }
   }
 
   DateTime date = DateTime.now();
@@ -76,14 +146,19 @@ class _addAppointmentState extends State<addAppointment> {
         }
       }
 
-      googleCalendarApi.events.insert(event, id!).then((value) {
-        print("ADDEDD_________________${value.status}");
-        if (value.status == "confirmed") {
-          print('Event added in google calendar');
-        } else {
-          print("Unable to add event in google calendar");
-        }
-      });
+      Event e = await googleCalendarApi.events.insert(event, id!);
+
+      storeAppointment(e.id.toString(), generateUniqueId());
+
+      // googleCalendarApi.events.insert(event, id!).then((value) {
+      //   print("ADDEDD_________________${value.status}");
+      //   if (value.status == "confirmed") {
+      //     storeAppointment(id!, generateUniqueId());
+      //     print('Event added in google calendar');
+      //   } else {
+      //     print("Unable to add event in google calendar");
+      //   }
+      // });
 
 //SUCCESS POPUP
       /// Show dialog | start of message
@@ -203,6 +278,7 @@ class _addAppointmentState extends State<addAppointment> {
 
   bool timeRed = false;
   bool valid = false;
+  int notifId = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -970,6 +1046,20 @@ class _addAppointmentState extends State<addAppointment> {
 
                                         insertEvent(event);
                                         print('now event inserted');
+
+                                        DateTime apptDate =
+                                            combineDateTime(date, startTime);
+                                        DateTime notifTime =
+                                            calculateNotificationTime(apptDate);
+                                        AppointmentNotification()
+                                            .scheduleNotification(
+                                                id: notifId,
+                                                title: _apptNameController.text
+                                                    .trim(),
+                                                body:
+                                                    'Dont forget your appointment!',
+                                                scheduledNotificationDateTime:
+                                                    notifTime);
                                       }
                                     } //if valid then submit
                                   }, //end onPressed()

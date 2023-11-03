@@ -5,9 +5,16 @@ import 'package:preggo/SplashScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/profile/cubit/profile_cubit.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:preggo/appointmnet_notification.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 
 void main() async {
+  
   WidgetsFlutterBinding.ensureInitialized();
+  tz.initializeTimeZones();
+  AppointmentNotification().initNotification();
   await Firebase.initializeApp();
   AwesomeNotifications().requestPermissionToSendNotifications();
   AwesomeNotifications().initialize(
