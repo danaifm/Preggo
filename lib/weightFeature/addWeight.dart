@@ -5,6 +5,8 @@ import 'package:googleapis/servicemanagement/v1.dart';
 import 'package:intl/intl.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/weightFeature/view_delete_Weight.dart';
+import 'package:numberpicker/numberpicker.dart';
+import 'package:flutter/cupertino.dart';
 
 class addWeight extends StatefulWidget {
   late final String userId;
@@ -20,6 +22,7 @@ class _fillWeightForm extends State<addWeight> {
   final GlobalKey<FormFieldState> _nameKey = GlobalKey<FormFieldState>();
   final TextEditingController _weightController = TextEditingController();
   bool showError = false;
+  double? weight;
 
   String getUserId() {
     User? user = FirebaseAuth.instance.currentUser;
@@ -71,7 +74,7 @@ class _fillWeightForm extends State<addWeight> {
   //     }
   //   }
 
-  Future<void> addWeight(double weight, String Date, String Time) async {
+  Future<void> addWeight(double? weight, String Date, String Time) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     String userUid = getUserId();
 
@@ -107,6 +110,28 @@ class _fillWeightForm extends State<addWeight> {
     if (mounted) {
       _successDialog();
     }
+  }
+
+  void _showWeightPicker(BuildContext context) {
+    showCupertinoModalPopup(
+        context: context,
+        builder: (_) => SizedBox(
+              width: 300,
+              height: 250,
+              child: CupertinoPicker(
+                backgroundColor: Colors.white,
+                itemExtent: 40,
+                scrollController: FixedExtentScrollController(initialItem: 0),
+                children: [
+                  for (int i = 25; i <= 250; i++) Text('$i'),
+                ],
+                onSelectedItemChanged: (value) {
+                  setState(() {
+                    weight = value.toDouble() + 25;
+                  });
+                },
+              ),
+            ));
   }
 
   void backButton() {
@@ -359,80 +384,111 @@ class _fillWeightForm extends State<addWeight> {
                                           ),
                                         ),
                                       ),
-
                                       Padding(
-                                        //weight text field
                                         padding: const EdgeInsets.only(
-                                            top: 15, bottom: 20),
-                                        child: TextFormField(
-                                          key: _nameKey,
-                                          controller: _weightController,
-                                          decoration: InputDecoration(
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                                    vertical: 15.0,
-                                                    horizontal: 15),
-                                            focusedErrorBorder:
-                                                OutlineInputBorder(
-                                              gapPadding: 0.5,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              borderSide: BorderSide(
-                                                width: 0.50,
-                                                color: Color.fromRGBO(
-                                                    255, 100, 100, 1),
-                                              ),
-                                            ),
-                                            errorBorder: OutlineInputBorder(
-                                              gapPadding: 0.5,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              borderSide: BorderSide(
-                                                width: 0.50,
-                                                color: Color.fromRGBO(
-                                                    255, 100, 100, 1),
-                                              ),
-                                            ),
-                                            enabledBorder: OutlineInputBorder(
-                                              gapPadding: 0.5,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              borderSide: BorderSide(
-                                                width: 0.50,
-                                                color: Color.fromARGB(
-                                                    255, 221, 225, 232),
-                                              ),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              // gapPadding: 100,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              borderSide: BorderSide(
-                                                width: 0.50,
-                                                color: Color.fromARGB(
-                                                    255, 221, 225, 232),
-                                              ),
-                                            ),
-                                            hintText: "in Kg",
-                                            filled: true,
-                                            fillColor: Color(0xFFF7F8F9),
+                                            top: 5, bottom: 2, right: 90),
+                                        child: ListTile(
+                                          leading: new Image.asset(
+                                            "assets/images/scales.png",
+                                            height: 24,
+                                            width: 24,
                                           ),
-                                          validator: (value) {
-                                            if (value!.trim().isEmpty) {
-                                              return "please enter your weight.";
-                                            }
-
-                                            //Bdoor do if range > 3
-                                            //r'^[0-9]+(\.[0-9]+)?$'
-                                            if (!RegExp(r'^[0-9]+(\.[0-9]+)?$')
-                                                .hasMatch(value)) {
-                                              return "Please Enter numbers only.";
-                                            } else {
-                                              return null;
-                                            }
-                                          },
+                                          title: new Text('value: $weight'),
+                                          onTap: () =>
+                                              _showWeightPicker(context),
                                         ),
                                       ),
+                                      Visibility(
+                                        visible: showError,
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Padding(
+                                              padding:
+                                                  EdgeInsets.only(left: 12.5),
+                                              child: Text(
+                                                'Please select a weight',
+                                                style: TextStyle(
+                                                    color: Color.fromARGB(
+                                                        255, 203, 51, 40),
+                                                    fontSize: 13),
+                                                textAlign: TextAlign.left,
+                                              )),
+                                        ),
+                                      ),
+
+                                      // Padding(
+                                      //   //weight text field
+                                      //   padding: const EdgeInsets.only(
+                                      //       top: 15, bottom: 20),
+                                      //   child: TextFormField(
+                                      //     key: _nameKey,
+                                      //     controller: _weightController,
+                                      //     decoration: InputDecoration(
+                                      //       contentPadding:
+                                      //           EdgeInsets.symmetric(
+                                      //               vertical: 15.0,
+                                      //               horizontal: 15),
+                                      //       focusedErrorBorder:
+                                      //           OutlineInputBorder(
+                                      //         gapPadding: 0.5,
+                                      //         borderRadius:
+                                      //             BorderRadius.circular(12),
+                                      //         borderSide: BorderSide(
+                                      //           width: 0.50,
+                                      //           color: Color.fromRGBO(
+                                      //               255, 100, 100, 1),
+                                      //         ),
+                                      //       ),
+                                      //       errorBorder: OutlineInputBorder(
+                                      //         gapPadding: 0.5,
+                                      //         borderRadius:
+                                      //             BorderRadius.circular(12),
+                                      //         borderSide: BorderSide(
+                                      //           width: 0.50,
+                                      //           color: Color.fromRGBO(
+                                      //               255, 100, 100, 1),
+                                      //         ),
+                                      //       ),
+                                      //       enabledBorder: OutlineInputBorder(
+                                      //         gapPadding: 0.5,
+                                      //         borderRadius:
+                                      //             BorderRadius.circular(12),
+                                      //         borderSide: BorderSide(
+                                      //           width: 0.50,
+                                      //           color: Color.fromARGB(
+                                      //               255, 221, 225, 232),
+                                      //         ),
+                                      //       ),
+                                      //       focusedBorder: OutlineInputBorder(
+                                      //         // gapPadding: 100,
+                                      //         borderRadius:
+                                      //             BorderRadius.circular(12),
+                                      //         borderSide: BorderSide(
+                                      //           width: 0.50,
+                                      //           color: Color.fromARGB(
+                                      //               255, 221, 225, 232),
+                                      //         ),
+                                      //       ),
+                                      //       hintText: "in Kg",
+                                      //       filled: true,
+                                      //       fillColor: Color(0xFFF7F8F9),
+                                      //     ),
+                                      //     validator: (value) {
+                                      //       if (value!.trim().isEmpty) {
+                                      //         return "please enter your weight.";
+                                      //       }
+
+                                      //       //Bdoor do if range > 3
+                                      //       //r'^[0-9]+(\.[0-9]+)?$'
+                                      //       if (!RegExp(r'^[0-9]+(\.[0-9]+)?$')
+                                      //           .hasMatch(value)) {
+                                      //         return "Please Enter numbers only.";
+                                      //       } else {
+                                      //         return null;
+                                      //       }
+                                      //     },
+                                      //   ),
+                                      // ),
                                       //end of weight text field
                                       //start of date bar
 
@@ -477,17 +533,21 @@ class _fillWeightForm extends State<addWeight> {
                                             const EdgeInsets.only(top: 30.0),
                                         child: ElevatedButton(
                                           onPressed: () {
+                                            setState(() {
+                                              if (weight == null) {
+                                                showError = true;
+                                              } else {
+                                                showError = false;
+                                              }
+                                            });
                                             print("here");
 
                                             if (_formKey.currentState!
                                                 .validate()) {
-                                              double weightNum = double.parse(
-                                                  _weightController.text);
-
                                               String Date = getDate();
                                               String Time = getTime();
 
-                                              addWeight(weightNum, Date, Time);
+                                              addWeight(weight, Date, Time);
 
                                               // Navigator.push(
                                               //     context,
