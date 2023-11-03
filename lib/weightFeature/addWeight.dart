@@ -489,9 +489,9 @@ class _fillWeightForm extends State<addWeight> {
                                               return "Please Enter weight with one decimal place only.";
                                             }
                                             if (!RegExp(
-                                                    r'^(?:2[5-9]|[3-9][0-9]|1[0-9]{2}|250)$')
+                                                    r'^(?:2[0-4][0-9]|2[5-9]|[3-9][0-9]|1[0-9]{2}|25[0-9]|2[6-9][0-9]|300|200|250)(?:\.\d+)?$')
                                                 .hasMatch(value)) {
-                                              return "Please Enter weight between 25 and 250";
+                                              return "Please Enter weight between 25 and 300";
                                             }
                                           },
                                         ),
