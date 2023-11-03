@@ -5,12 +5,14 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:preggo/NavBar.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/login_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/calendar/v3.dart' as Cal;
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:preggo/profile/cubit/profile_cubit.dart';
+import 'package:preggo/profile/profile_screen.dart';
 import 'package:string_validator/string_validator.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -101,83 +103,92 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         backgroundColor: backGroundPink,
         leading: IconButton(
             onPressed: () {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-            content: SizedBox(
-              height: 130,
-              child: Column(
-                children: <Widget>[
-                  Center(
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 10, bottom: 30),
-                      child: Text(
-                        'Are you sure you want to go back?',
-                        textAlign: TextAlign.center,
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 15),
+                    content: SizedBox(
+                      height: 130,
+                      child: Column(
+                        children: <Widget>[
+                          const Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 10, bottom: 30),
+                              child: Text(
+                                'Are you sure you want to go back?',
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 5),
+                                height: 45.0,
+                                child: Center(
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: blackColor,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(40)),
+                                      padding: const EdgeInsets.only(
+                                          left: 30,
+                                          top: 15,
+                                          right: 30,
+                                          bottom: 15),
+                                    ),
+                                    child: const Text(
+                                      "No",
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 5),
+                                height: 45.0,
+                                child: Center(
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      Navigator.of(context).pop();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor:
+                                          Theme.of(context).colorScheme.error,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(40)),
+                                      padding: const EdgeInsets.only(
+                                          left: 30,
+                                          top: 15,
+                                          right: 30,
+                                          bottom: 15),
+                                    ),
+                                    child: const Text(
+                                      "Yes",
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 5),
-                        height: 45.0,
-                        child: Center(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: blackColor,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(40)),
-                              padding: const EdgeInsets.only(
-                                  left: 30, top: 15, right: 30, bottom: 15),
-                            ),
-                            child: const Text(
-                              "No",
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 5),
-                        height: 45.0,
-                        child: Center(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pop();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.error,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(40)),
-                              padding: const EdgeInsets.only(
-                                  left: 30, top: 15, right: 30, bottom: 15),
-                            ),
-                            child: const Text(
-                              "Yes",
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      );
-   
-   
+                  );
+                },
+              );
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: Colors.black,
             )),
@@ -185,7 +196,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       ),
       body: BlocConsumer<ProfileCubit, ProfileState>(
         listener: (context, state) {
-          if (state is UpdateDataSuccess) {
+          if (state is UpdateDataSuccess || state is PasswordChangedSuccess) {
             showDialog(
                 context: context,
                 builder: (context) {
@@ -253,106 +264,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   child: Center(
                                     child: ElevatedButton(
                                       onPressed: () {
-                                        Navigator.of(context).pop();
-                                        Navigator.of(context).pop();
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: blackColor,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(40)),
-                                        padding: const EdgeInsets.only(
-                                            left: 70,
-                                            top: 15,
-                                            right: 70,
-                                            bottom: 15),
-                                      ),
-                                      child: const Text(
-                                        "OK",
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                });
-          }
-          if (state is PasswordChangedSuccess) {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return Center(
-                    child: SizedBox(
-                      height: MediaQuery.sizeOf(context).height * 0.40,
-                      width: MediaQuery.sizeOf(context).width * 0.85,
-                      child: Dialog(
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: const BoxDecoration(
-                            color: Color.fromRGBO(255, 255, 255, 1),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(20),
-                            ),
-                          ),
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const SizedBox(height: 20),
-                                Container(
-                                  padding: const EdgeInsets.all(15),
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: green,
-                                    //color: pinkColor,
-                                    // border: Border.all(
-                                    //   width: 1.3,
-                                    //   color: Colors.black,
-                                    // ),
-                                  ),
-                                  child: const Icon(
-                                    Icons.check,
-                                    color: Color.fromRGBO(255, 255, 255, 1),
-                                    size: 35,
-                                  ),
-                                ),
-                                const SizedBox(height: 25),
-
-                                // Done
-                                const Text(
-                                  "Profile edited successfully!",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Color.fromARGB(255, 0, 0, 0),
-                                    fontSize: 17,
-                                    fontFamily: 'Urbanist',
-                                    fontWeight: FontWeight.w700,
-                                    height: 1.30,
-                                    letterSpacing: -0.28,
-                                  ),
-                                ),
-
-                                const SizedBox(height: 20),
-
-                                /// OK Button
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10),
-                                  width:
-                                      MediaQuery.sizeOf(context).width * 0.80,
-                                  height: 45.0,
-                                  child: Center(
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                        Navigator.of(context).pop();
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => const NavBar(
+                                              currentTab: 2,
+                                            ),
+                                          ),
+                                        );
                                       },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: blackColor,
@@ -604,7 +523,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     }
                                   },
                                   decoration: InputDecoration(
-                                    hintText: user.userName,
+                                    hintText: user.userName.capitalize(),
                                     helperText: '',
                                     labelStyle: const TextStyle(
                                       fontSize: 15,
@@ -986,10 +905,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   obscureText: hidePassword ? true : false,
                                   autocorrect: false,
                                   validator: (pass) {
-                                        if(oldPasswordController.text.trim().isNotEmpty){
-                                          if(pass!.isEmpty){
-                                            return "Field is empty";
-                                          }
+                                    if (oldPasswordController.text
+                                        .trim()
+                                        .isNotEmpty) {
+                                      if (pass!.isEmpty) {
+                                        return "Field is empty";
+                                      }
                                       print(pass);
                                       print(pass!.trim().length);
                                       if (pass.trim().length < 8) {
@@ -1086,12 +1007,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   obscureText: hidePassword ? true : false,
                                   autocorrect: false,
                                   validator: (pass) {
-                                    if(oldPasswordController.text.trim().isNotEmpty){
+                                    if (oldPasswordController.text
+                                        .trim()
+                                        .isNotEmpty) {
                                       if (newPasswordController.text.trim() !=
-                                          confirmPasswordController.text.trim()) {
+                                          confirmPasswordController.text
+                                              .trim()) {
                                         return "Unidentical new passwords";
                                       }
-                                      if(pass!.isEmpty){
+                                      if (pass!.isEmpty) {
                                         return "Field is empty";
                                       }
                                     }
@@ -1124,19 +1048,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   setState(() {});
                                   if (_formKey.currentState!.validate()) {
                                     _formKey.currentState?.save();
-                                    await ProfileCubit.get(context)
-                                        .updateUserData(
-                                            userName:
-                                                userNameController.text.trim(),
-                                            email: emailController.text.trim(),
-                                            phone: phoneController.text.trim());
-                                    if (mounted) {
+
+                                    var isChanged = await ProfileCubit.get(
+                                            context)
+                                        .changePassword(
+                                            oldPasswordController.text.trim(),
+                                            newPasswordController.text.trim(),
+                                            context);
+
+                                    if (isChanged == true)
                                       await ProfileCubit.get(context)
-                                          .changePassword(
-                                              oldPasswordController.text.trim(),
-                                              newPasswordController.text.trim(),
-                                              context);
-                                    }
+                                          .updateUserData(
+                                              userName: userNameController.text
+                                                  .trim(),
+                                              email:
+                                                  emailController.text.trim(),
+                                              phone:
+                                                  phoneController.text.trim());
                                   }
                                 },
                                 child: const Text(
