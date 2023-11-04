@@ -260,6 +260,7 @@ class _postReply extends State<postReply>{
       final Map<String,dynamic> postData = postSnapshot.data() as Map<String,dynamic>;
 
       username = postData['username'];
+      username = username.toString().capitalize(); 
       title = postData['title'];
       body = postData['body'];
       timestamp = postData['timestamp'];
