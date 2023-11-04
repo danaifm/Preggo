@@ -14,7 +14,6 @@ import 'package:preggo/profile/edit_profile.dart';
 import 'package:preggo/screens/post_community.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 extension StringExtension on String {
   String capitalize() {
     if (int.tryParse(this[0]) == null) {
@@ -25,12 +24,11 @@ extension StringExtension on String {
       if (int.tryParse(chars[i]) != null) {
         continue;
       }
-      return "${substring(0, i).toLowerCase()}${this[i].toUpperCase()}${substring(i+1).toLowerCase()}";
+      return "${substring(0, i).toLowerCase()}${this[i].toUpperCase()}${substring(i + 1).toLowerCase()}";
     }
     return this;
   }
 }
-
 
 class ProfileScreen extends StatefulWidget {
   ProfileScreen({super.key});
@@ -452,14 +450,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             MainAxisAlignment.center,
                                         children: [
                                           ElevatedButton(
-                                            onPressed: ()async {
-                                             Navigator.pop(context);
+                                            onPressed: () async {
+                                              Navigator.pop(context);
                                             },
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: blackColor,
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                  BorderRadius.circular(40)),
+                                                      BorderRadius.circular(
+                                                          40)),
                                               padding: const EdgeInsets.only(
                                                   left: 30,
                                                   top: 15,
@@ -474,12 +473,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             width: 10,
                                           ),
                                           ElevatedButton(
-                                            onPressed: ()async {
+                                            onPressed: () async {
                                               const _scopes = const [
                                                 Cal.CalendarApi.calendarScope
                                               ]; //scope to CREATE EVENT in calendar
                                               GoogleSignIn _googleSignIn =
-                                              GoogleSignIn(
+                                                  GoogleSignIn(
                                                 // Optional clientId
                                                 // clientId: 'your-client_id.apps.googleusercontent.com',
                                                 scopes: _scopes,
@@ -494,8 +493,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                                               // TODO: POST COMMUNITY - CLEAR LOCAL PREFS
                                               SharedPreferences prefs =
-                                              await SharedPreferences
-                                                  .getInstance();
+                                                  await SharedPreferences
+                                                      .getInstance();
                                               prefs.clear();
                                               // End
                                               if (context.mounted) {
@@ -503,7 +502,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   context,
                                                   MaterialPageRoute(
                                                     builder: (context) =>
-                                                    const LoginScreen(),
+                                                        const LoginScreen(),
                                                   ),
                                                 );
                                               }
@@ -512,7 +511,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               backgroundColor: Colors.red,
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                  BorderRadius.circular(40)),
+                                                      BorderRadius.circular(
+                                                          40)),
                                               padding: const EdgeInsets.only(
                                                   left: 30,
                                                   top: 15,
@@ -601,7 +601,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               backgroundColor: blackColor,
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                  BorderRadius.circular(40)),
+                                                      BorderRadius.circular(
+                                                          40)),
                                               padding: const EdgeInsets.only(
                                                   left: 30,
                                                   top: 15,
@@ -616,7 +617,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             width: 10,
                                           ),
                                           ElevatedButton(
-                                            onPressed: ()async {
+                                            onPressed: () async {
                                               await ProfileCubit.get(context)
                                                   .deleteAccount();
                                             },
@@ -624,7 +625,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               backgroundColor: Colors.red,
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                  BorderRadius.circular(40)),
+                                                      BorderRadius.circular(
+                                                          40)),
                                               padding: const EdgeInsets.only(
                                                   left: 30,
                                                   top: 15,

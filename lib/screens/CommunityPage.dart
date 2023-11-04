@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_toggle_tab/flutter_toggle_tab.dart';
+import 'package:preggo/profile/profile_screen.dart';
 import '../colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -190,7 +191,10 @@ class _CommunityPage extends State<CommunityPage> {
                     return Container(height: 70);
                   } else if (index > 0 &&
                       index < snapshot.data!.docs.length + 1) {
-                    String username = allPosts[index - 1].data()['username'];
+                    String username = allPosts[index - 1]
+                        .data()['username']
+                        .toString()
+                        .capitalize();
                     String postTitle = allPosts[index - 1].data()['title'];
                     String postBody = allPosts[index - 1].data()['body'];
                     String timestamp = allPosts[index - 1].data()['timestamp'];
@@ -201,12 +205,12 @@ class _CommunityPage extends State<CommunityPage> {
                       onTap: () {
                         print(postID);
                         Navigator.push(
-                           context,
-                           MaterialPageRoute(
-                             builder: (context) => postReply(),
-                             settings: RouteSettings(arguments: postID),
-                           ),
-                         ).then(onGoBack);
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => postReply(),
+                            settings: RouteSettings(arguments: postID),
+                          ),
+                        ).then(onGoBack);
                         //rana's page ^^^^^
                       },
                       child: Column(
@@ -439,7 +443,10 @@ class _CommunityPage extends State<CommunityPage> {
                     return Container(height: 70);
                   } else if (index > 0 &&
                       index < snapshot.data!.docs.length + 1) {
-                    String username = myPosts[index - 1].data()['username'];
+                    String username = myPosts[index - 1]
+                        .data()['username']
+                        .toString()
+                        .capitalize();
                     String postTitle = myPosts[index - 1].data()['title'];
                     String postBody = myPosts[index - 1].data()['body'];
                     String timestamp = myPosts[index - 1].data()['timestamp'];
@@ -450,13 +457,13 @@ class _CommunityPage extends State<CommunityPage> {
                     return GestureDetector(
                       onTap: () {
                         print(postID);
-                         Navigator.push(
-                           context,
-                           MaterialPageRoute(
-                             builder: (context) => postReply(),
-                             settings: RouteSettings(arguments: postID),
-                           ),
-                         ).then(onGoBack);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => postReply(),
+                            settings: RouteSettings(arguments: postID),
+                          ),
+                        ).then(onGoBack);
                         //rana's page ^^^^
                       },
                       child: Column(
