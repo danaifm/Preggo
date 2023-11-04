@@ -1,5 +1,7 @@
 // ignore_for_file: must_be_immutable, library_prefixes, avoid_unnecessary_containers, no_leading_underscores_for_local_identifiers, unnecessary_const
 
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,7 +18,7 @@ import 'package:preggo/profile/profile_screen.dart';
 import 'package:string_validator/string_validator.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  EditProfileScreen({super.key});
+  const EditProfileScreen({super.key});
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
@@ -41,7 +43,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormFieldState> _usernameKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> _emailKey = GlobalKey<FormFieldState>();
-  GlobalKey<FormFieldState> _phoneKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> _phoneKey = GlobalKey<FormFieldState>();
   final validCharacters = RegExp(r'^[a-zA-Z0-9]+$'); //alphamumerical
   bool usernameTaken = false;
   bool emailTaken = false;
@@ -196,215 +198,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       ),
       body: BlocConsumer<ProfileCubit, ProfileState>(
         listener: (context, state) {
-          if (state is UpdateDataSuccess || state is PasswordChangedSuccess) {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return Center(
-                    child: SizedBox(
-                      height: MediaQuery.sizeOf(context).height * 0.40,
-                      width: MediaQuery.sizeOf(context).width * 0.85,
-                      child: Dialog(
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: const BoxDecoration(
-                            color: Color.fromRGBO(255, 255, 255, 1),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(20),
-                            ),
-                          ),
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const SizedBox(height: 20),
-                                Container(
-                                  padding: const EdgeInsets.all(15),
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: green,
-                                    //color: pinkColor,
-                                    // border: Border.all(
-                                    //   width: 1.3,
-                                    //   color: Colors.black,
-                                    // ),
-                                  ),
-                                  child: const Icon(
-                                    Icons.check,
-                                    color: Color.fromRGBO(255, 255, 255, 1),
-                                    size: 35,
-                                  ),
-                                ),
-                                const SizedBox(height: 25),
-
-                                // Done
-                                const Text(
-                                  "Profile edited successfully!",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Color.fromARGB(255, 0, 0, 0),
-                                    fontSize: 17,
-                                    fontFamily: 'Urbanist',
-                                    fontWeight: FontWeight.w700,
-                                    height: 1.30,
-                                    letterSpacing: -0.28,
-                                  ),
-                                ),
-
-                                const SizedBox(height: 20),
-
-                                /// OK Button
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10),
-                                  width:
-                                      MediaQuery.sizeOf(context).width * 0.80,
-                                  height: 45.0,
-                                  child: Center(
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) => const NavBar(
-                                              currentTab: 2,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: blackColor,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(40)),
-                                        padding: const EdgeInsets.only(
-                                            left: 70,
-                                            top: 15,
-                                            right: 70,
-                                            bottom: 15),
-                                      ),
-                                      child: const Text(
-                                        "OK",
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                });
-          }
-          if (state is WrongPassword) {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return Center(
-                    child: SizedBox(
-                      height: MediaQuery.sizeOf(context).height * 0.40,
-                      width: MediaQuery.sizeOf(context).width * 0.85,
-                      child: Dialog(
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: const BoxDecoration(
-                            color: Color.fromRGBO(255, 255, 255, 1),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(20),
-                            ),
-                          ),
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const SizedBox(height: 20),
-                                Container(
-                                  padding: const EdgeInsets.all(15),
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.red,
-                                    //color: pinkColor,
-                                    // border: Border.all(
-                                    //   width: 1.3,
-                                    //   color: Colors.black,
-                                    // ),
-                                  ),
-                                  child: const Icon(
-                                    Icons.error,
-                                    color: Color.fromRGBO(255, 255, 255, 1),
-                                    size: 35,
-                                  ),
-                                ),
-                                const SizedBox(height: 25),
-
-                                // Done
-                                const Text(
-                                  "Password is Wrong!",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Color.fromARGB(255, 0, 0, 0),
-                                    fontSize: 17,
-                                    fontFamily: 'Urbanist',
-                                    fontWeight: FontWeight.w700,
-                                    height: 1.30,
-                                    letterSpacing: -0.28,
-                                  ),
-                                ),
-
-                                const SizedBox(height: 30),
-
-                                /// OK Button
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10),
-                                  width:
-                                      MediaQuery.sizeOf(context).width * 0.80,
-                                  height: 45.0,
-                                  child: Center(
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: blackColor,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(40)),
-                                        padding: const EdgeInsets.only(
-                                            left: 70,
-                                            top: 15,
-                                            right: 70,
-                                            bottom: 15),
-                                      ),
-                                      child: const Text(
-                                        "OK",
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                });
+          if (state is ErrorOccurred) {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                SnackBar(
+                  content: Text(
+                    state.error,
+                    textAlign: TextAlign.center,
+                  ),
+                  backgroundColor: Colors.red,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
           }
         },
         builder: (context, state) {
           var user = ProfileCubit.get(context).userData;
-          var babyData = ProfileCubit.get(context).pregnancyInfoModel;
-          if (state is DataLoading || user == null || babyData == null) {
+          if (state is DataLoading || user == null) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is ErrorOccurred) {
-            return const Center(child: Text("error"));
           }
           return Form(
             key: _formKey,
@@ -521,6 +333,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       }
                                       return null;
                                     }
+                                    return null;
                                   },
                                   decoration: InputDecoration(
                                     hintText: user.userName.capitalize(),
@@ -613,6 +426,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       }
                                       return null;
                                     }
+                                    return null;
                                   },
                                   /*
                                           email validations:
@@ -689,7 +503,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       }
                                       if (hasLetter) {
                                         return 'Phone number must contain only digits.';
-                                      } else if (phone.toString().length != 0 &&
+                                      } else if (phone.toString().isNotEmpty &&
                                           phone.toString().length != 10) {
                                         return 'Phone number must be 10 digits.';
                                         // } else if (phoneTaken) {
@@ -912,7 +726,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                         return "Field is empty";
                                       }
                                       print(pass);
-                                      print(pass!.trim().length);
+                                      print(pass.trim().length);
                                       if (pass.trim().length < 8) {
                                         return "Password must be at least 8 characters.";
                                       } else {
@@ -1056,15 +870,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                             newPasswordController.text.trim(),
                                             context);
 
-                                    if (isChanged == true)
+                                    if (isChanged == true) {
                                       await ProfileCubit.get(context)
                                           .updateUserData(
-                                              userName: userNameController.text
-                                                  .trim(),
-                                              email:
-                                                  emailController.text.trim(),
-                                              phone:
-                                                  phoneController.text.trim());
+                                        userName:
+                                            userNameController.text.trim(),
+                                        email: emailController.text.trim(),
+                                        phone: phoneController.text.trim(),
+                                        context: context,
+                                      );
+                                    }
                                   }
                                 },
                                 child: const Text(

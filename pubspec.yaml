@@ -64,6 +64,7 @@ dependencies:
   shared_preferences: ^2.2.1
   flutter_local_notifications: ^15.1.2
   numberpicker: ^2.1.2
+  equatable: ^2.0.5
   
   
 

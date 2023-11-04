@@ -2,15 +2,18 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:preggo/model/pregnancy_model.dart';
+import 'package:preggo/show_edit_profile_success_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/user_model.dart';
+import '../../show_wrong_password_dialog.dart';
 
 part 'profile_state.dart';
 
@@ -34,7 +37,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       log(response.toString());
       log('+++++++++++++++++++++++++++++');
       emit(UserDataSuccess());
-    } on Exception catch (e) {
+    } catch (e) {
       print(e.toString());
       emit(ErrorOccurred(error: e.toString()));
     }
@@ -42,6 +45,8 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   Future<bool> changePassword(
       String currentPassword, String newPassword, BuildContext context) async {
+    emit(ProfileInitial());
+    log("I've been called");
     if (currentPassword.isEmpty) return true;
     try {
       if (newPassword.isEmpty) return false;
@@ -66,7 +71,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       return true;
     } on FirebaseAuthException catch (e) {
       if (e.code == "wrong-password") {
-        print(e.toString());
+        showWrongPasswordDialog(context);
         emit(WrongPassword());
       }
       return false;
@@ -77,9 +82,13 @@ class ProfileCubit extends Cubit<ProfileState> {
     required String userName,
     required String email,
     required String phone,
+    required BuildContext context,
   }) async {
     print("+++++++++++++++++++++++++${FirebaseAuth.instance.currentUser!.uid}");
     try {
+      if (email.isNotEmpty) {
+        await FirebaseAuth.instance.currentUser?.updateEmail(email);
+      }
       if (userName.isEmpty && email.isEmpty && phone.isEmpty) return;
       await FirebaseFirestore.instance
           .collection('users')
@@ -105,9 +114,9 @@ class ProfileCubit extends Cubit<ProfileState> {
       }
       SharedPreferences prefs = await SharedPreferences.getInstance();
       if (userName.isNotEmpty) prefs.setString("username", userName);
+      showEditProfileSuccessDialog(context);
       emit(UpdateDataSuccess());
-    } on Exception catch (e) {
-      print(e.toString());
+    } catch (e) {
       emit(ErrorOccurred(error: e.toString()));
     }
   }
@@ -141,8 +150,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         await FirebaseFirestore.instance.collection('community').get();
     for (var element in community.docs) {
       if (element.data()["userID"] == FirebaseAuth.instance.currentUser!.uid) {
-        var communityDocs =
-            await FirebaseFirestore.instance.collection('community');
+        var communityDocs = FirebaseFirestore.instance.collection('community');
 
         communityDocs.doc(element.id).delete();
 
@@ -156,13 +164,17 @@ class ProfileCubit extends Cubit<ProfileState> {
       var repliesInUser = await FirebaseFirestore.instance
           .collection('community')
           .doc(element.id)
-          .collection("Replies").get();
+          .collection("Replies")
+          .get();
       for (var replayData in repliesInUser.docs) {
-        if (replayData.data()["userID"] == FirebaseAuth.instance.currentUser!.uid){
+        if (replayData.data()["userID"] ==
+            FirebaseAuth.instance.currentUser!.uid) {
           await FirebaseFirestore.instance
               .collection('community')
               .doc(element.id)
-              .collection("Replies").doc(replayData.id).delete();
+              .collection("Replies")
+              .doc(replayData.id)
+              .delete();
         }
       }
     }
@@ -202,7 +214,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     } on Exception catch (e) {
       print(e.toString());
       emit(ErrorOccurred(error: e.toString()));
-      throw e;
+      rethrow;
     }
   }
 }
