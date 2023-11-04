@@ -8,6 +8,7 @@ import 'package:preggo/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:math' as math;
+import 'package:preggo/profile/profile_screen.dart';
 
 class postReply extends StatefulWidget {
   @override
@@ -527,6 +528,7 @@ class _postReply extends State<postReply>{
                 }
                 else if (snapshot.hasData) {
                   String replierUsername = snapshot.data!;
+                  replierUsername = replierUsername.capitalize(); 
 
                   return Container(
                     margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
@@ -555,8 +557,7 @@ class _postReply extends State<postReply>{
                             ),
                             SizedBox(width: 10,),
                             Text(  
-                              replierUsername.substring(0, 1).toUpperCase() +
-                              replierUsername.substring(1).toLowerCase(),
+                              replierUsername,
                               style: TextStyle(
                               color: Colors.black,
                               fontSize: 14,
