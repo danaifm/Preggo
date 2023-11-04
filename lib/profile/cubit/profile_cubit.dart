@@ -44,7 +44,11 @@ class ProfileCubit extends Cubit<ProfileState> {
   }
 
   Future<bool> changePassword(
-      String currentPassword, String newPassword, BuildContext context) async {
+    String currentPassword,
+    String newPassword,
+    BuildContext context,
+    bool showSuccessDialog,
+  ) async {
     emit(ProfileInitial());
     log("I've been called");
     if (currentPassword.isEmpty) return true;
@@ -66,6 +70,9 @@ class ProfileCubit extends Cubit<ProfileState> {
 
       // Update the user's password with the new password.
       await user.updatePassword(newPassword);
+      if (showSuccessDialog) {
+        await showEditProfileSuccessDialog(context);
+      }
 
       emit(PasswordChangedSuccess());
       return true;

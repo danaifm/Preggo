@@ -868,7 +868,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                         .changePassword(
                                             oldPasswordController.text.trim(),
                                             newPasswordController.text.trim(),
-                                            context);
+                                            context,
+                                            userNameController.text
+                                                    .trim()
+                                                    .isEmpty &&
+                                                emailController.text
+                                                    .trim()
+                                                    .isEmpty &&
+                                                phoneController.text
+                                                    .trim()
+                                                    .isEmpty);
 
                                     if (isChanged == true) {
                                       await ProfileCubit.get(context)
