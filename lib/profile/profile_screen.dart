@@ -13,11 +13,25 @@ import 'package:preggo/profile/cubit/profile_cubit.dart';
 import 'package:preggo/profile/edit_profile.dart';
 import 'package:preggo/screens/post_community.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+
 extension StringExtension on String {
   String capitalize() {
-    return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";
+    if (int.tryParse(this[0]) == null) {
+      return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
+    }
+    final chars = split('');
+    for (int i = 0; i < chars.length; i++) {
+      if (int.tryParse(chars[i]) != null) {
+        continue;
+      }
+      return "${substring(0, i).toLowerCase()}${this[i].toUpperCase()}${substring(i+1).toLowerCase()}";
+    }
+    return this;
   }
 }
+
+
 class ProfileScreen extends StatefulWidget {
   ProfileScreen({super.key});
 
