@@ -1,6 +1,8 @@
 // ignore_for_file: unnecessary_const, prefer_final_fields, prefer_const_constructors, avoid_print, camel_case_types, unused_element, prefer_const_literals_to_create_immutables
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:googleapis/calendar/v3.dart';
 import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
@@ -529,7 +531,30 @@ class _viewAppointment extends State<viewAppointment> {
     );
   }
 
+  String getUserId() {
+    User? user = FirebaseAuth.instance.currentUser;
+    return user!.uid;
+  }
+
   deleteEvent(eventID) async {
+    String userUid = getUserId();
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    QuerySnapshot pregnancyInfoSnapshot = await firestore
+        .collection('users')
+        .doc(userUid)
+        .collection('pregnancyInfo')
+        .where('ended', isEqualTo: 'false')
+        .get();
+    firestore
+        .collection('users')
+        .doc(userUid)
+        .collection('pregnancyInfo')
+        .doc(pregnancyInfoSnapshot.docs.first.id)
+        .collection('appointments')
+        .doc(eventID)
+        .delete();
+
     String? id = '';
     final auth.AuthClient? client = await _googleSignIn.authenticatedClient();
     final CalendarApi googleCalendarApi = CalendarApi(client!);
@@ -542,6 +567,7 @@ class _viewAppointment extends State<viewAppointment> {
         break;
       }
     }
+
     googleCalendarApi.events.delete(id!, eventID);
     setState(() {});
   }
