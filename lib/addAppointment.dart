@@ -1,5 +1,6 @@
 // ignore_for_file: camel_case_types, prefer_const_literals_to_create_immutables, prefer_const_constructors, use_key_in_widget_constructors, unnecessary_const, unnecessary_new, prefer_final_fields, avoid_print, no_leading_underscores_for_local_identifiers, file_names,
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'colors.dart';
@@ -72,6 +73,41 @@ class _addAppointmentState extends State<addAppointment> {
     final random = Random();
     return random
         .nextInt(4294967296); // Generate a random number within the valid range
+  }
+
+  String getUserId() {
+    User? user = FirebaseAuth.instance.currentUser;
+    return user!.uid;
+  }
+
+  void storeApptinPregnancy(ID, name, hospital, dr, start, end) async {
+    String userUid = getUserId();
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    QuerySnapshot pregnancyInfoSnapshot = await firestore
+        .collection('users')
+        .doc(userUid)
+        .collection('pregnancyInfo')
+        .where('ended', isEqualTo: 'false')
+        .get();
+
+    print("CURRENT PREGNANCY ID IS ${pregnancyInfoSnapshot.docs.first.id}");
+
+    CollectionReference subCollectionRef = firestore
+        .collection('users')
+        .doc(userUid)
+        .collection('pregnancyInfo')
+        .doc(pregnancyInfoSnapshot.docs.first.id)
+        .collection('appointments');
+
+    await subCollectionRef.doc(ID).set({
+      //stores it with the event id for easier editing/deleting and consistency with the reminder and google calender
+      'name': name,
+      'hospital': hospital,
+      'dr': dr,
+      'date': start,
+      'start': start,
+      'end': end
+    }).catchError((error) => print('failed to add into pregnancy: $error'));
   }
 
   void storeAppointment(String eventID, int notificationID) async {
@@ -149,6 +185,8 @@ class _addAppointmentState extends State<addAppointment> {
       Event e = await googleCalendarApi.events.insert(event, id!);
 
       storeAppointment(e.id.toString(), generateUniqueId());
+      storeApptinPregnancy(e.id.toString(), e.summary, e.location,
+          e.description, e.start!.date, e.end!.date);
 
       // googleCalendarApi.events.insert(event, id!).then((value) {
       //   print("ADDEDD_________________${value.status}");
@@ -389,8 +427,6 @@ class _addAppointmentState extends State<addAppointment> {
           );
         },
       );
-   
-   
     }
 
     return Scaffold(
