@@ -66,22 +66,28 @@ class _PregnancyTracking extends State<PregnancyTracking> {
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('pregnancyInfo')
-        .where("DueDate", isGreaterThanOrEqualTo: Timestamp.now())
+        .where("ended", isEqualTo: 'false') //get current pregnancy
         .get();
-    var data = subCollectionRef.docs.first.data() as Map;
-    duedate = data['DueDate'];
-    var cWeek = getCurrentWeek(duedate.toDate());
-    // print("due date is ${duedate.toDate()}");
 
-    // if (mounted) {
-    // setState(() {
-    print("scrolling to " + (cWeek - 1).toString());
-    // _scrollController.animateToItem(cWeek - 1,
-    //     duration: Duration(milliseconds: 500), curve: Curves.linear);
-    //selected = cWeek - 1;
-    //   });
-    // }
-    return cWeek;
+    if (subCollectionRef.docs.isNotEmpty) {
+      //SHE IS CURRENTLY PREGNANT
+      var data = subCollectionRef.docs.first.data() as Map;
+      duedate = data['DueDate'];
+      var cWeek = getCurrentWeek(duedate.toDate());
+      // print("due date is ${duedate.toDate()}");
+
+      // if (mounted) {
+      // setState(() {
+      print("scrolling to " + (cWeek - 1).toString());
+      // _scrollController.animateToItem(cWeek - 1,
+      //     duration: Duration(milliseconds: 500), curve: Curves.linear);
+      //selected = cWeek - 1;
+      //   });
+      // }
+      return cWeek;
+    } else {
+      return -1;
+    }
   }
 
   int getCurrentWeek(var duedate) {
@@ -178,262 +184,234 @@ class _PregnancyTracking extends State<PregnancyTracking> {
               return Container();
             } //end if
             else if (snapshot.hasData) {
-              data = snapshot.data;
-              // _scrollController.animateToItem(data - 1,
-              //     duration: Duration(milliseconds: 500), curve: Curves.linear);
+              if (snapshot.data != -1) {
+                data = snapshot.data;
+                // _scrollController.animateToItem(data - 1,
+                //     duration: Duration(milliseconds: 500), curve: Curves.linear);
 
-              // Extracting data from snapshot object
+                // Extracting data from snapshot object
 
-              // print("DATA is " + data.toString());
-              // if (data == null) {
-              //   _scrollController = FixedExtentScrollController(initialItem: 0);
-              // } else {
+                // print("DATA is " + data.toString());
+                // if (data == null) {
+                //   _scrollController = FixedExtentScrollController(initialItem: 0);
+                // } else {
 
-              // }
-              return Scaffold(
-                body: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Container(
-                          alignment: Alignment.centerLeft,
-                          margin: EdgeInsets.only(left: 20, top: 45),
-                          child: RichText(
-                            text: const TextSpan(
-                                style: TextStyle(
-                                  fontFamily: 'Urbanist',
-                                ),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                      text: 'Baby Tracker',
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 35,
-                                          fontWeight: FontWeight.w400)),
-                                ]),
-                          )),
-                      Container(
-                        height: 130,
-                        //alignment: Alignment.topCenter,
-                        child: RotatedBox(
-                          quarterTurns: -1,
-                          child: ListWheelScrollView(
-                            physics: BouncingScrollPhysics(
-                                parent: AlwaysScrollableScrollPhysics()),
-                            // useMagnifier: true,
-                            // magnification: 1.15,
-                            onSelectedItemChanged: (x) {
-                              setState(() {
-                                selected = x;
-                              });
-                              // print("WEEK" + (selected + 1).toString());
-                              //getWeek();
-                              // getDueDate();
-                            },
-                            controller: _scrollController,
-                            itemExtent: itemWidth,
-                            children: List.generate(
-                              itemCount,
-                              (x) => RotatedBox(
-                                quarterTurns: 1,
-                                child: AnimatedContainer(
-                                  duration: Duration(milliseconds: 400),
-                                  width: x == selected ? 70 : 60,
-                                  height: x == selected ? 80 : 70,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                      color: x == selected
-                                          ? Color.fromRGBO(249, 220, 222, 1)
-                                          : Colors.transparent,
-                                      shape: BoxShape.rectangle,
-                                      borderRadius: BorderRadius.circular(15)),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        '\nweek\n \n    ${x + 1}',
-                                        // so it starts from week 1
-                                        style:
-                                            TextStyle(fontFamily: 'Urbanist'),
-                                      ),
-                                      x + 1 == data
-                                          ? Flexible(
-                                              child: Container(
-                                                  padding:
-                                                      EdgeInsets.only(top: 10),
-                                                  child:
-                                                      Icon(Icons.expand_less)))
-                                          : Container()
-                                    ],
+                // }
+                return Scaffold(
+                  body: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Container(
+                            alignment: Alignment.centerLeft,
+                            margin: EdgeInsets.only(left: 20, top: 45),
+                            child: RichText(
+                              text: const TextSpan(
+                                  style: TextStyle(
+                                    fontFamily: 'Urbanist',
                                   ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          //weight icon
-                          Container(
-                            width: 90,
-                            height: 70,
-                            child: Column(
-                              children: [
-                                Icon(
-                                  Icons.monitor_weight_outlined,
-                                  color: Color.fromARGB(255, 163, 39, 39),
-                                ),
-                                Text(
-                                  allWeeks[selected][1],
-                                  style: TextStyle(
-                                      fontFamily: 'Urbanist', fontSize: 15),
-                                ),
-                                Text(
-                                  'Weight',
-                                  style: TextStyle(
-                                      fontFamily: 'Urbanist', fontSize: 12),
-                                )
-                              ],
-                            ),
-                          ),
-                          Container(
-                            //baby pic
-                            width: 170,
-                            height: 170,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: AssetImage(allWeeks[selected][2]),
-                              ),
-                              borderRadius: BorderRadius.circular(500),
-                            ),
-                          ),
-
-                          Container(
-                            //length icon
-                            width: 90,
-                            height: 70,
-                            child: Column(
-                              children: [
-                                Icon(
-                                  Icons.straighten,
-                                  color: Colors.teal[800],
-                                ),
-                                Text(
-                                  allWeeks[selected][0],
-                                  style: TextStyle(
-                                      fontFamily: 'Urbanist', fontSize: 15),
-                                ),
-                                Text(
-                                  'height',
-                                  style: TextStyle(
-                                      fontFamily: 'Urbanist', fontSize: 12),
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 10),
-                        padding: EdgeInsets.all(5),
-                        width: 330,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(
-                            color: Color.fromRGBO(249, 220, 222, 1),
-                            width: 0.1,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                                blurRadius: 2,
-                                spreadRadius: 0.5,
-                                color: Colors.grey)
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              //baby pic
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: AssetImage("assets/images/sperm.png"),
-                                ),
-                                borderRadius: BorderRadius.circular(500),
-                              ),
-                            ),
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  Slider(
-                                    value: currentWeekProgress.toDouble(),
-                                    min: 0,
-                                    max: 270,
-                                    onChanged: (double value) {},
-                                    activeColor: pinkColor,
-                                    inactiveColor: NavBraGrayColor,
-                                  ),
-                                  Text(
-                                    "You’re currently pregnant in week $data",
-                                    style: TextStyle(
-                                      fontSize: 12,
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                        text: 'Baby Tracker',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 35,
+                                            fontWeight: FontWeight.w400)),
+                                  ]),
+                            )),
+                        Container(
+                          height: 130,
+                          //alignment: Alignment.topCenter,
+                          child: RotatedBox(
+                            quarterTurns: -1,
+                            child: ListWheelScrollView(
+                              physics: BouncingScrollPhysics(
+                                  parent: AlwaysScrollableScrollPhysics()),
+                              // useMagnifier: true,
+                              // magnification: 1.15,
+                              onSelectedItemChanged: (x) {
+                                setState(() {
+                                  selected = x;
+                                });
+                                // print("WEEK" + (selected + 1).toString());
+                                //getWeek();
+                                // getDueDate();
+                              },
+                              controller: _scrollController,
+                              itemExtent: itemWidth,
+                              children: List.generate(
+                                itemCount,
+                                (x) => RotatedBox(
+                                  quarterTurns: 1,
+                                  child: AnimatedContainer(
+                                    duration: Duration(milliseconds: 400),
+                                    width: x == selected ? 70 : 60,
+                                    height: x == selected ? 80 : 70,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                        color: x == selected
+                                            ? Color.fromRGBO(249, 220, 222, 1)
+                                            : Colors.transparent,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius:
+                                            BorderRadius.circular(15)),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          '\nweek\n \n    ${x + 1}',
+                                          // so it starts from week 1
+                                          style:
+                                              TextStyle(fontFamily: 'Urbanist'),
+                                        ),
+                                        x + 1 == data
+                                            ? Flexible(
+                                                child: Container(
+                                                    padding: EdgeInsets.only(
+                                                        top: 10),
+                                                    child: Icon(
+                                                        Icons.expand_less)))
+                                            : Container()
+                                      ],
                                     ),
                                   ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            //weight icon
+                            Container(
+                              width: 90,
+                              height: 70,
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.monitor_weight_outlined,
+                                    color: Color.fromARGB(255, 163, 39, 39),
+                                  ),
+                                  Text(
+                                    allWeeks[selected][1],
+                                    style: TextStyle(
+                                        fontFamily: 'Urbanist', fontSize: 15),
+                                  ),
+                                  Text(
+                                    'Weight',
+                                    style: TextStyle(
+                                        fontFamily: 'Urbanist', fontSize: 12),
+                                  )
                                 ],
                               ),
                             ),
                             Container(
                               //baby pic
-                              width: 50,
-                              height: 50,
+                              width: 170,
+                              height: 170,
                               decoration: BoxDecoration(
                                 image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: AssetImage("assets/images/baby.png"),
+                                  image: AssetImage(allWeeks[selected][2]),
                                 ),
                                 borderRadius: BorderRadius.circular(500),
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 10),
-                        padding: EdgeInsets.all(5),
-                        width: 330,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(
-                              color: Color.fromRGBO(249, 220, 222, 1),
-                              width: 1.5),
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                                blurRadius: 2,
-                                spreadRadius: 0.5,
-                                color: Colors.grey)
-                          ],
-                        ),
-                        child: Column(
-                          children: [
-                            Text(
-                              'Highlights of The Week',
-                              style: TextStyle(
-                                color: pinkColor,
-                                fontWeight: FontWeight.bold,
+
+                            Container(
+                              //length icon
+                              width: 90,
+                              height: 70,
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.straighten,
+                                    color: Colors.teal[800],
+                                  ),
+                                  Text(
+                                    allWeeks[selected][0],
+                                    style: TextStyle(
+                                        fontFamily: 'Urbanist', fontSize: 15),
+                                  ),
+                                  Text(
+                                    'height',
+                                    style: TextStyle(
+                                        fontFamily: 'Urbanist', fontSize: 12),
+                                  )
+                                ],
                               ),
                             ),
-                            Text(motherChanges())
                           ],
                         ),
-                      ),
-                      Visibility(
-                        visible: selected != 0 && selected != 1,
-                        child: Container(
+                        Container(
+                          margin: EdgeInsets.only(top: 10),
+                          padding: EdgeInsets.all(5),
+                          width: 330,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                              color: Color.fromRGBO(249, 220, 222, 1),
+                              width: 0.1,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                  blurRadius: 2,
+                                  spreadRadius: 0.5,
+                                  color: Colors.grey)
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                //baby pic
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image:
+                                        AssetImage("assets/images/sperm.png"),
+                                  ),
+                                  borderRadius: BorderRadius.circular(500),
+                                ),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    Slider(
+                                      value: currentWeekProgress.toDouble(),
+                                      min: 0,
+                                      max:
+                                          500, //this was giving me error so i changed it but idk what it is
+                                      onChanged: (double value) {},
+                                      activeColor: pinkColor,
+                                      inactiveColor: NavBraGrayColor,
+                                    ),
+                                    Text(
+                                      "You’re currently pregnant in week $data",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                //baby pic
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: AssetImage("assets/images/baby.png"),
+                                  ),
+                                  borderRadius: BorderRadius.circular(500),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
                           margin: EdgeInsets.only(top: 10),
                           padding: EdgeInsets.all(5),
                           width: 330,
@@ -453,22 +431,57 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                           child: Column(
                             children: [
                               Text(
-                                'Baby Development ',
+                                'Highlights of The Week',
                                 style: TextStyle(
                                   color: pinkColor,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              Text(babyChanges())
+                              Text(motherChanges())
                             ],
                           ),
                         ),
-                      ),
-                      SizedBox(height: 50),
-                    ],
+                        Visibility(
+                          visible: selected != 0 && selected != 1,
+                          child: Container(
+                            margin: EdgeInsets.only(top: 10),
+                            padding: EdgeInsets.all(5),
+                            width: 330,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                  color: Color.fromRGBO(249, 220, 222, 1),
+                                  width: 1.5),
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                    blurRadius: 2,
+                                    spreadRadius: 0.5,
+                                    color: Colors.grey)
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  'Baby Development ',
+                                  style: TextStyle(
+                                    color: pinkColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(babyChanges())
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 50),
+                      ],
+                    ),
                   ),
-                ),
-              );
+                );
+              } else {
+                return Container(child: Text('not pregnant'));
+              }
             }
           }
 

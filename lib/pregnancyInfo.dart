@@ -44,6 +44,7 @@ class _fillPregnancyInfo extends State<pregnancyInfo> {
           'Baby\'s name': name,
           'Gender': gender,
           'DueDate': due,
+          'ended': 'false',
         })
         .then((value) => print('info added successfully'))
         .catchError((error) => print('failed to add info:$error'));

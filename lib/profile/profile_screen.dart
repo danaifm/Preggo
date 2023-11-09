@@ -376,6 +376,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               itemBuilder: (BuildContext context, int index) =>
                                   InkWell(
                                 onTap: () {
+                                  print('baby id is ${babyData[index].id}');
                                   /*         Navigator.push(context,
                                           MaterialPageRoute(builder: (_) =>));*/
                                 },
