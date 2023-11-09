@@ -185,8 +185,13 @@ class _addAppointmentState extends State<addAppointment> {
       Event e = await googleCalendarApi.events.insert(event, id!);
 
       storeAppointment(e.id.toString(), generateUniqueId());
-      storeApptinPregnancy(e.id.toString(), e.summary, e.location,
-          e.description, e.start!.date, e.end!.date);
+      storeApptinPregnancy(
+          e.id.toString(),
+          e.summary,
+          e.location,
+          e.description,
+          e.start!.dateTime!.toLocal(),
+          e.end!.dateTime!.toLocal());
 
       // googleCalendarApi.events.insert(event, id!).then((value) {
       //   print("ADDEDD_________________${value.status}");

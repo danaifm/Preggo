@@ -1,4 +1,6 @@
 // ignore_for_file: camel_case_types, prefer_const_literals_to_create_immutables, prefer_const_constructors, use_key_in_widget_constructors, unnecessary_const, unnecessary_new, prefer_final_fields, avoid_print, no_leading_underscores_for_local_identifiers, file_names,
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'colors.dart';
@@ -51,6 +53,41 @@ class _editApptState extends State<editAppt> {
     scopes: _scopes,
   );
 
+  String getUserId() {
+    User? user = FirebaseAuth.instance.currentUser;
+    return user!.uid;
+  }
+
+  void editApptinPregnancy(ID, name, hospital, dr, start, end) async {
+    String userUid = getUserId();
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    QuerySnapshot pregnancyInfoSnapshot = await firestore
+        .collection('users')
+        .doc(userUid)
+        .collection('pregnancyInfo')
+        .where('ended', isEqualTo: 'false')
+        .get();
+
+    print("CURRENT PREGNANCY ID IS ${pregnancyInfoSnapshot.docs.first.id}");
+
+    CollectionReference subCollectionRef = firestore
+        .collection('users')
+        .doc(userUid)
+        .collection('pregnancyInfo')
+        .doc(pregnancyInfoSnapshot.docs.first.id)
+        .collection('appointments');
+
+    await subCollectionRef.doc(ID).set({
+      //stores it with the event id for easier editing/deleting and consistency with the reminder and google calender
+      'name': name,
+      'hospital': hospital,
+      'dr': dr,
+      'date': start,
+      'start': start,
+      'end': end
+    }).catchError((error) => print('failed to add into pregnancy: $error'));
+  }
+
   updateEvent(event, eventID) async {
     String calID = '';
     final auth.AuthClient? client = await _googleSignIn.authenticatedClient();
@@ -73,6 +110,15 @@ class _editApptState extends State<editAppt> {
         print("Unable to update event in google calendar");
       }
     });
+
+    editApptinPregnancy(
+        eventID,
+        event.summary,
+        event.location,
+        event.description,
+        event.start!.dateTime!.toLocal(),
+        event.end!.dateTime!.toLocal());
+
     // googleCalendarApi.events.delete(calID, eventID);
     // googleCalendarApi.events.insert(event, calID).then((value) {
     //   print("ADDEDD_________________${value.status}");
