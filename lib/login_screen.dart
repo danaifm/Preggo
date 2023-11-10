@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:preggo/EditPregnancyInfo.dart';
 import 'package:preggo/NavBar.dart';
 import 'package:preggo/SignUp.dart';
 import 'package:preggo/colors.dart';
@@ -110,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => NavBar(),
+                    builder: (context) => editPregnancyInfo(),
                   ));
             }
           });
