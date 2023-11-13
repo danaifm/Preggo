@@ -256,6 +256,7 @@ class _view_delete_Weight extends State<view_delete_Weight> {
         .collection('users')
         .doc(userUid)
         .collection('pregnancyInfo')
+        .where('ended', isEqualTo: 'false')
         .get();
 
     DocumentSnapshot firstDocument = pregnancyInfoSnapshot.docs[0];
