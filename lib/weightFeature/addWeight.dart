@@ -1,11 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:googleapis/servicemanagement/v1.dart';
 import 'package:intl/intl.dart';
 import 'package:preggo/colors.dart';
-import 'package:preggo/weightFeature/view_delete_Weight.dart';
-import 'package:numberpicker/numberpicker.dart';
 
 class addWeight extends StatefulWidget {
   //late final String userId;

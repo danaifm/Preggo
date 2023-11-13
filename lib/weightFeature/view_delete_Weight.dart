@@ -1,10 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:googleapis/servicemanagement/v1.dart';
 import 'package:preggo/colors.dart';
-import 'package:preggo/pregnancyInfo.dart';
-import 'package:preggo/screens/ToolsPage.dart';
 import 'package:preggo/weightFeature/addWeight.dart';
 import 'package:preggo/weightFeature/editWeight.dart';
 import 'package:intl/intl.dart';
