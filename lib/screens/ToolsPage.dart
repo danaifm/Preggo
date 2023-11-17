@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:preggo/ContractionT.dart';
 import 'package:preggo/viewAppointment.dart';
 import 'package:preggo/view_reminders.dart';
 import 'package:preggo/weightFeature/view_delete_Weight.dart';
@@ -200,11 +201,11 @@ class _ToolsPage extends State<ToolsPage> {
               ),
               InkWell(
                 onTap: () {
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (context) =>
-                  //             CommunityPage())); // Contraction timer page
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ContractionT())); // Contraction timer page
                 },
                 child: Container(
                     //4-contaraction timer
