@@ -1,3 +1,4 @@
+import 'package:preggo/deleteApptsEndJourney.dart';
 import 'package:preggo/profile/profile_screen.dart';
 import 'package:preggo/screens/PregnancyTracking.dart';
 import 'package:preggo/screens/CommunityPage.dart';
@@ -31,14 +32,14 @@ class _NavBar extends State<NavBar> {
 
   final PageStorageBucket bucket = PageStorageBucket();
   Widget currentScreen = const PregnancyTracking();
-@override
+  @override
   void initState() {
-  if (widget.currentTab == 2) {
-    setState(() {
-      currentTab = 2;
-      currentScreen = ProfileScreen();
-    });
-  }
+    if (widget.currentTab == 2) {
+      setState(() {
+        currentTab = 2;
+        currentScreen = ProfileScreen();
+      });
+    }
     super.initState();
   }
 
@@ -121,7 +122,7 @@ class _NavBar extends State<NavBar> {
                     minWidth: 40,
                     onPressed: () {
                       setState(() {
-                        currentScreen = const CommunityPage();
+                        currentScreen = const deleteAppt();
                         currentTab = 1;
                       });
                     },

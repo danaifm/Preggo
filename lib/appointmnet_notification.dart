@@ -1,5 +1,4 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 class AppointmentNotification {
@@ -10,10 +9,9 @@ class AppointmentNotification {
     AndroidInitializationSettings initializationSettingsAndroid =
         const AndroidInitializationSettings('logo');
 
-    
-
     var initializationSettings = InitializationSettings(
-        android: initializationSettingsAndroid, );
+      android: initializationSettingsAndroid,
+    );
     await notificationsPlugin.initialize(initializationSettings,
         onDidReceiveNotificationResponse:
             (NotificationResponse notificationResponse) async {});
@@ -21,9 +19,9 @@ class AppointmentNotification {
 
   notificationDetails() {
     return const NotificationDetails(
-        android: AndroidNotificationDetails('channelId', 'channelName',
-            importance: Importance.max),
-        );
+      android: AndroidNotificationDetails('channelId', 'channelName',
+          importance: Importance.max),
+    );
   }
 
   Future showNotification(
@@ -33,12 +31,12 @@ class AppointmentNotification {
   }
 
   Future scheduleNotification(
-      {required int id ,
+      {required int id,
       String? title,
       String? body,
       String? payLoad,
       required DateTime scheduledNotificationDateTime}) async {
-        print("-----------------------$id---------------------------");
+    print("-----------------------$id---------------------------");
     return notificationsPlugin.zonedSchedule(
         id,
         title,
@@ -50,7 +48,6 @@ class AppointmentNotification {
         await notificationDetails(),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime);
+            UILocalNotificationDateInterpretation.absoluteTime);
   }
-   
 }
