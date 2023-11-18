@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -22,11 +24,227 @@ class ContractionT extends StatefulWidget {
 }
 
 class _ContractionT extends State<ContractionT> {
+  int seconds = 0, minutes = 0;
+  String digitSec = "00", digitMin = "00";
+  Timer? timer;
+  bool started = false;
+  List laps = [];
+
+  void stop() {
+    timer!.cancel();
+    String lap = "$digitMin:$digitSec";
+    setState(() {
+      started = false;
+      laps.add(lap);
+    });
+  }
+
+  void reset() {
+    timer!.cancel();
+    setState(() {
+      seconds = 0;
+      minutes = 0;
+
+      digitSec = "00";
+      digitMin = "00";
+
+      started = false;
+    });
+  }
+
+  void addLaps() {
+    String lap = "$digitMin:$digitSec";
+    setState(() {
+      laps.add(lap);
+    });
+  }
+
+  void start() {
+    started = true;
+    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      int localSeconds = seconds + 1;
+      int localMintues = minutes;
+
+      if (localSeconds > 59) {
+        localMintues++;
+        localSeconds = 0;
+      }
+      setState(() {
+        seconds = localSeconds;
+        minutes = localMintues;
+
+        digitSec = (seconds >= 10) ? "$seconds" : "0$seconds";
+        digitMin = (minutes >= 10) ? "$minutes" : "0$minutes";
+      });
+    });
+  }
+
+  @override
+  String getUserId() {
+    User? user = FirebaseAuth.instance.currentUser;
+    return user!.uid;
+  }
+
+  Future<Widget> getContractionTimer() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    //String Pid = getPregnancyInfoId() as String;
+    String userUid = getUserId();
+    //to get pregnancy info document ID
+    QuerySnapshot pregnancyInfoSnapshot = await firestore
+        .collection('users')
+        .doc(userUid)
+        .collection('pregnancyInfo')
+        .get();
+
+    DocumentSnapshot firstDocument = pregnancyInfoSnapshot.docs[0];
+    String Pid = firstDocument.id;
+
+    QuerySnapshot result = await firestore
+        .collection('users')
+        .doc(userUid)
+        .collection('pregnancyInfo')
+        .doc(Pid)
+        .collection('weight')
+        .get();
+
+    print(result.docs.length);
+    print('printed');
+    if (result.docs.isEmpty) //no weight
+    {
+      return Container(
+        child: Column(
+          children: [
+            Center(
+              //notification bell image
+              child: Padding(
+                padding: EdgeInsets.only(top: 180),
+                child: Image.asset(
+                  'assets/images/no-sport.png',
+                  height: 90,
+                  width: 100,
+                ),
+              ),
+            ),
+            Container(
+                //message
+                margin: EdgeInsets.fromLTRB(30, 15, 30, 80),
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: const TextSpan(
+                      style: TextStyle(
+                        fontFamily: 'Urbanist',
+                      ),
+                      children: [
+                        TextSpan(
+                            text: 'No weight\n',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 26,
+                                fontWeight: FontWeight.w600)),
+                        WidgetSpan(
+                            child: SizedBox(
+                          height: 20,
+                        )),
+                        TextSpan(
+                            text:
+                                ' Start your weight tracking journey by adding a new weight',
+                            style: TextStyle(
+                                color: Color.fromARGB(255, 121, 119, 119))),
+                      ]),
+                )
+                // child: Text(
+                //   'No weight',
+                //   textAlign: TextAlign.center,
+                //   style: TextStyle(
+                //     fontSize: 26,
+                //     fontFamily: 'Urbanist',
+                //     fontWeight: FontWeight.w600,
+                //     letterSpacing: -0.28,
+                //   ),
+                // )
+                ),
+          ],
+        ),
+      );
+    } else {
+      //reminders exist for this day
+      List weightResult = result.docs;
+
+      return SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
+        scrollDirection: Axis.vertical,
+        child: Container(
+          height: 680,
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: weightResult.length,
+            itemBuilder: (context, index) {
+              String id = weightResult[index].data()['id'] ?? '';
+              double weight = weightResult[index].data()['weight'] ?? '';
+              String date = weightResult[index].data()['date'] ?? '';
+              String time = weightResult[index].data()['time'] ?? '';
+
+              return Container(
+                margin: EdgeInsets.all(8),
+                //padding: EdgeInsets.all(10),
+
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 17),
+                      decoration: BoxDecoration(
+                        color: backGroundPink.withOpacity(0.3),
+                        border: Border.all(color: backGroundPink, width: 2),
+                        borderRadius: BorderRadius.circular(13),
+                      ),
+                      child: Row(children: [
+                        Container(
+                          width: 85,
+                          child: Text(
+                            'Laps #${index + 1}',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: 'Urbanist',
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Expanded(
+                          child: Text(
+                            (laps.isNotEmpty ? laps[index] : ''),
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Urbanist',
+                            ),
+                          ),
+                        ),
+                      ]),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: backGroundPink,
-        body: Stack(children: [
+      backgroundColor: backGroundPink,
+      resizeToAvoidBottomInset: true,
+      body: Stack(
+        children: [
           Column(
             children: [
               SizedBox(
@@ -36,11 +254,11 @@ class _ContractionT extends State<ContractionT> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      Navigator.of(context).pop();
                     },
                     icon: const Icon(
                       Icons.arrow_back,
-                      color: Colors.black,
+                      color: blackColor,
                     ),
                   ),
                   SizedBox(
@@ -62,7 +280,6 @@ class _ContractionT extends State<ContractionT> {
               SizedBox(
                 height: 10,
               ),
-
               Expanded(
                 child: Container(
                   padding: const EdgeInsets.symmetric(
@@ -72,30 +289,99 @@ class _ContractionT extends State<ContractionT> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(80.0),
+                      top: Radius.circular(45.0),
                     ),
                   ),
                   child: SingleChildScrollView(
+                    padding: EdgeInsets.only(top: 15),
                     child: Container(
-                      margin: EdgeInsets.fromLTRB(8, 200, 8, 3),
-                      height: 400,
-                      decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 246, 241, 241),
-                          borderRadius: BorderRadius.circular(8)),
+                      child: Column(
+                        children: [
+                          Padding(
+                            //padding for time
+                            padding: const EdgeInsets.only(top: 50),
+                            child: Center(
+                              child: Text(
+                                "$digitMin:$digitSec",
+                                style: TextStyle(
+                                    color: backGroundPink, fontSize: 75),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            //top padding for everything
+                            padding: const EdgeInsets.only(top: 60),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    //start button padding
+                                    padding: const EdgeInsets.only(
+                                        right: 15, left: 6, bottom: 6),
+                                    child: RawMaterialButton(
+                                      onPressed: () {
+                                        (!started) ? start() : stop();
+                                      },
+                                      fillColor: blackColor,
+                                      shape: StadiumBorder(
+                                          side: BorderSide(color: blackColor)),
+                                      child: Text(
+                                        (!started) ? "Start" : "Stop",
+                                        style: TextStyle(
+                                            color: whiteColor, fontSize: 15),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    //Reset button padding
+                                    padding: const EdgeInsets.only(
+                                        left: 15, right: 6, bottom: 6),
+                                    child: RawMaterialButton(
+                                      onPressed: () {
+                                        reset();
+                                      },
+                                      fillColor: blackColor,
+                                      shape: StadiumBorder(
+                                          side: BorderSide(color: blackColor)),
+                                      child: Text(
+                                        "Reset",
+                                        style: TextStyle(
+                                            color: whiteColor, fontSize: 15),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          Container(
+                            //margin: EdgeInsets.only(top: 200),
+                            child: FutureBuilder<Widget>(
+                              future: getContractionTimer(),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<Widget> snapshot) {
+                                if (snapshot.hasData) {
+                                  return snapshot.data!;
+                                }
+
+                                return CircularProgressIndicator(
+                                    color: pinkColor);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-              // SizedBox(
-              //   height: 20,
-              // ),
-              // Container(
-              //   margin: EdgeInsets.all(8),
-              //   height: 400,
-              //   decoration: BoxDecoration(color: Color(0xFF323F68)),
-              // )
             ],
           ),
-        ]));
+        ],
+      ),
+    );
   }
 }
