@@ -1,11 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:googleapis/servicemanagement/v1.dart';
-import 'package:intl/intl.dart';
 import 'package:preggo/colors.dart';
-import 'package:preggo/weightFeature/view_delete_Weight.dart';
-import 'package:numberpicker/numberpicker.dart';
 import 'package:flutter/cupertino.dart';
 
 class editWeight extends StatefulWidget {
@@ -61,6 +57,7 @@ class _fillWeightForm extends State<editWeight> {
         .collection('users')
         .doc(userUid)
         .collection('pregnancyInfo')
+        .where('ended', isEqualTo: 'false')
         .get();
 
     // DocumentSnapshot firstDocument = pregnancyInfoSnapshot.docs[0];

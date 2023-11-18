@@ -408,6 +408,8 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
                                     filled: true,
                                     fillColor: Color(0xFFF7F8F9),
                                   ),
+                                  autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
                                   validator: (value) {
                                     if (value!.isEmpty) {
                                       return null;
