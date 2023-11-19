@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:preggo/EditPregnancyInfo.dart';
+import 'package:preggo/baby_information.dart';
 import 'package:preggo/weight_history.dart';
 import 'package:preggo/NavBar.dart';
 import 'package:preggo/SignUp.dart';
@@ -112,7 +113,8 @@ class _LoginScreenState extends State<LoginScreen> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => weightHistory(),
+                    builder: (context) => BabyInformation(),
+                    settings: RouteSettings(arguments: "HMEBTKrnOYnmxPmBMHuV"),
                   ));
             }
           });

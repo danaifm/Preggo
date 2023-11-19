@@ -224,6 +224,7 @@ class _weightHistory extends State<weightHistory> {
   String pregnancyInfoId = 'HMEBTKrnOYnmxPmBMHuV';
   @override
   Widget build(BuildContext context) {
+    //pregnancyInfoId=ModalRoute.of(context)?.settings.arguments as String;
     return Scaffold(
         backgroundColor: backGroundPink,
         resizeToAvoidBottomInset: true,
