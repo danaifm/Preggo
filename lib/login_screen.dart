@@ -7,6 +7,7 @@ import 'package:preggo/NavBar.dart';
 import 'package:preggo/SignUp.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/forget_password_screen.dart';
+import 'package:preggo/new_born_info.dart';
 import 'package:preggo/reminder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:preggo/screens/post_community.dart';
@@ -107,11 +108,18 @@ class _LoginScreenState extends State<LoginScreen> {
           setState(() {
             isUserValid = true;
             if (mounted) {
+              /// TODO: Test new born info screen.
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => NavBar(),
-                  ));
+                context,
+                MaterialPageRoute(
+                  builder: (_) => NewBornInfo(),
+                ),
+              );
+              // Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder: (context) => NavBar(),
+              //     ));
             }
           });
         } else {
