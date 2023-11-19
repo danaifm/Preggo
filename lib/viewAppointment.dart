@@ -1,6 +1,8 @@
 // ignore_for_file: unnecessary_const, prefer_final_fields, prefer_const_constructors, avoid_print, camel_case_types, unused_element, prefer_const_literals_to_create_immutables
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:googleapis/calendar/v3.dart';
 import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
@@ -529,7 +531,31 @@ class _viewAppointment extends State<viewAppointment> {
     );
   }
 
+  String getUserId() {
+    User? user = FirebaseAuth.instance.currentUser;
+    return user!.uid;
+  }
+
   deleteEvent(eventID) async {
+    String userUid = getUserId();
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    QuerySnapshot pregnancyInfoSnapshot = await firestore
+        .collection('users')
+        .doc(userUid)
+        .collection('pregnancyInfo')
+        .where('ended', isEqualTo: 'false')
+        .get();
+
+    firestore
+        .collection('users')
+        .doc(userUid)
+        .collection('pregnancyInfo')
+        .doc(pregnancyInfoSnapshot.docs.first.id)
+        .collection('appointments')
+        .doc(eventID)
+        .delete();
+
     String? id = '';
     final auth.AuthClient? client = await _googleSignIn.authenticatedClient();
     final CalendarApi googleCalendarApi = CalendarApi(client!);
@@ -542,6 +568,7 @@ class _viewAppointment extends State<viewAppointment> {
         break;
       }
     }
+
     googleCalendarApi.events.delete(id!, eventID);
     setState(() {});
   }
@@ -714,46 +741,6 @@ class GoogleDataSource extends CalendarDataSource {
   GoogleDataSource({required List<Event>? events}) {
     appointments = events;
   }
-
-//maybe userful for later sprints:
-  // @override
-  // DateTime getStartTime(int index) {
-  //   final Event event = appointments![index];
-  //   return event.start?.date ?? event.start!.dateTime!.toLocal();
-  // }
-
-  // @override
-  // bool isAllDay(int index) {
-  //   return appointments![index].start.date != null;
-  // }
-
-  // @override
-  // DateTime getEndTime(int index) {
-  //   final Event event = appointments![index];
-  //   return event.endTimeUnspecified != null && event.endTimeUnspecified!
-  //       ? (event.start?.date ?? event.start!.dateTime!.toLocal())
-  //       : (event.end?.date != null
-  //           ? event.end!.date!.add(const Duration(days: -1))
-  //           : event.end!.dateTime!.toLocal());
-  // }
-
-  // @override
-  // String getLocation(int index) {
-  //   return appointments![index].location ?? '';
-  // }
-
-  // @override
-  // String getNotes(int index) {
-  //   return appointments![index].description ?? '';
-  // }
-
-  // @override
-  // String getSubject(int index) {
-  //   final Event event = appointments![index];
-  //   return event.summary == null || event.summary!.isEmpty
-  //       ? 'No Title'
-  //       : event.summary!;
-  // }
 }
 
 class DataSource extends CalendarDataSource {

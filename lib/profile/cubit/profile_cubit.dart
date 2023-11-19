@@ -213,7 +213,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       log(response.toString());
       for (var element in response.docs) {
         log(element.data().toString());
-        pregnancyInfoModel.add(PregnancyInfoModel.fromJson(element.data()));
+        pregnancyInfoModel.add(PregnancyInfoModel.fromJson(element.data() , element.id ));
       }
       log(response.toString());
       log('+++++++++++++++++++++++++++++');
