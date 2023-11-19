@@ -559,7 +559,7 @@ class _postReply extends State<postReply> {
             ),
 
             Padding(
-              padding: EdgeInsets.fromLTRB(20, 10, 80, 0),
+              padding: EdgeInsets.fromLTRB(20, 10, 5, 0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -592,7 +592,7 @@ class _postReply extends State<postReply> {
                       },
                       icon: Icon(
                         Icons.delete,
-                        size: 20,
+                        size: 14.5,
                         color: Colors.red,
                       ),
                       style: TextButton.styleFrom(
@@ -602,7 +602,7 @@ class _postReply extends State<postReply> {
                         "Delete post",
                         style: TextStyle(
                           color: Colors.red,
-                          fontSize: 18,
+                          fontSize: 14.5,
                           fontFamily: 'Urbanist',
                           fontWeight: FontWeight.w600,
                         ),
