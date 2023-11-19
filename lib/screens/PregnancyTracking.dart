@@ -104,7 +104,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
     // }
     //   });
     // }
-    int ans = 40 - (difference.round() as int);
+    int ans = 44 - (difference.round() as int);
     return ans;
   }
 
@@ -184,7 +184,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
               return Container();
             } //end if
             else if (snapshot.hasData) {
-              if (currentWeekProgress<=280 && snapshot.data != -1) {
+              if (currentWeekProgress<=308 && snapshot.data != -1) {
                 data = snapshot.data;
                 // _scrollController.animateToItem(data - 1,
                 //     duration: Duration(milliseconds: 500), curve: Curves.linear);
@@ -395,7 +395,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                       Slider(
                                         value: currentWeekProgress.toDouble(),
                                         min: 0,
-                                        max: 280,
+                                        max: 308,
                                         //this was giving me error so i changed it but idk what it is
                                         onChanged: (double value) {},
                                         activeColor: pinkColor,
@@ -687,11 +687,11 @@ class _PregnancyTracking extends State<PregnancyTracking> {
         }
       }
       var date = timestamp.toDate();
-      currentWeekProgress = 280 - date.difference(DateTime.now()).inDays;
+      currentWeekProgress = 308 - date.difference(DateTime.now()).inDays;
       DateTime today = DateTime.now();
-      int weeksPregnant = 40 - (date.difference(today).inDays) ~/ 7;
+      int weeksPregnant = 44 - (date.difference(today).inDays) ~/ 7;
       currentWeekPregnant = weeksPregnant.toString();
-      if( currentWeekProgress>280)
+      if( currentWeekProgress>308)
         await end();
       setState(() {});
     });
