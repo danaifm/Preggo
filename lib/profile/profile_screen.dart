@@ -554,7 +554,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                           ),
-
                           InkWell(
                             onTap: () {
                               showDialog<void>(
@@ -641,7 +640,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     width: 5,
                                   ),
                                   Icon(
-                                    Icons.delete_outline,
+                                    Icons.delete,
                                     color: Colors.red,
                                   ),
                                   SizedBox(
