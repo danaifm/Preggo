@@ -12,7 +12,8 @@ import 'package:preggo/colors.dart';
 import 'package:preggo/reminder.dart';
 
 class NewBornInfo extends StatefulWidget {
-  const NewBornInfo({super.key});
+  const NewBornInfo({super.key, required this.babyId});
+  final String babyId;
 
   @override
   State<StatefulWidget> createState() {

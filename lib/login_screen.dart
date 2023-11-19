@@ -105,11 +105,10 @@ class _LoginScreenState extends State<LoginScreen> {
             if (mounted) {
               /// TODO: Test new born info screen.
               Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => NewBornInfo(),
-                ),
-              );
+               context,
+                  MaterialPageRoute(
+                    builder: (context) => NavBar(),
+                  ));
               // Navigator.push(
               //     context,
               //     MaterialPageRoute(

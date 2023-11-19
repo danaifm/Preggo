@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:preggo/colors.dart';
+import 'package:preggo/new_born_info.dart';
+
 
 class weeklyModel {}
 
@@ -697,6 +699,10 @@ class _PregnancyTracking extends State<PregnancyTracking> {
     });
   }
 
+
+
+
+String ? babyId ;
   Future end() async {
     await FirebaseFirestore.instance
         .collection("users")
@@ -706,6 +712,8 @@ class _PregnancyTracking extends State<PregnancyTracking> {
         .then((value) async {
       for (var element in value.docs) {
         if (element.data()["ended"] == "false") {
+          babyId = element.id;
+          print("##################################################$babyId");
           await FirebaseFirestore.instance
               .collection("users")
               .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -850,15 +858,25 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                           child: Center(
                             child: ElevatedButton(
                               onPressed: () {
+
+
+
+// TO ALIYAH PAGE
                                 if (mounted) {
-                                  // Navigator.pushAndRemoveUntil(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //       builder: (_) =>
-                                  //       const LoginScreen()),
-                                  //       (route) => false,
-                                  // );
+                                   Navigator.push(
+                                     context,
+                                     MaterialPageRoute(
+                                         builder: (_) =>
+                                          NewBornInfo(babyId: babyId! ,) ),
+
+                                          
+                                         
+                                   );
                                 }
+
+
+
+
                               },
                               style: ElevatedButton
                                   .styleFrom(
