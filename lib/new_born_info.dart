@@ -1251,9 +1251,8 @@ class _BloodDialogState extends State<BloodDialog> {
               (i) {
                 return Theme(
                   data: ThemeData(
-                    unselectedWidgetColor: bloodTypes[i]['isSelected']
-                        ? pinkColor
-                        : Colors.black54,
+                    unselectedWidgetColor:
+                        bloodTypes[i]['isSelected'] ? pinkColor : Colors.black,
                   ),
                   child: RadioListTile(
                     groupValue: selectedBlood,
