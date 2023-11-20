@@ -7,6 +7,8 @@ import 'package:preggo/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+import 'package:preggo/pregnancyTapped.dart';
+import 'package:preggo/profile/profile_screen.dart';
 
 
 
@@ -664,7 +666,23 @@ class _babyInformation extends State<BabyInformation>{
                 children: [
                   IconButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      if(ended == 'false'){ //PREGNANCY NOT ENDED -> ROUTE TO PROFILE PAGE  
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProfileScreen(),
+                          ),
+                        );
+                      }
+                      else { //PREGNANCY ENDED -> PREGNANCY TAPPED PAGE (BABY INFO, APPOINTMENT HISTORY, WEIGHT HISTORY) 
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => pregnancyTapped(),
+                            settings: RouteSettings(arguments: pregnancyId),
+                          ),
+                        );
+                      }
                     },
                     icon: const Icon(
                       Icons.arrow_back,
