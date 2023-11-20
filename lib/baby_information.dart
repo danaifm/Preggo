@@ -54,7 +54,7 @@ class _babyInformation extends State<BabyInformation>{
     } catch (e) {
       print('Error: $e');
     }
-    return 'boo';
+    return 'false';
 }
 
   //GETS BABY INFO BASED ON PREGNANCY ENDED OR NOT 
@@ -77,8 +77,18 @@ class _babyInformation extends State<BabyInformation>{
         var duedate = data['DueDate'];
         String babyDueDate = duedate.toDate().toString();
         DateTime dateTime = DateTime.parse(babyDueDate);
-        String formattedDateTime = DateFormat("yyyy/MM/dd\n hh:mm a").format(dateTime);
-        babyDueDate = formattedDateTime;
+        String formattedDate = DateFormat("yyyy/MM/dd").format(dateTime);
+        String formattedTime = DateFormat("hh:mm a").format(dateTime);
+
+        babyDueDate = formattedDate;
+        String babyDueTime = formattedTime;
+
+        String imagePath = '';
+        if (gender == 'Boy') {
+          imagePath = 'assets/images/babydetails.png';
+        } else if (gender == 'Girl') {
+          imagePath = 'assets/images/babygirl.png';
+        } 
         
         return Container(
           padding: EdgeInsets.symmetric(horizontal: 10,vertical: 0),
@@ -86,11 +96,14 @@ class _babyInformation extends State<BabyInformation>{
             children: [
               Row(
                 children: [
-                  Icon(
-                      Icons.notifications_active_outlined,
-                      color: Colors.black,
-                      size: 20,
+                  Padding(
+                    padding: EdgeInsets.only(),
+                    child: Image.asset(
+                      imagePath,
+                      height: 35,
+                      width: 35,
                     ),
+                  ),
                     SizedBox(width: 10,),
                   Text(
                     "Name: ",
@@ -117,16 +130,19 @@ class _babyInformation extends State<BabyInformation>{
                 ],
 
               ),
-              SizedBox(height: 17,),
+              SizedBox(height: 23,),
               
               Row(
                 
                 children: [
-                  Icon(
-                      Icons.calendar_today_outlined,
-                      color: Colors.black,
-                      size: 20,
+                  Padding(
+                    padding: EdgeInsets.only(),
+                    child: Image.asset(
+                      'assets/images/gender.png',
+                      height: 35,
+                      width: 35,
                     ),
+                  ),
                     SizedBox(width: 10,),
                   
                   Text(
@@ -154,16 +170,20 @@ class _babyInformation extends State<BabyInformation>{
                 ],
 
               ),
-              SizedBox(height: 17,),
+              SizedBox(height: 23,),
               Row(
-                
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
                 children: [
-                  Icon(
-                      Icons.schedule_outlined,
-                      color: Colors.black,
-                      size: 20,
+                  Padding(
+                    padding: EdgeInsets.only(),
+                    child: Image.asset(
+                      'assets/images/duedate.png',
+                      height: 32,
+                      width: 32,
                     ),
-                    SizedBox(width: 10,),
+                  ),
+                  SizedBox(width: 13,),
                   
                   Text(
                     "DueDate: ",
@@ -176,16 +196,31 @@ class _babyInformation extends State<BabyInformation>{
                     letterSpacing: -0.28,
                     ),
                   ),
-                  Text(
-                    babyDueDate,
-                    style: TextStyle(
-                    color: pinkColor,
-                    fontSize: 21,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w600,
-                    height: 1.30,
-                    letterSpacing: -0.28,
-                    ),
+                  Column(
+                    children: [
+                      Text(
+                        babyDueDate,
+                        style: TextStyle(
+                        color: pinkColor,
+                        fontSize: 21,
+                        fontFamily: 'Urbanist',
+                        fontWeight: FontWeight.w600,
+                        height: 1.30,
+                        letterSpacing: -0.28,
+                        ),
+                      ),
+                      Text(
+                        babyDueTime,
+                        style: TextStyle(
+                        color: pinkColor,
+                        fontSize: 21,
+                        fontFamily: 'Urbanist',
+                        fontWeight: FontWeight.w600,
+                        height: 1.30,
+                        letterSpacing: -0.28,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
 
@@ -197,15 +232,35 @@ class _babyInformation extends State<BabyInformation>{
 
       }
       else{
-        return Container(
-          child: Text('Baby Information Not Found', 
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 26,
-              fontFamily: 'Urbanist',
-              fontWeight: FontWeight.w600,
-              letterSpacing: -0.28,),
-            )
+        return Center(
+          child: Column(
+            children: [
+              Center(
+                //no info image
+                child: Padding(
+                  padding: EdgeInsets.only(top: 120),
+                  child: Image.asset(
+                    'assets/images/empty.png',
+                    height: 100,
+                    width: 100,
+                  ),
+                ),
+              ),
+              Container(
+                  //message
+                  margin: EdgeInsets.fromLTRB(30, 35, 30, 80),
+                  child: Text(
+                    'No Baby Information',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: -0.28,
+                    ),
+                  )),
+            ],
+          ),
         );
         
       }
@@ -341,13 +396,13 @@ class _babyInformation extends State<BabyInformation>{
             padding: EdgeInsets.only(bottom: 65),
             child: ElevatedButton(
               onPressed: () { //change later to route to edit reminder page 
-                Navigator.of(context)
-                    .pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) {
-                    return editPregnancyInfo();
-                  }),
-                  (route) => false,
-                ); 
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => editPregnancyInfo(),
+                    settings: RouteSettings(arguments: pregnancyId),
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: blackColor,

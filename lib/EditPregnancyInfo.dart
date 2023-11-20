@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:preggo/NavBar.dart';
 import 'package:preggo/SplashScreen.dart';
+import 'package:preggo/baby_information.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/main.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -33,6 +34,7 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
   String babyDueDate= ''; 
   late Timestamp duedateTimestamp;
   String pregnancyID = ''; 
+  String pregID = '';
 
   
 
@@ -162,8 +164,13 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
                       child: Center(
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BabyInformation(),
+                                settings: RouteSettings(arguments: pregID),
+                              ),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
@@ -280,6 +287,8 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
 
   @override
   Widget build(BuildContext context) {
+    pregID = ModalRoute.of(context)?.settings.arguments as String;
+
     return Scaffold(
         backgroundColor: backGroundPink,
         resizeToAvoidBottomInset: true,
@@ -611,13 +620,16 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
                                           _babynameController.text;
                                       String? babyGender = gender;
                                       
-                                      updateBabyInfo(
-                                          pregnancyID,babyName, babyGender!);
+                                      updateBabyInfo(pregnancyID,babyName, babyGender!);
 
                                       Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => NavBar()));
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => BabyInformation(),
+                                          settings: RouteSettings(arguments: pregID),
+                                        ),
+                                      );
+                                              
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(
