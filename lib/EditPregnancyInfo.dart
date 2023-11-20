@@ -39,8 +39,9 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
   
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() async{
+    super.didChangeDependencies();
+    pregID = ModalRoute.of(context)?.settings.arguments as String;
     getPregnancyInfo().then((_) {
     setState(() {
       _babynameController.text = selectedName!;
@@ -56,17 +57,16 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
     String userUid = getUserId();
     print(userUid);
 
-    final pregnancyInfoQuerySnapshot = await firestore.collection('users').doc(userUid)
+    /*final pregnancyInfoQuerySnapshot = await firestore.collection('users').doc(userUid)
     .collection('pregnancyInfo').where('ended', isEqualTo: 'false')
+    .get();*/
+    final pregnancyInfoQuerySnapshot = await firestore.collection('users').doc(userUid)
+    .collection('pregnancyInfo').doc(pregID)
     .get();
     
-    print("Query Snapshot Length: ${pregnancyInfoQuerySnapshot.docs.length}");
-
-    if (pregnancyInfoQuerySnapshot.docs.isNotEmpty) {
-      final pregnancyInfoDocSnapshot = pregnancyInfoQuerySnapshot.docs.first;
-      final data = pregnancyInfoDocSnapshot.data();
-      String pregnancyDocId = pregnancyInfoDocSnapshot.id;
-      pregnancyID = pregnancyDocId;
+    if (pregnancyInfoQuerySnapshot.exists) {
+      //final pregnancyInfoDocSnapshot = pregnancyInfoQuerySnapshot.docs.first;
+      Map<String,dynamic> data =pregnancyInfoQuerySnapshot.data() as Map<String,dynamic>;
       // Save the values in global variables for later use
       selectedName = data['Baby\'s name'];
       selectedGender = data['Gender'];
@@ -98,7 +98,7 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
     
     // Create a map to hold the updated field values
     Map<String, dynamic> updatedData = {
-      'Baby\'s name': name,
+      'Baby\'s name': name.trim(),
       'Gender': gender,
     };
 
@@ -287,7 +287,7 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
 
   @override
   Widget build(BuildContext context) {
-    pregID = ModalRoute.of(context)?.settings.arguments as String;
+    
 
     return Scaffold(
         backgroundColor: backGroundPink,
@@ -375,6 +375,7 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
                                     const EdgeInsets.symmetric(vertical: 10.0),
                                 child: TextFormField(
                                   key: _nameKey,
+                                  maxLength: 25,
                                   controller: _babynameController,
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.symmetric(
@@ -420,7 +421,7 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
                                   autovalidateMode:
                                     AutovalidateMode.onUserInteraction,
                                   validator: (value) {
-                                    if (value!.isEmpty) {
+                                    if (value!.trim().isEmpty) {
                                       return null;
                                     } //allow empty field
 
@@ -620,7 +621,7 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
                                           _babynameController.text;
                                       String? babyGender = gender;
                                       
-                                      updateBabyInfo(pregnancyID,babyName, babyGender!);
+                                      updateBabyInfo(pregID,babyName, babyGender!);
 
                                       Navigator.push(
                                         context,

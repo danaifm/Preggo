@@ -54,7 +54,7 @@ class _babyInformation extends State<BabyInformation>{
     } catch (e) {
       print('Error: $e');
     }
-    return 'false';
+    return 'null';
 }
 
   //GETS BABY INFO BASED ON PREGNANCY ENDED OR NOT 
@@ -81,9 +81,11 @@ class _babyInformation extends State<BabyInformation>{
         DateTime dateTime = DateTime.parse(babyDueDate);
         String formattedDate = DateFormat("yyyy/MM/dd").format(dateTime);
         String formattedTime = DateFormat("hh:mm a").format(dateTime);
+        String formattedDateTime = DateFormat("yyyy/MM/dd, hh:mm a").format(dateTime);
 
         babyDueDate = formattedDate;
         String babyDueTime = formattedTime;
+        String due = formattedDateTime;
 
         String imagePath = '';
         if (gender == 'Boy') {
@@ -187,32 +189,23 @@ class _babyInformation extends State<BabyInformation>{
                   ),
                   SizedBox(width: 13,),
                   
-                  Text(
-                    "DueDate: ",
-                    style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 23,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w700,
-                    height: 1.30,
-                    letterSpacing: -0.28,
-                    ),
-                  ),
+                  
                   Column(
                     children: [
                       Text(
-                        babyDueDate,
+                        "Expected DueDate: ",
                         style: TextStyle(
-                        color: pinkColor,
-                        fontSize: 21,
+                        color: Colors.black,
+                        fontSize: 23,
                         fontFamily: 'Urbanist',
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w700,
                         height: 1.30,
                         letterSpacing: -0.28,
                         ),
                       ),
+                      SizedBox(height: 6,),
                       Text(
-                        babyDueTime,
+                        due,
                         style: TextStyle(
                         color: pinkColor,
                         fontSize: 21,
@@ -222,6 +215,7 @@ class _babyInformation extends State<BabyInformation>{
                         letterSpacing: -0.28,
                         ),
                       ),
+                      
                     ],
                   ),
                 ],
@@ -271,17 +265,342 @@ class _babyInformation extends State<BabyInformation>{
 
     //PREGNANCY ENDED -> RETREIVE NEWBORN INFO 
     else{
-      if(babyInfo.exists){
+      QuerySnapshot<Map<String, dynamic>> newbornInfo = await FirebaseFirestore.instance
+      .collection('users').doc(userUid)
+      .collection('pregnancyInfo')
+      .doc(pregnancyId)
+      .collection('newbornInfo')
+      .get();
+
+      if(newbornInfo.size > 0){
+        
+        //get name and gender from pregnancyinfo first 
+        Map<String,dynamic> data =babyInfo.data() as Map<String,dynamic>;
+        var name = data['Baby\'s name'];
+        var gender= data['Gender'];
+
+        //get the rest of the newborns info from the newbornInfo collection 
+        QueryDocumentSnapshot<Map<String, dynamic>> newborn = newbornInfo.docs[0];
+        Map<String, dynamic> newbornData = newborn.data();
+        String bloodtype= newbornData['Blood'];
+        String birthDate= newbornData['Date'];
+        String birthTime= newbornData['Time'];
+        String birthPlace= newbornData['Place'];
+        String height= newbornData['Height'].toString();
+        var weight = newbornData['Weight'].toString();
+
+        String imagePath = '';
+        if (gender == 'Boy') {
+          imagePath = 'assets/images/babydetails.png';
+        } else if (gender == 'Girl') {
+          imagePath = 'assets/images/babygirl.png';
+        } 
+        
         return Container(
-          child: Text('Baby Information Not Found', 
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 26,
-              fontFamily: 'Urbanist',
-              fontWeight: FontWeight.w600,
-              letterSpacing: -0.28,),
-            )
+          padding: EdgeInsets.symmetric(horizontal: 10,vertical: 0),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(),
+                    child: Image.asset(
+                      imagePath,
+                      height: 25,
+                      width: 25,
+                    ),
+                  ),
+                    SizedBox(width: 10,),
+                  Text(
+                    "Name: ",
+                    style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 23,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    height: 1.30,
+                    letterSpacing: -0.28,
+                    ),
+                  ),
+                  Text(
+                    name,
+                    style: TextStyle(
+                    color: pinkColor,
+                    fontSize: 21,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    height: 1.30,
+                    letterSpacing: -0.28,
+                    ),
+                  ),
+                ],
+
+              ),
+              SizedBox(height: 14,),
+              
+              Row(
+                
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(),
+                    child: Image.asset(
+                      'assets/images/gender.png',
+                      height: 25,
+                      width: 25,
+                    ),
+                  ),
+                    SizedBox(width: 10,),
+                  
+                  Text(
+                    "Gender: ",
+                    style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 23,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    height: 1.30,
+                    letterSpacing: -0.28,
+                    ),
+                  ),
+                  Text(
+                    gender,
+                    style: TextStyle(
+                    color: pinkColor,
+                    fontSize: 21,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    height: 1.30,
+                    letterSpacing: -0.28,
+                    ),
+                  ),
+                ],
+
+              ),
+              SizedBox(height: 14,),
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(),
+                    child: Image.asset(
+                      'assets/images/duedate.png',
+                      height: 25,
+                      width: 25,
+                    ),
+                  ),
+                  SizedBox(width: 10,),
+                  Text(
+                    "Birth Date: ",
+                    style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 23,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    height: 1.30,
+                    letterSpacing: -0.28,
+                    ),
+                  ),
+                  Text(
+                    birthDate,
+                    style: TextStyle(
+                    color: pinkColor,
+                    fontSize: 21,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    height: 1.30,
+                    letterSpacing: -0.28,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 14,),
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(),
+                    child: Image.asset(
+                      'assets/images/birthTime.png',
+                      height: 25,
+                      width: 25,
+                    ),
+                  ),
+                  SizedBox(width: 10,),
+                  Text(
+                    "Birth Time: ",
+                    style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 23,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    height: 1.30,
+                    letterSpacing: -0.28,
+                    ),
+                  ),
+                  Text(
+                    birthTime,
+                    style: TextStyle(
+                    color: pinkColor,
+                    fontSize: 21,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    height: 1.30,
+                    letterSpacing: -0.28,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 14,),
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(),
+                    child: Image.asset(
+                      'assets/images/place.png',
+                      height: 25,
+                      width: 25,
+                    ),
+                  ),
+                  SizedBox(width: 10,),
+                  Text(
+                    "Birth Place: ",
+                    style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 23,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    height: 1.30,
+                    letterSpacing: -0.28,
+                    ),
+                  ),
+                  Text(
+                    birthPlace,
+                    style: TextStyle(
+                    color: pinkColor,
+                    fontSize: 21,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    height: 1.30,
+                    letterSpacing: -0.28,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 14,),
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(),
+                    child: Image.asset(
+                      'assets/images/blood-type.png',
+                      height: 25,
+                      width: 25,
+                    ),
+                  ),
+                  SizedBox(width: 10,),
+                  Text(
+                    "Blood Type: ",
+                    style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 23,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    height: 1.30,
+                    letterSpacing: -0.28,
+                    ),
+                  ),
+                  Text(
+                    bloodtype,
+                    style: TextStyle(
+                    color: pinkColor,
+                    fontSize: 21,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    height: 1.30,
+                    letterSpacing: -0.28,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 14,),
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(),
+                    child: Image.asset(
+                      'assets/images/ruler.png',
+                      height: 25,
+                      width: 25,
+                    ),
+                  ),
+                  SizedBox(width: 10,),
+                  Text(
+                    "Height: ",
+                    style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 23,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    height: 1.30,
+                    letterSpacing: -0.28,
+                    ),
+                  ),
+                  Text(
+                    '$height cm',
+                    style: TextStyle(
+                    color: pinkColor,
+                    fontSize: 21,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    height: 1.30,
+                    letterSpacing: -0.28,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 14,),
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(),
+                    child: Image.asset(
+                      'assets/images/babyScale.png',
+                      height: 25,
+                      width: 25,
+                    ),
+                  ),
+                  SizedBox(width: 10,),
+                  Text(
+                    "Weight: ",
+                    style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 23,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    height: 1.30,
+                    letterSpacing: -0.28,
+                    ),
+                  ),
+                  Text(
+                    '$weight kg',
+                    style: TextStyle(
+                    color: pinkColor,
+                    fontSize: 21,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    height: 1.30,
+                    letterSpacing: -0.28,
+                    ),
+                  ),
+                ],
+              ),
+
+
+          ],),
+        
         );
+
+
+
+        
       }
       else{
         return Center(
