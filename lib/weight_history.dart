@@ -43,7 +43,7 @@ class _weightHistory extends State<weightHistory> {
         child: Column(
           children: [
             Center(
-              //notification bell image
+              //no weight image 
               child: Padding(
                 padding: EdgeInsets.only(top: 150),
                 child: Image.asset(
@@ -70,9 +70,9 @@ class _weightHistory extends State<weightHistory> {
         ),
       );
     } else {
-      //reminders exist for this day
+      //weight history exists
       List weightResult = result.docs;
-      // Sort the reminders based on the date and time
+      // Sort the weight history based on the date and time
       weightResult.sort((a, b) {
           String dateA = a.data()['date'] ?? '';
           String timeA = a.data()['time'] ?? '';
@@ -112,107 +112,112 @@ class _weightHistory extends State<weightHistory> {
           height: 680,
           child: ListView.builder(
             shrinkWrap: true,
-            itemCount: weightResult.length,
+            itemCount: weightResult.length +1,
             itemBuilder: (context, index) {
-              String id = weightResult[index].data()['id'] ?? '';
-              String date = weightResult[index].data()['date'] ?? '';
-              String time = weightResult[index].data()['time'] ?? '';
-               var weight = weightResult[index].data()['weight'] ?? '';
-               
-
-              return Container(
+              if (index < weightResult.length) {
+                String id = weightResult[index].data()['id'] ?? '';
+                String date = weightResult[index].data()['date'] ?? '';
+                String time = weightResult[index].data()['time'] ?? '';
+                var weight = weightResult[index].data()['weight'] ?? '';
                 
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    
-                    SizedBox(
-                      height: 83,
-                      child: TimelineTile(
-                        axis: TimelineAxis.vertical,
-                        alignment: TimelineAlign.start,
-                        isFirst: index==0,
-                        isLast: index == weightResult.length - 1,
-                        indicatorStyle: IndicatorStyle(
-                          height: 20,
-                          width:20,
-                          color: pinkColor,
-                          ),
-                        beforeLineStyle: LineStyle(
-                          color: pinkColor.withOpacity(0.6),
-                        ),
-                        endChild: 
-                        Column(
-                          children: [
-                            SizedBox(height: 17,),
-                            Container(
-                            margin: EdgeInsets.symmetric(horizontal: 12),
-                            padding:
-                                EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                            decoration: BoxDecoration(
-                              //color: backGroundPink.withOpacity(0.3),
-                              border: Border.all(color: backGroundPink, width: 2),
-                              borderRadius: BorderRadius.circular(13),
+
+                return Container(
+                  
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      
+                      SizedBox(
+                        height: 83,
+                        child: TimelineTile(
+                          axis: TimelineAxis.vertical,
+                          alignment: TimelineAlign.start,
+                          isFirst: index==0,
+                          isLast: index == weightResult.length - 1,
+                          indicatorStyle: IndicatorStyle(
+                            height: 20,
+                            width:20,
+                            color: pinkColor,
                             ),
-                            child: Row(children: [
-                              Column(
-                                children: [
-                                  Container(
-                                    width: 85,
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      '$date',
-                                      style: TextStyle(
-                                        color: Colors.black.withOpacity(0.7),
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                        fontFamily: 'Urbanist',
+                          beforeLineStyle: LineStyle(
+                            color: pinkColor.withOpacity(0.6),
+                          ),
+                          endChild: 
+                          Column(
+                            children: [
+                              SizedBox(height: 17,),
+                              Container(
+                              margin: EdgeInsets.symmetric(horizontal: 12),
+                              padding:
+                                  EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                              decoration: BoxDecoration(
+                                //color: backGroundPink.withOpacity(0.3),
+                                border: Border.all(color: backGroundPink, width: 2),
+                                borderRadius: BorderRadius.circular(13),
+                              ),
+                              child: Row(children: [
+                                Column(
+                                  children: [
+                                    Container(
+                                      width: 85,
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        date,
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.7),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: 'Urbanist',
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Container(
-                                    width: 85,
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      '$time',
-                                      style: TextStyle(
-                                        color: Colors.black.withOpacity(0.7),
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                        fontFamily: 'Urbanist',
+                                    Container(
+                                      width: 85,
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        time,
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.7),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: 'Urbanist',
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                width: 40,
-                              ),
-                              Expanded(
-                                child: Text(
-                                  '$weight Kg',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'Urbanist',
+                                  ],
+                                ),
+                                SizedBox(
+                                  width: 40,
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    '$weight Kg',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Urbanist',
+                                    ),
                                   ),
                                 ),
+                                
+                              ]
                               ),
-                              
-                            ]
                             ),
-                          ),
-                          SizedBox(height: 0,)
-                        ],
+                            SizedBox(height: 0,)
+                          ],
+                        ),
+                        
                       ),
-                      
-                    ),
-                  ),   
-                      
-                  ],
-                ),
-              );
+                    ),   
+                        
+                    ],
+                  ),
+                );
+              }
+              else { //under the last box
+                return SizedBox(height: 50);
+              }
             },
           ),
         ),
@@ -221,10 +226,10 @@ class _weightHistory extends State<weightHistory> {
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////
-  String pregnancyInfoId = 'HMEBTKrnOYnmxPmBMHuV';
+  String pregnancyInfoId = '';
   @override
   Widget build(BuildContext context) {
-    //pregnancyInfoId=ModalRoute.of(context)?.settings.arguments as String;
+    pregnancyInfoId=ModalRoute.of(context)?.settings.arguments as String;
     return Scaffold(
         backgroundColor: backGroundPink,
         resizeToAvoidBottomInset: true,
@@ -266,47 +271,51 @@ class _weightHistory extends State<weightHistory> {
                   height: 10,
                 ),
                 Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 18.0,
-                      vertical: 0.0,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(45.0),
                     ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(45.0),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18.0,
+                        vertical: 0.0,
                       ),
-                    ),
-                    child: SingleChildScrollView(
-                      //padding: EdgeInsets.only(top: 0),
-                      child: Container(
-                        child: Column(
-                          children: [
-                            
-                            FutureBuilder<Widget>(
-                              future: getWeight(pregnancyInfoId),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<Widget> snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 100, vertical: 250),
-                                    child: Align(
-                                      alignment: Alignment.center,
-                                      child: CircularProgressIndicator(
-                                        color: pinkColor,
-                                        strokeWidth: 3,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(45.0),
+                        ),
+                      ),
+                      child: SingleChildScrollView(
+                        child: Container(
+                          child: Column(
+                            children: [
+                              
+                              FutureBuilder<Widget>(
+                                future: getWeight(pregnancyInfoId),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<Widget> snapshot) {
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 100, vertical: 250),
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: CircularProgressIndicator(
+                                          color: pinkColor,
+                                          strokeWidth: 3,
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                } else if (snapshot.hasError) {
-                                  return Text('Error: ${snapshot.error}');
-                                } else {
-                                  return snapshot.data ?? Container(); // Return an empty container if data is null
-                                }
-                              },
-                            ),
-                          ],
+                                    );
+                                  } else if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}');
+                                  } else {
+                                    return snapshot.data ?? Container(); // Return an empty container if data is null
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

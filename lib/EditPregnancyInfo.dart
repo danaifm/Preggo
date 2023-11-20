@@ -57,15 +57,11 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
     String userUid = getUserId();
     print(userUid);
 
-    /*final pregnancyInfoQuerySnapshot = await firestore.collection('users').doc(userUid)
-    .collection('pregnancyInfo').where('ended', isEqualTo: 'false')
-    .get();*/
     final pregnancyInfoQuerySnapshot = await firestore.collection('users').doc(userUid)
     .collection('pregnancyInfo').doc(pregID)
     .get();
     
     if (pregnancyInfoQuerySnapshot.exists) {
-      //final pregnancyInfoDocSnapshot = pregnancyInfoQuerySnapshot.docs.first;
       Map<String,dynamic> data =pregnancyInfoQuerySnapshot.data() as Map<String,dynamic>;
       // Save the values in global variables for later use
       selectedName = data['Baby\'s name'];
@@ -618,7 +614,7 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
 
                                     if (_formKey.currentState!.validate()) {
                                       String babyName =
-                                          _babynameController.text;
+                                          _babynameController.text.trim();
                                       String? babyGender = gender;
                                       
                                       updateBabyInfo(pregID,babyName, babyGender!);

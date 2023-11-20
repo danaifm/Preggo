@@ -667,6 +667,9 @@ class _babyInformation extends State<BabyInformation>{
                   IconButton(
                     onPressed: () {
                       if(ended == 'false'){ //PREGNANCY NOT ENDED -> ROUTE TO PROFILE PAGE  
+                      setState(() {
+
+                      });
                         Navigator.push(
                           context,
                           MaterialPageRoute(

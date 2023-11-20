@@ -113,8 +113,8 @@ class _LoginScreenState extends State<LoginScreen> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => BabyInformation(),
-                    settings: RouteSettings(arguments: "HMEBTKrnOYnmxPmBMHuV"),
+                    builder: (context) => NavBar(),
+                    //settings: RouteSettings(arguments: "HMEBTKrnOYnmxPmBMHuV"),
                   ));
             }
           });

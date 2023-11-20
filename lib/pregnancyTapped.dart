@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:preggo/NavBar.dart';
+import 'package:preggo/baby_information.dart';
 import 'package:preggo/viewAppointment.dart';
 import 'package:preggo/view_reminders.dart';
 import 'package:preggo/weightFeature/view_delete_Weight.dart';
@@ -61,6 +62,13 @@ class _pregnancyTapped extends State<pregnancyTapped> {
                 GestureDetector(
                   onTap: () {
                     print("BABY ID IS $babyID");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BabyInformation(),
+                        settings: RouteSettings(arguments: babyID),
+                      ),
+                    );
                   },
                   child: Container(
                     margin: EdgeInsets.only(bottom: 20),
