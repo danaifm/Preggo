@@ -68,6 +68,8 @@ class _babyInformation extends State<BabyInformation>{
     .get();
 
     print('-------------------------$ended----------------------');
+
+    //PREGNANCY NOT ENDED -> GET BABY INFO 
     if (ended =="false"){
       if(babyInfo.exists){
 
@@ -267,6 +269,7 @@ class _babyInformation extends State<BabyInformation>{
       
     }
 
+    //PREGNANCY ENDED -> RETREIVE NEWBORN INFO 
     else{
       if(babyInfo.exists){
         return Container(
@@ -281,15 +284,35 @@ class _babyInformation extends State<BabyInformation>{
         );
       }
       else{
-        return Container(
-          child: Text('Baby Information Not Found', 
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 26,
-              fontFamily: 'Urbanist',
-              fontWeight: FontWeight.w600,
-              letterSpacing: -0.28,),
-            )
+        return Center(
+          child: Column(
+            children: [
+              Center(
+                //no info image
+                child: Padding(
+                  padding: EdgeInsets.only(top: 120),
+                  child: Image.asset(
+                    'assets/images/empty.png',
+                    height: 100,
+                    width: 100,
+                  ),
+                ),
+              ),
+              Container(
+                  //message
+                  margin: EdgeInsets.fromLTRB(30, 35, 30, 80),
+                  child: Text(
+                    'No Baby Information',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: -0.28,
+                    ),
+                  )),
+            ],
+          ),
         );
       }
 
@@ -395,7 +418,8 @@ class _babyInformation extends State<BabyInformation>{
           Padding(
             padding: EdgeInsets.only(bottom: 65),
             child: ElevatedButton(
-              onPressed: () { //change later to route to edit reminder page 
+              onPressed: () { 
+              if(ended == 'false'){ //PREGNANCY NOT ENDED -> ROUTE TO EDIT PREGNANCY INFO PAGE 
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -403,6 +427,17 @@ class _babyInformation extends State<BabyInformation>{
                     settings: RouteSettings(arguments: pregnancyId),
                   ),
                 );
+              }
+              else { //PREGNANCY ENDED -> ROUTE TO EDIT NEWBORN INFO PAGE 
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => editPregnancyInfo(),
+                    settings: RouteSettings(arguments: pregnancyId),
+                  ),
+                );
+              }
+                
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: blackColor,
