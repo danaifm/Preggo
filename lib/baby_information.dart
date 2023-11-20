@@ -29,6 +29,7 @@ class _babyInformation extends State<BabyInformation>{
     pregnancyId = ModalRoute.of(context)?.settings.arguments as String;
     print('-----------------------$pregnancyId---------------------------------');
     ended = await checkPregnancyEnded(pregnancyId);
+    setState(() {});
   }
 
   String getUserId() {
@@ -93,6 +94,9 @@ class _babyInformation extends State<BabyInformation>{
         } else if (gender == 'Girl') {
           imagePath = 'assets/images/babygirl.png';
         } 
+        else{
+          imagePath = 'assets/images/unknownBaby.png';
+        }
         
         return Container(
           padding: EdgeInsets.symmetric(horizontal: 10,vertical: 0),
@@ -295,6 +299,9 @@ class _babyInformation extends State<BabyInformation>{
         } else if (gender == 'Girl') {
           imagePath = 'assets/images/babygirl.png';
         } 
+        else{
+          imagePath = 'assets/images/unknownBaby.png';
+        }
         
         return Container(
           padding: EdgeInsets.symmetric(horizontal: 10,vertical: 0),
@@ -748,13 +755,13 @@ class _babyInformation extends State<BabyInformation>{
                 );
               }
               else { //PREGNANCY ENDED -> ROUTE TO EDIT NEWBORN INFO PAGE 
-                Navigator.push(
+                /*Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => editPregnancyInfo(),
+                    builder: (context) => ,
                     settings: RouteSettings(arguments: pregnancyId),
                   ),
-                );
+                );*/
               }
                 
               },
