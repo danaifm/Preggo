@@ -29,10 +29,19 @@ class _ContractionT extends State<ContractionT> {
   Timer? timer;
   bool started = false;
   List laps = [];
+  String startTime = "";
+  String endTime = "";
+
+  String getTime() {
+    DateTime stamp = DateTime.now();
+    String formattedStamp = DateFormat.jm().format(stamp);
+    return formattedStamp;
+  }
 
   void stop() {
     timer!.cancel();
     String lap = "$digitMin:$digitSec";
+    endTime = getTime();
     setState(() {
       started = false;
       laps.add(lap);
@@ -64,6 +73,7 @@ class _ContractionT extends State<ContractionT> {
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
       int localSeconds = seconds + 1;
       int localMintues = minutes;
+      startTime = getTime();
 
       if (localSeconds > 59) {
         localMintues++;
@@ -309,6 +319,20 @@ class _ContractionT extends State<ContractionT> {
                             ),
                           ),
                           Padding(
+                            padding: const EdgeInsets.only(left: 90),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "     minute                    second",
+                                  style: TextStyle(
+                                      color: const Color.fromARGB(
+                                          255, 150, 150, 150),
+                                      fontSize: 12),
+                                )
+                              ],
+                            ),
+                          ),
+                          Padding(
                             //top padding for everything
                             padding: const EdgeInsets.only(top: 60),
                             child: Row(
@@ -358,17 +382,25 @@ class _ContractionT extends State<ContractionT> {
                             ),
                           ),
                           Container(
-                            //margin: EdgeInsets.only(top: 200),
-                            child: FutureBuilder<Widget>(
-                              future: getContractionTimer(),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<Widget> snapshot) {
-                                if (snapshot.hasData) {
-                                  return snapshot.data!;
-                                }
-
-                                return CircularProgressIndicator(
-                                    color: pinkColor);
+                            height: 400,
+                            decoration: BoxDecoration(
+                                color: backGroundPink,
+                                borderRadius: BorderRadius.circular(8)),
+                            child: ListView.builder(
+                              itemCount: laps.length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text("Laps #${index + 1}"),
+                                      Text(
+                                          "${laps[index]} , start: $startTime , end: $endTime ")
+                                    ],
+                                  ),
+                                );
                               },
                             ),
                           ),
