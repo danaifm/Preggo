@@ -126,16 +126,17 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
     );
   }
 
-  Future<void> updateDatePicker() async {
+  Future<void> updatePickers() async {
     final String? currentUserUuid = FirebaseAuth.instance.currentUser?.uid;
+    final String pregnancyId =
+        ModalRoute.of(context)?.settings.arguments as String;
     final data = await FirebaseFirestore.instance
         .collection('users')
         .doc(currentUserUuid)
         .collection('pregnancyInfo')
-        .doc(widget.babyId)
+        .doc(pregnancyId)
         // .where("DueDate", isGreaterThanOrEqualTo: Timestamp.now())
         .get();
-
     final Timestamp dueDate = data['DueDate'];
 
     _minimumDate = subtractMonths(dueDate.toDate(), 5);
@@ -158,11 +159,13 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
         ///
         /// newbornInfo
 
+        final String pregnancyId =
+            ModalRoute.of(context)?.settings.arguments as String;
         final newbornInfoCollection = FirebaseFirestore.instance
             .collection("users")
             .doc(currentUserUuid)
             .collection("pregnancyInfo")
-            .doc(widget.babyId)
+            .doc(pregnancyId)
             .collection("newbornInfo");
 
         final time = selectedTime == null
@@ -180,19 +183,25 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
           "Time": time,
         };
 
-        await updateByNamAndGender(widget.babyId);
-        await newbornInfoCollection.add(babyData).then((value) async {
-          if (mounted) {
-            _successDialog();
+        await updateByNamAndGender(pregnancyId);
+        await newbornInfoCollection.get().then((value) async {
+          final firstDoc = value!.docs.first;
+          if (firstDoc != null) {
+            await newbornInfoCollection.doc(firstDoc.id).update(babyData);
           }
-          setState(() {
-            isLoading = false;
-            _nameController.clear();
-            _placeOfBirthController.clear();
-            _heightController.clear();
-            _weightController.clear();
-          });
         });
+        // await newbornInfoCollection.add(babyData).then((value) async {
+        //   if (mounted) {
+        //     _successDialog();
+        //   }
+        //   setState(() {
+        //     isLoading = false;
+        //     _nameController.clear();
+        //     _placeOfBirthController.clear();
+        //     _heightController.clear();
+        //     _weightController.clear();
+        //   });
+        // });
       } else {
         if (selectedGender != null &&
             selectedGender!.isNotEmpty &&
@@ -272,13 +281,16 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                           child: Center(
                             child: ElevatedButton(
                               onPressed: () {
+                                final String pregnancyId =
+                                    ModalRoute.of(context)?.settings.arguments
+                                        as String;
                                 Navigator.of(context).pop();
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => BabyInformation(),
                                     settings:
-                                        RouteSettings(arguments: widget.babyId),
+                                        RouteSettings(arguments: pregnancyId),
                                   ),
                                 );
                                 // Navigator.of(context).pop();
@@ -317,6 +329,8 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
   // DateTime? _timeOfBirth;
   // String? _selectedGender;
   // String? _selectedBloodType;
+
+  Future<void> getBabyData() async {}
 
   Future<Map<String, dynamic>?> getBabyInfoById(String babyId) async {
     Map<String, dynamic>? data;
@@ -365,15 +379,15 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
   @override
   void initState() {
     super.initState();
-    print("BABY ID:: ${widget.babyId} ##");
-    _nameController = TextEditingController(text: widget.name);
-    _heightController = TextEditingController(text: widget.height);
-    _weightController = TextEditingController(text: widget.weight);
-    _placeOfBirthController = TextEditingController(text: widget.place);
-    selectedBloodType = widget.bloodType;
-    selectedDate = DateTime.tryParse(widget.date);
-    selectedTime = DateTime.tryParse(widget.time);
-    selectedGender = widget.gender;
+    // print("BABY ID:: ${widget.babyId} ##");
+    _nameController = TextEditingController();
+    _heightController = TextEditingController();
+    _weightController = TextEditingController();
+    _placeOfBirthController = TextEditingController();
+    selectedBloodType = "";
+    // selectedDate = DateTime.tryParse(widget.date);
+    // selectedTime = DateTime.tryParse(widget.time);
+    // selectedGender = widget.gender;
     // WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
     //   await updateDatePicker();
     //   final Map<String, dynamic>? baby = await getBabyInfoById(widget.babyId);
@@ -386,11 +400,43 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
     // });
   }
 
+  String? pregnancyId;
+
+  Future<void> updateInputFields() async {
+    /// Fetch data from pregnancy collection
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    final newbornInfoCollection = FirebaseFirestore.instance
+        .collection("users")
+        .doc(userId)
+        .collection("pregnancyInfo")
+        .doc(pregnancyId)
+        .collection("newbornInfo");
+
+    // final Timestamp ueDate = data['DueDate'];
+
+    await newbornInfoCollection.get().then((value) {
+      final allData = value.docs.first.data();
+      selectedBloodType = allData['Blood'];
+      selectedDate = DateTime.tryParse(allData['Date']);
+      selectedTime = DateTime.tryParse(allData['Time']);
+      _heightController.text = allData['Height'];
+      _weightController.text = allData['Weight'];
+      _placeOfBirthController.text = allData['Place'];
+
+      print("VALUE OF NEW BORN:: ${value.docs.first.data()} #");
+    });
+
+    ///
+    /// Fetch data from new born info collection
+  }
+
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() async {
     super.didChangeDependencies();
-    updateDatePicker();
-    getBabyInfoById(widget.babyId).then((value) {
+
+    pregnancyId = ModalRoute.of(context)?.settings.arguments as String;
+
+    await getBabyInfoById(pregnancyId!).then((value) {
       if (value != null) {
         setState(() {
           _nameController.text = value['Baby\'s name'];
@@ -398,6 +444,15 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
         });
       }
     });
+
+    /// Intialize the pickers
+    await updatePickers();
+
+    ///
+    /// Update Text Form Fields
+    await updateInputFields();
+
+    setState(() {});
   }
 
   @override
@@ -492,12 +547,14 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                       child: Center(
                         child: ElevatedButton(
                           onPressed: () {
+                            final String pregnancyId = ModalRoute.of(context)
+                                ?.settings
+                                .arguments as String;
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => BabyInformation(),
-                                settings:
-                                    RouteSettings(arguments: widget.babyId),
+                                settings: RouteSettings(arguments: pregnancyId),
                               ),
                             );
                             // Navigator.of(context).pop();
@@ -575,7 +632,10 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
               child: SizedBox(
                 height: 25,
                 child: BackButton(
-                  onPressed: backButton,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  // onPressed: backButton,
                   style: const ButtonStyle(
                     padding: MaterialStatePropertyAll(
                       EdgeInsets.zero,
@@ -585,7 +645,7 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
               ),
             ),
             const Text(
-              "Add a new born info",
+              "Update a new born info",
               style: TextStyle(
                 color: Color(0xFFD77D7C),
                 fontSize: 32,
@@ -1154,7 +1214,7 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                                         right: 85,
                                         bottom: 15),
                                   ),
-                                  child: const Text("Add Information",
+                                  child: const Text("Update Information",
                                       style: TextStyle(
                                         fontFamily: 'Urbanist',
                                       )),

@@ -780,6 +780,11 @@ class _babyInformation extends State<BabyInformation> {
                     );
                   } else {
                     //PREGNANCY ENDED -> ROUTE TO EDIT NEWBORN INFO PAGE
+
+                    pregnancyId =
+                        ModalRoute.of(context)?.settings.arguments as String;
+                    print(
+                        '-----------------------$pregnancyId---------------------------------');
                     Navigator.push(
                       context,
                       MaterialPageRoute(
