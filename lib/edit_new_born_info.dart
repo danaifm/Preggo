@@ -10,28 +10,7 @@ import 'package:preggo/baby_information.dart';
 import 'package:preggo/colors.dart';
 
 class EditNewBornInfo extends StatefulWidget {
-  const EditNewBornInfo({
-    super.key,
-    // required this.babyId,
-    // required this.name,
-    // required this.gender,
-    // required this.date,
-    // required this.time,
-    // required this.place,
-    // required this.bloodType,
-    // required this.height,
-    // required this.weight,
-  });
-
-  // final String babyId;
-  // final String name;
-  // final String gender;
-  // final String date;
-  // final String time;
-  // final String place;
-  // final String bloodType;
-  // final String height;
-  // final String weight;
+  const EditNewBornInfo({super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -40,15 +19,19 @@ class EditNewBornInfo extends StatefulWidget {
 }
 
 class EditNewBornInfoState extends State<EditNewBornInfo> {
+  final _formKey = GlobalKey<FormState>();
+  late TextEditingController _nameController;
+  late TextEditingController _heightController;
+  late TextEditingController _weightController;
+  late TextEditingController _placeOfBirthController;
   DateTime? selectedDate;
   DateTime? selectedTime;
   DateTime? _minimumDate;
   DateTime? _maximumDate;
-
-  var timeFormat = "Select";
-  var errorMessage = "";
-
   bool isLoading = false;
+  String errorMessage = "";
+
+  String? pregnancyId;
 
   DateTime subtractMonths(DateTime date, int months) {
     int newMonth = date.month - months;
@@ -119,8 +102,8 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
           });
           print(newTime.toString());
           var jiffy = Jiffy.parse(newTime.toString());
-          timeFormat = jiffy.format(pattern: "hh:mm a");
-          print(timeFormat);
+          // timeFormat = jiffy.format(pattern: "hh:mm a");
+          // print(timeFormat);
         },
       ),
     );
@@ -143,7 +126,7 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
     _maximumDate = increaseMonths(dueDate.toDate(), 1);
   }
 
-  Future<void> addNewBornInfo() async {
+  Future<void> updateBabyInfo() async {
     try {
       final String? currentUserUuid = FirebaseAuth.instance.currentUser?.uid;
 
@@ -185,7 +168,7 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
 
         await updateByNamAndGender(pregnancyId);
         await newbornInfoCollection.get().then((value) async {
-          final firstDoc = value!.docs.first;
+          final firstDoc = value.docs.first;
           if (firstDoc != null) {
             await newbornInfoCollection.doc(firstDoc.id).update(babyData);
           }
@@ -320,18 +303,6 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
         });
   }
 
-  final _formKey = GlobalKey<FormState>();
-  late TextEditingController _nameController;
-  late TextEditingController _heightController;
-  late TextEditingController _weightController;
-  late TextEditingController _placeOfBirthController;
-  // DateTime? _dateOfBirth;
-  // DateTime? _timeOfBirth;
-  // String? _selectedGender;
-  // String? _selectedBloodType;
-
-  Future<void> getBabyData() async {}
-
   Future<Map<String, dynamic>?> getBabyInfoById(String babyId) async {
     Map<String, dynamic>? data;
     try {
@@ -379,28 +350,12 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
   @override
   void initState() {
     super.initState();
-    // print("BABY ID:: ${widget.babyId} ##");
     _nameController = TextEditingController();
     _heightController = TextEditingController();
     _weightController = TextEditingController();
     _placeOfBirthController = TextEditingController();
     selectedBloodType = "";
-    // selectedDate = DateTime.tryParse(widget.date);
-    // selectedTime = DateTime.tryParse(widget.time);
-    // selectedGender = widget.gender;
-    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-    //   await updateDatePicker();
-    //   final Map<String, dynamic>? baby = await getBabyInfoById(widget.babyId);
-    //   if (baby != null) {
-    //     setState(() {
-    //       _nameController.text = baby['Baby\'s name'];
-    //       selectedGender = baby['Gender'];
-    //     });
-    //   }
-    // });
   }
-
-  String? pregnancyId;
 
   Future<void> updateInputFields() async {
     /// Fetch data from pregnancy collection
@@ -416,14 +371,17 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
 
     await newbornInfoCollection.get().then((value) {
       final allData = value.docs.first.data();
-      selectedBloodType = allData['Blood'];
-      selectedDate = DateTime.tryParse(allData['Date']);
-      selectedTime = DateTime.tryParse(allData['Time']);
-      _heightController.text = allData['Height'];
-      _weightController.text = allData['Weight'];
-      _placeOfBirthController.text = allData['Place'];
+      setState(() {
+        selectedBloodType = allData['Blood'];
+        selectedDate = DateFormat("MM-DD-yyyy").parse(allData['Date']);
+        // selectedDate = DateTime.parse(allData['Date']);
+        selectedTime = DateFormat("hh:mm a").parse(allData['Time']);
+        _heightController.text = allData['Height'];
+        _weightController.text = allData['Weight'];
+        _placeOfBirthController.text = allData['Place'];
 
-      print("VALUE OF NEW BORN:: ${value.docs.first.data()} #");
+        setState(() {});
+      });
     });
 
     ///
@@ -451,7 +409,6 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
     ///
     /// Update Text Form Fields
     await updateInputFields();
-
     setState(() {});
   }
 
@@ -1083,7 +1040,10 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                                         padding: EdgeInsets.zero,
                                         onPressed: _showTimePicker,
                                         child: Text(
-                                          timeFormat,
+                                          selectedTime != null
+                                              ? DateFormat("hh:mm a")
+                                                  .format(selectedTime!)
+                                              : "Select",
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
                                             fontSize: 16.0,
@@ -1202,7 +1162,7 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                               SizedBox(
                                 height: 45.0,
                                 child: ElevatedButton(
-                                  onPressed: addNewBornInfo,
+                                  onPressed: updateBabyInfo,
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: blackColor,
                                     shape: RoundedRectangleBorder(
