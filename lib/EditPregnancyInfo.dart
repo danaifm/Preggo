@@ -1,25 +1,27 @@
-// ignore_for_file: file_names, use_key_in_widget_constructors, camel_case_types, prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_init_to_null, unused_import, avoid_print, unused_element
+// ignore_for_file: file_names, use_key_in_widget_constructors, camel_case_types, prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_init_to_null, unused_import, avoid_print, unused_element, prefer_typing_uninitialized_variables
 
 import 'package:flutter/material.dart';
 import 'package:preggo/NavBar.dart';
 import 'package:preggo/SplashScreen.dart';
+import 'package:preggo/baby_information.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/main.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:preggo/start_Journey.dart';
+import 'package:intl/intl.dart';
 
-class pregnancyInfo extends StatefulWidget {
+class editPregnancyInfo extends StatefulWidget {
   //const SignUp({Key? key}) : super(key: key);
   late final String userId;
   @override
   State<StatefulWidget> createState() {
-    return _fillPregnancyInfo();
+    return _editPregnancyInfo();
   }
 }
 
-class _fillPregnancyInfo extends State<pregnancyInfo> {
+class _editPregnancyInfo extends State<editPregnancyInfo> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormFieldState> _nameKey = GlobalKey<FormFieldState>();
   final TextEditingController _babynameController = TextEditingController();
@@ -27,31 +29,262 @@ class _fillPregnancyInfo extends State<pregnancyInfo> {
   String? gender;
   var selectedWeek = null;
   bool showError = false;
+  String? selectedName;
+  String? selectedGender;
+  String babyDueDate= ''; 
+  late Timestamp duedateTimestamp;
+  String pregnancyID = ''; 
+  String pregID = '';
 
+  
+
+  @override
+  void didChangeDependencies() async{
+    super.didChangeDependencies();
+    pregID = ModalRoute.of(context)?.settings.arguments as String;
+    getPregnancyInfo().then((_) {
+    setState(() {
+      _babynameController.text = selectedName!;
+      gender = selectedGender;
+    });
+  });
+  }
+
+  //GET PREGNANCY INFO FOR CURRENT PREGNANCY 
+  Future<void> getPregnancyInfo() async {
+
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    String userUid = getUserId();
+    print(userUid);
+
+    final pregnancyInfoQuerySnapshot = await firestore.collection('users').doc(userUid)
+    .collection('pregnancyInfo').doc(pregID)
+    .get();
+    
+    if (pregnancyInfoQuerySnapshot.exists) {
+      Map<String,dynamic> data =pregnancyInfoQuerySnapshot.data() as Map<String,dynamic>;
+      // Save the values in global variables for later use
+      selectedName = data['Baby\'s name'];
+      selectedGender = data['Gender'];
+      duedateTimestamp = data['DueDate'];
+      babyDueDate = duedateTimestamp.toDate().toString();
+      DateTime dateTime = DateTime.parse(babyDueDate);
+      String formattedDateTime = DateFormat("yyyy/MM/dd, hh:mm a").format(dateTime);
+      babyDueDate = formattedDateTime;
+
+      print("-----------$selectedName, $selectedGender, $babyDueDate-----------------");
+    }
+    else {print("nothing here");}
+    
+  }
+
+
+  //RETRIEVE USERS ID 
   String getUserId() {
     User? user = FirebaseAuth.instance.currentUser;
     return user!.uid;
   }
 
-  void addPregnancyInfo(String name, String gender, DateTime due) {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
+  
+ //UPDATES PREGNANCY INFO TO FIRESTORE 
+  Future<void> updateBabyInfo(String pregnancy, String name, String gender) async{
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
     String userUid = getUserId();
+    String collectionPath = 'users/$userUid/pregnancyInfo';
+    
+    // Create a map to hold the updated field values
+    Map<String, dynamic> updatedData = {
+      'Baby\'s name': name.trim(),
+      'Gender': gender,
+    };
 
-    CollectionReference subCollectionRef =
-        firestore.collection('users').doc(userUid).collection('pregnancyInfo');
-    subCollectionRef
-        .add({
-          'Baby\'s name': name.trim(),
-          'Gender': gender,
-          'DueDate': due,
-          'ended': 'false',
-        })
-        .then((value) => print('info added successfully'))
-        .catchError((error) => print('failed to add info:$error'));
+    try {
+      await firestore
+          .collection(collectionPath)
+          .doc(pregnancy)
+          .set(updatedData, SetOptions(merge: true));
+      print('Pregnancy info updated successfully!');
+      _successDialog();
+    } catch (e) {
+      print('Failed to update pregnancy info: $e');
+    }
+  }
+
+  //SHOWS CONFIRMATION MESSAGE WHEN LEAVING PAGE
+  void backButton() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          content: SizedBox(
+            height: 130,
+            child: Column(
+              children: <Widget>[
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 10, bottom: 30),
+                    child: Text(
+                      'Are you sure you want to go back?',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      height: 45.0,
+                      child: Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: blackColor,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40)),
+                            padding: const EdgeInsets.only(
+                                left: 30, top: 15, right: 30, bottom: 15),
+                          ),
+                          child: const Text(
+                            "No",
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      height: 45.0,
+                      child: Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BabyInformation(),
+                                settings: RouteSettings(arguments: pregID),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.error,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40)),
+                            padding: const EdgeInsets.only(
+                                left: 30, top: 15, right: 30, bottom: 15),
+                          ),
+                          child: const Text(
+                            "Yes",
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  //SUCCESS DIALOG AFTER SUCCESSFUL EDITING 
+  Future<dynamic> _successDialog() {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return Center(
+            child: SizedBox(
+              height: MediaQuery.sizeOf(context).height * 0.40,
+              width: MediaQuery.sizeOf(context).width * 0.85,
+              child: Dialog(
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(height: 20),
+                        Container(
+                          padding: const EdgeInsets.all(15),
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: green,
+                          ),
+                          child: const Icon(
+                            Icons.check,
+                            color: Colors.white,
+                            size: 35,
+                          ),
+                        ),
+                        const SizedBox(height: 25),
+
+                        // Done
+                        const Text(
+                          "Information Edited successfully!",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 0, 0, 0),
+                            fontSize: 17,
+                            fontFamily: 'Urbanist',
+                            fontWeight: FontWeight.w700,
+                            height: 1.30,
+                            letterSpacing: -0.28,
+                          ),
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        /// OK Button
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          width: MediaQuery.sizeOf(context).width * 0.80,
+                          height: 45.0,
+                          child: Center(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: blackColor,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(40)),
+                                padding: const EdgeInsets.only(
+                                    left: 70, top: 15, right: 70, bottom: 15),
+                              ),
+                              child: const Text("OK",
+                                  style: TextStyle(
+                                    fontFamily: 'Urbanist',
+                                  )),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
   }
 
   @override
   Widget build(BuildContext context) {
+    
+
     return Scaffold(
         backgroundColor: backGroundPink,
         resizeToAvoidBottomInset: true,
@@ -60,16 +293,32 @@ class _fillPregnancyInfo extends State<pregnancyInfo> {
             SizedBox(
               height: 55,
             ),
-            Text(
-              "Add pregnancy details",
-              style: TextStyle(
-                color: Color(0xFFD77D7C),
-                fontSize: 32,
-                fontFamily: 'Urbanist',
-                fontWeight: FontWeight.w600,
-                height: 1.30,
-                letterSpacing: -0.28,
-              ),
+            Row(
+              children: [
+                IconButton(
+                    onPressed: () {
+                      backButton();
+                    },
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                Text(
+                  "Edit Baby Information",
+                  style: TextStyle(
+                    color: Color(0xFFD77D7C),
+                    fontSize: 28,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    height: 1.30,
+                    letterSpacing: -0.28,
+                  ),
+                ),
+              ],
             ),
             SizedBox(
               height: 20,
@@ -302,13 +551,13 @@ class _fillPregnancyInfo extends State<pregnancyInfo> {
                                 ),
                               ),
 
-                              Container(
-                                //current pregnancy week label
+                              /*Container(
+                                //expected due date 
                                 margin: EdgeInsets.only(
                                     top: 30, left: 5, bottom: 5),
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  "Current pregnancy week",
+                                  "Expected Due Date",
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     color: Color.fromARGB(255, 0, 0, 0),
@@ -320,100 +569,35 @@ class _fillPregnancyInfo extends State<pregnancyInfo> {
                                   ),
                                 ),
                               ),
+                              SizedBox(height: 8,),
 
-                              Container(
-                                margin: EdgeInsets.symmetric(
-                                  vertical: 8,
-                                ),
-                                child: DropdownSearch<String>(
-                                  popupProps: PopupProps.dialog(
-                                    showSelectedItems: true,
+                              Row(
+                                children: [
+                                  SizedBox(width: 3,),
+                                  Icon(
+                                    Icons.event_outlined,
+                                    color: pinkColor,
+                                    size: 20,
                                   ),
-                                  items: [
-                                    "Week 1",
-                                    "Week 2",
-                                    "Week 3",
-                                    "Week 4",
-                                    "Week 5",
-                                    "Week 6",
-                                    "Week 7",
-                                    "Week 8",
-                                    "Week 9",
-                                    "Week 10",
-                                    "Week 11",
-                                    "Week 12",
-                                    "Week 13",
-                                    "Week 14",
-                                    "Week 15",
-                                    "Week 16",
-                                    "Week 17",
-                                    "Week 18",
-                                    "Week 19",
-                                    "Week 20",
-                                    "Week 21",
-                                    "Week 22",
-                                    "Week 23",
-                                    "Week 24",
-                                    "Week 25",
-                                    "Week 26",
-                                    "Week 27",
-                                    "Week 28",
-                                    "Week 29",
-                                    "Week 30",
-                                    "Week 31",
-                                    "Week 32",
-                                    "Week 33",
-                                    "Week 34",
-                                    "Week 35",
-                                    "Week 36",
-                                    "Week 37",
-                                    "Week 38",
-                                    "Week 39",
-                                    "Week 40"
-                                  ],
-                                  dropdownDecoratorProps:
-                                      DropDownDecoratorProps(
-                                    dropdownSearchDecoration: InputDecoration(
-                                      contentPadding: EdgeInsets.symmetric(
-                                          vertical: 15, horizontal: 15),
-                                      hintText: "Select current week",
-                                      filled: true,
-                                      fillColor: Color(0xFFF7F8F9),
-                                      enabledBorder: OutlineInputBorder(
-                                        gapPadding: 0.5,
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide: BorderSide(
-                                          width: 0.50,
-                                          color: Color.fromARGB(
-                                              255, 221, 225, 232),
-                                        ),
-                                      ),
-                                      errorBorder: OutlineInputBorder(
-                                        gapPadding: 0.5,
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide: BorderSide(
-                                          width: 0.50,
-                                          color:
-                                              Color.fromRGBO(255, 100, 100, 1),
-                                        ),
-                                      ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  
+                                  Text(
+                                    babyDueDate,
+                                    style: TextStyle(
+                                      color: blackColor,
+                                      fontSize: 18,
+                                      fontFamily: 'Urbanist',
+                                      fontWeight: FontWeight.w500,
+                                      height: 1.30,
+                                      letterSpacing: -0.28,
                                     ),
                                   ),
-                                  onChanged: (week) {
-                                    setState(() {
-                                      selectedWeek = week;
-                                    });
-                                  },
-                                  selectedItem: selectedWeek,
-                                  validator: (String? item) {
-                                    if (item == null) {
-                                      return "Please select an option";
-                                    } else {
-                                      return null;
-                                    }
-                                  },
-                                ),
-                              ),
+                                ],
+                              ),*/
+                              SizedBox(height: 15,),
+                              
 
                               Padding(
                                 //start journey button
@@ -430,30 +614,19 @@ class _fillPregnancyInfo extends State<pregnancyInfo> {
 
                                     if (_formKey.currentState!.validate()) {
                                       String babyName =
-                                          _babynameController.text;
+                                          _babynameController.text.trim();
                                       String? babyGender = gender;
-                                      String currentWeek = selectedWeek;
-                                      String weekNum = currentWeek.substring(5);
-                                      int weekNo = int.parse(weekNum);
-
-                                      calculateDueDate(int week) {
-                                        const fullTerm = 40;
-                                        int daysToAdd = (fullTerm - week) * 7;
-                                        DateTime currentDate = DateTime.now();
-                                        DateTime calculatedDueDate = currentDate
-                                            .add(Duration(days: daysToAdd));
-                                        return calculatedDueDate;
-                                      }
-
-                                      DateTime dueDate =
-                                          calculateDueDate(weekNo);
-                                      addPregnancyInfo(
-                                          babyName, babyGender!, dueDate);
+                                      
+                                      updateBabyInfo(pregID,babyName, babyGender!);
 
                                       Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => NavBar()));
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => BabyInformation(),
+                                          settings: RouteSettings(arguments: pregID),
+                                        ),
+                                      );
+                                              
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -461,14 +634,10 @@ class _fillPregnancyInfo extends State<pregnancyInfo> {
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(40)),
-                                    padding: EdgeInsets.only(
-                                        left: 90,
-                                        top: 15,
-                                        right: 110,
-                                        bottom: 15),
+                                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 75),
                                   ),
                                   child: Text(
-                                    "Start Journey",
+                                    "Edit Baby Information",
                                     softWrap: false,
                                   ),
                                 ),

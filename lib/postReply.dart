@@ -670,8 +670,8 @@ class _postReply extends State<postReply> {
                 padding: EdgeInsets.only(top: 100),
                 child: Image.asset(
                   'assets/images/comment.png',
-                  height: 70,
-                  width: 70,
+                  height: 50,
+                  width: 50,
                 ),
               ),
             ),
