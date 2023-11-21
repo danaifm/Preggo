@@ -1,29 +1,45 @@
-import 'dart:developer';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
+
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:preggo/baby_information.dart';
 import 'package:preggo/colors.dart';
-import 'package:preggo/reminder.dart';
 
-class NewBornInfo extends StatefulWidget {
-  const NewBornInfo({super.key, required this.babyId});
+class EditNewBornInfo extends StatefulWidget {
+  const EditNewBornInfo({
+    super.key,
+    required this.babyId,
+    required this.name,
+    required this.gender,
+    required this.date,
+    required this.time,
+    required this.place,
+    required this.bloodType,
+    required this.height,
+    required this.weight,
+  });
+
   final String babyId;
+  final String name;
+  final String gender;
+  final String date;
+  final String time;
+  final String place;
+  final String bloodType;
+  final String height;
+  final String weight;
 
   @override
   State<StatefulWidget> createState() {
-    return NewBornInfoState();
+    return EditNewBornInfoState();
   }
 }
 
-class NewBornInfoState extends State<NewBornInfo> {
+class EditNewBornInfoState extends State<EditNewBornInfo> {
   DateTime? selectedDate;
   DateTime? selectedTime;
   DateTime? _minimumDate;
@@ -350,10 +366,14 @@ class NewBornInfoState extends State<NewBornInfo> {
   void initState() {
     super.initState();
     print("BABY ID:: ${widget.babyId} ##");
-    _nameController = TextEditingController();
-    _heightController = TextEditingController();
-    _weightController = TextEditingController();
-    _placeOfBirthController = TextEditingController();
+    _nameController = TextEditingController(text: widget.name);
+    _heightController = TextEditingController(text: widget.height);
+    _weightController = TextEditingController(text: widget.weight);
+    _placeOfBirthController = TextEditingController(text: widget.place);
+    selectedBloodType = widget.bloodType;
+    selectedDate = DateTime.tryParse(widget.date);
+    selectedTime = DateTime.tryParse(widget.time);
+    selectedGender = widget.gender;
     // WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
     //   await updateDatePicker();
     //   final Map<String, dynamic>? baby = await getBabyInfoById(widget.babyId);
