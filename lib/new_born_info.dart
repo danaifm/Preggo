@@ -129,8 +129,12 @@ class NewBornInfoState extends State<NewBornInfo> {
   Future<void> addNewBornInfo() async {
     try {
       final String? currentUserUuid = FirebaseAuth.instance.currentUser?.uid;
-
-      if (currentUserUuid != null && _formKey.currentState!.validate()) {
+      final bool hasValidGender = selectedGender != null &&
+          selectedGender!.isNotEmpty &&
+          selectedGender!.toLowerCase() != "unknown";
+      if (currentUserUuid != null &&
+          _formKey.currentState!.validate() &&
+          hasValidGender) {
         setState(() {
           isLoading = true;
           errorMessage = "";
@@ -178,19 +182,10 @@ class NewBornInfoState extends State<NewBornInfo> {
           });
         });
       } else {
-        if (selectedGender != null &&
-            selectedGender!.isNotEmpty &&
-            selectedGender!.toLowerCase() != "unknown") {
-          setState(() {
-            isLoading = false;
-            errorMessage = "";
-          });
-        } else {
-          setState(() {
-            isLoading = false;
-            errorMessage = "Gender cannot be empty";
-          });
-        }
+        setState(() {
+          isLoading = false;
+          errorMessage = "Gender cannot be empty";
+        });
       }
     } catch (error) {
       setState(() {
@@ -698,7 +693,7 @@ class NewBornInfoState extends State<NewBornInfo> {
                                   TextFormField(
                                     maxLength: 4,
                                     controller: _heightController,
-                                    keyboardType: TextInputType.number,
+                                    // keyboardType: TextInputType.number,
                                     validator: (value) {
                                       /// Validate if the entered value is only number
                                       /// else
@@ -824,7 +819,7 @@ class NewBornInfoState extends State<NewBornInfo> {
                                       filled: true,
                                       fillColor: const Color(0xFFF7F8F9),
                                     ),
-                                    keyboardType: TextInputType.number,
+                                    // keyboardType: TextInputType.number,
                                     validator: (value) {
                                       /// Validate if the entered value is only number
                                       /// else
@@ -1295,7 +1290,7 @@ class _BloodDialogState extends State<BloodDialog> {
             child: const Text(
               "Clear",
               style: TextStyle(
-                color: pinkColor,
+                color: Colors.red,
                 fontFamily: 'Urbanist',
               ),
             ),

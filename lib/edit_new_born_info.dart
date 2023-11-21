@@ -129,19 +129,17 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
   Future<void> updateBabyInfo() async {
     try {
       final String? currentUserUuid = FirebaseAuth.instance.currentUser?.uid;
+      final bool hasValidGender = selectedGender != null &&
+          selectedGender!.isNotEmpty &&
+          selectedGender!.toLowerCase() != "unknown";
 
-      if (currentUserUuid != null && _formKey.currentState!.validate()) {
+      if (currentUserUuid != null &&
+          _formKey.currentState!.validate() &&
+          hasValidGender) {
         setState(() {
           isLoading = true;
           errorMessage = "";
         });
-
-        /// /users
-        ///
-        /// pregnancyInfo
-        ///
-        /// newbornInfo
-
         final String pregnancyId =
             ModalRoute.of(context)?.settings.arguments as String;
         final newbornInfoCollection = FirebaseFirestore.instance
@@ -155,7 +153,6 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
             ? ""
             : TimeOfDay.fromDateTime(selectedTime!).format(context);
         final Map<String, dynamic> babyData = {
-          // "Name": _nameController.text.trim(),
           "Place": _placeOfBirthController.text.trim(),
           "Height": _heightController.text.trim(),
           "Weight": _weightController.text.trim(),
@@ -169,36 +166,29 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
         await updateByNamAndGender(pregnancyId);
         await newbornInfoCollection.get().then((value) async {
           final firstDoc = value.docs.first;
-          if (firstDoc != null) {
-            await newbornInfoCollection.doc(firstDoc.id).update(babyData);
-          }
+          try {
+            await newbornInfoCollection
+                .doc(firstDoc.id)
+                .update(babyData)
+                .then((_) {
+              if (mounted) {
+                _successDialog();
+              }
+              setState(() {
+                isLoading = false;
+                _nameController.clear();
+                _placeOfBirthController.clear();
+                _heightController.clear();
+                _weightController.clear();
+              });
+            });
+          } catch (error) {}
         });
-        // await newbornInfoCollection.add(babyData).then((value) async {
-        //   if (mounted) {
-        //     _successDialog();
-        //   }
-        //   setState(() {
-        //     isLoading = false;
-        //     _nameController.clear();
-        //     _placeOfBirthController.clear();
-        //     _heightController.clear();
-        //     _weightController.clear();
-        //   });
-        // });
       } else {
-        if (selectedGender != null &&
-            selectedGender!.isNotEmpty &&
-            selectedGender!.toLowerCase() != "unknown") {
-          setState(() {
-            isLoading = false;
-            errorMessage = "";
-          });
-        } else {
-          setState(() {
-            isLoading = false;
-            errorMessage = "Gender cannot be empty";
-          });
-        }
+        setState(() {
+          isLoading = false;
+          errorMessage = "Gender cannot be empty";
+        });
       }
     } catch (error) {
       setState(() {
@@ -264,9 +254,6 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                           child: Center(
                             child: ElevatedButton(
                               onPressed: () {
-                                final String pregnancyId =
-                                    ModalRoute.of(context)?.settings.arguments
-                                        as String;
                                 Navigator.of(context).pop();
                                 Navigator.push(
                                   context,
@@ -276,7 +263,6 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                                         RouteSettings(arguments: pregnancyId),
                                   ),
                                 );
-                                // Navigator.of(context).pop();
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: blackColor,
@@ -504,9 +490,6 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                       child: Center(
                         child: ElevatedButton(
                           onPressed: () {
-                            final String pregnancyId = ModalRoute.of(context)
-                                ?.settings
-                                .arguments as String;
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -514,8 +497,6 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                                 settings: RouteSettings(arguments: pregnancyId),
                               ),
                             );
-                            // Navigator.of(context).pop();
-                            // Navigator.of(context).pop();
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
@@ -589,10 +570,7 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
               child: SizedBox(
                 height: 25,
                 child: BackButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  // onPressed: backButton,
+                  onPressed: backButton,
                   style: const ButtonStyle(
                     padding: MaterialStatePropertyAll(
                       EdgeInsets.zero,
@@ -735,7 +713,7 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                                   TextFormField(
                                     maxLength: 4,
                                     controller: _heightController,
-                                    keyboardType: TextInputType.number,
+                                    // keyboardType: TextInputType.number,
                                     validator: (value) {
                                       /// Validate if the entered value is only number
                                       /// else
@@ -748,6 +726,25 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                                                 .contains(
                                                     RegExp(r'[a-zA-Z,]')) ||
                                             RegExp(r'\..*\.').hasMatch(value);
+
+                                        final bool isStartWithDot =
+                                            RegExp(r'^(?![.])(\w+)$')
+                                                .hasMatch(value.trim());
+                                        final bool isEndWithDot =
+                                            RegExp(r'^(.*[^.])(?<!\.)$')
+                                                .hasMatch(value.trim());
+
+                                        if (isStartWithDot || isEndWithDot) {
+                                          return "Invalid format+";
+                                        }
+
+                                        const String specialCharacters =
+                                            r"[!@#$%^&*()]";
+
+                                        if (RegExp(specialCharacters)
+                                            .hasMatch(value)) {
+                                          return "Please enter valid number!";
+                                        }
 
                                         if (containsInvalidCharacters) {
                                           return "Please enter number only!";
@@ -861,7 +858,7 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                                       filled: true,
                                       fillColor: const Color(0xFFF7F8F9),
                                     ),
-                                    keyboardType: TextInputType.number,
+                                    // keyboardType: TextInputType.number,
                                     validator: (value) {
                                       /// Validate if the entered value is only number
                                       /// else
@@ -874,7 +871,8 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                                                 .contains(
                                                     RegExp(r'[a-zA-Z,]')) ||
                                             RegExp(r'\..*\.').hasMatch(value);
-
+                                        print(
+                                            "containsInvalidCharacters::: $containsInvalidCharacters ##");
                                         if (containsInvalidCharacters) {
                                           return "Please enter number only!";
                                         }
@@ -1335,7 +1333,7 @@ class _BloodDialogState extends State<BloodDialog> {
             child: const Text(
               "Clear",
               style: TextStyle(
-                color: pinkColor,
+                color: Colors.red,
                 fontFamily: 'Urbanist',
               ),
             ),
