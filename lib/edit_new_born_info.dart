@@ -12,26 +12,26 @@ import 'package:preggo/colors.dart';
 class EditNewBornInfo extends StatefulWidget {
   const EditNewBornInfo({
     super.key,
-    required this.babyId,
-    required this.name,
-    required this.gender,
-    required this.date,
-    required this.time,
-    required this.place,
-    required this.bloodType,
-    required this.height,
-    required this.weight,
+    // required this.babyId,
+    // required this.name,
+    // required this.gender,
+    // required this.date,
+    // required this.time,
+    // required this.place,
+    // required this.bloodType,
+    // required this.height,
+    // required this.weight,
   });
 
-  final String babyId;
-  final String name;
-  final String gender;
-  final String date;
-  final String time;
-  final String place;
-  final String bloodType;
-  final String height;
-  final String weight;
+  // final String babyId;
+  // final String name;
+  // final String gender;
+  // final String date;
+  // final String time;
+  // final String place;
+  // final String bloodType;
+  // final String height;
+  // final String weight;
 
   @override
   State<StatefulWidget> createState() {
