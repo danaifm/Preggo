@@ -160,6 +160,8 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
                       child: Center(
                         child: ElevatedButton(
                           onPressed: () {
+                            //Navigator.pop(context, pregID);
+
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -618,7 +620,7 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
                                       String? babyGender = gender;
                                       
                                       updateBabyInfo(pregID,babyName, babyGender!);
-
+                                      //Navigator.pop(context, pregID);
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(

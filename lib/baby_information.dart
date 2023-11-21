@@ -2,14 +2,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:preggo/EditPregnancyInfo.dart';
+import 'package:preggo/NavBar.dart';
 import 'package:preggo/colors.dart';
+import 'package:preggo/edit_new_born_info.dart';
 import 'package:preggo/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:preggo/pregnancyTapped.dart';
-import 'package:preggo/profile/profile_screen.dart';
-
 
 
 class BabyInformation extends StatefulWidget {
@@ -667,13 +667,10 @@ class _babyInformation extends State<BabyInformation>{
                   IconButton(
                     onPressed: () {
                       if(ended == 'false'){ //PREGNANCY NOT ENDED -> ROUTE TO PROFILE PAGE  
-                      setState(() {
-
-                      });
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ProfileScreen(),
+                            builder: (context) => NavBar(),
                           ),
                         );
                       }
@@ -776,13 +773,13 @@ class _babyInformation extends State<BabyInformation>{
                 );
               }
               else { //PREGNANCY ENDED -> ROUTE TO EDIT NEWBORN INFO PAGE 
-                /*Navigator.push(
+                Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ,
+                    builder: (context) => EditNewBornInfo(),
                     settings: RouteSettings(arguments: pregnancyId),
                   ),
-                );*/
+                );
               }
                 
               },
