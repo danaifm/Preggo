@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:preggo/baby_information.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/reminder.dart';
 
@@ -132,7 +133,7 @@ class NewBornInfoState extends State<NewBornInfo> {
       if (currentUserUuid != null && _formKey.currentState!.validate()) {
         setState(() {
           isLoading = true;
-          errorMessage = "fasdfasdf";
+          errorMessage = "";
         });
 
         /// /users
@@ -449,8 +450,16 @@ class NewBornInfoState extends State<NewBornInfo> {
                       child: Center(
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BabyInformation(),
+                                settings:
+                                    RouteSettings(arguments: widget.babyId),
+                              ),
+                            );
+                            // Navigator.of(context).pop();
+                            // Navigator.of(context).pop();
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
@@ -595,10 +604,6 @@ class NewBornInfoState extends State<NewBornInfo> {
                                   fontFamily: 'Urbanist',
                                 ),
                                 keyboardType: TextInputType.name,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                      RegExp("[a-zA-Z ]")),
-                                ],
                                 decoration: InputDecoration(
                                   hintText: "Example: Amal",
                                   hintStyle: const TextStyle(
@@ -628,10 +633,20 @@ class NewBornInfoState extends State<NewBornInfo> {
                                   fillColor: const Color(0xFFF7F8F9),
                                 ),
                                 validator: (value) {
-                                  if (value == null || value.trim().isEmpty) {
-                                    return "This field cannot be empty.";
+                                  final lettersRegExpOnly =
+                                      RegExp(r'^[a-z A-Z]+$');
+
+                                  /// cannot be empty
+                                  if (value == null || value.isEmpty) {
+                                    return "Field cannot be empty";
                                   }
-                                  return null;
+
+                                  /// allow upper and lower case alphabets and space if input is written
+                                  if (!lettersRegExpOnly.hasMatch(value)) {
+                                    return "Please Enter letters only";
+                                  } else {
+                                    return null;
+                                  }
                                 },
                               ),
 
@@ -661,33 +676,34 @@ class NewBornInfoState extends State<NewBornInfo> {
                                   TextFormField(
                                     maxLength: 4,
                                     controller: _heightController,
-                                    keyboardType:
-                                        const TextInputType.numberWithOptions(
-                                            decimal: true),
+                                    keyboardType: TextInputType.number,
                                     validator: (value) {
-                                      if (value!.trim().isEmpty) {
-                                        return "This field cannot be empty.";
-                                      }
+                                      /// Validate if the entered value is only number
+                                      /// else
+                                      /// If the value is a number (35 - 65)
+                                      if (value != null && value.isNotEmpty) {
+                                        final double? myValue =
+                                            double.tryParse(value);
 
-                                      if (!RegExp(r'^[0-9]+(\.[0-9]+)?$')
-                                          .hasMatch(value.trim())) {
-                                        return "Please enter numbers only.";
-                                      }
+                                        bool containsInvalidCharacters = value
+                                                .contains(
+                                                    RegExp(r'[a-zA-Z,]')) ||
+                                            RegExp(r'\..*\.').hasMatch(value);
 
-                                      if (!RegExp(r'^\d+(\.\d{1})?$')
-                                          .hasMatch(value.trim())) {
-                                        return "Please enter height with one decimal place only.";
+                                        if (containsInvalidCharacters) {
+                                          return "Please enter number only!";
+                                        }
+
+                                        if (myValue != null) {
+                                          final isValueValidNumber =
+                                              myValue < 35.0 || myValue > 65.0;
+                                          if (isValueValidNumber) {
+                                            return "Height should be between 35.0 - 65.0 cm.";
+                                          }
+                                        }
                                       }
-                                      if (!RegExp(
-                                              r'^(?:2[0-4][0-9]|2[5-9]|[3-9][0-9]|1[0-9]{2}|25[0-9]|2[6-9][0-9])(?:\.\d+)?$')
-                                          .hasMatch(value.trim())) {
-                                        return "Please Enter height between 35.0 and 65.0";
-                                      }
+                                      return null;
                                     },
-                                    inputFormatters: [
-                                      // FilteringTextInputFormatter
-                                      //     .allow(regex),
-                                    ],
                                     style: const TextStyle(
                                       fontSize: 15.0,
                                       fontFamily: 'Urbanist',
@@ -750,12 +766,8 @@ class NewBornInfoState extends State<NewBornInfo> {
                                     ),
                                   ),
                                   TextFormField(
-                                    maxLength: 3,
+                                    maxLength: 4,
                                     controller: _weightController,
-                                    keyboardType: TextInputType.number,
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.digitsOnly,
-                                    ],
                                     style: const TextStyle(
                                       fontSize: 15.0,
                                       fontFamily: 'Urbanist',
@@ -790,25 +802,33 @@ class NewBornInfoState extends State<NewBornInfo> {
                                       filled: true,
                                       fillColor: const Color(0xFFF7F8F9),
                                     ),
+                                    keyboardType: TextInputType.number,
                                     validator: (value) {
-                                      if (value!.trim().isEmpty) {
-                                        return "This field cannot be empty.";
-                                      }
+                                      /// Validate if the entered value is only number
+                                      /// else
+                                      /// If the value is a number 0.5 - 10.0 kg
+                                      if (value != null && value.isNotEmpty) {
+                                        final double? myValue =
+                                            double.tryParse(value);
 
-                                      if (!RegExp(r'^[0-9]+(\.[0-9]+)?$')
-                                          .hasMatch(value.trim())) {
-                                        return "Please enter numbers only.";
-                                      }
+                                        bool containsInvalidCharacters = value
+                                                .contains(
+                                                    RegExp(r'[a-zA-Z,]')) ||
+                                            RegExp(r'\..*\.').hasMatch(value);
 
-                                      if (!RegExp(r'^\d+(\.\d{1})?$')
-                                          .hasMatch(value.trim())) {
-                                        return "Please enter weight with one decimal place only.";
+                                        if (containsInvalidCharacters) {
+                                          return "Please enter number only!";
+                                        }
+
+                                        if (myValue != null) {
+                                          final isValueValidNumber =
+                                              myValue < 0.5 || myValue > 10.0;
+                                          if (isValueValidNumber) {
+                                            return "Weight should be between 0.5 - 10.0 kg.";
+                                          }
+                                        }
                                       }
-                                      /* if (!RegExp(
-                                              r'^(?:2[0-4][0-9]|2[5-9]|[3-9][0-9]|1[0-9]{2}|25[0-9]|2[6-9][0-9]|300|200|250)(?:\.\d+)?$')
-                                          .hasMatch(value.trim())) {
-                                        return "Please enter weight between 25 and 300";
-                                      }*/
+                                      return null;
                                     },
                                   ),
                                 ],
@@ -840,15 +860,26 @@ class NewBornInfoState extends State<NewBornInfo> {
                               TextFormField(
                                 maxLength: 35,
                                 controller: _placeOfBirthController,
-                                keyboardType: TextInputType.name,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                      RegExp("[a-zA-Z ]")),
-                                ],
                                 style: const TextStyle(
                                   fontSize: 15.0,
                                   fontFamily: 'Urbanist',
                                 ),
+                                validator: (value) {
+                                  final lettersRegExpOnly =
+                                      RegExp(r'^[a-z A-Z]+$');
+
+                                  /// allow empty field
+                                  if (value == null || value.isEmpty) {
+                                    return null;
+                                  }
+
+                                  /// allow upper and lower case alphabets and space if input is written
+                                  if (!lettersRegExpOnly.hasMatch(value)) {
+                                    return "Please Enter letters only";
+                                  } else {
+                                    return null;
+                                  }
+                                },
                                 decoration: InputDecoration(
                                   hintText: "Example: Riyadh",
                                   hintStyle: const TextStyle(
@@ -883,6 +914,7 @@ class NewBornInfoState extends State<NewBornInfo> {
 
                               /// Date & Time of Birth
                               CustomResizeWidget(
+                                hasBottomBorder: false,
                                 children: <Widget>[
                                   const Text(
                                     "Date of Birth",
@@ -930,11 +962,12 @@ class NewBornInfoState extends State<NewBornInfo> {
                               ),
 
                               CustomResizeWidget(
+                                hasBottomBorder: false,
                                 children: <Widget>[
                                   const Text(
                                     "Time of Birth",
                                     style: TextStyle(
-                                      color: Color.fromARGB(255, 0, 0, 0),
+                                      color: Color.fromARGB(255, 69, 28, 28),
                                       fontSize: 17,
                                       fontFamily: 'Urbanist',
                                       fontWeight: FontWeight.w700,
@@ -975,7 +1008,7 @@ class NewBornInfoState extends State<NewBornInfo> {
 
                               /// Blood Type
                               CustomResizeWidget(
-                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                hasBottomBorder: false,
                                 onTap: () async {
                                   await showDialog(
                                     context: context,
@@ -1004,10 +1037,12 @@ class NewBornInfoState extends State<NewBornInfo> {
                                   const Text(
                                     "Blood Type",
                                     style: TextStyle(
-                                      // color: Colors.black,
+                                      color: Color.fromARGB(255, 69, 28, 28),
                                       fontSize: 17,
-                                      fontWeight: FontWeight.bold,
                                       fontFamily: 'Urbanist',
+                                      fontWeight: FontWeight.w700,
+                                      height: 1.30,
+                                      letterSpacing: -0.28,
                                     ),
                                   ),
                                   Row(
@@ -1132,7 +1167,7 @@ class CustomResizeWidget extends StatelessWidget {
                 : BorderSide.none,
             bottom: hasBottomBorder
                 ? const BorderSide(
-                    color: Color.fromARGB(255, 36, 33, 33),
+                    color: CupertinoColors.inactiveGray,
                     width: 0.0,
                   )
                 : BorderSide.none,
@@ -1173,7 +1208,7 @@ class _BloodDialogState extends State<BloodDialog> {
     {"value": "AB-", "isSelected": false, "id": "108"},
   ];
 
-  String selectedBlood = "";
+  String? selectedBlood = "";
 
   initialValue() {
     if (widget.initialBloodValue != null &&
@@ -1223,9 +1258,35 @@ class _BloodDialogState extends State<BloodDialog> {
           ),
           TextButton(
             onPressed: () {
+              // setState(() {
+              //   for (var item in bloodTypes) {
+              //     item['isSelected'] = false;
+              //   }
+              //   // bloodTypes.map((e) => e['isSelected'] = false);
+              // });
+
+              setState(() {
+                selectedBlood = null;
+                bloodTypes.map((e) => e['isSelected'] = false);
+              });
+            },
+            child: const Text(
+              "Clear",
+              style: TextStyle(
+                color: pinkColor,
+                fontFamily: 'Urbanist',
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
               Navigator.pop(context);
               setState(() {
-                widget.onSelectedItem(selectedBlood);
+                if (selectedBlood != null) {
+                  widget.onSelectedItem(selectedBlood!);
+                } else {
+                  widget.onSelectedItem("");
+                }
               });
             },
             child: const Text(
@@ -1247,7 +1308,9 @@ class _BloodDialogState extends State<BloodDialog> {
                 return Theme(
                   data: ThemeData(
                     unselectedWidgetColor:
-                        bloodTypes[i]['isSelected'] ? pinkColor : Colors.black,
+                        bloodTypes[i]['isSelected'] && selectedBlood != null
+                            ? pinkColor
+                            : Colors.black,
                   ),
                   child: RadioListTile(
                     groupValue: selectedBlood,
@@ -1261,6 +1324,10 @@ class _BloodDialogState extends State<BloodDialog> {
                       ),
                     ),
                     value: bloodTypes[i]['value'],
+                    toggleable: false,
+                    onFocusChange: (value) {
+                      print("BLOOD TYPES::--focus $value");
+                    },
                     onChanged: (value) {
                       setState(
                         () {
@@ -1311,7 +1378,7 @@ class GenderViewWidget extends StatelessWidget {
         const Text(
           "Gender",
           style: TextStyle(
-            color: Color.fromARGB(255, 0, 0, 0),
+            color: Color.fromARGB(255, 69, 28, 28),
             fontSize: 17,
             fontFamily: 'Urbanist',
             fontWeight: FontWeight.w700,
