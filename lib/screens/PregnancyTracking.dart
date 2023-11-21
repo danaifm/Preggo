@@ -822,7 +822,7 @@ String ? babyId ;
 
                         // Done
                         const Text(
-                          "your pregnancy is ended!",
+                          "I admire your resilience and bravery,\nEnding a pregnancy journey is heartfelt.",
                           textAlign: TextAlign
                               .center,
                           style: TextStyle(
