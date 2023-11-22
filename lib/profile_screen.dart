@@ -424,7 +424,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             decoration: BoxDecoration(color: Colors.grey[200]),
                             child: const Center(
                                 child: Text(
-                              "...",
+                              "Sign Out",
                               style: TextStyle(
                                   color: pinkColor,
                                   fontWeight: FontWeight.bold,
@@ -562,7 +562,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                           ),
-
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(color: Colors.grey[200]),
+                            child: const Center(
+                                child: Text(
+                              "Delete Account",
+                              style: TextStyle(
+                                  color: pinkColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18),
+                            )),
+                          ),
                           InkWell(
                             onTap: () {
                               showDialog<void>(
@@ -642,7 +654,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               );
                             },
                             child: const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 15),
+                              padding: EdgeInsets.all(15),
                               child: Row(
                                 children: [
                                   SizedBox(
@@ -656,7 +668,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     width: 10,
                                   ),
                                   Text(
-                                    "Delete Account",
+                                    "Delete Acount",
                                     style: TextStyle(
                                         fontSize: 16, color: Colors.red),
                                   ),

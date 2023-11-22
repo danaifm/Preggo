@@ -41,7 +41,7 @@ class _fillPregnancyInfo extends State<pregnancyInfo> {
         firestore.collection('users').doc(userUid).collection('pregnancyInfo');
     subCollectionRef
         .add({
-          'Baby\'s name': name,
+          'Baby\'s name': name.trim(),
           'Gender': gender,
           'DueDate': due,
           'ended': 'false',
@@ -122,6 +122,7 @@ class _fillPregnancyInfo extends State<pregnancyInfo> {
                                     const EdgeInsets.symmetric(vertical: 10.0),
                                 child: TextFormField(
                                   key: _nameKey,
+                                  maxLength: 25,
                                   controller: _babynameController,
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.symmetric(
@@ -164,8 +165,10 @@ class _fillPregnancyInfo extends State<pregnancyInfo> {
                                     filled: true,
                                     fillColor: Color(0xFFF7F8F9),
                                   ),
+                                  autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
                                   validator: (value) {
-                                    if (value!.isEmpty) {
+                                    if (value!.trim().isEmpty) {
                                       return null;
                                     } //allow empty field
 
