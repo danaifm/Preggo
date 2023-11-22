@@ -29,8 +29,8 @@ class _ContractionT extends State<ContractionT> {
   Timer? timer;
   bool started = false;
   List laps = [];
-  String startTime = "";
-  String endTime = "";
+  String time = "";
+  //String endTime = "";
 
   String getTime() {
     DateTime stamp = DateTime.now();
@@ -38,10 +38,25 @@ class _ContractionT extends State<ContractionT> {
     return formattedStamp;
   }
 
+  void toggleButton() {
+    setState(() {
+      if (time == "") {
+        start();
+        time = getTime();
+        // endTime = "";
+        // start();
+      } else {
+        stop();
+        addContraction();
+        time = "";
+      }
+    });
+  }
+
   void stop() {
     timer!.cancel();
     String lap = "$digitMin:$digitSec";
-    endTime = getTime();
+    //endTime = getTime();
     setState(() {
       started = false;
       laps.add(lap);
@@ -73,7 +88,8 @@ class _ContractionT extends State<ContractionT> {
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
       int localSeconds = seconds + 1;
       int localMintues = minutes;
-      startTime = getTime();
+      // startTime = getTime();
+      // endTime = "";
 
       if (localSeconds > 59) {
         localMintues++;
@@ -173,10 +189,9 @@ class _ContractionT extends State<ContractionT> {
     CollectionReference subCollectionRef =
         firestore.collection('users').doc(userUid).collection('contractionT');
 
-    subCollectionRef.add({
-      'startTime': startTime,
-      'endTime': endTime,
-    });
+    //DocumentReference docRef =
+    //await
+    subCollectionRef.add({'startTime': time, 'endTime': getTime()});
   }
 
   String getUserId() {
@@ -279,6 +294,13 @@ class _ContractionT extends State<ContractionT> {
         return dateTimeC.compareTo(dateTimeD);
       });
 
+      weightResult.sort((a, b) {
+        var dateTimeC = a['endTime']; //before -> var adate = a.expiry;
+        var dateTimeD = b['endTime']; //before -> var bdate = b.expiry;
+        //to get the order other way just switch `adate & bdate`
+        return dateTimeC.compareTo(dateTimeD);
+      });
+
       return SingleChildScrollView(
         physics: AlwaysScrollableScrollPhysics(),
         scrollDirection: Axis.vertical,
@@ -288,7 +310,7 @@ class _ContractionT extends State<ContractionT> {
               color: backGroundPink, borderRadius: BorderRadius.circular(8)),
           child: ListView.builder(
             shrinkWrap: true,
-            itemCount: laps.length,
+            itemCount: weightResult.length,
             itemBuilder: (context, index) {
               String startTimee = weightResult[index].data()['startTime'] ?? '';
               String endTimee = weightResult[index].data()['endTime'] ?? '';
@@ -406,12 +428,17 @@ class _ContractionT extends State<ContractionT> {
                                         right: 15, left: 6, bottom: 6),
                                     child: RawMaterialButton(
                                       onPressed: () {
-                                        if (!started) {
-                                          start();
-                                        } else {
-                                          stop();
-                                          addContraction();
-                                        }
+                                        // if (!started) {
+                                        //   start();
+                                        //   // startTime = getTime();
+                                        //   // endTime = "";
+                                        // } else {
+                                        //   stop();
+                                        //   // endTime = getTime();
+                                        //   addContraction();
+                                        // }
+
+                                        toggleButton();
                                       },
                                       fillColor: blackColor,
                                       shape: StadiumBorder(
