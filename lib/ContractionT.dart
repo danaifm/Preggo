@@ -89,7 +89,20 @@ class _ContractionT extends State<ContractionT> {
     });
   }
 
-  @override
+  Future<void> addContraction() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    String userUid = getUserId();
+
+    CollectionReference subCollectionRef =
+        firestore.collection('users').doc(userUid).collection('contractionT');
+
+    subCollectionRef.add({
+      'startTime': startTime,
+      'endTime': endTime,
+      'length': laps,
+    });
+  }
+
   String getUserId() {
     User? user = FirebaseAuth.instance.currentUser;
     return user!.uid;
