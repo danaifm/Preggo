@@ -407,70 +407,80 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
     setState(() {});
   }
 
-  String? weightValidator(value) {
+  String? weightValidator(String? value) {
+    // Weight should be in the format 0.5
+    // Weight should be in between 0.5 - 10.0 kg
     /// Validate if the entered value is only number
-    /// else
-    /// If the value is a number (35 - 65)
+
     if (value != null && value.isNotEmpty) {
       final double? myValue = double.tryParse(value);
 
       bool containsInvalidCharacters = value.contains(RegExp(r'[a-zA-Z,]')) ||
-          RegExp(r'\..*\.').hasMatch(value);
+          RegExp(r'\..*\.').hasMatch(value) ||
+          RegExp(r'^(.*[^.])(?<!\.)$').hasMatch(value);
 
-      final bool isStartWithDot =
-          RegExp(r'^(?![.])(\w+)$').hasMatch(value.trim());
-      final bool isEndWithDot = RegExp(r'^(.*[^.])(?<!\.)$').hasMatch(value);
+      final bool valueContainsNumbers =
+          RegExp(r'^-?\d*\.?\d+$').hasMatch(value.trim());
 
-      const String specialCharacters = r"[!@#$%^&*()]";
+      final bool isStartWithDot = value.trim().startsWith(".");
+      final bool isEndWithDot = value.trim().endsWith(".");
 
-      // if (RegExp(specialCharacters)
-      //     .hasMatch(value)) {
-      //   return "Only numbers allowed!";
-      // }
+      final specialCharacters = RegExp(r"[!@#$%^&*()]").hasMatch(value.trim());
 
-      if (myValue != null) {
-        final isValueValidNumber = myValue < 0.5 || myValue > 10.0;
-        if (isValueValidNumber) {
-          return "Weight should be between 0.5 - 10.0 kg.";
-        }
-      } else if (containsInvalidCharacters) {
+      if (valueContainsNumbers && (isStartWithDot || isEndWithDot)) {
+        return "Weight should be in the format: 0.5";
+      } else if (isStartWithDot) {
         return "Only numbers allowed";
       } else if (isEndWithDot) {
+        return "Only numbers allowed";
+      } else if (isStartWithDot && isEndWithDot) {
+        return "Only numbers allowed";
+      } else if (specialCharacters) {
+        return "Only numbers allowed";
+      } else if (myValue != null) {
+        final isValueValidNumber = myValue < 0.5 || myValue > 10.0;
+        if (isValueValidNumber) {
+          return "Weight should be in between 0.5 - 10.0 kg";
+        }
+      } else if (containsInvalidCharacters) {
         return "Only numbers allowed";
       }
     }
     return null;
   }
 
-  String? heightValidator(value) {
-    /// Validate if the entered value is only number
-    /// else
-    /// If the value is a number (35 - 65)
+  String? heightValidator(String? value) {
     if (value != null && value.isNotEmpty) {
       final double? myValue = double.tryParse(value);
 
       bool containsInvalidCharacters = value.contains(RegExp(r'[a-zA-Z,]')) ||
-          RegExp(r'\..*\.').hasMatch(value);
+          RegExp(r'\..*\.').hasMatch(value) ||
+          RegExp(r'^(.*[^.])(?<!\.)$').hasMatch(value);
 
-      final bool isStartWithDot =
-          RegExp(r'^(?![.])(\w+)$').hasMatch(value.trim());
-      final bool isEndWithDot = RegExp(r'^(.*[^.])(?<!\.)$').hasMatch(value);
+      final bool valueContainsNumbers =
+          RegExp(r'^-?\d*\.?\d+$').hasMatch(value.trim());
 
-      const String specialCharacters = r"[!@#$%^&*()]";
+      final bool isStartWithDot = value.trim().startsWith(".");
+      final bool isEndWithDot = value.trim().endsWith(".");
 
-      // if (RegExp(specialCharacters)
-      //     .hasMatch(value)) {
-      //   return "Only numbers allowed!";
-      // }
+      final specialCharacters = RegExp(r"[!@#$%^&*()]").hasMatch(value.trim());
 
-      if (myValue != null) {
-        final isValueValidNumber = myValue < 35.0 || myValue > 65.0;
-        if (isValueValidNumber) {
-          return "Height should be between 35.0 - 65.0 cm.";
-        }
-      } else if (containsInvalidCharacters) {
+      if (valueContainsNumbers && (isStartWithDot || isEndWithDot)) {
+        return "Height should be in the format: 43.5";
+      } else if (isStartWithDot) {
         return "Only numbers allowed";
       } else if (isEndWithDot) {
+        return "Only numbers allowed";
+      } else if (isStartWithDot && isEndWithDot) {
+        return "Only numbers allowed";
+      } else if (specialCharacters) {
+        return "Only numbers allowed";
+      } else if (myValue != null) {
+        final isValueValidNumber = myValue < 35.0 || myValue > 65.0;
+        if (isValueValidNumber) {
+          return "Height should be in between 35.0 - 65.0 cm";
+        }
+      } else if (containsInvalidCharacters) {
         return "Only numbers allowed";
       }
     }
@@ -759,7 +769,7 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
 
                                   /// allow upper and lower case alphabets and space if input is written
                                   if (!lettersRegExpOnly.hasMatch(value)) {
-                                    return "Please Enter letters only";
+                                    return "Only letters allowed";
                                   } else {
                                     return null;
                                   }
@@ -793,7 +803,9 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                                     maxLength: 4,
                                     controller: _heightController,
                                     // keyboardType: TextInputType.number,
+
                                     validator: heightValidator,
+
                                     style: const TextStyle(
                                       fontSize: 15.0,
                                       fontFamily: 'Urbanist',
@@ -858,6 +870,8 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                                   TextFormField(
                                     maxLength: 4,
                                     controller: _weightController,
+                                    // keyboardType: TextInputType.number,
+                                    validator: weightValidator,
                                     style: const TextStyle(
                                       fontSize: 15.0,
                                       fontFamily: 'Urbanist',
@@ -892,8 +906,6 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                                       filled: true,
                                       fillColor: const Color(0xFFF7F8F9),
                                     ),
-                                    // keyboardType: TextInputType.number,
-                                    validator: weightValidator,
                                   ),
                                 ],
                               ),
@@ -939,7 +951,7 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
 
                                   /// allow upper and lower case alphabets and space if input is written
                                   if (!lettersRegExpOnly.hasMatch(value)) {
-                                    return "Please Enter letters only";
+                                    return "Only letters allowed";
                                   } else {
                                     return null;
                                   }
