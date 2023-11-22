@@ -407,6 +407,76 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
     setState(() {});
   }
 
+  String? weightValidator(value) {
+    /// Validate if the entered value is only number
+    /// else
+    /// If the value is a number (35 - 65)
+    if (value != null && value.isNotEmpty) {
+      final double? myValue = double.tryParse(value);
+
+      bool containsInvalidCharacters = value.contains(RegExp(r'[a-zA-Z,]')) ||
+          RegExp(r'\..*\.').hasMatch(value);
+
+      final bool isStartWithDot =
+          RegExp(r'^(?![.])(\w+)$').hasMatch(value.trim());
+      final bool isEndWithDot = RegExp(r'^(.*[^.])(?<!\.)$').hasMatch(value);
+
+      const String specialCharacters = r"[!@#$%^&*()]";
+
+      // if (RegExp(specialCharacters)
+      //     .hasMatch(value)) {
+      //   return "Only numbers allowed!";
+      // }
+
+      if (myValue != null) {
+        final isValueValidNumber = myValue < 0.5 || myValue > 10.0;
+        if (isValueValidNumber) {
+          return "Weight should be between 0.5 - 10.0 kg.";
+        }
+      } else if (containsInvalidCharacters) {
+        return "Only numbers allowed";
+      } else if (isEndWithDot) {
+        return "Only numbers allowed";
+      }
+    }
+    return null;
+  }
+
+  String? heightValidator(value) {
+    /// Validate if the entered value is only number
+    /// else
+    /// If the value is a number (35 - 65)
+    if (value != null && value.isNotEmpty) {
+      final double? myValue = double.tryParse(value);
+
+      bool containsInvalidCharacters = value.contains(RegExp(r'[a-zA-Z,]')) ||
+          RegExp(r'\..*\.').hasMatch(value);
+
+      final bool isStartWithDot =
+          RegExp(r'^(?![.])(\w+)$').hasMatch(value.trim());
+      final bool isEndWithDot = RegExp(r'^(.*[^.])(?<!\.)$').hasMatch(value);
+
+      const String specialCharacters = r"[!@#$%^&*()]";
+
+      // if (RegExp(specialCharacters)
+      //     .hasMatch(value)) {
+      //   return "Only numbers allowed!";
+      // }
+
+      if (myValue != null) {
+        final isValueValidNumber = myValue < 35.0 || myValue > 65.0;
+        if (isValueValidNumber) {
+          return "Height should be between 35.0 - 65.0 cm.";
+        }
+      } else if (containsInvalidCharacters) {
+        return "Only numbers allowed";
+      } else if (isEndWithDot) {
+        return "Only numbers allowed";
+      }
+    }
+    return null;
+  }
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -723,52 +793,7 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                                     maxLength: 4,
                                     controller: _heightController,
                                     // keyboardType: TextInputType.number,
-                                    validator: (value) {
-                                      /// Validate if the entered value is only number
-                                      /// else
-                                      /// If the value is a number (35 - 65)
-                                      if (value != null && value.isNotEmpty) {
-                                        final double? myValue =
-                                            double.tryParse(value);
-
-                                        bool containsInvalidCharacters = value
-                                                .contains(
-                                                    RegExp(r'[a-zA-Z,]')) ||
-                                            RegExp(r'\..*\.').hasMatch(value);
-
-                                        final bool isStartWithDot =
-                                            RegExp(r'^(?![.])(\w+)$')
-                                                .hasMatch(value.trim());
-                                        final bool isEndWithDot =
-                                            RegExp(r'^(.*[^.])(?<!\.)$')
-                                                .hasMatch(value.trim());
-
-                                        if (isStartWithDot || isEndWithDot) {
-                                          return "Invalid format";
-                                        }
-
-                                        const String specialCharacters =
-                                            r"[!@#$%^&*()]";
-
-                                        if (RegExp(specialCharacters)
-                                            .hasMatch(value)) {
-                                          return "Please enter valid number!";
-                                        }
-
-                                        if (containsInvalidCharacters) {
-                                          return "Please enter number only!";
-                                        }
-
-                                        if (myValue != null) {
-                                          final isValueValidNumber =
-                                              myValue < 35.0 || myValue > 65.0;
-                                          if (isValueValidNumber) {
-                                            return "Height should be between 35.0 - 65.0 cm.";
-                                          }
-                                        }
-                                      }
-                                      return null;
-                                    },
+                                    validator: heightValidator,
                                     style: const TextStyle(
                                       fontSize: 15.0,
                                       fontFamily: 'Urbanist',
@@ -868,34 +893,7 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                                       fillColor: const Color(0xFFF7F8F9),
                                     ),
                                     // keyboardType: TextInputType.number,
-                                    validator: (value) {
-                                      /// Validate if the entered value is only number
-                                      /// else
-                                      /// If the value is a number 0.5 - 10.0 kg
-                                      if (value != null && value.isNotEmpty) {
-                                        final double? myValue =
-                                            double.tryParse(value);
-
-                                        bool containsInvalidCharacters = value
-                                                .contains(
-                                                    RegExp(r'[a-zA-Z,]')) ||
-                                            RegExp(r'\..*\.').hasMatch(value);
-                                        print(
-                                            "containsInvalidCharacters::: $containsInvalidCharacters ##");
-                                        if (containsInvalidCharacters) {
-                                          return "Please enter number only!";
-                                        }
-
-                                        if (myValue != null) {
-                                          final isValueValidNumber =
-                                              myValue < 0.5 || myValue > 10.0;
-                                          if (isValueValidNumber) {
-                                            return "Weight should be between 0.5 - 10.0 kg.";
-                                          }
-                                        }
-                                      }
-                                      return null;
-                                    },
+                                    validator: weightValidator,
                                   ),
                                 ],
                               ),
