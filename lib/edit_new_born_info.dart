@@ -669,7 +669,7 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
               ),
             ),
             const Text(
-              "Update a new born info",
+              "Edit new born info",
               style: TextStyle(
                 color: Color(0xFFD77D7C),
                 fontSize: 32,
@@ -1191,7 +1191,7 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                                         right: 85,
                                         bottom: 15),
                                   ),
-                                  child: const Text("Update Information",
+                                  child: const Text("Edit Information",
                                       style: TextStyle(
                                         fontFamily: 'Urbanist',
                                       )),
