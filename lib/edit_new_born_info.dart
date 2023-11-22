@@ -128,18 +128,22 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
 
   Future<void> updateBabyInfo() async {
     try {
+      print("selectedGender is:: $selectedGender #");
       final String? currentUserUuid = FirebaseAuth.instance.currentUser?.uid;
       final bool hasValidGender = selectedGender != null &&
           selectedGender!.isNotEmpty &&
           selectedGender!.toLowerCase() != "unknown";
 
+      if (hasValidGender == false) {
+        setState(() {
+          isLoading = false;
+          errorMessage = "Gender cannot be empty";
+        });
+      }
+
       if (currentUserUuid != null &&
           _formKey.currentState!.validate() &&
           hasValidGender) {
-        setState(() {
-          isLoading = true;
-          errorMessage = "";
-        });
         final String pregnancyId =
             ModalRoute.of(context)?.settings.arguments as String;
         final newbornInfoCollection = FirebaseFirestore.instance
@@ -184,10 +188,15 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
             });
           } catch (error) {}
         });
-      } else {
+      } else if (hasValidGender == false) {
         setState(() {
           isLoading = false;
           errorMessage = "Gender cannot be empty";
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+          errorMessage = "";
         });
       }
     } catch (error) {
@@ -735,7 +744,7 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                                                 .hasMatch(value.trim());
 
                                         if (isStartWithDot || isEndWithDot) {
-                                          return "Invalid format+";
+                                          return "Invalid format";
                                         }
 
                                         const String specialCharacters =

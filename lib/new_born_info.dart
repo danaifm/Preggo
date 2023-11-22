@@ -132,20 +132,11 @@ class NewBornInfoState extends State<NewBornInfo> {
       final bool hasValidGender = selectedGender != null &&
           selectedGender!.isNotEmpty &&
           selectedGender!.toLowerCase() != "unknown";
+
+      print("hasValidGender:::: $hasValidGender ###");
       if (currentUserUuid != null &&
           _formKey.currentState!.validate() &&
           hasValidGender) {
-        setState(() {
-          isLoading = true;
-          errorMessage = "";
-        });
-
-        /// /users
-        ///
-        /// pregnancyInfo
-        ///
-        /// newbornInfo
-
         final newbornInfoCollection = FirebaseFirestore.instance
             .collection("users")
             .doc(currentUserUuid)
@@ -170,21 +161,27 @@ class NewBornInfoState extends State<NewBornInfo> {
 
         await updateByNamAndGender(widget.babyId);
         await newbornInfoCollection.add(babyData).then((value) async {
-          if (mounted) {
-            _successDialog();
-          }
           setState(() {
+            errorMessage = "";
             isLoading = false;
             _nameController.clear();
             _placeOfBirthController.clear();
             _heightController.clear();
             _weightController.clear();
           });
+          if (mounted) {
+            _successDialog();
+          }
         });
+      } else if (hasValidGender == false) {
+        setState(() {
+          errorMessage = "Gender cannot be empty";
+        });
+        // return;
       } else {
         setState(() {
           isLoading = false;
-          errorMessage = "Gender cannot be empty";
+          errorMessage = "";
         });
       }
     } catch (error) {
@@ -320,11 +317,7 @@ class NewBornInfoState extends State<NewBornInfo> {
   Future<void> updateByNamAndGender(String babyId) async {
     try {
       final userId = FirebaseAuth.instance.currentUser?.uid;
-      if (selectedGender == null) {
-        errorMessage = "Gender cannot be empty";
-        setState(() {});
-        return;
-      }
+
       if (userId != null) {
         final pregnancyInfoCollection = FirebaseFirestore.instance
             .collection("users")
@@ -344,6 +337,7 @@ class NewBornInfoState extends State<NewBornInfo> {
   @override
   void initState() {
     super.initState();
+    errorMessage = "";
     print("BABY ID:: ${widget.babyId} ##");
     _nameController = TextEditingController();
     _heightController = TextEditingController();
