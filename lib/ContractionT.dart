@@ -99,22 +99,11 @@ class _ContractionT extends State<ContractionT> {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     //String Pid = getPregnancyInfoId() as String;
     String userUid = getUserId();
-    //to get pregnancy info document ID
-    QuerySnapshot pregnancyInfoSnapshot = await firestore
-        .collection('users')
-        .doc(userUid)
-        .collection('pregnancyInfo')
-        .get();
-
-    DocumentSnapshot firstDocument = pregnancyInfoSnapshot.docs[0];
-    String Pid = firstDocument.id;
 
     QuerySnapshot result = await firestore
         .collection('users')
         .doc(userUid)
-        .collection('pregnancyInfo')
-        .doc(Pid)
-        .collection('weight')
+        .collection('contractionT')
         .get();
 
     print(result.docs.length);
@@ -184,60 +173,25 @@ class _ContractionT extends State<ContractionT> {
         physics: AlwaysScrollableScrollPhysics(),
         scrollDirection: Axis.vertical,
         child: Container(
-          height: 680,
+          height: 400,
+          decoration: BoxDecoration(
+              color: backGroundPink, borderRadius: BorderRadius.circular(8)),
           child: ListView.builder(
             shrinkWrap: true,
             itemCount: weightResult.length,
             itemBuilder: (context, index) {
-              String id = weightResult[index].data()['id'] ?? '';
-              double weight = weightResult[index].data()['weight'] ?? '';
-              String date = weightResult[index].data()['date'] ?? '';
-              String time = weightResult[index].data()['time'] ?? '';
+              String startTimee = weightResult[index].data()['startTime'] ?? '';
+              String endTimee = weightResult[index].data()['endTime'] ?? '';
+              List length = weightResult[index].data()['length'] ?? '';
 
-              return Container(
-                margin: EdgeInsets.all(8),
-                //padding: EdgeInsets.all(10),
-
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 17),
-                      decoration: BoxDecoration(
-                        color: backGroundPink.withOpacity(0.3),
-                        border: Border.all(color: backGroundPink, width: 2),
-                        borderRadius: BorderRadius.circular(13),
-                      ),
-                      child: Row(children: [
-                        Container(
-                          width: 85,
-                          child: Text(
-                            'Laps #${index + 1}',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              fontFamily: 'Urbanist',
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Expanded(
-                          child: Text(
-                            (laps.isNotEmpty ? laps[index] : ''),
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Urbanist',
-                            ),
-                          ),
-                        ),
-                      ]),
-                    ),
+                    Text("Laps #${index + 1}"),
+                    Text(
+                        "${length[index]} , start: $startTimee , end: $endTimee ")
                   ],
                 ),
               );
@@ -346,6 +300,7 @@ class _ContractionT extends State<ContractionT> {
                                     child: RawMaterialButton(
                                       onPressed: () {
                                         (!started) ? start() : stop();
+                                        addContraction();
                                       },
                                       fillColor: blackColor,
                                       shape: StadiumBorder(
@@ -381,28 +336,25 @@ class _ContractionT extends State<ContractionT> {
                               ],
                             ),
                           ),
-                          Container(
-                            height: 400,
-                            decoration: BoxDecoration(
-                                color: backGroundPink,
-                                borderRadius: BorderRadius.circular(8)),
-                            child: ListView.builder(
-                              itemCount: laps.length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text("Laps #${index + 1}"),
-                                      Text(
-                                          "${laps[index]} , start: $startTime , end: $endTime ")
-                                    ],
+                          FutureBuilder<Widget>(
+                            future: getContractionTimer(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<Widget> snapshot) {
+                              if (snapshot.hasData) {
+                                return snapshot.data!;
+                              }
+                              return Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 100, vertical: 250),
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: CircularProgressIndicator(
+                                    color: pinkColor,
+                                    strokeWidth: 3,
                                   ),
-                                );
-                              },
-                            ),
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
