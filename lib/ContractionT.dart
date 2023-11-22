@@ -89,6 +89,83 @@ class _ContractionT extends State<ContractionT> {
     });
   }
 
+  void backButton() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          content: SizedBox(
+            height: 130,
+            child: Column(
+              children: <Widget>[
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 10, bottom: 30),
+                    child: Text(
+                      'Are you sure you want to go back?',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      height: 45.0,
+                      child: Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: blackColor,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40)),
+                            padding: const EdgeInsets.only(
+                                left: 30, top: 15, right: 30, bottom: 15),
+                          ),
+                          child: const Text(
+                            "No",
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      height: 45.0,
+                      child: Center(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            await deleteContraction();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.error,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40)),
+                            padding: const EdgeInsets.only(
+                                left: 30, top: 15, right: 30, bottom: 15),
+                          ),
+                          child: const Text(
+                            "Yes",
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> addContraction() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     String userUid = getUserId();
@@ -99,7 +176,6 @@ class _ContractionT extends State<ContractionT> {
     subCollectionRef.add({
       'startTime': startTime,
       'endTime': endTime,
-      'length': laps,
     });
   }
 
@@ -108,9 +184,23 @@ class _ContractionT extends State<ContractionT> {
     return user!.uid;
   }
 
+  Future deleteContraction() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    String userUid = getUserId();
+
+    CollectionReference subCollectionRef =
+        firestore.collection('users').doc(userUid).collection('contractionT');
+
+    QuerySnapshot subCollectionQuery = await subCollectionRef.get();
+
+    for (QueryDocumentSnapshot doc in subCollectionQuery.docs) {
+      DocumentReference docRefContraction = subCollectionRef.doc(doc.id);
+      await docRefContraction.delete();
+    }
+  }
+
   Future<Widget> getContractionTimer() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    //String Pid = getPregnancyInfoId() as String;
     String userUid = getUserId();
 
     QuerySnapshot result = await firestore
@@ -126,17 +216,17 @@ class _ContractionT extends State<ContractionT> {
       return Container(
         child: Column(
           children: [
-            Center(
-              //notification bell image
-              child: Padding(
-                padding: EdgeInsets.only(top: 180),
-                child: Image.asset(
-                  'assets/images/no-sport.png',
-                  height: 90,
-                  width: 100,
-                ),
-              ),
-            ),
+            // Center(
+            //   //notification bell image
+            //   child: Padding(
+            //     padding: EdgeInsets.only(top: 180),
+            //     child: Image.asset(
+            //       'assets/images/no-sport.png',
+            //       height: 90,
+            //       width: 100,
+            //     ),
+            //   ),
+            // ),
             Container(
                 //message
                 margin: EdgeInsets.fromLTRB(30, 15, 30, 80),
@@ -147,21 +237,22 @@ class _ContractionT extends State<ContractionT> {
                         fontFamily: 'Urbanist',
                       ),
                       children: [
-                        TextSpan(
-                            text: 'No weight\n',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 26,
-                                fontWeight: FontWeight.w600)),
+                        // TextSpan(
+                        //     text: 'No weight\n',
+                        //     style: TextStyle(
+                        //         color: Colors.black,
+                        //         fontSize: 26,
+                        //         fontWeight: FontWeight.w600)),
                         WidgetSpan(
                             child: SizedBox(
-                          height: 20,
+                          height: 150,
                         )),
                         TextSpan(
                             text:
-                                ' Start your weight tracking journey by adding a new weight',
+                                ' Start the contraction timer by pressing on the start button',
                             style: TextStyle(
-                                color: Color.fromARGB(255, 121, 119, 119))),
+                                color: Color.fromARGB(255, 121, 119, 119),
+                                fontWeight: FontWeight.w600)),
                       ]),
                 )
                 // child: Text(
@@ -181,6 +272,12 @@ class _ContractionT extends State<ContractionT> {
     } else {
       //reminders exist for this day
       List weightResult = result.docs;
+      weightResult.sort((a, b) {
+        var dateTimeC = a['startTime']; //before -> var adate = a.expiry;
+        var dateTimeD = b['startTime']; //before -> var bdate = b.expiry;
+        //to get the order other way just switch `adate & bdate`
+        return dateTimeC.compareTo(dateTimeD);
+      });
 
       return SingleChildScrollView(
         physics: AlwaysScrollableScrollPhysics(),
@@ -191,11 +288,10 @@ class _ContractionT extends State<ContractionT> {
               color: backGroundPink, borderRadius: BorderRadius.circular(8)),
           child: ListView.builder(
             shrinkWrap: true,
-            itemCount: weightResult.length,
+            itemCount: laps.length,
             itemBuilder: (context, index) {
               String startTimee = weightResult[index].data()['startTime'] ?? '';
               String endTimee = weightResult[index].data()['endTime'] ?? '';
-              List length = weightResult[index].data()['length'] ?? '';
 
               return Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -204,7 +300,7 @@ class _ContractionT extends State<ContractionT> {
                   children: [
                     Text("Laps #${index + 1}"),
                     Text(
-                        "${length[index]} , start: $startTimee , end: $endTimee ")
+                        "${laps[index]} , start: $startTimee , end: $endTimee ")
                   ],
                 ),
               );
@@ -230,12 +326,10 @@ class _ContractionT extends State<ContractionT> {
               Row(
                 children: [
                   IconButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+                    onPressed: backButton,
                     icon: const Icon(
                       Icons.arrow_back,
-                      color: blackColor,
+                      color: Colors.black,
                     ),
                   ),
                   SizedBox(
@@ -312,8 +406,12 @@ class _ContractionT extends State<ContractionT> {
                                         right: 15, left: 6, bottom: 6),
                                     child: RawMaterialButton(
                                       onPressed: () {
-                                        (!started) ? start() : stop();
-                                        addContraction();
+                                        if (!started) {
+                                          start();
+                                        } else {
+                                          stop();
+                                          addContraction();
+                                        }
                                       },
                                       fillColor: blackColor,
                                       shape: StadiumBorder(
