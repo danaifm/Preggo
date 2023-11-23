@@ -652,7 +652,7 @@ class NewBornInfoState extends State<NewBornInfo> {
                 decoration: const BoxDecoration(
                   color: Color(0xFFFFFFFF),
                   borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(80.0),
+                    top: Radius.circular(50.0),
                   ),
                 ),
                 child: SingleChildScrollView(
