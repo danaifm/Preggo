@@ -236,7 +236,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                           width: 5,
                                         ),
                                         Padding(
-                                          padding: EdgeInsets.fromLTRB( 0 , 60, 5 , 50),
+                                          padding: EdgeInsets.fromLTRB( 0 , 10, 0 , 0),
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                                 backgroundColor:Appcolors.blackColor
@@ -780,7 +780,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
           return Center(
             child:
             SizedBox(
-              height:400,
+              height:350,
               width: MediaQuery
                   .sizeOf(
                   context)
