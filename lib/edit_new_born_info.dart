@@ -694,7 +694,7 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(80.0),
+                    top: Radius.circular(50.0),
                   ),
                 ),
                 child: isPageLoading
@@ -702,7 +702,7 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                         decoration: const BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(80.0),
+                            top: Radius.circular(50.0),
                           ),
                         ),
                         padding: const EdgeInsets.symmetric(
