@@ -1,11 +1,16 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_final_fields, unnecessary_import, sized_box_for_whitespace, library_private_types_in_public_api, avoid_print, prefer_interpolation_to_compose_strings, prefer_const_constructors, unnecessary_cast, prefer_typing_uninitialized_variables, unnecessary_new
 
+import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/new_born_info.dart';
+
+import 'package:googleapis/calendar/v3.dart';
+import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
 
 
 class weeklyModel {}
@@ -29,7 +34,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
     super.initState();
     // getWeek();
   }
-
+  static const _scopes = [CalendarApi.calendarScope];
   String babyHeight = ' ';
   String babyWeight = ' ';
   String babyPicture = 'assets/images/w01-02.jpg';
@@ -106,7 +111,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
     // }
     //   });
     // }
-    int ans = 44 - (difference.round() as int);
+    int ans = 40 - (difference.round() as int);
     return ans;
   }
 
@@ -203,268 +208,349 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                   body: Stack(
                     children: [
                       SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                  alignment: Alignment.centerLeft,
-                                  margin: EdgeInsets.only(left: 20, top: 45),
-                                  child: Row(
-                                    children: [
-                                      RichText(
-                                        text: const TextSpan(
-                                            style: TextStyle(
-                                              fontFamily: 'Urbanist',
-                                            ),
-                                            children: <TextSpan>[
-                                              TextSpan(
-                                                  text: 'Baby Tracker',
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 35,
-                                                      fontWeight:
-                                                          FontWeight.w400)),
-                                            ]),
-                                      ),
-                                      SizedBox(
-                                        width: 5,
-                                      ),
-                                    ],
-                                  )),
-                            ],
-                          ),
-                          Container(
-                            height: 130,
-                            //alignment: Alignment.topCenter,
-                            child: RotatedBox(
-                              quarterTurns: -1,
-                              child: ListWheelScrollView(
-                                physics: BouncingScrollPhysics(
-                                    parent: AlwaysScrollableScrollPhysics()),
-                                // useMagnifier: true,
-                                // magnification: 1.15,
-                                onSelectedItemChanged: (x) {
-                                  setState(() {
-                                    selected = x;
-                                  });
-                                  // print("WEEK" + (selected + 1).toString());
-                                  //getWeek();
-                                  // getDueDate();
-                                },
-                                controller: _scrollController,
-                                itemExtent: itemWidth,
-                                children: List.generate(
-                                  itemCount,
-                                  (x) => RotatedBox(
-                                    quarterTurns: 1,
-                                    child: AnimatedContainer(
-                                      duration: Duration(milliseconds: 400),
-                                      width: x == selected ? 70 : 60,
-                                      height: x == selected ? 80 : 70,
-                                      alignment: Alignment.center,
-                                      decoration: BoxDecoration(
-                                          color: x == selected
-                                              ? Color.fromRGBO(249, 220, 222, 1)
-                                              : Colors.transparent,
-                                          shape: BoxShape.rectangle,
-                                          borderRadius:
-                                              BorderRadius.circular(15)),
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            '\nweek\n \n    ${x + 1}',
-                                            // so it starts from week 1
-                                            style:
-                                                TextStyle(fontFamily: 'Urbanist'),
-                                          ),
-                                          x + 1 == data
-                                              ? Flexible(
-                                                  child: Container(
-                                                      padding: EdgeInsets.only(
-                                                          top: 10),
-                                                      child: Icon(
-                                                          Icons.expand_less)))
-                                              : Container()
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              //weight icon
-                              Container(
-                                width: 90,
-                                height: 70,
-                                child: Column(
-                                  children: [
-                                    Icon(
-                                      Icons.monitor_weight_outlined,
-                                      color: Color.fromARGB(255, 163, 39, 39),
-                                    ),
-                                    Text(
-                                      allWeeks[selected][1],
-                                      style: TextStyle(
-                                          fontFamily: 'Urbanist', fontSize: 15),
-                                    ),
-                                    Text(
-                                      'Weight',
-                                      style: TextStyle(
-                                          fontFamily: 'Urbanist', fontSize: 12),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                //baby pic
-                                width: 170,
-                                height: 170,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: AssetImage(allWeeks[selected][2]),
-                                  ),
-                                  borderRadius: BorderRadius.circular(500),
-                                ),
-                              ),
-
-                              Container(
-                                //length icon
-                                width: 90,
-                                height: 70,
-                                child: Column(
-                                  children: [
-                                    Icon(
-                                      Icons.straighten,
-                                      color: Colors.teal[800],
-                                    ),
-                                    Text(
-                                      allWeeks[selected][0],
-                                      style: TextStyle(
-                                          fontFamily: 'Urbanist', fontSize: 15),
-                                    ),
-                                    Text(
-                                      'height',
-                                      style: TextStyle(
-                                          fontFamily: 'Urbanist', fontSize: 12),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(top: 10),
-                            padding: EdgeInsets.all(5),
-                            width: 330,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(
-                                color: Color.fromRGBO(249, 220, 222, 1),
-                                width: 0.1,
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                              boxShadow: [
-                                BoxShadow(
-                                    blurRadius: 2,
-                                    spreadRadius: 0.5,
-                                    color: Colors.grey)
-                              ],
-                            ),
-                            child: Row(
+                        child: Column(
+                          children: [
+                            Row(
                               children: [
                                 Container(
-                                  //baby pic
-                                  width: 50,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image:
-                                          AssetImage("assets/images/sperm.png"),
-                                    ),
-                                    borderRadius: BorderRadius.circular(500),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    children: [
-                                      Slider(
-                                        value: currentWeekProgress.toDouble(),
-                                        min: 0,
-                                        max: 308,
-                                        //this was giving me error so i changed it but idk what it is
-                                        onChanged: (double value) {},
-                                        activeColor: pinkColor,
-                                        inactiveColor: NavBraGrayColor,
-                                      ),
-                                      Text(
-                                        "You’re currently pregnant in week $data",
-                                        style: TextStyle(
-                                          fontSize: 12,
+                                    alignment: Alignment.centerLeft,
+                                    margin: EdgeInsets.only(left: 20, top: 5),
+                                    child: Row(
+                                      children: [
+                                        RichText(
+                                          text:  TextSpan(
+                                              style: TextStyle(
+                                                fontFamily: 'Urbanist',
+                                              ),
+                                              children: <TextSpan>[
+                                                TextSpan(
+                                                    text: 'Baby Tracker',
+                                                    style: TextStyle(
+                                                        color: Appcolors.blackColor,
+                                                        fontSize: 35,
+                                                        fontWeight:
+                                                        FontWeight.w400)),
+                                              ]),
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.fromLTRB( 0 , 60, 5 , 50),
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                                backgroundColor:Appcolors.blackColor
+                                              // fixedSize: const Size(100, 50),
+                                              // shape: const CircleBorder(),
+                                            ),
+
+                                            child: Text("End Pregnancy"),
+                                            onPressed: () async  {
+                                              showDialog<void>(
+                                                context: context,
+                                                barrierDismissible: false,
+                                                // user must tap button!
+                                                builder: (BuildContext contextx) {
+                                                  return AlertDialog(
+                                                    // <-- SEE HERE
+                                                    content:
+                                                    const SingleChildScrollView(
+                                                      child: ListBody(
+                                                        children: <Widget>[
+                                                          Center(
+                                                            child: Text(
+                                                              'Are you sure you want to \nend your pregnancy?',
+                                                              textAlign:
+                                                              TextAlign.center,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    actions: <Widget>[
+                                                      Padding(
+                                                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                          children: [
+                                                            Expanded(
+                                                              child: ElevatedButton(
+                                                                onPressed: () {
+                                                                  Navigator.of(context)
+                                                                      .pop();
+                                                                },
+                                                                style: ElevatedButton
+                                                                    .styleFrom(
+                                                                  backgroundColor:
+                                                                  blackColor,
+                                                                  shape: RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                          40)),
+                                                                  padding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      left: 30,
+                                                                      top: 15,
+                                                                      right: 30,
+                                                                      bottom: 15),
+                                                                ),
+                                                                child: const Text(
+                                                                  "Cancel",
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                              width: 20,
+                                                            ),
+                                                            Expanded(
+                                                              child: ElevatedButton(
+                                                                onPressed: () async {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                  await end();
+                                                                },
+                                                                style: ElevatedButton
+                                                                    .styleFrom(
+                                                                  backgroundColor:
+                                                                  Appcolors.redColor,
+                                                                  shape: RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                          40)),
+                                                                  padding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      left: 30,
+                                                                      top: 15,
+                                                                      right: 30,
+                                                                      bottom: 15),
+                                                                ),
+                                                                child: const Text(
+                                                                  "yes",
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            },
+                                          ),
+                                        )
+                                      ],
+
+                                    )),
+
+                              ],
+
+                            ),
+                            Container(
+                              height: 130,
+                              //alignment: Alignment.topCenter,
+                              child: RotatedBox(
+                                quarterTurns: -1,
+                                child: ListWheelScrollView(
+                                  physics: BouncingScrollPhysics(
+                                      parent: AlwaysScrollableScrollPhysics()),
+                                  // useMagnifier: true,
+                                  // magnification: 1.15,
+                                  onSelectedItemChanged: (x) {
+                                    setState(() {
+                                      selected = x;
+                                    });
+                                    // print("WEEK" + (selected + 1).toString());
+                                    //getWeek();
+                                    // getDueDate();
+                                  },
+                                  controller: _scrollController,
+                                  itemExtent: itemWidth,
+                                  children: List.generate(
+                                    itemCount,
+                                        (x) => RotatedBox(
+                                      quarterTurns: 1,
+                                      child: AnimatedContainer(
+                                        duration: Duration(milliseconds: 400),
+                                        width: x == selected ? 70 : 60,
+                                        height: x == selected ? 80 : 70,
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                            color: x == selected
+                                                ? Color.fromRGBO(249, 220, 222, 1)
+                                                : Appcolors.transparent,
+                                            shape: BoxShape.rectangle,
+                                            borderRadius:
+                                            BorderRadius.circular(15)),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              '\nweek\n \n    ${x + 1}',
+                                              // so it starts from week 1
+                                              style:
+                                              TextStyle(fontFamily: 'Urbanist'),
+                                            ),
+                                            x + 1 == data
+                                                ? Flexible(
+                                                child: Container(
+                                                    padding: EdgeInsets.only(
+                                                        top: 10),
+                                                    child: Icon(
+                                                        Icons.expand_less)))
+                                                : Container()
+                                          ],
                                         ),
                                       ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                //weight icon
+                                Container(
+                                  width: 90,
+                                  height: 70,
+                                  child: Column(
+                                    children: [
+                                      Icon(
+                                        Icons.monitor_weight_outlined,
+                                        color: Color.fromARGB(255, 163, 39, 39),
+                                      ),
+                                      Text(
+                                        allWeeks[selected][1],
+                                        style: TextStyle(
+                                            fontFamily: 'Urbanist', fontSize: 15),
+                                      ),
+                                      Text(
+                                        'Weight',
+                                        style: TextStyle(
+                                            fontFamily: 'Urbanist', fontSize: 12),
+                                      )
                                     ],
                                   ),
                                 ),
                                 Container(
                                   //baby pic
-                                  width: 50,
-                                  height: 50,
+                                  width: 170,
+                                  height: 170,
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
                                       fit: BoxFit.cover,
-                                      image: AssetImage("assets/images/baby.png"),
+                                      image: AssetImage(allWeeks[selected][2]),
                                     ),
                                     borderRadius: BorderRadius.circular(500),
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(top: 10),
-                            padding: EdgeInsets.all(5),
-                            width: 330,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(
-                                  color: Color.fromRGBO(249, 220, 222, 1),
-                                  width: 1.5),
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                    blurRadius: 2,
-                                    spreadRadius: 0.5,
-                                    color: Colors.grey)
-                              ],
-                            ),
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Highlights of The Week',
-                                  style: TextStyle(
-                                    color: pinkColor,
-                                    fontWeight: FontWeight.bold,
+
+                                Container(
+                                  //length icon
+                                  width: 90,
+                                  height: 70,
+                                  child: Column(
+                                    children: [
+                                      Icon(
+                                        Icons.straighten,
+                                        color:Appcolors.tealcolor,
+                                      ),
+                                      Text(
+                                        allWeeks[selected][0],
+                                        style: TextStyle(
+                                            fontFamily: 'Urbanist', fontSize: 15),
+                                      ),
+                                      Text(
+                                        'height',
+                                        style: TextStyle(
+                                            fontFamily: 'Urbanist', fontSize: 12),
+                                      )
+                                    ],
                                   ),
                                 ),
-                                Text(motherChanges())
                               ],
                             ),
-                          ),
-                          Visibility(
-                            visible: selected != 0 && selected != 1,
-                            child: Container(
+                            Container(
                               margin: EdgeInsets.only(top: 10),
                               padding: EdgeInsets.all(5),
                               width: 330,
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: Appcolors.whiteColor,
+                                border: Border.all(
+                                  color: Color.fromRGBO(249, 220, 222, 1),
+                                  width: 0.1,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                      blurRadius: 2,
+                                      spreadRadius: 0.5,
+                                      color: Appcolors.grayColor)
+                                ],
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    //baby pic
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image:
+                                        AssetImage("assets/images/sperm.png"),
+                                      ),
+                                      borderRadius: BorderRadius.circular(500),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      children: [
+                                        Slider(
+                                          value: currentWeekProgress.toDouble(),
+                                          min: 0,
+                                          max: 308,
+                                          //this was giving me error so i changed it but idk what it is
+                                          onChanged: (double value) {},
+                                          activeColor: pinkColor,
+                                          inactiveColor: NavBraGrayColor,
+                                        ),
+                                        Text(
+                                          "You’re currently pregnant in week $data",
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    //baby pic
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: AssetImage("assets/images/baby.png"),
+                                      ),
+                                      borderRadius: BorderRadius.circular(500),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(top: 10),
+                              padding: EdgeInsets.all(5),
+                              width: 330,
+                              decoration: BoxDecoration(
+                                color: Appcolors.whiteColor,
                                 border: Border.all(
                                     color: Color.fromRGBO(249, 220, 222, 1),
                                     width: 1.5),
@@ -473,146 +559,64 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                   BoxShadow(
                                       blurRadius: 2,
                                       spreadRadius: 0.5,
-                                      color: Colors.grey)
+                                      color: Appcolors.grayColor)
                                 ],
                               ),
                               child: Column(
                                 children: [
                                   Text(
-                                    'Baby Development ',
+                                    'Highlights of The Week',
                                     style: TextStyle(
                                       color: pinkColor,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  Text(babyChanges())
+                                  Text(motherChanges())
                                 ],
                               ),
                             ),
-                          ),
-                          SizedBox(height: 50),
-                        ],
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(0, 20, 20, 50),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            fixedSize: const Size(55, 55),
-                            shape: const CircleBorder(),
-                          ),
-
-                          child: Text("end"),
-                          onPressed: () async  {
-                            showDialog<void>(
-                              context: context,
-                              barrierDismissible: false,
-                              // user must tap button!
-                              builder: (BuildContext contextx) {
-                                return AlertDialog(
-                                  // <-- SEE HERE
-                                  content:
-                                  const SingleChildScrollView(
-                                    child: ListBody(
-                                      children: <Widget>[
-                                        Center(
-                                          child: Text(
-                                            'Are you sure you want to \nend your pregnancy?',
-                                            textAlign:
-                                            TextAlign.center,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  actions: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment
-                                            .center,
-                                        children: [
-                                          Expanded(
-                                            child: ElevatedButton(
-                                              onPressed: () {
-                                                Navigator.of(context)
-                                                    .pop();
-                                              },
-                                              style: ElevatedButton
-                                                  .styleFrom(
-                                                backgroundColor:
-                                                blackColor,
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                    BorderRadius
-                                                        .circular(
-                                                        40)),
-                                                padding:
-                                                const EdgeInsets
-                                                    .only(
-                                                    left: 30,
-                                                    top: 15,
-                                                    right: 30,
-                                                    bottom: 15),
-                                              ),
-                                              child: const Text(
-                                                "Cancel",
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 20,
-                                          ),
-                                          Expanded(
-                                            child: ElevatedButton(
-                                              onPressed: () async {
-                                                Navigator.pop(
-                                                    context);
-                                                await end();
-                                              },
-                                              style: ElevatedButton
-                                                  .styleFrom(
-                                                backgroundColor:
-                                                Colors.red,
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                    BorderRadius
-                                                        .circular(
-                                                        40)),
-                                                padding:
-                                                const EdgeInsets
-                                                    .only(
-                                                    left: 30,
-                                                    top: 15,
-                                                    right: 30,
-                                                    bottom: 15),
-                                              ),
-                                              child: const Text(
-                                                "yes",
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                            Visibility(
+                              visible: selected != 0 && selected != 1,
+                              child: Container(
+                                margin: EdgeInsets.only(top: 10),
+                                padding: EdgeInsets.all(5),
+                                width: 330,
+                                decoration: BoxDecoration(
+                                  color: Appcolors.whiteColor,
+                                  border: Border.all(
+                                      color: Color.fromRGBO(249, 220, 222, 1),
+                                      width: 1.5),
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        blurRadius: 2,
+                                        spreadRadius: 0.5,
+                                        color:Appcolors.grayColor)
+                                  ],
+                                ),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      'Baby Development ',
+                                      style: TextStyle(
+                                        color: pinkColor,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
+                                    Text(babyChanges())
                                   ],
-                                );
-                              },
-                            );
-                          },
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 50),
+                          ],
                         ),
                       ),
-                    )
+
                     ],
                   ),
                 );
               }
-              
-              
-              
 
 
 
@@ -621,9 +625,12 @@ class _PregnancyTracking extends State<PregnancyTracking> {
 
 
 
-              
-              
-               else {
+
+
+
+
+
+              else {
                 return Text('not pregnant');
               }
 
@@ -689,9 +696,9 @@ class _PregnancyTracking extends State<PregnancyTracking> {
         }
       }
       var date = timestamp.toDate();
-      currentWeekProgress = 308 - date.difference(DateTime.now()).inDays;
+      currentWeekProgress = 280 - date.difference(DateTime.now()).inDays;
       DateTime today = DateTime.now();
-      int weeksPregnant = 44 - (date.difference(today).inDays) ~/ 7;
+      int weeksPregnant = 40 - (date.difference(today).inDays) ~/ 7;
       currentWeekPregnant = weeksPregnant.toString();
       if( currentWeekProgress>308)
         await end();
@@ -700,9 +707,35 @@ class _PregnancyTracking extends State<PregnancyTracking> {
   }
 
 
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: _scopes,
+  );
+  deleteAllAppts() async {
+    String? id = '';
+    await _googleSignIn.signInSilently();
+    final auth.AuthClient? client = await _googleSignIn.authenticatedClient();
+    final CalendarApi googleCalendarApi = CalendarApi(client!);
+    var list = await googleCalendarApi.calendarList.list();
+    var items = list.items;
+    for (CalendarListEntry entry in items!) {
+      if (entry.summary == "Preggo Calendar") {
+        id = entry.id;
+        break;
+      }
+    }
+    if (id != '') {
+      print('CALENDAR ID IS $id');
+      googleCalendarApi.calendars
+          .delete(
+          id!) //this deletes entire calendar and there is a clear calendar method but it gives me an api exception
+          .then((value) => print('deleted all from google calendar'));
+    } else {
+      print('no preggo calendar in google calendar to delete from');
+    }
+  }
 
 
-String ? babyId ;
+  String ? babyId ;
   Future end() async {
     await FirebaseFirestore.instance
         .collection("users")
@@ -728,13 +761,14 @@ String ? babyId ;
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid);
     CollectionReference subCollectionRefReminder =
-        userDocRef.collection('reminders');
+    userDocRef.collection('reminders');
     QuerySnapshot subCollectionQueryReminder =
-        await subCollectionRefReminder.get();
+    await subCollectionRefReminder.get();
     for (QueryDocumentSnapshot doc in subCollectionQueryReminder.docs) {
       DocumentReference docRefReminder = subCollectionRefReminder.doc(doc.id);
       await docRefReminder.delete();
     }
+    deleteAllAppts();
     showDialog(
         barrierDismissible:
         false,
@@ -746,11 +780,7 @@ String ? babyId ;
           return Center(
             child:
             SizedBox(
-              height: MediaQuery
-                  .sizeOf(
-                  context)
-                  .height *
-                  0.40,
+              height:400,
               width: MediaQuery
                   .sizeOf(
                   context)
@@ -791,53 +821,59 @@ String ? babyId ;
                       children: [
                         const SizedBox(
                             height: 20),
-                        Container(
-                          padding: const EdgeInsets
-                              .all(
-                              15),
-                          decoration: const BoxDecoration(
-                            shape: BoxShape
-                                .circle,
-                            color: green,
-                            //color: pinkColor,
-                            // border: Border.all(
-                            //   width: 1.3,
-                            //   color: Colors.black,
-                            // ),
-                          ),
-                          child: const Icon(
-                            Icons
-                                .check,
-                            color: Color
-                                .fromRGBO(
-                                255,
-                                255,
-                                255,
-                                1),
-                            size: 35,
-                          ),
-                        ),
+                        // Container(
+                        //   padding: const EdgeInsets
+                        //       .all(
+                        //       15),
+                        //   decoration: const BoxDecoration(
+                        //     shape: BoxShape
+                        //         .circle,
+                        //     color: green,
+                        //     //color: pinkColor,
+                        //     // border: Border.all(
+                        //     //   width: 1.3,
+                        //     //   color: Colors.black,
+                        //     // ),
+                        //   ),
+                        //   child: const Icon(
+                        //     Icons
+                        //         .check,
+                        //     color: Color
+                        //         .fromRGBO(
+                        //         255,
+                        //         255,
+                        //         255,
+                        //         1),
+                        //     size: 35,
+                        //   ),
+                        // ),
+                        Image.asset("assets/images/end.jpeg",height:60,),
                         const SizedBox(
                             height: 25),
 
                         // Done
-                        const Text(
-                          "I admire your resilience and bravery,\nEnding a pregnancy journey is heartfelt.",
-                          textAlign: TextAlign
-                              .center,
-                          style: TextStyle(
-                            color: Color
-                                .fromARGB(
-                                255,
-                                0,
-                                0,
-                                0),
-                            fontSize: 17,
-                            fontFamily: 'Urbanist',
-                            fontWeight: FontWeight
-                                .w700,
-                            height: 1.30,
-                            letterSpacing: -0.28,
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Center(
+                            child: const Text(
+                              "I admire your bravery\nEnding a  journey is heartfelt.",
+                              textAlign: TextAlign
+                                  .center,
+                              style: TextStyle(
+                                color: Color
+                                    .fromARGB(
+                                    255,
+                                    0,
+                                    0,
+                                    0),
+                                fontSize:15,
+                                fontFamily: 'Urbanist',
+                                fontWeight: FontWeight
+                                    .w400,
+                                // height: 1.30,
+                                // letterSpacing: -0.28,
+                              ),
+                            ),
                           ),
                         ),
 
@@ -863,15 +899,15 @@ String ? babyId ;
 
 // TO ALIYAH PAGE
                                 if (mounted) {
-                                   Navigator.push(
-                                     context,
-                                     MaterialPageRoute(
-                                         builder: (_) =>
-                                          NewBornInfo(babyId: babyId! ,) ),
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) =>
+                                            NewBornInfo(babyId: babyId! ,) ),
 
-                                          
-                                         
-                                   );
+
+
+                                  );
                                 }
 
 
