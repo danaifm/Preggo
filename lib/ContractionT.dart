@@ -305,28 +305,34 @@ class _ContractionT extends State<ContractionT> {
         physics: AlwaysScrollableScrollPhysics(),
         scrollDirection: Axis.vertical,
         child: Container(
+          margin: EdgeInsets.only(
+            top: 30,
+          ),
           height: 400,
           decoration: BoxDecoration(
-              color: backGroundPink, borderRadius: BorderRadius.circular(8)),
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: weightResult.length,
-            itemBuilder: (context, index) {
-              String startTimee = weightResult[index].data()['startTime'] ?? '';
-              String endTimee = weightResult[index].data()['endTime'] ?? '';
-
-              return Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Laps #${index + 1}"),
-                    Text(
-                        "${laps[index]} , start: $startTimee , end: $endTimee ")
+              color: Color.fromARGB(255, 255, 234, 240),
+              borderRadius: BorderRadius.circular(8)),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columns: [
+                DataColumn(label: Text('Duration')),
+                DataColumn(label: Text('Start Time')),
+                DataColumn(label: Text('End time'))
+              ],
+              rows: List.generate(weightResult.length, (index) {
+                String startTimee =
+                    weightResult[index].data()['startTime'] ?? '';
+                String endTimee = weightResult[index].data()['endTime'] ?? '';
+                return DataRow(
+                  cells: [
+                    DataCell(Text("${laps[index]}")),
+                    DataCell(Text("$startTimee")),
+                    DataCell(Text("$endTimee")),
                   ],
-                ),
-              );
-            },
+                );
+              }).toList(),
+            ),
           ),
         ),
       );
@@ -394,19 +400,31 @@ class _ContractionT extends State<ContractionT> {
                             //padding for time
                             padding: const EdgeInsets.only(top: 50),
                             child: Center(
-                              child: Text(
-                                "$digitMin:$digitSec",
-                                style: TextStyle(
-                                    color: backGroundPink, fontSize: 75),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: backGroundPink,
+                                        offset: Offset(4, 6),
+                                        blurRadius: 8)
+                                  ],
+                                ),
+                                child: Text(
+                                  "$digitMin:$digitSec",
+                                  style: TextStyle(
+                                      color: backGroundPink, fontSize: 75),
+                                ),
                               ),
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 90),
+                            padding: const EdgeInsets.only(top: 8, left: 90),
                             child: Row(
                               children: [
                                 Text(
-                                  "     minute                    second",
+                                  "    minute                    second",
                                   style: TextStyle(
                                       color: const Color.fromARGB(
                                           255, 150, 150, 150),
