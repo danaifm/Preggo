@@ -69,7 +69,7 @@ class _ToolsPage extends State<ToolsPage> {
                           child: Column(
                             children: [
                               Text(
-                                  'You cannot access these features without a pregnancy journey',
+                                  'Start a new pregnancy journey to access our tools!',
                                   textAlign: TextAlign.center),
                               SizedBox(height: 20),
                               Container(
@@ -97,7 +97,7 @@ class _ToolsPage extends State<ToolsPage> {
                                           bottom: 15),
                                     ),
                                     child: const Text(
-                                      "Go Back",
+                                      "OK",
                                     ),
                                   ),
                                 ),
