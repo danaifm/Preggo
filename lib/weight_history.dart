@@ -8,7 +8,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
-
 class weightHistory extends StatefulWidget {
   //const SignUp({Key? key}) : super(key: key);
   @override
@@ -19,7 +18,7 @@ class weightHistory extends StatefulWidget {
 
 class _weightHistory extends State<weightHistory> {
   late final String userId;
-  
+
   String getUserId() {
     User? user = FirebaseAuth.instance.currentUser;
     return user!.uid;
@@ -35,7 +34,7 @@ class _weightHistory extends State<weightHistory> {
         .doc(pregnancyInfoId)
         .collection('weight')
         .get();
-        print('--------------------------------------------------------');
+    print('--------------------------------------------------------');
     print(result.docs.length);
     if (result.docs.isEmpty) //no reminders for this date
     {
@@ -43,7 +42,7 @@ class _weightHistory extends State<weightHistory> {
         child: Column(
           children: [
             Center(
-              //no weight image 
+              //notification bell image
               child: Padding(
                 padding: EdgeInsets.only(top: 150),
                 child: Image.asset(
@@ -70,40 +69,39 @@ class _weightHistory extends State<weightHistory> {
         ),
       );
     } else {
-      //weight history exists
+      //reminders exist for this day
       List weightResult = result.docs;
-      // Sort the weight history based on the date and time
+      // Sort the reminders based on the date and time
       weightResult.sort((a, b) {
-          String dateA = a.data()['date'] ?? '';
-          String timeA = a.data()['time'] ?? '';
-          String dateB = b.data()['date'] ?? '';
-          String timeB = b.data()['time'] ?? '';
+        String dateA = a.data()['date'] ?? '';
+        String timeA = a.data()['time'] ?? '';
+        String dateB = b.data()['date'] ?? '';
+        String timeB = b.data()['time'] ?? '';
 
-          // Split the date and time strings
-          List<String> datePartsA = dateA.split('/');
-          List<String> timePartsA = timeA.split(':');
-          List<String> datePartsB = dateB.split('/');
-          List<String> timePartsB = timeB.split(':');
+        // Split the date and time strings
+        List<String> datePartsA = dateA.split('/');
+        List<String> timePartsA = timeA.split(':');
+        List<String> datePartsB = dateB.split('/');
+        List<String> timePartsB = timeB.split(':');
 
-          // Create DateTime objects for comparison
-          DateTime dateTimeA = DateTime(
-            int.tryParse(datePartsA[2]) ?? 0,
-            int.tryParse(datePartsA[0]) ?? 0,
-            int.tryParse(datePartsA[1]) ?? 0,
-            int.tryParse(timePartsA[0]) ?? 0,
-            int.tryParse(timePartsA[1]) ?? 0,
-          );
-          DateTime dateTimeB = DateTime(
-            int.tryParse(datePartsB[2]) ?? 0,
-            int.tryParse(datePartsB[0]) ?? 0,
-            int.tryParse(datePartsB[1]) ?? 0,
-            int.tryParse(timePartsB[0]) ?? 0,
-            int.tryParse(timePartsB[1]) ?? 0,
-          );
+        // Create DateTime objects for comparison
+        DateTime dateTimeA = DateTime(
+          int.tryParse(datePartsA[2]) ?? 0,
+          int.tryParse(datePartsA[0]) ?? 0,
+          int.tryParse(datePartsA[1]) ?? 0,
+          int.tryParse(timePartsA[0]) ?? 0,
+          int.tryParse(timePartsA[1]) ?? 0,
+        );
+        DateTime dateTimeB = DateTime(
+          int.tryParse(datePartsB[2]) ?? 0,
+          int.tryParse(datePartsB[0]) ?? 0,
+          int.tryParse(datePartsB[1]) ?? 0,
+          int.tryParse(timePartsB[0]) ?? 0,
+          int.tryParse(timePartsB[1]) ?? 0,
+        );
 
-          return dateTimeA.compareTo(dateTimeB);
-        });
-
+        return dateTimeA.compareTo(dateTimeB);
+      });
 
       return SingleChildScrollView(
         physics: AlwaysScrollableScrollPhysics(),
@@ -112,47 +110,45 @@ class _weightHistory extends State<weightHistory> {
           height: 680,
           child: ListView.builder(
             shrinkWrap: true,
-            itemCount: weightResult.length +1,
+            itemCount: weightResult.length,
             itemBuilder: (context, index) {
-              if (index < weightResult.length) {
-                String id = weightResult[index].data()['id'] ?? '';
-                String date = weightResult[index].data()['date'] ?? '';
-                String time = weightResult[index].data()['time'] ?? '';
-                var weight = weightResult[index].data()['weight'] ?? '';
-                
+              String id = weightResult[index].data()['id'] ?? '';
+              String date = weightResult[index].data()['date'] ?? '';
+              String time = weightResult[index].data()['time'] ?? '';
+              var weight = weightResult[index].data()['weight'] ?? '';
 
-                return Container(
-                  
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      
-                      SizedBox(
-                        height: 83,
-                        child: TimelineTile(
-                          axis: TimelineAxis.vertical,
-                          alignment: TimelineAlign.start,
-                          isFirst: index==0,
-                          isLast: index == weightResult.length - 1,
-                          indicatorStyle: IndicatorStyle(
-                            height: 20,
-                            width:20,
-                            color: pinkColor,
+              return Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 83,
+                      child: TimelineTile(
+                        axis: TimelineAxis.vertical,
+                        alignment: TimelineAlign.start,
+                        isFirst: index == 0,
+                        isLast: index == weightResult.length - 1,
+                        indicatorStyle: IndicatorStyle(
+                          height: 20,
+                          width: 20,
+                          color: pinkColor,
+                        ),
+                        beforeLineStyle: LineStyle(
+                          color: pinkColor.withOpacity(0.6),
+                        ),
+                        endChild: Column(
+                          children: [
+                            SizedBox(
+                              height: 17,
                             ),
-                          beforeLineStyle: LineStyle(
-                            color: pinkColor.withOpacity(0.6),
-                          ),
-                          endChild: 
-                          Column(
-                            children: [
-                              SizedBox(height: 17,),
-                              Container(
+                            Container(
                               margin: EdgeInsets.symmetric(horizontal: 12),
-                              padding:
-                                  EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10),
                               decoration: BoxDecoration(
                                 //color: backGroundPink.withOpacity(0.3),
-                                border: Border.all(color: backGroundPink, width: 2),
+                                border:
+                                    Border.all(color: backGroundPink, width: 2),
                                 borderRadius: BorderRadius.circular(13),
                               ),
                               child: Row(children: [
@@ -162,7 +158,7 @@ class _weightHistory extends State<weightHistory> {
                                       width: 85,
                                       alignment: Alignment.center,
                                       child: Text(
-                                        date,
+                                        '$date',
                                         style: TextStyle(
                                           color: Colors.black.withOpacity(0.7),
                                           fontSize: 14,
@@ -175,7 +171,7 @@ class _weightHistory extends State<weightHistory> {
                                       width: 85,
                                       alignment: Alignment.center,
                                       child: Text(
-                                        time,
+                                        '$time',
                                         style: TextStyle(
                                           color: Colors.black.withOpacity(0.7),
                                           fontSize: 14,
@@ -200,24 +196,18 @@ class _weightHistory extends State<weightHistory> {
                                     ),
                                   ),
                                 ),
-                                
-                              ]
-                              ),
+                              ]),
                             ),
-                            SizedBox(height: 0,)
+                            SizedBox(
+                              height: 0,
+                            )
                           ],
                         ),
-                        
                       ),
-                    ),   
-                        
-                    ],
-                  ),
-                );
-              }
-              else { //under the last box
-                return SizedBox(height: 50);
-              }
+                    ),
+                  ],
+                ),
+              );
             },
           ),
         ),
@@ -226,10 +216,10 @@ class _weightHistory extends State<weightHistory> {
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////
-  String pregnancyInfoId = '';
   @override
   Widget build(BuildContext context) {
-    pregnancyInfoId=ModalRoute.of(context)?.settings.arguments as String;
+    var pregnancyInfoId = ModalRoute.of(context)?.settings.arguments as String;
+
     return Scaffold(
         backgroundColor: backGroundPink,
         resizeToAvoidBottomInset: true,
@@ -271,51 +261,48 @@ class _weightHistory extends State<weightHistory> {
                   height: 10,
                 ),
                 Expanded(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(45.0),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18.0,
+                      vertical: 0.0,
                     ),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 18.0,
-                        vertical: 0.0,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(45.0),
                       ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(45.0),
-                        ),
-                      ),
-                      child: SingleChildScrollView(
-                        child: Container(
-                          child: Column(
-                            children: [
-                              
-                              FutureBuilder<Widget>(
-                                future: getWeight(pregnancyInfoId),
-                                builder: (BuildContext context,
-                                    AsyncSnapshot<Widget> snapshot) {
-                                  if (snapshot.connectionState == ConnectionState.waiting) {
-                                    return Container(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 100, vertical: 250),
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: CircularProgressIndicator(
-                                          color: pinkColor,
-                                          strokeWidth: 3,
-                                        ),
+                    ),
+                    child: SingleChildScrollView(
+                      //padding: EdgeInsets.only(top: 0),
+                      child: Container(
+                        child: Column(
+                          children: [
+                            FutureBuilder<Widget>(
+                              future: getWeight(pregnancyInfoId),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<Widget> snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 100, vertical: 250),
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: CircularProgressIndicator(
+                                        color: pinkColor,
+                                        strokeWidth: 3,
                                       ),
-                                    );
-                                  } else if (snapshot.hasError) {
-                                    return Text('Error: ${snapshot.error}');
-                                  } else {
-                                    return snapshot.data ?? Container(); // Return an empty container if data is null
-                                  }
-                                },
-                              ),
-                            ],
-                          ),
+                                    ),
+                                  );
+                                } else if (snapshot.hasError) {
+                                  return Text('Error: ${snapshot.error}');
+                                } else {
+                                  return snapshot.data ??
+                                      Container(); // Return an empty container if data is null
+                                }
+                              },
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -323,7 +310,6 @@ class _weightHistory extends State<weightHistory> {
                 ),
               ],
             ),
-            
           ],
         ));
   }
