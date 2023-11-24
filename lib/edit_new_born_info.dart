@@ -245,7 +245,7 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                         ),
                         const SizedBox(height: 25),
                         const Text(
-                          "Baby info added successfully!",
+                          "Information edited successfully!",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Color.fromARGB(255, 0, 0, 0),
@@ -674,13 +674,14 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
               ),
             ),
             const Text(
-              "Edit new born info",
+              "Edit Newborn Information",
               style: TextStyle(
                 color: Color(0xFFD77D7C),
-                fontSize: 32,
+                fontSize: 26,
                 fontFamily: 'Urbanist',
                 fontWeight: FontWeight.w600,
                 letterSpacing: -0.28,
+                //height: -0.002,
               ),
             ),
             const SizedBox(height: 7),
@@ -759,7 +760,8 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                                         hintStyle: const TextStyle(
                                           fontSize: 15.0,
                                           fontFamily: 'Urbanist',
-                                          // color: pinkColor,
+                                          color: Color.fromARGB(
+                                              255, 150, 149, 149),
                                         ),
                                         errorStyle: textStyleError,
                                         contentPadding:
@@ -844,7 +846,8 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                                             hintStyle: const TextStyle(
                                               fontSize: 15.0,
                                               fontFamily: 'Urbanist',
-                                              // color: pinkColor,
+                                              color: Color.fromARGB(
+                                                  255, 150, 149, 149),
                                             ),
                                             errorStyle: textStyleError,
                                             contentPadding:
@@ -915,7 +918,8 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                                             hintStyle: const TextStyle(
                                               fontSize: 15.0,
                                               fontFamily: 'Urbanist',
-                                              // color: pinkColor,
+                                              color: Color.fromARGB(
+                                                  255, 150, 149, 149),
                                             ),
                                             errorStyle: textStyleError,
                                             contentPadding:
@@ -999,7 +1003,8 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                                         hintStyle: const TextStyle(
                                           fontSize: 15.0,
                                           fontFamily: 'Urbanist',
-                                          // color: pinkColor,
+                                          color: Color.fromARGB(
+                                              255, 150, 149, 149),
                                         ),
                                         errorStyle: textStyleError,
                                         contentPadding:

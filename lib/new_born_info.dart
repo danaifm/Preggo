@@ -229,7 +229,7 @@ class NewBornInfoState extends State<NewBornInfo> {
                         ),
                         const SizedBox(height: 25),
                         const Text(
-                          "Baby info added successfully!",
+                          "Information added successfully!",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Color.fromARGB(255, 0, 0, 0),
@@ -634,16 +634,17 @@ class NewBornInfoState extends State<NewBornInfo> {
               ),
             ),
             const Text(
-              "Add a new born info",
+              "Newborn Information",
               style: TextStyle(
                 color: Color(0xFFD77D7C),
-                fontSize: 32,
+                fontSize: 30,
                 fontFamily: 'Urbanist',
                 fontWeight: FontWeight.w600,
+                height: 0.4,
                 letterSpacing: -0.28,
               ),
             ),
-            const SizedBox(height: 7),
+            const SizedBox(height: 15),
             Expanded(
               child: Container(
                 padding: const EdgeInsets.symmetric(
@@ -700,7 +701,7 @@ class NewBornInfoState extends State<NewBornInfo> {
                                   hintStyle: const TextStyle(
                                     fontSize: 15.0,
                                     fontFamily: 'Urbanist',
-                                    // color: pinkColor,
+                                    color: Color.fromARGB(255, 150, 149, 149),
                                   ),
                                   errorStyle: textStyleError,
                                   contentPadding: const EdgeInsets.symmetric(
@@ -778,7 +779,8 @@ class NewBornInfoState extends State<NewBornInfo> {
                                       hintStyle: const TextStyle(
                                         fontSize: 15.0,
                                         fontFamily: 'Urbanist',
-                                        // color: pinkColor,
+                                        color:
+                                            Color.fromARGB(255, 150, 149, 149),
                                       ),
                                       errorStyle: textStyleError,
                                       contentPadding:
@@ -843,7 +845,8 @@ class NewBornInfoState extends State<NewBornInfo> {
                                       hintStyle: const TextStyle(
                                         fontSize: 15.0,
                                         fontFamily: 'Urbanist',
-                                        // color: pinkColor,
+                                        color:
+                                            Color.fromARGB(255, 150, 149, 149),
                                       ),
                                       // keyboardType: TextInputType.number,
                                       errorStyle: textStyleError,
@@ -924,7 +927,7 @@ class NewBornInfoState extends State<NewBornInfo> {
                                   hintStyle: const TextStyle(
                                     fontSize: 15.0,
                                     fontFamily: 'Urbanist',
-                                    // color: pinkColor,
+                                    color: Color.fromARGB(255, 150, 149, 149),
                                   ),
                                   errorStyle: textStyleError,
                                   contentPadding: const EdgeInsets.symmetric(

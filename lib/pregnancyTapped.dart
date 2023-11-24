@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:preggo/weight_history.dart';
-
+import 'package:preggo/baby_information.dart';
 import 'appointmentHistory.dart';
 import 'colors.dart';
 
@@ -84,6 +84,13 @@ class _pregnancyTapped extends State<pregnancyTapped> {
                         GestureDetector(
                           onTap: () {
                             print("BABY ID IS $babyID");
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BabyInformation(),
+                                settings: RouteSettings(arguments: babyID),
+                              ),
+                            );
                           },
                           child: Container(
                             margin: EdgeInsets.only(bottom: 20),
