@@ -909,6 +909,12 @@ class NewBornInfoState extends State<NewBornInfo> {
                                 validator: (value) {
                                   final lettersRegExpOnly =
                                       RegExp(r'^[a-z A-Z]+$');
+                                  final RegExp noSpacesRegExp =
+                                      RegExp(r'^[^\s]+$');
+                                  final isFieldEmpty = _placeOfBirthController
+                                      .text
+                                      .trim()
+                                      .isEmpty;
 
                                   /// allow empty field
                                   if (value == null || value.isEmpty) {
@@ -918,8 +924,9 @@ class NewBornInfoState extends State<NewBornInfo> {
                                   /// allow upper and lower case alphabets and space if input is written
                                   if (!lettersRegExpOnly.hasMatch(value)) {
                                     return "Only letters allowed";
-                                  } else {
-                                    return null;
+                                  } else if (!noSpacesRegExp.hasMatch(value) &&
+                                      isFieldEmpty) {
+                                    return "Only letters allowed";
                                   }
                                 },
                                 decoration: InputDecoration(

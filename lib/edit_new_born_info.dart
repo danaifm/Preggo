@@ -365,15 +365,17 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
         .doc(pregnancyId)
         .collection("newbornInfo");
 
-    // final Timestamp ueDate = data['DueDate'];
-
     await newbornInfoCollection.get().then((value) {
       final allData = value.docs.first.data();
       setState(() {
         selectedBloodType = allData['Blood'];
-        selectedDate = DateFormat("MM-DD-yyyy").parse(allData['Date']);
-        // selectedDate = DateTime.parse(allData['Date']);
-        selectedTime = DateFormat("hh:mm a").parse(allData['Time']);
+        if (allData['Date'] != null && allData['Date'].toString().isNotEmpty) {
+          selectedDate = DateFormat("MM-DD-yyyy").parse(allData['Date']);
+        }
+        if (allData['Time'] != null && allData['Time'].toString().isNotEmpty) {
+          selectedTime = DateFormat("hh:mm a").parse(allData['Time']);
+        }
+
         _heightController.text = allData['Height'];
         _weightController.text = allData['Weight'];
         _placeOfBirthController.text = allData['Place'];
@@ -984,6 +986,12 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                                       validator: (value) {
                                         final lettersRegExpOnly =
                                             RegExp(r'^[a-z A-Z]+$');
+                                        final RegExp noSpacesRegExp =
+                                            RegExp(r'^[^\s]+$');
+                                        final isFieldEmpty =
+                                            _placeOfBirthController.text
+                                                .trim()
+                                                .isEmpty;
 
                                         /// allow empty field
                                         if (value == null || value.isEmpty) {
@@ -994,8 +1002,10 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                                         if (!lettersRegExpOnly
                                             .hasMatch(value)) {
                                           return "Only letters allowed";
-                                        } else {
-                                          return null;
+                                        } else if (!noSpacesRegExp
+                                                .hasMatch(value) &&
+                                            isFieldEmpty) {
+                                          return "Only letters allowed";
                                         }
                                       },
                                       decoration: InputDecoration(
