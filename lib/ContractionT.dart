@@ -315,10 +315,19 @@ class _ContractionT extends State<ContractionT> {
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: DataTable(
+              dividerThickness: 3,
               columns: [
-                DataColumn(label: Text('Duration')),
-                DataColumn(label: Text('Start Time')),
-                DataColumn(label: Text('End time'))
+                DataColumn(
+                    label: Text(
+                  'Duration',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                )),
+                DataColumn(
+                    label: Text('Start Time',
+                        style: TextStyle(fontWeight: FontWeight.w600))),
+                DataColumn(
+                    label: Text('End time',
+                        style: TextStyle(fontWeight: FontWeight.w600)))
               ],
               rows: List.generate(weightResult.length, (index) {
                 String startTimee =
