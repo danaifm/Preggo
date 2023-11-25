@@ -112,14 +112,14 @@ class _ContractionT extends State<ContractionT> {
         return AlertDialog(
           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
           content: SizedBox(
-            height: 130,
+            height: 170,
             child: Column(
               children: <Widget>[
                 const Center(
                   child: Padding(
                     padding: EdgeInsets.only(top: 10, bottom: 30),
                     child: Text(
-                      'Are you sure you want to go back?',
+                      'By going back, all the contraction timer records will be deleted. \n \n Are you sure you want to go back? ',
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -303,17 +303,17 @@ class _ContractionT extends State<ContractionT> {
 
       return SingleChildScrollView(
         physics: AlwaysScrollableScrollPhysics(),
-        scrollDirection: Axis.vertical,
+        scrollDirection: Axis.horizontal,
         child: Container(
           margin: EdgeInsets.only(
             top: 30,
           ),
-          height: 400,
+          height: 350,
           decoration: BoxDecoration(
               color: Color.fromARGB(255, 255, 234, 240),
               borderRadius: BorderRadius.circular(8)),
           child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
+            scrollDirection: Axis.vertical,
             child: DataTable(
               columns: [
                 DataColumn(label: Text('Duration')),
@@ -414,7 +414,8 @@ class _ContractionT extends State<ContractionT> {
                                 child: Text(
                                   "$digitMin:$digitSec",
                                   style: TextStyle(
-                                      color: backGroundPink, fontSize: 75),
+                                      color: Color.fromRGBO(235, 170, 175, 1),
+                                      fontSize: 75),
                                 ),
                               ),
                             ),
