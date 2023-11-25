@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable, library_prefixes, avoid_unnecessary_containers, no_leading_underscores_for_local_identifiers, unnecessary_const
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:preggo/baby_information.dart';
 import '../pregnancyTapped.dart';
 import '../screens/CommunityPage.dart';
 import 'package:flutter/material.dart';
@@ -382,15 +383,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   InkWell(
                                 onTap: () {
                                   print('baby id is ${babyData[index].id}');
-
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => const pregnancyTapped(),
-                                      settings: RouteSettings(
-                                          arguments: babyData[index].id),
-                                    ),
-                                  );
+                                  if (babyData[index].ended == "true") {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => const pregnancyTapped(),
+                                        settings: RouteSettings(
+                                            arguments: babyData[index].id),
+                                      ),
+                                    );
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => BabyInformation(),
+                                        settings: RouteSettings(
+                                            arguments: babyData[index].id),
+                                      ),
+                                    );
+                                  }
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -428,7 +439,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             decoration: BoxDecoration(color: Colors.grey[200]),
                             child: const Center(
                                 child: Text(
-                              "...",
+                              "Sign Out",
                               style: TextStyle(
                                   color: pinkColor,
                                   fontWeight: FontWeight.bold,
@@ -566,6 +577,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                           ),
+
                           InkWell(
                             onTap: () {
                               showDialog<void>(
@@ -645,7 +657,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               );
                             },
                             child: const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 15),
+                              padding: EdgeInsets.all(15),
                               child: Row(
                                 children: [
                                   SizedBox(
@@ -659,7 +671,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     width: 10,
                                   ),
                                   Text(
-                                    "Delete Account",
+                                    "Delete Acount",
                                     style: TextStyle(
                                         fontSize: 16, color: Colors.red),
                                   ),
@@ -680,3 +692,4 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
+

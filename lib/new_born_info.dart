@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 
@@ -8,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:preggo/baby_information.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/reminder.dart';
 
@@ -22,73 +24,51 @@ class NewBornInfo extends StatefulWidget {
 }
 
 class NewBornInfoState extends State<NewBornInfo> {
-  DateTime selectedDate = DateTime.now();
-  DateTime selectedTime = DateTime.now();
-  DateTime _minDate = DateTime.now();
+  DateTime? selectedDate;
+  DateTime? selectedTime;
+  DateTime? _minimumDate;
+  DateTime? _maximumDate;
 
-  var timeFormat = Jiffy.now().format(pattern: "hh:mm a");
+  var timeFormat = "Select";
   var errorMessage = "";
 
-  List<Map<String, dynamic>> days = [
-    {
-      "id": "1",
-      "day": "Every Sunday",
-      "short": "Sun",
-      "selected": false,
-    },
-    {
-      "id": "2",
-      "day": "Every Monday",
-      "short": "Mon",
-      "selected": false,
-    },
-    {
-      "id": "3",
-      "day": "Every Tuesday",
-      "short": "Tue",
-      "selected": false,
-    },
-    {
-      "id": "4",
-      "day": "Every Wednesday",
-      "short": "Wed",
-      "selected": false,
-    },
-    {
-      "id": "5",
-      "day": "Every Thursday",
-      "short": "Thu",
-      "selected": false,
-    },
-    {
-      "id": "6",
-      "day": "Every Friday",
-      "short": "Fri",
-      "selected": false,
-    },
-    {
-      "id": "7",
-      "day": "Every Saturday",
-      "short": "Sat",
-      "selected": false,
-    },
-  ];
-
-  List<Map<String, dynamic>> selectedDays = [];
-
   bool isLoading = false;
+
+  DateTime subtractMonths(DateTime date, int months) {
+    int newMonth = date.month - months;
+    int newYear = date.year;
+    while (newMonth <= 0) {
+      newMonth += 12;
+      newYear -= 1;
+    }
+    return DateTime(newYear, newMonth, date.day);
+  }
+
+  DateTime increaseMonths(DateTime date, int months) {
+    int newMonth = date.month + months;
+    int newYear = date.year;
+    while (newMonth <= 0) {
+      newMonth += 12;
+      newYear -= 1;
+    }
+    return DateTime(newYear, newMonth, date.day);
+  }
 
   _showDatePicker() {
     _showDialog(
       CupertinoDatePicker(
-        initialDateTime: selectedDate.isAfter(DateTime.now())
-            ? selectedDate
-            : DateTime.now(),
-        minimumDate: _minDate,
-        maximumDate: DateTime.now().copyWith(
-          year: DateTime.now().year + 10,
-          month: 12,
-          day: 31,
+        initialDateTime: selectedDate != null
+            ? DateTime(
+                selectedDate!.year,
+                selectedDate!.month,
+                selectedDate!.day,
+              )
+            : _minimumDate,
+        minimumDate: _minimumDate,
+        maximumDate: DateTime(
+          _maximumDate!.year,
+          _maximumDate!.month,
+          _maximumDate!.day,
         ),
         mode: CupertinoDatePickerMode.date,
         onDateTimeChanged: (DateTime newDate) {
@@ -98,12 +78,7 @@ class NewBornInfoState extends State<NewBornInfo> {
                 newDate.year,
                 newDate.month,
                 newDate.day,
-                selectedTime.hour,
-                selectedTime.minute,
-                selectedTime.second,
               );
-              print("::: Selected date is: $selectedDate #");
-              _minDate = DateTime.now();
             },
           );
         },
@@ -112,29 +87,9 @@ class NewBornInfoState extends State<NewBornInfo> {
   }
 
   _showTimePicker() {
-    print("Selected Time:# $selectedTime #");
-    print("Selected DATE:# $selectedDate #");
-    final initial = DateTime.now().isBefore(selectedDate);
-    print("Selected initial:# $initial #");
-
-    final isToday = selectedDate.year == DateTime.now().year &&
-        selectedDate.month == DateTime.now().month &&
-        selectedDate.day == DateTime.now().day;
     _showDialog(
       CupertinoDatePicker(
-        initialDateTime: DateTime.now().isBefore(selectedDate) ||
-                DateTime.now().isBefore(selectedTime)
-            ? selectedTime
-            : DateTime.now(),
-        minimumDate: isToday
-            ? DateTime(
-                DateTime.now().year,
-                DateTime.now().month,
-                DateTime.now().day,
-                DateTime.now().hour,
-                DateTime.now().minute,
-              )
-            : null,
+        initialDateTime: selectedTime,
         mode: CupertinoDatePickerMode.time,
         onDateTimeChanged: (DateTime newTime) {
           setState(() {
@@ -155,93 +110,74 @@ class NewBornInfoState extends State<NewBornInfo> {
     );
   }
 
+  Future<void> updateDatePicker() async {
+    final String? currentUserUuid = FirebaseAuth.instance.currentUser?.uid;
+    final data = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUserUuid)
+        .collection('pregnancyInfo')
+        .doc(widget.babyId)
+        // .where("DueDate", isGreaterThanOrEqualTo: Timestamp.now())
+        .get();
+
+    final Timestamp dueDate = data['DueDate'];
+
+    _minimumDate = subtractMonths(dueDate.toDate(), 5);
+    _maximumDate = increaseMonths(dueDate.toDate(), 1);
+  }
+
   Future<void> addNewBornInfo() async {
     try {
-      final today = DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, DateTime.now().hour, DateTime.now().minute);
-      final isDateAfterToday = selectedDate.isAfter(today);
-      final isSelectedTimeEqualOrGraterThanNow =
-          selectedTime.hour == DateTime.now().hour &&
-                  selectedTime.minute == DateTime.now().minute ||
-              selectedTime.hour > DateTime.now().hour &&
-                  selectedTime.minute > DateTime.now().minute;
-      final isSelectedTimeValid = isDateAfterToday ||
-          isSelectedTimeEqualOrGraterThanNow ||
-          selectedTime.isAfter(DateTime.now());
-      print("today:: $today #");
-      print("isDateAfterToday:: $isDateAfterToday #");
-      print("isSelectedTimeValid:: $isSelectedTimeValid #");
-      print("selectedDate:: $selectedDate #");
-      print("selectedTime:: $selectedTime #");
-
       final String? currentUserUuid = FirebaseAuth.instance.currentUser?.uid;
+      final bool hasValidGender = selectedGender != null &&
+          selectedGender!.isNotEmpty &&
+          selectedGender!.toLowerCase() != "unknown";
 
+      print("hasValidGender:::: $hasValidGender ###");
       if (currentUserUuid != null &&
           _formKey.currentState!.validate() &&
-          isSelectedTimeValid == true) {
-        setState(() {
-          isLoading = true;
-          errorMessage = "";
-        });
-
-        /// /users
-        ///
-        /// pregnancyInfo
-        ///
-        /// newbornInfo
-
+          hasValidGender) {
         final newbornInfoCollection = FirebaseFirestore.instance
             .collection("users")
             .doc(currentUserUuid)
             .collection("pregnancyInfo")
-            .doc()
+            .doc(widget.babyId)
             .collection("newbornInfo");
 
-        final dueDate = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(currentUserUuid)
-            .collection('pregnancyInfo')
-            .where("DueDate", isGreaterThanOrEqualTo: Timestamp.now())
-            .get();
-
+        final time = selectedTime == null
+            ? ""
+            : TimeOfDay.fromDateTime(selectedTime!).format(context);
         final Map<String, dynamic> babyData = {
-          "Name": _nameController.text.trim(),
+          // "Name": _nameController.text.trim(),
           "Place": _placeOfBirthController.text.trim(),
           "Height": _heightController.text.trim(),
           "Weight": _weightController.text.trim(),
-          "Gender": selectedGender,
           "Blood": selectedBloodType,
-          "Date":
-              "${selectedDate.month}-${selectedDate.day}-${selectedDate.year}",
-          "Time": TimeOfDay.fromDateTime(selectedTime).format(context),
+          "Date": selectedDate == null
+              ? ""
+              : "${selectedDate?.month}-${selectedDate?.day}-${selectedDate?.year}",
+          "Time": time,
         };
+
+        await updateByNamAndGender(widget.babyId);
         await newbornInfoCollection.add(babyData).then((value) async {
-          // await remindersCollection.doc(value.id).set(
-          //   {
-          //     "id": value.id,
-          //   },
-          //   SetOptions(merge: true),
-          // );
-
-          if (mounted) {
-            _successDialog();
-          }
           setState(() {
+            errorMessage = "";
             isLoading = false;
-
             _nameController.clear();
             _placeOfBirthController.clear();
             _heightController.clear();
             _weightController.clear();
-
-            selectedDate = DateTime.now();
-            selectedTime = DateTime.now();
           });
+          if (mounted) {
+            _successDialog();
+          }
         });
-      } else if (isSelectedTimeValid == false) {
+      } else if (hasValidGender == false) {
         setState(() {
-          errorMessage = "Time cannot be in the past.";
+          errorMessage = "Gender cannot be empty";
         });
+        // return;
       } else {
         setState(() {
           isLoading = false;
@@ -293,7 +229,7 @@ class NewBornInfoState extends State<NewBornInfo> {
                         ),
                         const SizedBox(height: 25),
                         const Text(
-                          "Reminder added successfully!",
+                          "Information added successfully!",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Color.fromARGB(255, 0, 0, 0),
@@ -313,7 +249,15 @@ class NewBornInfoState extends State<NewBornInfo> {
                             child: ElevatedButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
-                                Navigator.of(context).pop();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => BabyInformation(),
+                                    settings:
+                                        RouteSettings(arguments: widget.babyId),
+                                  ),
+                                );
+                                // Navigator.of(context).pop();
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: blackColor,
@@ -345,19 +289,84 @@ class NewBornInfoState extends State<NewBornInfo> {
   late TextEditingController _heightController;
   late TextEditingController _weightController;
   late TextEditingController _placeOfBirthController;
-  DateTime? _dateOfBirth;
-  DateTime? _timeOfBirth;
-  String? _selectedGender;
-  String? _selectedBloodType;
+  // DateTime? _dateOfBirth;
+  // DateTime? _timeOfBirth;
+  // String? _selectedGender;
+  // String? _selectedBloodType;
+
+  Future<Map<String, dynamic>?> getBabyInfoById(String babyId) async {
+    Map<String, dynamic>? data;
+    try {
+      final userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId != null) {
+        final pregnancyInfoCollection = FirebaseFirestore.instance
+            .collection("users")
+            .doc(userId)
+            .collection("pregnancyInfo");
+
+        final babyData = await pregnancyInfoCollection.doc(babyId).get();
+
+        print("babyData.docs:: ${babyData.data()}");
+        data = babyData.data();
+      }
+    } catch (error) {}
+
+    return data;
+  }
+
+  Future<void> updateByNamAndGender(String babyId) async {
+    try {
+      final userId = FirebaseAuth.instance.currentUser?.uid;
+
+      if (userId != null) {
+        final pregnancyInfoCollection = FirebaseFirestore.instance
+            .collection("users")
+            .doc(userId)
+            .collection("pregnancyInfo");
+
+        await pregnancyInfoCollection.doc(babyId).update(
+          {
+            "Baby's name": _nameController.text.trim(),
+            "Gender": selectedGender,
+          },
+        );
+      }
+    } catch (error) {}
+  }
 
   @override
   void initState() {
     super.initState();
-
+    errorMessage = "";
+    print("BABY ID:: ${widget.babyId} ##");
     _nameController = TextEditingController();
     _heightController = TextEditingController();
     _weightController = TextEditingController();
     _placeOfBirthController = TextEditingController();
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+    //   await updateDatePicker();
+    //   final Map<String, dynamic>? baby = await getBabyInfoById(widget.babyId);
+    //   if (baby != null) {
+    //     setState(() {
+    //       _nameController.text = baby['Baby\'s name'];
+    //       selectedGender = baby['Gender'];
+    //     });
+    //   }
+    // });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    updateDatePicker();
+    getBabyInfoById(widget.babyId).then((value) {
+      if (value != null) {
+        setState(() {
+          _nameController.text = value['Baby\'s name'];
+          selectedGender = value['Gender'];
+        });
+      }
+    });
   }
 
   @override
@@ -452,8 +461,16 @@ class NewBornInfoState extends State<NewBornInfo> {
                       child: Center(
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BabyInformation(),
+                                settings:
+                                    RouteSettings(arguments: widget.babyId),
+                              ),
+                            );
+                            // Navigator.of(context).pop();
+                            // Navigator.of(context).pop();
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
@@ -479,7 +496,7 @@ class NewBornInfoState extends State<NewBornInfo> {
     );
   }
 
-  String selectedGender = "";
+  String? selectedGender;
   String selectedBloodType = "";
   final gender = [
     {"type": "Boy", "isSelected": false, "id": "101"},
@@ -497,8 +514,93 @@ class NewBornInfoState extends State<NewBornInfo> {
     {"value": "AB-", "isSelected": false, "id": "108"},
   ];
 
+  String? weightValidator(String? value) {
+    // Weight should be in the format 0.5
+    // Weight should be in between 0.5 - 10.0 kg
+    /// Validate if the entered value is only number
+
+    if (value != null && value.isNotEmpty) {
+      final double? myValue = double.tryParse(value);
+
+      bool containsInvalidCharacters = value.contains(RegExp(r'[a-zA-Z,]')) ||
+          RegExp(r'\..*\.').hasMatch(value) ||
+          RegExp(r'^(.*[^.])(?<!\.)$').hasMatch(value);
+
+      final bool valueContainsNumbers =
+          RegExp(r'^-?\d*\.?\d+$').hasMatch(value.trim());
+
+      final bool isStartWithDot = value.trim().startsWith(".");
+      final bool isEndWithDot = value.trim().endsWith(".");
+
+      final specialCharacters = RegExp(r"[!@#$%^&*()]").hasMatch(value.trim());
+
+      if (valueContainsNumbers && (isStartWithDot || isEndWithDot)) {
+        return "Weight should be in the format: 0.5";
+      } else if (isStartWithDot) {
+        return "Only numbers allowed";
+      } else if (isEndWithDot) {
+        return "Only numbers allowed";
+      } else if (isStartWithDot && isEndWithDot) {
+        return "Only numbers allowed";
+      } else if (specialCharacters) {
+        return "Only numbers allowed";
+      } else if (myValue != null) {
+        final isValueValidNumber = myValue < 0.5 || myValue > 10.0;
+        if (isValueValidNumber) {
+          return "Weight should be in between 0.5 - 10.0 kg";
+        }
+      } else if (containsInvalidCharacters) {
+        return "Only numbers allowed";
+      }
+    }
+    return null;
+  }
+
+  String? heightValidator(String? value) {
+    if (value != null && value.isNotEmpty) {
+      final double? myValue = double.tryParse(value);
+
+      bool containsInvalidCharacters = value.contains(RegExp(r'[a-zA-Z,]')) ||
+          RegExp(r'\..*\.').hasMatch(value) ||
+          RegExp(r'^(.*[^.])(?<!\.)$').hasMatch(value);
+
+      final bool valueContainsNumbers =
+          RegExp(r'^-?\d*\.?\d+$').hasMatch(value.trim());
+
+      final bool isStartWithDot = value.trim().startsWith(".");
+      final bool isEndWithDot = value.trim().endsWith(".");
+
+      final specialCharacters = RegExp(r"[!@#$%^&*()]").hasMatch(value.trim());
+
+      if (valueContainsNumbers && (isStartWithDot || isEndWithDot)) {
+        return "Height should be in the format: 43.5";
+      } else if (isStartWithDot) {
+        return "Only numbers allowed";
+      } else if (isEndWithDot) {
+        return "Only numbers allowed";
+      } else if (isStartWithDot && isEndWithDot) {
+        return "Only numbers allowed";
+      } else if (specialCharacters) {
+        return "Only numbers allowed";
+      } else if (myValue != null) {
+        final isValueValidNumber = myValue < 35.0 || myValue > 65.0;
+        if (isValueValidNumber) {
+          return "Height should be in between 35.0 - 65.0 cm";
+        }
+      } else if (containsInvalidCharacters) {
+        return "Only numbers allowed";
+      }
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
+    // RegExp regex = RegExp(r'^\d*\.?\d*$');
+    // RegExp regex = RegExp(r'^(?!\.)(\d+(\.\d*)?)?$');
+    // RegExp regex = RegExp(r'^(?!\.)\d+(\.\d+)?$');
+    // final regex = RegExp(r'^\d+(\.\d+)?$');
+    // final RegExp regex = RegExp(r'^\d*\.?\d*$');
     var textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontSize: 12.0,
           color: Theme.of(context).colorScheme.error,
@@ -511,65 +613,72 @@ class NewBornInfoState extends State<NewBornInfo> {
           fontWeight: FontWeight.normal,
         );
 
-    return Scaffold(
-      backgroundColor: backGroundPink,
-      resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: BackButton(
-                onPressed: backButton,
-                style: const ButtonStyle(
-                  padding: MaterialStatePropertyAll(
-                    EdgeInsets.zero,
+    return WillPopScope(
+      onWillPop: () async {
+        backButton();
+
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: backGroundPink,
+        resizeToAvoidBottomInset: true,
+        body: SafeArea(
+          child: Column(
+            children: [
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: SizedBox(
+                  height: 25,
+                  child: BackButton(
+                    onPressed: backButton,
+                    style: const ButtonStyle(
+                      padding: MaterialStatePropertyAll(
+                        EdgeInsets.zero,
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
-            const Text(
-              "Add a new born info",
-              style: TextStyle(
-                color: Color(0xFFD77D7C),
-                fontSize: 32,
-                fontFamily: 'Urbanist',
-                fontWeight: FontWeight.w600,
-                letterSpacing: -0.28,
+              const Text(
+                "Newborn Information",
+                style: TextStyle(
+                  color: Color(0xFFD77D7C),
+                  fontSize: 30,
+                  fontFamily: 'Urbanist',
+                  fontWeight: FontWeight.w600,
+                  height: 0.4,
+                  letterSpacing: -0.28,
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 18.0,
-                  vertical: 0.0,
-                ),
-                decoration: const BoxDecoration(
-                  color: Color(0xFFFFFFFF),
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(80.0),
+              const SizedBox(height: 15),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18.0,
                   ),
-                ),
-                child: SingleChildScrollView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  child: Container(
-                    margin:
-                        const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 5.0),
-                          child: Form(
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFFFFFFF),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(50.0),
+                    ),
+                  ),
+                  child: SingleChildScrollView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Form(
                             key: _formKey,
                             child: Column(
                               children: [
                                 Container(
-                                  margin:
-                                      const EdgeInsets.only(top: 30, left: 5),
+                                  margin: const EdgeInsets.only(
+                                    top: 20,
+                                    left: 5,
+                                    bottom: 2,
+                                  ),
                                   alignment: Alignment.centerLeft,
                                   child: const Text(
                                     "Baby Name",
@@ -584,57 +693,202 @@ class NewBornInfoState extends State<NewBornInfo> {
                                     ),
                                   ),
                                 ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 5.0),
-                                  child: TextFormField(
-                                    maxLength: 25,
-                                    controller: _nameController,
-                                    style: const TextStyle(
+
+                                TextFormField(
+                                  maxLength: 25,
+                                  controller: _nameController,
+                                  style: const TextStyle(
+                                    fontSize: 15.0,
+                                    fontFamily: 'Urbanist',
+                                  ),
+                                  keyboardType: TextInputType.name,
+                                  decoration: InputDecoration(
+                                    hintText: "Example: Amal",
+                                    hintStyle: const TextStyle(
                                       fontSize: 15.0,
                                       fontFamily: 'Urbanist',
+                                      color: Color.fromARGB(255, 150, 149, 149),
                                     ),
-                                    keyboardType: TextInputType.name,
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.allow(
-                                          RegExp("[a-zA-Z ]")),
-                                    ],
-                                    decoration: InputDecoration(
-                                      errorStyle: textStyleError,
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 15.0, horizontal: 15),
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
-                                      ),
-                                      enabledBorder: const OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(12.0)),
-                                        borderSide: BorderSide(
-                                            color: textFieldBorderColor),
-                                      ),
-                                      focusedBorder: const OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(12.0)),
-                                        borderSide:
-                                            BorderSide(color: darkGrayColor),
-                                      ),
-                                      filled: true,
-                                      fillColor: const Color(0xFFF7F8F9),
+                                    errorStyle: textStyleError,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 15.0, horizontal: 15),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12.0),
                                     ),
-                                    validator: (value) {
-                                      if (value == null ||
-                                          value.trim().isEmpty) {
-                                        return "This field cannot be empty.";
-                                      }
-                                      return null;
-                                    },
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0)),
+                                      borderSide: BorderSide(
+                                          color: textFieldBorderColor),
+                                    ),
+                                    focusedBorder: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0)),
+                                      borderSide:
+                                          BorderSide(color: darkGrayColor),
+                                    ),
+                                    filled: true,
+                                    fillColor: const Color(0xFFF7F8F9),
                                   ),
+                                  validator: (value) {
+                                    final lettersRegExpOnly =
+                                        RegExp(r'^[a-z A-Z]+$');
+
+                                    /// cannot be empty
+                                    if (value == null || value.isEmpty) {
+                                      return "Field cannot be empty";
+                                    }
+
+                                    /// allow upper and lower case alphabets and space if input is written
+                                    if (!lettersRegExpOnly.hasMatch(value)) {
+                                      return "Only letters allowed";
+                                    } else {
+                                      return null;
+                                    }
+                                  },
                                 ),
+
+                                /// HEIGHT
+                                Column(
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.only(
+                                        top: 0,
+                                        left: 5,
+                                        bottom: 2,
+                                      ),
+                                      alignment: Alignment.centerLeft,
+                                      child: const Text(
+                                        "Height",
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                          color: Color.fromARGB(255, 0, 0, 0),
+                                          fontSize: 17,
+                                          fontFamily: 'Urbanist',
+                                          fontWeight: FontWeight.w700,
+                                          height: 1.30,
+                                          letterSpacing: -0.28,
+                                        ),
+                                      ),
+                                    ),
+                                    TextFormField(
+                                      maxLength: 4,
+                                      controller: _heightController,
+                                      // keyboardType: TextInputType.number,
+                                      validator: heightValidator,
+                                      style: const TextStyle(
+                                        fontSize: 15.0,
+                                        fontFamily: 'Urbanist',
+                                      ),
+                                      decoration: InputDecoration(
+                                        hintText: "Height in cm. Example: 45.0",
+                                        hintStyle: const TextStyle(
+                                          fontSize: 15.0,
+                                          fontFamily: 'Urbanist',
+                                          color: Color.fromARGB(
+                                              255, 150, 149, 149),
+                                        ),
+                                        errorStyle: textStyleError,
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 15.0, horizontal: 15),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12.0),
+                                        ),
+                                        enabledBorder: const OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(12.0)),
+                                          borderSide: BorderSide(
+                                              color: textFieldBorderColor),
+                                        ),
+                                        focusedBorder: const OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(12.0)),
+                                          borderSide:
+                                              BorderSide(color: darkGrayColor),
+                                        ),
+                                        filled: true,
+                                        fillColor: const Color(0xFFF7F8F9),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                                Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.only(
+                                        top: 0,
+                                        left: 5,
+                                        bottom: 2,
+                                      ),
+                                      alignment: Alignment.centerLeft,
+                                      child: const Text(
+                                        "Weight",
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                          color: Color.fromARGB(255, 0, 0, 0),
+                                          fontSize: 17,
+                                          fontFamily: 'Urbanist',
+                                          fontWeight: FontWeight.w700,
+                                          height: 1.30,
+                                          letterSpacing: -0.28,
+                                        ),
+                                      ),
+                                    ),
+                                    TextFormField(
+                                      maxLength: 4,
+                                      controller: _weightController,
+                                      validator: weightValidator,
+                                      style: const TextStyle(
+                                        fontSize: 15.0,
+                                        fontFamily: 'Urbanist',
+                                      ),
+                                      decoration: InputDecoration(
+                                        hintText: "Weight in kg. Example: 3.5",
+                                        hintStyle: const TextStyle(
+                                          fontSize: 15.0,
+                                          fontFamily: 'Urbanist',
+                                          color: Color.fromARGB(
+                                              255, 150, 149, 149),
+                                        ),
+                                        // keyboardType: TextInputType.number,
+                                        errorStyle: textStyleError,
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 15.0, horizontal: 15),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12.0),
+                                        ),
+                                        enabledBorder: const OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(12.0)),
+                                          borderSide: BorderSide(
+                                              color: textFieldBorderColor),
+                                        ),
+                                        focusedBorder: const OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(12.0)),
+                                          borderSide:
+                                              BorderSide(color: darkGrayColor),
+                                        ),
+                                        filled: true,
+                                        fillColor: const Color(0xFFF7F8F9),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                                /// PLACE OF BIRTH
                                 Container(
-                                  margin:
-                                      const EdgeInsets.only(top: 5, left: 5),
+                                  margin: const EdgeInsets.only(
+                                    top: 0,
+                                    left: 5,
+                                    bottom: 2,
+                                  ),
                                   alignment: Alignment.centerLeft,
                                   child: const Text(
                                     "Place of Birth",
@@ -650,250 +904,167 @@ class NewBornInfoState extends State<NewBornInfo> {
                                   ),
                                 ),
 
-                                /// Place of Birth
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 5),
-                                  child: TextFormField(
-                                    maxLength: 35,
-                                    controller: _placeOfBirthController,
-                                    keyboardType: TextInputType.name,
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.allow(
-                                          RegExp("[a-zA-Z ]")),
-                                    ],
-                                    style: const TextStyle(
+                                /// Place of Birth Field
+                                TextFormField(
+                                  maxLength: 35,
+                                  controller: _placeOfBirthController,
+                                  style: const TextStyle(
+                                    fontSize: 15.0,
+                                    fontFamily: 'Urbanist',
+                                  ),
+                                  validator: (value) {
+                                    final lettersRegExpOnly =
+                                        RegExp(r'^[a-z A-Z]+$');
+                                    final RegExp noSpacesRegExp =
+                                        RegExp(r'^[^\s]+$');
+                                    final isFieldEmpty = _placeOfBirthController
+                                        .text
+                                        .trim()
+                                        .isEmpty;
+
+                                    /// allow empty field
+                                    if (value == null || value.isEmpty) {
+                                      return null;
+                                    }
+
+                                    /// allow upper and lower case alphabets and space if input is written
+                                    if (!lettersRegExpOnly.hasMatch(value)) {
+                                      return "Only letters allowed";
+                                    } else if (!noSpacesRegExp
+                                            .hasMatch(value) &&
+                                        isFieldEmpty) {
+                                      return "Only letters allowed";
+                                    }
+                                  },
+                                  decoration: InputDecoration(
+                                    hintText: "Example: Riyadh",
+                                    hintStyle: const TextStyle(
                                       fontSize: 15.0,
                                       fontFamily: 'Urbanist',
+                                      color: Color.fromARGB(255, 150, 149, 149),
                                     ),
-                                    decoration: InputDecoration(
-                                      errorStyle: textStyleError,
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 15.0, horizontal: 15),
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
-                                      ),
-                                      enabledBorder: const OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(12.0)),
-                                        borderSide: BorderSide(
-                                            color: textFieldBorderColor),
-                                      ),
-                                      focusedBorder: const OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(12.0)),
-                                        borderSide:
-                                            BorderSide(color: darkGrayColor),
-                                      ),
-                                      filled: true,
-                                      fillColor: const Color(0xFFF7F8F9),
+                                    errorStyle: textStyleError,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 15.0, horizontal: 15),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12.0),
                                     ),
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0)),
+                                      borderSide: BorderSide(
+                                          color: textFieldBorderColor),
+                                    ),
+                                    focusedBorder: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(12.0)),
+                                      borderSide:
+                                          BorderSide(color: darkGrayColor),
+                                    ),
+                                    filled: true,
+                                    fillColor: const Color(0xFFF7F8F9),
                                   ),
                                 ),
 
-                                /// Height & Wieght
-                                Container(
-                                  padding: const EdgeInsets.only(top: 5.0),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                          child: Column(
-                                        children: [
-                                          Container(
-                                            margin: const EdgeInsets.only(
-                                                top: 5, left: 5),
-                                            alignment: Alignment.centerLeft,
-                                            child: const Text(
-                                              "Height",
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                color: Color.fromARGB(
-                                                    255, 0, 0, 0),
-                                                fontSize: 17,
-                                                fontFamily: 'Urbanist',
-                                                fontWeight: FontWeight.w700,
-                                                height: 1.30,
-                                                letterSpacing: -0.28,
-                                              ),
+                                const SizedBox(height: 3),
+
+                                /// Date & Time of Birth
+                                CustomResizeWidget(
+                                  hasBottomBorder: false,
+                                  children: <Widget>[
+                                    const Text(
+                                      "Date of Birth",
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 17,
+                                        fontFamily: 'Urbanist',
+                                        fontWeight: FontWeight.w700,
+                                        height: 1.30,
+                                        letterSpacing: -0.28,
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    Row(
+                                      children: [
+                                        CupertinoButton(
+                                          padding: EdgeInsets.zero,
+                                          onPressed: _showDatePicker,
+                                          child: Text(
+                                            selectedDate == null
+                                                ? "Select"
+                                                : '${selectedDate?.month}-${selectedDate?.day}-${selectedDate?.year}',
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontSize: 16.0,
+                                              fontFamily: 'Urbanist',
+                                              color: Colors.black,
                                             ),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 5.0),
-                                            child: TextFormField(
-                                              maxLength: 4,
-                                              controller: _heightController,
-                                              keyboardType:
-                                                  TextInputType.number,
-                                              validator: (value) {
-                                                if (value != null &&
-                                                    value.isNotEmpty) {
-                                                  final val =
-                                                      double.tryParse(value);
-                                                  if (val != null) {
-                                                    if (val > 35.0 ||
-                                                        val < 65.0) {
-                                                      return null;
-                                                    } else {
-                                                      return "Height should be between 35.0 - 65.0 cm.";
-                                                    }
-                                                  } else {
-                                                    return "Height should be between 35.0 - 65.0 cm.";
-                                                  }
-                                                }
-                                                return null;
-                                              },
-                                              inputFormatters: [
-                                                // FilteringTextInputFormatter
-                                                //     .allow("[0-9]"),
-                                              ],
-                                              style: const TextStyle(
-                                                fontSize: 15.0,
-                                                fontFamily: 'Urbanist',
-                                              ),
-                                              decoration: InputDecoration(
-                                                errorStyle: textStyleError,
-                                                contentPadding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 15.0,
-                                                        horizontal: 15),
-                                                border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          12.0),
-                                                ),
-                                                enabledBorder:
-                                                    const OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(
-                                                              12.0)),
-                                                  borderSide: BorderSide(
-                                                      color:
-                                                          textFieldBorderColor),
-                                                ),
-                                                focusedBorder:
-                                                    const OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(
-                                                              12.0)),
-                                                  borderSide: BorderSide(
-                                                      color: darkGrayColor),
-                                                ),
-                                                filled: true,
-                                                fillColor:
-                                                    const Color(0xFFF7F8F9),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      )),
-                                      const SizedBox(width: 15),
-                                      Expanded(
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              margin: const EdgeInsets.only(
-                                                  top: 5, left: 5),
-                                              alignment: Alignment.centerLeft,
-                                              child: const Text(
-                                                "Weight",
-                                                textAlign: TextAlign.left,
-                                                style: TextStyle(
-                                                  color: Color.fromARGB(
-                                                      255, 0, 0, 0),
-                                                  fontSize: 17,
-                                                  fontFamily: 'Urbanist',
-                                                  fontWeight: FontWeight.w700,
-                                                  height: 1.30,
-                                                  letterSpacing: -0.28,
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 5.0),
-                                              child: TextFormField(
-                                                maxLength: 3,
-                                                controller: _weightController,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                inputFormatters: [
-                                                  FilteringTextInputFormatter
-                                                      .digitsOnly,
-                                                ],
-                                                style: const TextStyle(
-                                                  fontSize: 15.0,
-                                                  fontFamily: 'Urbanist',
-                                                ),
-                                                decoration: InputDecoration(
-                                                  errorStyle: textStyleError,
-                                                  contentPadding:
-                                                      const EdgeInsets
-                                                          .symmetric(
-                                                          vertical: 15.0,
-                                                          horizontal: 15),
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12.0),
-                                                  ),
-                                                  enabledBorder:
-                                                      const OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                12.0)),
-                                                    borderSide: BorderSide(
-                                                        color:
-                                                            textFieldBorderColor),
-                                                  ),
-                                                  focusedBorder:
-                                                      const OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                12.0)),
-                                                    borderSide: BorderSide(
-                                                        color: darkGrayColor),
-                                                  ),
-                                                  filled: true,
-                                                  fillColor:
-                                                      const Color(0xFFF7F8F9),
-                                                ),
-                                                validator: (value) {
-                                                  if (value == null ||
-                                                      value.trim().isEmpty) {
-                                                    return "This field cannot be empty.";
-                                                  }
-                                                  return null;
-                                                },
-                                              ),
-                                            ),
-                                          ],
                                         ),
-                                      ),
-                                    ],
-                                  ),
+                                        GestureDetector(
+                                          onTap: _showDatePicker,
+                                          child: const Padding(
+                                            padding: EdgeInsetsDirectional.only(
+                                                start: 5),
+                                            child: Icon(
+                                              Icons.keyboard_arrow_down,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
 
-                                /// Gender
-                                _GenderViewWidget(
-                                  gender: gender,
-                                  selectedValue: selectedGender,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      selectedGender = value;
-                                    });
-                                  },
+                                CustomResizeWidget(
+                                  hasBottomBorder: false,
+                                  children: <Widget>[
+                                    const Text(
+                                      "Time of Birth",
+                                      style: TextStyle(
+                                        color: Color.fromARGB(255, 0, 0, 0),
+                                        fontSize: 17,
+                                        fontFamily: 'Urbanist',
+                                        fontWeight: FontWeight.w700,
+                                        height: 1.30,
+                                        letterSpacing: -0.28,
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        CupertinoButton(
+                                          padding: EdgeInsets.zero,
+                                          onPressed: _showTimePicker,
+                                          child: Text(
+                                            timeFormat,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontSize: 16.0,
+                                              fontFamily: 'Urbanist',
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: _showTimePicker,
+                                          child: const Padding(
+                                            padding: EdgeInsetsDirectional.only(
+                                                start: 5),
+                                            child: Icon(
+                                              Icons.keyboard_arrow_down,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
 
                                 /// Blood Type
                                 CustomResizeWidget(
-                                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  hasBottomBorder: false,
                                   onTap: () async {
                                     await showDialog(
                                       context: context,
@@ -922,29 +1093,27 @@ class NewBornInfoState extends State<NewBornInfo> {
                                     const Text(
                                       "Blood Type",
                                       style: TextStyle(
-                                        // color: Colors.black,
+                                        color: Color.fromARGB(255, 0, 0, 0),
                                         fontSize: 17,
-                                        fontWeight: FontWeight.bold,
                                         fontFamily: 'Urbanist',
+                                        fontWeight: FontWeight.w700,
+                                        height: 1.30,
+                                        letterSpacing: -0.28,
                                       ),
                                     ),
                                     Row(
                                       children: [
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 5.0),
-                                          child: Text(
-                                            selectedBloodType.isEmpty
-                                                ? "Select"
-                                                : selectedBloodType,
-                                            style: const TextStyle(
-                                              //selected days size
-                                              fontSize: 16.0,
-                                              fontFamily: 'Urbanist',
+                                        Text(
+                                          selectedBloodType.isEmpty
+                                              ? "Select"
+                                              : selectedBloodType,
+                                          style: const TextStyle(
+                                            //selected days size
+                                            fontSize: 16.0,
+                                            fontFamily: 'Urbanist',
 
-                                              /// Selected days Color
-                                              color: Colors.black,
-                                            ),
+                                            /// Selected days Color
+                                            color: Colors.black,
                                           ),
                                         ),
                                         const Padding(
@@ -960,112 +1129,30 @@ class NewBornInfoState extends State<NewBornInfo> {
                                   ],
                                 ),
 
-                                /// Date & Time of Birth
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: CustomResizeWidget(
-                                        children: <Widget>[
-                                          const Text(
-                                            "Date of Birth",
-                                            style: TextStyle(
-                                              color:
-                                                  Color.fromARGB(255, 0, 0, 0),
-                                              fontSize: 17,
-                                              fontFamily: 'Urbanist',
-                                              fontWeight: FontWeight.w700,
-                                              height: 1.30,
-                                              letterSpacing: -0.28,
-                                            ),
-                                          ),
-                                          const Spacer(),
-                                          Row(
-                                            children: [
-                                              CupertinoButton(
-                                                padding: EdgeInsets.zero,
-                                                onPressed: _showDatePicker,
-                                                child: Text(
-                                                  '${selectedDate.month}-${selectedDate.day}-${selectedDate.year}',
-                                                  style: const TextStyle(
-                                                    fontSize: 16.0,
-                                                    fontFamily: 'Urbanist',
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                              ),
-                                              GestureDetector(
-                                                onTap: _showDatePicker,
-                                                child: const Padding(
-                                                  padding: EdgeInsetsDirectional
-                                                      .only(start: 5),
-                                                  child: Icon(
-                                                    Icons.keyboard_arrow_down,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: CustomResizeWidget(
-                                        children: <Widget>[
-                                          const Text(
-                                            "Time of Birth",
-                                            style: TextStyle(
-                                              color:
-                                                  Color.fromARGB(255, 0, 0, 0),
-                                              fontSize: 17,
-                                              fontFamily: 'Urbanist',
-                                              fontWeight: FontWeight.w700,
-                                              height: 1.30,
-                                              letterSpacing: -0.28,
-                                            ),
-                                          ),
-                                          Row(
-                                            children: [
-                                              CupertinoButton(
-                                                padding: EdgeInsets.zero,
-                                                onPressed: _showTimePicker,
-                                                child: Text(
-                                                  timeFormat,
-                                                  style: TextStyle(
-                                                    fontSize: 16.0,
-                                                    fontFamily: 'Urbanist',
-                                                    color: errorMessage.isEmpty
-                                                        ? Colors.black
-                                                        : Theme.of(context)
-                                                            .colorScheme
-                                                            .error,
-                                                  ),
-                                                ),
-                                              ),
-                                              GestureDetector(
-                                                onTap: _showTimePicker,
-                                                child: const Padding(
-                                                  padding: EdgeInsetsDirectional
-                                                      .only(start: 5),
-                                                  child: Icon(
-                                                    Icons.keyboard_arrow_down,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                                /// Gender
+                                GenderViewWidget(
+                                  gender: gender,
+                                  selectedValue: selectedGender ?? "",
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedGender = value;
+                                    });
+                                  },
                                 ),
                                 Container(
+                                  height: 20,
                                   alignment: Alignment.centerLeft,
-                                  child:
-                                      Text(errorMessage, style: textStyleError),
+                                  child: Text(
+                                    errorMessage,
+                                    style: textStyleError,
+                                  ),
                                 ),
-                                const SizedBox(height: 30),
+                                // Container(
+                                //   alignment: Alignment.centerLeft,
+                                //   child:
+                                //       Text(errorMessage, style: textStyleError),
+                                // ),
+                                const SizedBox(height: 10),
                                 SizedBox(
                                   height: 45.0,
                                   child: ElevatedButton(
@@ -1090,14 +1177,14 @@ class NewBornInfoState extends State<NewBornInfo> {
                               ],
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -1125,7 +1212,7 @@ class CustomResizeWidget extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 60,
+        height: 50,
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         decoration: BoxDecoration(
           border: Border(
@@ -1137,7 +1224,7 @@ class CustomResizeWidget extends StatelessWidget {
                 : BorderSide.none,
             bottom: hasBottomBorder
                 ? const BorderSide(
-                    color: Color.fromARGB(255, 36, 33, 33),
+                    color: CupertinoColors.inactiveGray,
                     width: 0.0,
                   )
                 : BorderSide.none,
@@ -1178,7 +1265,7 @@ class _BloodDialogState extends State<BloodDialog> {
     {"value": "AB-", "isSelected": false, "id": "108"},
   ];
 
-  String selectedBlood = "";
+  String? selectedBlood = "";
 
   initialValue() {
     if (widget.initialBloodValue != null &&
@@ -1191,7 +1278,7 @@ class _BloodDialogState extends State<BloodDialog> {
       // }).toList();
 
       setState(() {
-        selectedBlood = widget.initialBloodValue!;
+        selectedBlood = widget.initialBloodValue ?? "";
       });
     }
   }
@@ -1228,9 +1315,35 @@ class _BloodDialogState extends State<BloodDialog> {
           ),
           TextButton(
             onPressed: () {
+              // setState(() {
+              //   for (var item in bloodTypes) {
+              //     item['isSelected'] = false;
+              //   }
+              //   // bloodTypes.map((e) => e['isSelected'] = false);
+              // });
+
+              setState(() {
+                selectedBlood = null;
+                bloodTypes.map((e) => e['isSelected'] = false);
+              });
+            },
+            child: const Text(
+              "Clear",
+              style: TextStyle(
+                color: Colors.red,
+                fontFamily: 'Urbanist',
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
               Navigator.pop(context);
               setState(() {
-                widget.onSelectedItem(selectedBlood);
+                if (selectedBlood != null) {
+                  widget.onSelectedItem(selectedBlood!);
+                } else {
+                  widget.onSelectedItem("");
+                }
               });
             },
             child: const Text(
@@ -1251,9 +1364,10 @@ class _BloodDialogState extends State<BloodDialog> {
               (i) {
                 return Theme(
                   data: ThemeData(
-                    unselectedWidgetColor: bloodTypes[i]['isSelected']
-                        ? pinkColor
-                        : Colors.black54,
+                    unselectedWidgetColor:
+                        bloodTypes[i]['isSelected'] && selectedBlood != null
+                            ? pinkColor
+                            : Colors.black,
                   ),
                   child: RadioListTile(
                     groupValue: selectedBlood,
@@ -1267,6 +1381,10 @@ class _BloodDialogState extends State<BloodDialog> {
                       ),
                     ),
                     value: bloodTypes[i]['value'],
+                    toggleable: false,
+                    onFocusChange: (value) {
+                      print("BLOOD TYPES::--focus $value");
+                    },
                     onChanged: (value) {
                       setState(
                         () {
@@ -1293,8 +1411,8 @@ class _BloodDialogState extends State<BloodDialog> {
   }
 }
 
-class _GenderViewWidget extends StatelessWidget {
-  const _GenderViewWidget({
+class GenderViewWidget extends StatelessWidget {
+  const GenderViewWidget({
     super.key,
     required this.gender,
     required this.onChanged,
@@ -1307,45 +1425,48 @@ class _GenderViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20),
-      child: CustomResizeWidget(
-        children: <Widget>[
-          const Text(
-            "Gender",
-            style: TextStyle(
-              color: Color.fromARGB(255, 0, 0, 0),
-              fontSize: 17,
-              fontFamily: 'Urbanist',
-              fontWeight: FontWeight.w700,
-              height: 1.30,
-              letterSpacing: -0.28,
-            ),
+    var textStyleError = Theme.of(context).textTheme.bodyMedium?.copyWith(
+          fontSize: 12.0,
+          color: Theme.of(context).colorScheme.error,
+          fontWeight: FontWeight.normal,
+        );
+    return CustomResizeWidget(
+      children: <Widget>[
+        const Text(
+          "Gender",
+          style: TextStyle(
+            color: Color.fromARGB(255, 0, 0, 0),
+            fontSize: 17,
+            fontFamily: 'Urbanist',
+            fontWeight: FontWeight.w700,
+            height: 1.30,
+            letterSpacing: -0.28,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: List.generate(gender.length, (index) {
-              return Padding(
-                padding: const EdgeInsetsDirectional.only(start: 20),
-                child: Row(
-                  children: [
-                    Radio(
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      value: gender[index]['type'],
-                      groupValue: selectedValue,
-                      onChanged: onChanged,
-                    ),
-                    Text(
-                      gender[index]['type'].toString(),
-                      style: const TextStyle(fontSize: 17),
-                    ),
-                  ],
-                ),
-              );
-            }),
-          ),
-        ],
-      ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: List.generate(gender.length, (index) {
+            return Padding(
+              padding: const EdgeInsetsDirectional.only(start: 20),
+              child: Row(
+                children: [
+                  Radio(
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    value: gender[index]['type'],
+                    groupValue: selectedValue,
+                    onChanged: onChanged,
+                    activeColor: pinkColor,
+                  ),
+                  Text(
+                    gender[index]['type'].toString(),
+                    style: const TextStyle(fontSize: 17),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ),
+      ],
     );
   }
 }

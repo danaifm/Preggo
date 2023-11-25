@@ -31,67 +31,69 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
   bool showError = false;
   String? selectedName;
   String? selectedGender;
-  String babyDueDate= ''; 
+  String babyDueDate = '';
   late Timestamp duedateTimestamp;
-  String pregnancyID = ''; 
+  String pregnancyID = '';
   String pregID = '';
 
-  
-
   @override
-  void didChangeDependencies() async{
+  void didChangeDependencies() async {
     super.didChangeDependencies();
     pregID = ModalRoute.of(context)?.settings.arguments as String;
     getPregnancyInfo().then((_) {
-    setState(() {
-      _babynameController.text = selectedName!;
-      gender = selectedGender;
+      setState(() {
+        _babynameController.text = selectedName!;
+        gender = selectedGender;
+      });
     });
-  });
   }
 
-  //GET PREGNANCY INFO FOR CURRENT PREGNANCY 
+  //GET PREGNANCY INFO FOR CURRENT PREGNANCY
   Future<void> getPregnancyInfo() async {
-
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     String userUid = getUserId();
     print(userUid);
 
-    final pregnancyInfoQuerySnapshot = await firestore.collection('users').doc(userUid)
-    .collection('pregnancyInfo').doc(pregID)
-    .get();
-    
+    final pregnancyInfoQuerySnapshot = await firestore
+        .collection('users')
+        .doc(userUid)
+        .collection('pregnancyInfo')
+        .doc(pregID)
+        .get();
+
     if (pregnancyInfoQuerySnapshot.exists) {
-      Map<String,dynamic> data =pregnancyInfoQuerySnapshot.data() as Map<String,dynamic>;
+      Map<String, dynamic> data =
+          pregnancyInfoQuerySnapshot.data() as Map<String, dynamic>;
       // Save the values in global variables for later use
       selectedName = data['Baby\'s name'];
       selectedGender = data['Gender'];
       duedateTimestamp = data['DueDate'];
       babyDueDate = duedateTimestamp.toDate().toString();
       DateTime dateTime = DateTime.parse(babyDueDate);
-      String formattedDateTime = DateFormat("yyyy/MM/dd, hh:mm a").format(dateTime);
+      String formattedDateTime =
+          DateFormat("yyyy/MM/dd, hh:mm a").format(dateTime);
       babyDueDate = formattedDateTime;
 
-      print("-----------$selectedName, $selectedGender, $babyDueDate-----------------");
+      print(
+          "-----------$selectedName, $selectedGender, $babyDueDate-----------------");
+    } else {
+      print("nothing here");
     }
-    else {print("nothing here");}
-    
   }
 
-
-  //RETRIEVE USERS ID 
+  //RETRIEVE USERS ID
   String getUserId() {
     User? user = FirebaseAuth.instance.currentUser;
     return user!.uid;
   }
 
-  
- //UPDATES PREGNANCY INFO TO FIRESTORE 
-  Future<void> updateBabyInfo(String pregnancy, String name, String gender) async{
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
+  //UPDATES PREGNANCY INFO TO FIRESTORE
+  Future<void> updateBabyInfo(
+      String pregnancy, String name, String gender) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
     String userUid = getUserId();
     String collectionPath = 'users/$userUid/pregnancyInfo';
-    
+
     // Create a map to hold the updated field values
     Map<String, dynamic> updatedData = {
       'Baby\'s name': name.trim(),
@@ -160,6 +162,8 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
                       child: Center(
                         child: ElevatedButton(
                           onPressed: () {
+                            //Navigator.pop(context, pregID);
+
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -192,7 +196,7 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
     );
   }
 
-  //SUCCESS DIALOG AFTER SUCCESSFUL EDITING 
+  //SUCCESS DIALOG AFTER SUCCESSFUL EDITING
   Future<dynamic> _successDialog() {
     return showDialog(
         context: context,
@@ -283,9 +287,13 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
 
   @override
   Widget build(BuildContext context) {
-    
+    return WillPopScope(
+      onWillPop: () async {
+        backButton();
 
-    return Scaffold(
+        return false;
+      },
+      child: Scaffold(
         backgroundColor: backGroundPink,
         resizeToAvoidBottomInset: true,
         body: Column(
@@ -296,17 +304,17 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
             Row(
               children: [
                 IconButton(
-                    onPressed: () {
-                      backButton();
-                    },
-                    icon: const Icon(
-                      Icons.arrow_back,
-                      color: Colors.black,
-                    ),
+                  onPressed: () {
+                    backButton();
+                  },
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.black,
                   ),
-                  SizedBox(
-                    width: 10,
-                  ),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
                 Text(
                   "Edit Baby Information",
                   style: TextStyle(
@@ -415,7 +423,7 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
                                     fillColor: Color(0xFFF7F8F9),
                                   ),
                                   autovalidateMode:
-                                    AutovalidateMode.onUserInteraction,
+                                      AutovalidateMode.onUserInteraction,
                                   validator: (value) {
                                     if (value!.trim().isEmpty) {
                                       return null;
@@ -596,8 +604,9 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
                                   ),
                                 ],
                               ),*/
-                              SizedBox(height: 15,),
-                              
+                              SizedBox(
+                                height: 15,
+                              ),
 
                               Padding(
                                 //start journey button
@@ -616,17 +625,19 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
                                       String babyName =
                                           _babynameController.text.trim();
                                       String? babyGender = gender;
-                                      
-                                      updateBabyInfo(pregID,babyName, babyGender!);
 
+                                      updateBabyInfo(
+                                          pregID, babyName, babyGender!);
+                                      //Navigator.pop(context, pregID);
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => BabyInformation(),
-                                          settings: RouteSettings(arguments: pregID),
+                                          builder: (context) =>
+                                              BabyInformation(),
+                                          settings:
+                                              RouteSettings(arguments: pregID),
                                         ),
                                       );
-                                              
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -634,7 +645,8 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(40)),
-                                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 75),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 15, horizontal: 75),
                                   ),
                                   child: Text(
                                     "Edit Baby Information",
@@ -652,6 +664,8 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
               ),
             ),
           ],
-        ));
+        ),
+      ),
+    );
   }
 }

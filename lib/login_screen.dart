@@ -106,12 +106,10 @@ class _LoginScreenState extends State<LoginScreen> {
           setState(() {
             isUserValid = true;
             if (mounted) {
-              /// TODO: Test new born info screen.
               Navigator.push(
-               context,
+                  context,
                   MaterialPageRoute(
                     builder: (context) => NavBar(),
-                    //settings: RouteSettings(arguments: "HMEBTKrnOYnmxPmBMHuV"),
                   ));
               // Navigator.push(
               //     context,

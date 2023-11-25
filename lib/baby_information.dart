@@ -2,34 +2,32 @@
 
 import 'package:flutter/material.dart';
 import 'package:preggo/EditPregnancyInfo.dart';
+import 'package:preggo/NavBar.dart';
 import 'package:preggo/colors.dart';
+import 'package:preggo/edit_new_born_info.dart';
 import 'package:preggo/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:preggo/pregnancyTapped.dart';
-import 'package:preggo/profile/profile_screen.dart';
-
-
 
 class BabyInformation extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-   
     return _babyInformation();
   }
 }
 
-class _babyInformation extends State<BabyInformation>{
-  
+class _babyInformation extends State<BabyInformation> {
   String? ended;
-  String pregnancyId = ''; 
+  String pregnancyId = '';
 
   @override
-  void didChangeDependencies() async{
+  void didChangeDependencies() async {
     super.didChangeDependencies();
     pregnancyId = ModalRoute.of(context)?.settings.arguments as String;
-    print('-----------------------$pregnancyId---------------------------------');
+    print(
+        '-----------------------$pregnancyId---------------------------------');
     ended = await checkPregnancyEnded(pregnancyId);
     setState(() {});
   }
@@ -39,7 +37,7 @@ class _babyInformation extends State<BabyInformation>{
     return user!.uid;
   }
 
-  //CHECKS IF THE GIVEN PREGNANCY ID IS ENDED OR NOT 
+  //CHECKS IF THE GIVEN PREGNANCY ID IS ENDED OR NOT
   Future<String?> checkPregnancyEnded(String pregnancyId) async {
     String userId = getUserId();
     FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -53,38 +51,37 @@ class _babyInformation extends State<BabyInformation>{
         String endedValue = documentSnapshot.get('ended');
         return endedValue;
       }
-      
     } catch (e) {
       print('Error: $e');
     }
     return 'null';
-}
+  }
 
-  //GETS BABY INFO BASED ON PREGNANCY ENDED OR NOT 
-  Future<Widget> getBabyInfo (String pregnancyId) async {
-    
+  //GETS BABY INFO BASED ON PREGNANCY ENDED OR NOT
+  Future<Widget> getBabyInfo(String pregnancyId) async {
     String userUid = getUserId();
     DocumentSnapshot babyInfo = await FirebaseFirestore.instance
-    .collection('users').doc(userUid)
-    .collection('pregnancyInfo')
-    .doc(pregnancyId)
-    .get();
+        .collection('users')
+        .doc(userUid)
+        .collection('pregnancyInfo')
+        .doc(pregnancyId)
+        .get();
 
     print('-------------------------$ended----------------------');
 
-    //PREGNANCY NOT ENDED -> GET BABY INFO 
-    if (ended =="false"){
-      if(babyInfo.exists){
-
-        Map<String,dynamic> data =babyInfo.data() as Map<String,dynamic>;
+    //PREGNANCY NOT ENDED -> GET BABY INFO
+    if (ended == "false") {
+      if (babyInfo.exists) {
+        Map<String, dynamic> data = babyInfo.data() as Map<String, dynamic>;
         var name = data['Baby\'s name'];
-        var gender= data['Gender'];
+        var gender = data['Gender'];
         var duedate = data['DueDate'];
         String babyDueDate = duedate.toDate().toString();
         DateTime dateTime = DateTime.parse(babyDueDate);
         String formattedDate = DateFormat("yyyy/MM/dd").format(dateTime);
         String formattedTime = DateFormat("hh:mm a").format(dateTime);
-        String formattedDateTime = DateFormat("yyyy/MM/dd, hh:mm a").format(dateTime);
+        String formattedDateTime =
+            DateFormat("yyyy/MM/dd, hh:mm a").format(dateTime);
 
         babyDueDate = formattedDate;
         String babyDueTime = formattedTime;
@@ -95,13 +92,12 @@ class _babyInformation extends State<BabyInformation>{
           imagePath = 'assets/images/babydetails.png';
         } else if (gender == 'Girl') {
           imagePath = 'assets/images/babygirl.png';
-        } 
-        else{
+        } else {
           imagePath = 'assets/images/unknownBaby.png';
         }
-        
+
         return Container(
-          padding: EdgeInsets.symmetric(horizontal: 10,vertical: 0),
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
           child: Column(
             children: [
               Row(
@@ -114,36 +110,37 @@ class _babyInformation extends State<BabyInformation>{
                       width: 35,
                     ),
                   ),
-                    SizedBox(width: 10,),
+                  SizedBox(
+                    width: 10,
+                  ),
                   Text(
                     "Name: ",
                     style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 23,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w700,
-                    height: 1.30,
-                    letterSpacing: -0.28,
+                      color: Colors.black,
+                      fontSize: 23,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w700,
+                      height: 1.30,
+                      letterSpacing: -0.28,
                     ),
                   ),
                   Text(
                     "$name",
                     style: TextStyle(
-                    color: pinkColor,
-                    fontSize: 21,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w600,
-                    height: 1.30,
-                    letterSpacing: -0.28,
+                      color: pinkColor,
+                      fontSize: 21,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      height: 1.30,
+                      letterSpacing: -0.28,
                     ),
                   ),
                 ],
-
               ),
-              SizedBox(height: 23,),
-              
+              SizedBox(
+                height: 23,
+              ),
               Row(
-                
                 children: [
                   Padding(
                     padding: EdgeInsets.only(),
@@ -153,34 +150,36 @@ class _babyInformation extends State<BabyInformation>{
                       width: 35,
                     ),
                   ),
-                    SizedBox(width: 10,),
-                  
+                  SizedBox(
+                    width: 10,
+                  ),
                   Text(
                     "Gender: ",
                     style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 23,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w700,
-                    height: 1.30,
-                    letterSpacing: -0.28,
+                      color: Colors.black,
+                      fontSize: 23,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w700,
+                      height: 1.30,
+                      letterSpacing: -0.28,
                     ),
                   ),
                   Text(
                     "$gender",
                     style: TextStyle(
-                    color: pinkColor,
-                    fontSize: 21,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w600,
-                    height: 1.30,
-                    letterSpacing: -0.28,
+                      color: pinkColor,
+                      fontSize: 21,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      height: 1.30,
+                      letterSpacing: -0.28,
                     ),
                   ),
                 ],
-
               ),
-              SizedBox(height: 23,),
+              SizedBox(
+                height: 23,
+              ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: TextBaseline.alphabetic,
@@ -193,47 +192,44 @@ class _babyInformation extends State<BabyInformation>{
                       width: 32,
                     ),
                   ),
-                  SizedBox(width: 13,),
-                  
-                  
+                  SizedBox(
+                    width: 13,
+                  ),
                   Column(
                     children: [
                       Text(
                         "Expected DueDate: ",
                         style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 23,
-                        fontFamily: 'Urbanist',
-                        fontWeight: FontWeight.w700,
-                        height: 1.30,
-                        letterSpacing: -0.28,
+                          color: Colors.black,
+                          fontSize: 23,
+                          fontFamily: 'Urbanist',
+                          fontWeight: FontWeight.w700,
+                          height: 1.30,
+                          letterSpacing: -0.28,
                         ),
                       ),
-                      SizedBox(height: 6,),
+                      SizedBox(
+                        height: 6,
+                      ),
                       Text(
                         due,
                         style: TextStyle(
-                        color: pinkColor,
-                        fontSize: 21,
-                        fontFamily: 'Urbanist',
-                        fontWeight: FontWeight.w600,
-                        height: 1.30,
-                        letterSpacing: -0.28,
+                          color: pinkColor,
+                          fontSize: 21,
+                          fontFamily: 'Urbanist',
+                          fontWeight: FontWeight.w600,
+                          height: 1.30,
+                          letterSpacing: -0.28,
                         ),
                       ),
-                      
                     ],
                   ),
                 ],
-
               ),
-
-          ],),
-        
+            ],
+          ),
         );
-
-      }
-      else{
+      } else {
         return Center(
           child: Column(
             children: [
@@ -264,35 +260,35 @@ class _babyInformation extends State<BabyInformation>{
             ],
           ),
         );
-        
       }
-      
     }
 
-    //PREGNANCY ENDED -> RETREIVE NEWBORN INFO 
-    else{
-      QuerySnapshot<Map<String, dynamic>> newbornInfo = await FirebaseFirestore.instance
-      .collection('users').doc(userUid)
-      .collection('pregnancyInfo')
-      .doc(pregnancyId)
-      .collection('newbornInfo')
-      .get();
+    //PREGNANCY ENDED -> RETREIVE NEWBORN INFO
+    else {
+      QuerySnapshot<Map<String, dynamic>> newbornInfo = await FirebaseFirestore
+          .instance
+          .collection('users')
+          .doc(userUid)
+          .collection('pregnancyInfo')
+          .doc(pregnancyId)
+          .collection('newbornInfo')
+          .get();
 
-      if(newbornInfo.size > 0){
-        
-        //get name and gender from pregnancyinfo first 
-        Map<String,dynamic> data =babyInfo.data() as Map<String,dynamic>;
+      if (newbornInfo.size > 0) {
+        //get name and gender from pregnancyinfo first
+        Map<String, dynamic> data = babyInfo.data() as Map<String, dynamic>;
         var name = data['Baby\'s name'];
-        var gender= data['Gender'];
+        var gender = data['Gender'];
 
-        //get the rest of the newborns info from the newbornInfo collection 
-        QueryDocumentSnapshot<Map<String, dynamic>> newborn = newbornInfo.docs[0];
+        //get the rest of the newborns info from the newbornInfo collection
+        QueryDocumentSnapshot<Map<String, dynamic>> newborn =
+            newbornInfo.docs[0];
         Map<String, dynamic> newbornData = newborn.data();
-        String bloodtype= newbornData['Blood'];
-        String birthDate= newbornData['Date'];
-        String birthTime= newbornData['Time'];
-        String birthPlace= newbornData['Place'];
-        String height= newbornData['Height'].toString();
+        String bloodtype = newbornData['Blood'];
+        String birthDate = newbornData['Date'];
+        String birthTime = newbornData['Time'];
+        String birthPlace = newbornData['Place'];
+        String height = newbornData['Height'].toString();
         var weight = newbornData['Weight'].toString();
 
         String imagePath = '';
@@ -300,13 +296,12 @@ class _babyInformation extends State<BabyInformation>{
           imagePath = 'assets/images/babydetails.png';
         } else if (gender == 'Girl') {
           imagePath = 'assets/images/babygirl.png';
-        } 
-        else{
+        } else {
           imagePath = 'assets/images/unknownBaby.png';
         }
-        
+
         return Container(
-          padding: EdgeInsets.symmetric(horizontal: 10,vertical: 0),
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
           child: Column(
             children: [
               Row(
@@ -319,36 +314,37 @@ class _babyInformation extends State<BabyInformation>{
                       width: 25,
                     ),
                   ),
-                    SizedBox(width: 10,),
+                  SizedBox(
+                    width: 10,
+                  ),
                   Text(
                     "Name: ",
                     style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 23,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w600,
-                    height: 1.30,
-                    letterSpacing: -0.28,
+                      color: Colors.black,
+                      fontSize: 23,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      height: 1.30,
+                      letterSpacing: -0.28,
                     ),
                   ),
                   Text(
                     name,
                     style: TextStyle(
-                    color: pinkColor,
-                    fontSize: 21,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w600,
-                    height: 1.30,
-                    letterSpacing: -0.28,
+                      color: pinkColor,
+                      fontSize: 21,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      height: 1.30,
+                      letterSpacing: -0.28,
                     ),
                   ),
                 ],
-
               ),
-              SizedBox(height: 14,),
-              
+              SizedBox(
+                height: 14,
+              ),
               Row(
-                
                 children: [
                   Padding(
                     padding: EdgeInsets.only(),
@@ -358,34 +354,36 @@ class _babyInformation extends State<BabyInformation>{
                       width: 25,
                     ),
                   ),
-                    SizedBox(width: 10,),
-                  
+                  SizedBox(
+                    width: 10,
+                  ),
                   Text(
                     "Gender: ",
                     style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 23,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w600,
-                    height: 1.30,
-                    letterSpacing: -0.28,
+                      color: Colors.black,
+                      fontSize: 23,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      height: 1.30,
+                      letterSpacing: -0.28,
                     ),
                   ),
                   Text(
                     gender,
                     style: TextStyle(
-                    color: pinkColor,
-                    fontSize: 21,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w600,
-                    height: 1.30,
-                    letterSpacing: -0.28,
+                      color: pinkColor,
+                      fontSize: 21,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      height: 1.30,
+                      letterSpacing: -0.28,
                     ),
                   ),
                 ],
-
               ),
-              SizedBox(height: 14,),
+              SizedBox(
+                height: 14,
+              ),
               Row(
                 children: [
                   Padding(
@@ -396,32 +394,36 @@ class _babyInformation extends State<BabyInformation>{
                       width: 25,
                     ),
                   ),
-                  SizedBox(width: 10,),
+                  SizedBox(
+                    width: 10,
+                  ),
                   Text(
                     "Birth Date: ",
                     style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 23,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w600,
-                    height: 1.30,
-                    letterSpacing: -0.28,
+                      color: Colors.black,
+                      fontSize: 23,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      height: 1.30,
+                      letterSpacing: -0.28,
                     ),
                   ),
                   Text(
                     birthDate,
                     style: TextStyle(
-                    color: pinkColor,
-                    fontSize: 21,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w600,
-                    height: 1.30,
-                    letterSpacing: -0.28,
+                      color: pinkColor,
+                      fontSize: 21,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      height: 1.30,
+                      letterSpacing: -0.28,
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 14,),
+              SizedBox(
+                height: 14,
+              ),
               Row(
                 children: [
                   Padding(
@@ -432,32 +434,36 @@ class _babyInformation extends State<BabyInformation>{
                       width: 25,
                     ),
                   ),
-                  SizedBox(width: 10,),
+                  SizedBox(
+                    width: 10,
+                  ),
                   Text(
                     "Birth Time: ",
                     style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 23,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w600,
-                    height: 1.30,
-                    letterSpacing: -0.28,
+                      color: Colors.black,
+                      fontSize: 23,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      height: 1.30,
+                      letterSpacing: -0.28,
                     ),
                   ),
                   Text(
                     birthTime,
                     style: TextStyle(
-                    color: pinkColor,
-                    fontSize: 21,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w600,
-                    height: 1.30,
-                    letterSpacing: -0.28,
+                      color: pinkColor,
+                      fontSize: 21,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      height: 1.30,
+                      letterSpacing: -0.28,
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 14,),
+              SizedBox(
+                height: 14,
+              ),
               Row(
                 children: [
                   Padding(
@@ -468,32 +474,36 @@ class _babyInformation extends State<BabyInformation>{
                       width: 25,
                     ),
                   ),
-                  SizedBox(width: 10,),
+                  SizedBox(
+                    width: 10,
+                  ),
                   Text(
                     "Birth Place: ",
                     style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 23,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w600,
-                    height: 1.30,
-                    letterSpacing: -0.28,
+                      color: Colors.black,
+                      fontSize: 23,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      height: 1.30,
+                      letterSpacing: -0.28,
                     ),
                   ),
                   Text(
                     birthPlace,
                     style: TextStyle(
-                    color: pinkColor,
-                    fontSize: 21,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w600,
-                    height: 1.30,
-                    letterSpacing: -0.28,
+                      color: pinkColor,
+                      fontSize: 21,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      height: 1.30,
+                      letterSpacing: -0.28,
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 14,),
+              SizedBox(
+                height: 14,
+              ),
               Row(
                 children: [
                   Padding(
@@ -504,32 +514,36 @@ class _babyInformation extends State<BabyInformation>{
                       width: 25,
                     ),
                   ),
-                  SizedBox(width: 10,),
+                  SizedBox(
+                    width: 10,
+                  ),
                   Text(
                     "Blood Type: ",
                     style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 23,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w600,
-                    height: 1.30,
-                    letterSpacing: -0.28,
+                      color: Colors.black,
+                      fontSize: 23,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      height: 1.30,
+                      letterSpacing: -0.28,
                     ),
                   ),
                   Text(
                     bloodtype,
                     style: TextStyle(
-                    color: pinkColor,
-                    fontSize: 21,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w600,
-                    height: 1.30,
-                    letterSpacing: -0.28,
+                      color: pinkColor,
+                      fontSize: 21,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      height: 1.30,
+                      letterSpacing: -0.28,
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 14,),
+              SizedBox(
+                height: 14,
+              ),
               Row(
                 children: [
                   Padding(
@@ -540,32 +554,36 @@ class _babyInformation extends State<BabyInformation>{
                       width: 25,
                     ),
                   ),
-                  SizedBox(width: 10,),
+                  SizedBox(
+                    width: 10,
+                  ),
                   Text(
                     "Height: ",
                     style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 23,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w600,
-                    height: 1.30,
-                    letterSpacing: -0.28,
+                      color: Colors.black,
+                      fontSize: 23,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      height: 1.30,
+                      letterSpacing: -0.28,
                     ),
                   ),
                   Text(
                     '$height cm',
                     style: TextStyle(
-                    color: pinkColor,
-                    fontSize: 21,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w600,
-                    height: 1.30,
-                    letterSpacing: -0.28,
+                      color: pinkColor,
+                      fontSize: 21,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      height: 1.30,
+                      letterSpacing: -0.28,
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 14,),
+              SizedBox(
+                height: 14,
+              ),
               Row(
                 children: [
                   Padding(
@@ -576,42 +594,37 @@ class _babyInformation extends State<BabyInformation>{
                       width: 25,
                     ),
                   ),
-                  SizedBox(width: 10,),
+                  SizedBox(
+                    width: 10,
+                  ),
                   Text(
                     "Weight: ",
                     style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 23,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w600,
-                    height: 1.30,
-                    letterSpacing: -0.28,
+                      color: Colors.black,
+                      fontSize: 23,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      height: 1.30,
+                      letterSpacing: -0.28,
                     ),
                   ),
                   Text(
                     '$weight kg',
                     style: TextStyle(
-                    color: pinkColor,
-                    fontSize: 21,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w600,
-                    height: 1.30,
-                    letterSpacing: -0.28,
+                      color: pinkColor,
+                      fontSize: 21,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      height: 1.30,
+                      letterSpacing: -0.28,
                     ),
                   ),
                 ],
               ),
-
-
-          ],),
-        
+            ],
+          ),
         );
-
-
-
-        
-      }
-      else{
+      } else {
         return Center(
           child: Column(
             children: [
@@ -643,173 +656,183 @@ class _babyInformation extends State<BabyInformation>{
           ),
         );
       }
-
     }
   }
-  
-  
+
   @override
   Widget build(BuildContext context) {
-    
-    
-    return Scaffold(
-      backgroundColor: backGroundPink,
+    return WillPopScope(
+      onWillPop: () async {
+        if (ended == 'false') {
+          //PREGNANCY NOT ENDED -> ROUTE TO PROFILE PAGE
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NavBar(),
+            ),
+          );
+        } else {
+          //PREGNANCY ENDED -> PREGNANCY TAPPED PAGE (BABY INFO, APPOINTMENT HISTORY, WEIGHT HISTORY)
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => pregnancyTapped(),
+              settings: RouteSettings(arguments: pregnancyId),
+            ),
+          );
+        }
 
-      body: Stack(
-        children: [
-        Column(
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: backGroundPink,
+        body: Stack(
           children: [
-            SizedBox(
-                height: 40,
-              ),
-              Row(
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      if(ended == 'false'){ //PREGNANCY NOT ENDED -> ROUTE TO PROFILE PAGE  
-                      setState(() {
-
-                      });
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ProfileScreen(),
-                          ),
-                        );
-                      }
-                      else { //PREGNANCY ENDED -> PREGNANCY TAPPED PAGE (BABY INFO, APPOINTMENT HISTORY, WEIGHT HISTORY) 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => pregnancyTapped(),
-                            settings: RouteSettings(arguments: pregnancyId),
-                          ),
-                        );
-                      }
-                    },
-                    icon: const Icon(
-                      Icons.arrow_back,
-                      color: Colors.black,
+            Column(
+              children: [
+                SizedBox(
+                  height: 40,
+                ),
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        if (ended == 'false') {
+                          //PREGNANCY NOT ENDED -> ROUTE TO PROFILE PAGE
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NavBar(),
+                            ),
+                          );
+                        } else {
+                          //PREGNANCY ENDED -> PREGNANCY TAPPED PAGE (BABY INFO, APPOINTMENT HISTORY, WEIGHT HISTORY)
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => pregnancyTapped(),
+                              settings: RouteSettings(arguments: pregnancyId),
+                            ),
+                          );
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        color: Colors.black,
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 10,),
-                  Text(
-                    "Baby's Information",
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "Baby's Information",
+                      style: TextStyle(
+                        color: Color(0xFFD77D7C),
+                        fontSize: 32,
+                        fontFamily: 'Urbanist',
+                        fontWeight: FontWeight.w600,
+                        height: 1.30,
+                        letterSpacing: -0.28,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Expanded(
+                  child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18.0,
+                        vertical: 0.0,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(50.0),
+                        ),
+                      ),
+                      child: SingleChildScrollView(
+                        padding: EdgeInsets.only(top: 15),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 25,
+                            ),
+                            FutureBuilder<Widget>(
+                              future: getBabyInfo(pregnancyId),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<Widget> snapshot) {
+                                if (snapshot.hasData) {
+                                  return snapshot.data!;
+                                }
+
+                                return Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 100, vertical: 250),
+                                  child: Align(
+                                      alignment: Alignment.center,
+                                      child: CircularProgressIndicator(
+                                        color: pinkColor,
+                                        strokeWidth: 3,
+                                      )),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      )),
+                ),
+              ],
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 65),
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (ended == 'false') {
+                      //PREGNANCY NOT ENDED -> ROUTE TO EDIT PREGNANCY INFO PAGE
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => editPregnancyInfo(),
+                          settings: RouteSettings(arguments: pregnancyId),
+                        ),
+                      );
+                    } else {
+                      //PREGNANCY ENDED -> ROUTE TO EDIT NEWBORN INFO PAGE
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditNewBornInfo(),
+                          settings: RouteSettings(arguments: pregnancyId),
+                        ),
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: blackColor,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(45)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 80, vertical: 15)),
+                  child: const Text(
+                    "Edit Baby's Information",
                     style: TextStyle(
-                      color: Color(0xFFD77D7C),
-                      fontSize: 32,
+                      color: Colors.white,
                       fontFamily: 'Urbanist',
                       fontWeight: FontWeight.w600,
                       height: 1.30,
                       letterSpacing: -0.28,
                     ),
                   ),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ), 
-            
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 18.0,
-                  vertical: 0.0,
                 ),
-            
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(50.0),
-                    ),
-                ),
-            
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.only(top: 15),
-                  child: Column(
-                    children: [
-                      SizedBox(height: 25,),
-                      
-                      FutureBuilder<Widget>(
-                        future: getBabyInfo(pregnancyId), 
-                        builder: (BuildContext context , AsyncSnapshot<Widget> snapshot){
-                          if(snapshot.hasData) {
-                            return snapshot.data!;
-                          }
-                          
-                        return 
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 100,vertical: 250),
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: CircularProgressIndicator(color: pinkColor, strokeWidth: 3,)),
-                          );
-                          
-                        },
-                      ),
-                     
-                  
-                  ],
-                  ),
-                )  
-                
               ),
             ),
-            
           ],
         ),
-
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: 
-          Padding(
-            padding: EdgeInsets.only(bottom: 65),
-            child: ElevatedButton(
-              onPressed: () { 
-              if(ended == 'false'){ //PREGNANCY NOT ENDED -> ROUTE TO EDIT PREGNANCY INFO PAGE 
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => editPregnancyInfo(),
-                    settings: RouteSettings(arguments: pregnancyId),
-                  ),
-                );
-              }
-              else { //PREGNANCY ENDED -> ROUTE TO EDIT NEWBORN INFO PAGE 
-                /*Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ,
-                    settings: RouteSettings(arguments: pregnancyId),
-                  ),
-                );*/
-              }
-                
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: blackColor,
-                shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(45)),
-                padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15)
-              ),
-              child: const Text(
-                "Edit Baby's Information",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'Urbanist',
-                  fontWeight: FontWeight.w600,
-                  height: 1.30,
-                  letterSpacing: -0.28,
-                ),
-              ),
-            ),
-          ),
-        ),
-        ],
       ),
-
     );
   }
-
 }
