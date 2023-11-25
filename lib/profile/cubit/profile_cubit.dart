@@ -25,6 +25,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   UserModel? userData;
 
   Future getUserData() async {
+    emit(ProfileInitial());
     print("+++++++++++++++++++++++++${FirebaseAuth.instance.currentUser!.uid}");
     try {
       var response = await FirebaseFirestore.instance
@@ -197,12 +198,11 @@ class ProfileCubit extends Cubit<ProfileState> {
     // Return a success message.
   }
 
-  List<PregnancyInfoModel> pregnancyInfoModel = [];
+  List<PregnancyInfoModel>? pregnancyInfoModel;
 
   Future getPregnancyInfoData() async {
-    pregnancyInfoModel = [];
+    pregnancyInfoModel = null;
     emit(DataLoading());
-    print("+++++++++++++++++++++++++${FirebaseAuth.instance.currentUser!.uid}");
     try {
       var response = await FirebaseFirestore.instance
           .collection('users')
@@ -211,9 +211,11 @@ class ProfileCubit extends Cubit<ProfileState> {
           .get();
       log('+++++++++++++++++++++++++++++');
       log(response.toString());
+      pregnancyInfoModel = [];
       for (var element in response.docs) {
         log(element.data().toString());
-        pregnancyInfoModel.add(PregnancyInfoModel.fromJson(element.data() , element.id ));
+        pregnancyInfoModel!
+            .add(PregnancyInfoModel.fromJson(element.data(), element.id));
       }
       log(response.toString());
       log('+++++++++++++++++++++++++++++');
