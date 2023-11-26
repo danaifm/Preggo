@@ -33,7 +33,7 @@ extension StringExtension on String {
 }
 
 class ProfileScreen extends StatefulWidget {
-  ProfileScreen({super.key});
+  const ProfileScreen({super.key});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -45,8 +45,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    ProfileCubit.get(context).getUserData();
     ProfileCubit.get(context).getPregnancyInfoData();
+    ProfileCubit.get(context).getUserData();
   }
 
   @override
@@ -151,7 +151,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: 20),
+                                const SizedBox(height: 20),
                               ],
                             ),
                           ),
@@ -164,12 +164,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
         },
         builder: (context, state) {
           var user = ProfileCubit.get(context).userData;
-          var babyData = ProfileCubit.get(context).pregnancyInfoModel;
-          if (state is DataLoading || user == null || babyData == null) {
+          if (state is DataLoading ||
+              user == null ||
+              ProfileCubit.get(context).pregnancyInfoModel == null) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is ErrorOccurred) {
             return const Text("error");
           }
+          var babyData = ProfileCubit.get(context).pregnancyInfoModel!;
           return Column(
             children: [
               Padding(
@@ -261,7 +263,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (_) =>
-                                            EditProfileScreen())).then(
+                                            const EditProfileScreen())).then(
                                     (value) => ProfileCubit.get(context)
                                         .getUserData());
                               },
@@ -371,10 +373,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             )),
                           ),
                           SizedBox(
-                            height: babyData.length <= 1 ? 40 : 65,
+                            // height: babyData.length <= 1 ? 40 : 65,
+
                             child: ListView.separated(
-                              padding: EdgeInsets.all(8),
+                              padding: const EdgeInsets.all(8),
                               itemCount: babyData.length,
+                              shrinkWrap: true,
                               itemBuilder: (BuildContext context, int index) =>
                                   InkWell(
                                 onTap: () {
@@ -573,19 +577,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                           ),
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(color: Colors.grey[200]),
-                            child: const Center(
-                                child: Text(
-                              "Delete Account",
-                              style: TextStyle(
-                                  color: pinkColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18),
-                            )),
-                          ),
+
                           InkWell(
                             onTap: () {
                               showDialog<void>(
@@ -672,7 +664,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     width: 5,
                                   ),
                                   Icon(
-                                    Icons.delete_outline,
+                                    Icons.delete,
                                     color: Colors.red,
                                   ),
                                   SizedBox(
@@ -710,3 +702,4 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {});
   }
 }
+
