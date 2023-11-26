@@ -391,7 +391,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         settings: RouteSettings(
                                             arguments: babyData[index].id),
                                       ),
-                                    ).then(onGoBack);
+                                    );
                                   } else {
                                     Navigator.push(
                                       context,
@@ -555,7 +555,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               );
                             },
                             child: const Padding(
-                              padding: EdgeInsets.all(15),
+                              padding: EdgeInsets.fromLTRB(12, 5, 5, 5), // EdgeInsets.all(5),
                               child: Row(
                                 children: [
                                   SizedBox(
@@ -657,7 +657,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               );
                             },
                             child: const Padding(
-                              padding: EdgeInsets.all(15),
+                              padding: EdgeInsets.all(10),
                               child: Row(
                                 children: [
                                   SizedBox(
@@ -690,16 +690,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         },
       ),
     );
-  }
-
-  int count = 0;
-  refreshData() {
-    count++;
-  }
-
-  onGoBack(dynamic value) {
-    refreshData();
-    setState(() {});
   }
 }
 
