@@ -8,11 +8,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/new_born_info.dart';
-
 import 'package:googleapis/calendar/v3.dart';
 import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
-
-import '../pregnancyInfo.dart';
+import '../newPregnancyInfo.dart';
 
 class weeklyModel {}
 
@@ -240,8 +238,8 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                             width: 5,
                                           ),
                                           Padding(
-                                            padding:
-                                                EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                            padding: EdgeInsets.fromLTRB(
+                                                0, 10, 0, 0),
                                             child: ElevatedButton(
                                               style: ElevatedButton.styleFrom(
                                                   backgroundColor:
@@ -279,7 +277,8 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                                           padding:
                                                               const EdgeInsets
                                                                       .symmetric(
-                                                                  horizontal: 15),
+                                                                  horizontal:
+                                                                      15),
                                                           child: Row(
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
@@ -288,7 +287,8 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                                               Expanded(
                                                                 child:
                                                                     ElevatedButton(
-                                                                  onPressed: () {
+                                                                  onPressed:
+                                                                      () {
                                                                     Navigator.of(
                                                                             context)
                                                                         .pop();
@@ -299,13 +299,14 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                                                         blackColor,
                                                                     shape: RoundedRectangleBorder(
                                                                         borderRadius:
-                                                                            BorderRadius.circular(
-                                                                                40)),
+                                                                            BorderRadius.circular(40)),
                                                                     padding: const EdgeInsets
                                                                             .only(
-                                                                        left: 30,
+                                                                        left:
+                                                                            30,
                                                                         top: 15,
-                                                                        right: 30,
+                                                                        right:
+                                                                            30,
                                                                         bottom:
                                                                             15),
                                                                   ),
@@ -334,13 +335,14 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                                                             .redColor,
                                                                     shape: RoundedRectangleBorder(
                                                                         borderRadius:
-                                                                            BorderRadius.circular(
-                                                                                40)),
+                                                                            BorderRadius.circular(40)),
                                                                     padding: const EdgeInsets
                                                                             .only(
-                                                                        left: 30,
+                                                                        left:
+                                                                            30,
                                                                         top: 15,
-                                                                        right: 30,
+                                                                        right:
+                                                                            30,
                                                                         bottom:
                                                                             15),
                                                                   ),
@@ -371,7 +373,8 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                   quarterTurns: -1,
                                   child: ListWheelScrollView(
                                     physics: BouncingScrollPhysics(
-                                        parent: AlwaysScrollableScrollPhysics()),
+                                        parent:
+                                            AlwaysScrollableScrollPhysics()),
                                     // useMagnifier: true,
                                     // magnification: 1.15,
                                     onSelectedItemChanged: (x) {
@@ -415,8 +418,8 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                                           padding:
                                                               EdgeInsets.only(
                                                                   top: 10),
-                                                          child: Icon(
-                                                              Icons.expand_less)))
+                                                          child: Icon(Icons
+                                                              .expand_less)))
                                                   : Container()
                                             ],
                                           ),
@@ -437,7 +440,8 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                       children: [
                                         Icon(
                                           Icons.monitor_weight_outlined,
-                                          color: Color.fromARGB(255, 163, 39, 39),
+                                          color:
+                                              Color.fromARGB(255, 163, 39, 39),
                                         ),
                                         Text(
                                           allWeeks[selected][1],
@@ -461,12 +465,13 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                     decoration: BoxDecoration(
                                       image: DecorationImage(
                                         fit: BoxFit.cover,
-                                        image: AssetImage(allWeeks[selected][2]),
+                                        image:
+                                            AssetImage(allWeeks[selected][2]),
                                       ),
                                       borderRadius: BorderRadius.circular(500),
                                     ),
                                   ),
-                        
+
                                   Container(
                                     //length icon
                                     width: 90,
@@ -524,14 +529,16 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                           image: AssetImage(
                                               "assets/images/sperm.png"),
                                         ),
-                                        borderRadius: BorderRadius.circular(500),
+                                        borderRadius:
+                                            BorderRadius.circular(500),
                                       ),
                                     ),
                                     Expanded(
                                       child: Column(
                                         children: [
                                           Slider(
-                                            value: currentWeekProgress.toDouble(),
+                                            value:
+                                                currentWeekProgress.toDouble(),
                                             min: 0,
                                             max: 308,
                                             //this was giving me error so i changed it but idk what it is
@@ -558,7 +565,8 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                           image: AssetImage(
                                               "assets/images/baby.png"),
                                         ),
-                                        borderRadius: BorderRadius.circular(500),
+                                        borderRadius:
+                                            BorderRadius.circular(500),
                                       ),
                                     ),
                                   ],
@@ -957,7 +965,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => pregnancyInfo()));
+                                    builder: (context) => newPregnancyInfo()));
                           },
                           style: ElevatedButton.styleFrom(
                             fixedSize: const Size(55, 55),
