@@ -824,10 +824,10 @@ class _PregnancyTracking extends State<PregnancyTracking> {
 
                       // Done
                       Padding(
-                        padding: const EdgeInsets.only(left: 20),
+                        padding: const EdgeInsets.only(left: 0),
                         child: Center(
                           child: const Text(
-                            "I admire your bravery\nEnding a  journey is heartfelt.",
+                            "I admire your bravery\nEnding a journey is heartfelt.",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Color.fromARGB(255, 0, 0, 0),
