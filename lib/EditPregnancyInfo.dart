@@ -163,14 +163,16 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
                         child: ElevatedButton(
                           onPressed: () {
                             //Navigator.pop(context, pregID);
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
 
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => BabyInformation(),
-                                settings: RouteSettings(arguments: pregID),
-                              ),
-                            );
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => BabyInformation(),
+                            //     settings: RouteSettings(arguments: pregID),
+                            //   ),
+                            // );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
@@ -258,6 +260,7 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
                           child: Center(
                             child: ElevatedButton(
                               onPressed: () {
+                                Navigator.of(context).pop();
                                 Navigator.of(context).pop();
                               },
                               style: ElevatedButton.styleFrom(
@@ -629,15 +632,15 @@ class _editPregnancyInfo extends State<editPregnancyInfo> {
                                       updateBabyInfo(
                                           pregID, babyName, babyGender!);
                                       //Navigator.pop(context, pregID);
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              BabyInformation(),
-                                          settings:
-                                              RouteSettings(arguments: pregID),
-                                        ),
-                                      );
+                                      // Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(
+                                      //     builder: (context) =>
+                                      //         BabyInformation(),
+                                      //     settings:
+                                      //         RouteSettings(arguments: pregID),
+                                      //   ),
+                                      // );
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(

@@ -697,25 +697,7 @@ class _babyInformation extends State<BabyInformation> {
                   children: [
                     IconButton(
                       onPressed: () {
-                        if (ended == 'false') {
-                          //PREGNANCY NOT ENDED -> ROUTE TO PROFILE PAGE
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => NavBar(),
-                            ),
-                          );
-                        } else {
-                          //PREGNANCY ENDED -> PREGNANCY TAPPED PAGE (BABY INFO, APPOINTMENT HISTORY, WEIGHT HISTORY)
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => pregnancyTapped(),
-                          //     settings: RouteSettings(arguments: pregnancyId),
-                          //   ),
-                          // );
-                          Navigator.of(context).pop();
-                        }
+                        Navigator.of(context).pop();
                       },
                       icon: const Icon(
                         Icons.arrow_back,
@@ -800,7 +782,7 @@ class _babyInformation extends State<BabyInformation> {
                           builder: (context) => editPregnancyInfo(),
                           settings: RouteSettings(arguments: pregnancyId),
                         ),
-                      );
+                      ).then(onGoBack);
                     } else {
                       //PREGNANCY ENDED -> ROUTE TO EDIT NEWBORN INFO PAGE
                       Navigator.push(

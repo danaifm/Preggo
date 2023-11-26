@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
-import 'package:preggo/baby_information.dart';
 import 'package:preggo/colors.dart';
 
 class EditNewBornInfo extends StatefulWidget {
