@@ -9,9 +9,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:preggo/NavBar.dart';
 import 'package:preggo/baby_information.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/reminder.dart';
+
+import 'endJourney_babyInfo.dart';
 
 class NewBornInfo extends StatefulWidget {
   const NewBornInfo({super.key, required this.babyId});
@@ -252,7 +255,8 @@ class NewBornInfoState extends State<NewBornInfo> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => BabyInformation(),
+                                    builder: (context) =>
+                                        BabyInformationEndJourney(),
                                     settings:
                                         RouteSettings(arguments: widget.babyId),
                                   ),
@@ -461,16 +465,19 @@ class NewBornInfoState extends State<NewBornInfo> {
                       child: Center(
                         child: ElevatedButton(
                           onPressed: () {
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => BabyInformation(),
+                            //     settings:
+                            //         RouteSettings(arguments: widget.babyId),
+                            //   ),
+                            // );
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => BabyInformation(),
-                                settings:
-                                    RouteSettings(arguments: widget.babyId),
-                              ),
+                                  builder: (context) => const NavBar()),
                             );
-                            // Navigator.of(context).pop();
-                            // Navigator.of(context).pop();
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
