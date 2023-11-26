@@ -265,14 +265,7 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                             child: ElevatedButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => BabyInformation(),
-                                    settings:
-                                        RouteSettings(arguments: pregnancyId),
-                                  ),
-                                );
+                                Navigator.of(context).pop();
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: blackColor,
@@ -586,13 +579,15 @@ class EditNewBornInfoState extends State<EditNewBornInfo> {
                       child: Center(
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => BabyInformation(),
-                                settings: RouteSettings(arguments: pregnancyId),
-                              ),
-                            );
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => BabyInformation(),
+                            //     settings: RouteSettings(arguments: pregnancyId),
+                            //   ),
+                            // );
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:

@@ -90,7 +90,7 @@ class _pregnancyTapped extends State<pregnancyTapped> {
                                 builder: (context) => BabyInformation(),
                                 settings: RouteSettings(arguments: babyID),
                               ),
-                            );
+                            ).then(onGoBack);
                           },
                           child: Container(
                             margin: EdgeInsets.only(bottom: 20),
@@ -249,5 +249,15 @@ class _pregnancyTapped extends State<pregnancyTapped> {
         ],
       ),
     );
+  }
+
+  int count = 0;
+  refreshData() {
+    count++;
+  }
+
+  onGoBack(dynamic value) {
+    refreshData();
+    setState(() {});
   }
 }

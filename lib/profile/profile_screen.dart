@@ -387,7 +387,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         settings: RouteSettings(
                                             arguments: babyData[index].id),
                                       ),
-                                    );
+                                    ).then(onGoBack);
                                   } else {
                                     Navigator.push(
                                       context,
@@ -698,5 +698,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
         },
       ),
     );
+  }
+
+  int count = 0;
+  refreshData() {
+    count++;
+  }
+
+  onGoBack(dynamic value) {
+    refreshData();
+    setState(() {});
   }
 }

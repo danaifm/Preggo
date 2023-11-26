@@ -707,13 +707,14 @@ class _babyInformation extends State<BabyInformation> {
                           );
                         } else {
                           //PREGNANCY ENDED -> PREGNANCY TAPPED PAGE (BABY INFO, APPOINTMENT HISTORY, WEIGHT HISTORY)
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => pregnancyTapped(),
-                              settings: RouteSettings(arguments: pregnancyId),
-                            ),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) => pregnancyTapped(),
+                          //     settings: RouteSettings(arguments: pregnancyId),
+                          //   ),
+                          // );
+                          Navigator.of(context).pop();
                         }
                       },
                       icon: const Icon(
@@ -808,7 +809,7 @@ class _babyInformation extends State<BabyInformation> {
                           builder: (context) => EditNewBornInfo(),
                           settings: RouteSettings(arguments: pregnancyId),
                         ),
-                      );
+                      ).then(onGoBack);
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -834,5 +835,15 @@ class _babyInformation extends State<BabyInformation> {
         ),
       ),
     );
+  }
+
+  int count = 0;
+  refreshData() {
+    count++;
+  }
+
+  onGoBack(dynamic value) {
+    refreshData();
+    setState(() {});
   }
 }
