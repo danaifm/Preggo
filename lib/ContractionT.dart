@@ -309,6 +309,7 @@ class _ContractionT extends State<ContractionT> {
             top: 30,
           ),
           height: 350,
+          width: 340,
           decoration: BoxDecoration(
               color: Color.fromARGB(255, 255, 234, 240),
               borderRadius: BorderRadius.circular(8)),
