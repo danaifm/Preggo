@@ -745,7 +745,7 @@ class _postReply extends State<postReply> {
                           //PROFILE PIC AND USERNAME
                           children: [
                             SizedBox(
-                              width: 8,
+                              width: 13,
                             ),
                             CircleAvatar(
                               radius: 17,
@@ -773,15 +773,13 @@ class _postReply extends State<postReply> {
                                 letterSpacing: -0.28,
                               ),
                             ),
+                            SizedBox(height: 2),
                           ],
-                        ),
-                        SizedBox(
-                          height: 8,
                         ),
                         Container(
                           //ACTUAL POST REPLY AND TIMESTAMP
                           margin:
-                              EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                              EdgeInsets.only(bottom: 20, left: 10, right: 10),
                           padding: EdgeInsets.symmetric(
                             horizontal: 20,
                             vertical: 10,

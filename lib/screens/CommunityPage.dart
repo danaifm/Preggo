@@ -216,7 +216,7 @@ class _CommunityPage extends State<CommunityPage> {
                       child: Column(
                         children: [
                           Container(
-                            margin: EdgeInsets.only(left: 15, bottom: 1),
+                            margin: EdgeInsets.only(left: 20, bottom: 1),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
@@ -246,12 +246,9 @@ class _CommunityPage extends State<CommunityPage> {
                               ],
                             ),
                           ),
-                          SizedBox(
-                            height: 8,
-                          ),
                           IntrinsicHeight(
                             child: Container(
-                              margin: EdgeInsets.only(bottom: 14),
+                              margin: EdgeInsets.only(bottom: 27),
                               padding: EdgeInsets.symmetric(
                                 horizontal: 20,
                                 vertical: 10,
@@ -469,7 +466,7 @@ class _CommunityPage extends State<CommunityPage> {
                       child: Column(
                         children: [
                           Container(
-                            margin: EdgeInsets.only(left: 15, bottom: 1),
+                            margin: EdgeInsets.only(left: 20, bottom: 1),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
@@ -499,12 +496,9 @@ class _CommunityPage extends State<CommunityPage> {
                               ],
                             ),
                           ),
-                          SizedBox(
-                            height: 8,
-                          ),
                           IntrinsicHeight(
                             child: Container(
-                              margin: EdgeInsets.only(bottom: 14),
+                              margin: EdgeInsets.only(bottom: 27),
                               padding: EdgeInsets.symmetric(
                                 horizontal: 20,
                                 vertical: 10,
