@@ -486,6 +486,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   top: 15,
                                                   right: 30,
                                                   bottom: 15),
+ 
                                             ),
                                             child: const Text(
                                               " Cancel  ",
@@ -530,7 +531,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               }
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.red,
+                                              backgroundColor: Theme.of(context)
+                                                                            .colorScheme
+                                                                            .error,
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(
