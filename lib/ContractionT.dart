@@ -3,12 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:googleapis/servicemanagement/v1.dart';
 import 'package:preggo/colors.dart';
-import 'package:preggo/pregnancyInfo.dart';
-import 'package:preggo/screens/ToolsPage.dart';
-import 'package:preggo/weightFeature/addWeight.dart';
-import 'package:preggo/weightFeature/editWeight.dart';
 import 'package:intl/intl.dart';
 
 class ContractionT extends StatefulWidget {
@@ -85,7 +80,7 @@ class _ContractionT extends State<ContractionT> {
 
   void start() {
     started = true;
-    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       int localSeconds = seconds + 1;
       int localMintues = minutes;
       // startTime = getTime();
@@ -110,7 +105,8 @@ class _ContractionT extends State<ContractionT> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
           content: SizedBox(
             height: 170,
             child: Column(
@@ -128,7 +124,7 @@ class _ContractionT extends State<ContractionT> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
                       height: 45.0,
                       child: Center(
                         child: ElevatedButton(
@@ -149,7 +145,7 @@ class _ContractionT extends State<ContractionT> {
                       ),
                     ),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
                       height: 45.0,
                       child: Center(
                         child: ElevatedButton(
@@ -244,7 +240,7 @@ class _ContractionT extends State<ContractionT> {
             // ),
             Container(
                 //message
-                margin: EdgeInsets.fromLTRB(30, 15, 30, 80),
+                margin: const EdgeInsets.fromLTRB(30, 15, 30, 80),
                 child: RichText(
                   textAlign: TextAlign.center,
                   text: const TextSpan(
@@ -302,22 +298,22 @@ class _ContractionT extends State<ContractionT> {
       });
 
       return SingleChildScrollView(
-        physics: AlwaysScrollableScrollPhysics(),
+        physics: const AlwaysScrollableScrollPhysics(),
         scrollDirection: Axis.horizontal,
         child: Container(
-          margin: EdgeInsets.only(
+          margin: const EdgeInsets.only(
             top: 30,
           ),
           height: 350,
           width: 340,
           decoration: BoxDecoration(
-              color: Color.fromARGB(255, 255, 234, 240),
+              color: const Color.fromARGB(255, 255, 234, 240),
               borderRadius: BorderRadius.circular(8)),
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: DataTable(
               dividerThickness: 3,
-              columns: [
+              columns: const [
                 DataColumn(
                     label: Text(
                   'Duration',
@@ -358,7 +354,7 @@ class _ContractionT extends State<ContractionT> {
         children: [
           Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 40,
               ),
               Row(
@@ -370,10 +366,10 @@ class _ContractionT extends State<ContractionT> {
                       color: Colors.black,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
-                  Text(
+                  const Text(
                     "Contraction timer",
                     style: TextStyle(
                       color: Color(0xFFD77D7C),
@@ -386,7 +382,7 @@ class _ContractionT extends State<ContractionT> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Expanded(
@@ -395,14 +391,14 @@ class _ContractionT extends State<ContractionT> {
                     horizontal: 18.0,
                     vertical: 0.0,
                   ),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(45.0),
                     ),
                   ),
                   child: SingleChildScrollView(
-                    padding: EdgeInsets.only(top: 15),
+                    padding: const EdgeInsets.only(top: 15),
                     child: Container(
                       child: Column(
                         children: [
@@ -414,7 +410,7 @@ class _ContractionT extends State<ContractionT> {
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(20),
-                                  boxShadow: [
+                                  boxShadow: const [
                                     BoxShadow(
                                         color: backGroundPink,
                                         offset: Offset(4, 6),
@@ -423,22 +419,21 @@ class _ContractionT extends State<ContractionT> {
                                 ),
                                 child: Text(
                                   "$digitMin:$digitSec",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       color: Color.fromRGBO(235, 170, 175, 1),
                                       fontSize: 75),
                                 ),
                               ),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8, left: 90),
+                          const Padding(
+                            padding: EdgeInsets.only(top: 8, left: 90),
                             child: Row(
                               children: [
                                 Text(
                                   "    minute                    second",
                                   style: TextStyle(
-                                      color: const Color.fromARGB(
-                                          255, 150, 150, 150),
+                                      color: Color.fromARGB(255, 150, 150, 150),
                                       fontSize: 12),
                                 )
                               ],
@@ -470,11 +465,11 @@ class _ContractionT extends State<ContractionT> {
                                         toggleButton();
                                       },
                                       fillColor: blackColor,
-                                      shape: StadiumBorder(
+                                      shape: const StadiumBorder(
                                           side: BorderSide(color: blackColor)),
                                       child: Text(
                                         (!started) ? "Start" : "Stop",
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             color: whiteColor, fontSize: 15),
                                       ),
                                     ),
@@ -490,9 +485,9 @@ class _ContractionT extends State<ContractionT> {
                                         reset();
                                       },
                                       fillColor: blackColor,
-                                      shape: StadiumBorder(
+                                      shape: const StadiumBorder(
                                           side: BorderSide(color: blackColor)),
-                                      child: Text(
+                                      child: const Text(
                                         "Reset",
                                         style: TextStyle(
                                             color: whiteColor, fontSize: 15),
@@ -511,9 +506,9 @@ class _ContractionT extends State<ContractionT> {
                                 return snapshot.data!;
                               }
                               return Container(
-                                padding: EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                     horizontal: 100, vertical: 250),
-                                child: Align(
+                                child: const Align(
                                   alignment: Alignment.center,
                                   child: CircularProgressIndicator(
                                     color: pinkColor,
