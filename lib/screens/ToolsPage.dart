@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:preggo/ContractionT.dart';
 import 'package:preggo/NavBar.dart';
 import 'package:preggo/colors.dart';
 import 'package:preggo/viewAppointment.dart';
@@ -302,11 +303,11 @@ Widget Tools(BuildContext context) {
             ),
             InkWell(
               onTap: () {
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (context) =>
-                //             CommunityPage())); // Contraction timer page
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ContractionT())); // Contraction timer page
               },
               child: Container(
                   //4-contaraction timer
