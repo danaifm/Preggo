@@ -41,13 +41,6 @@ class _PregnancyTracking extends State<PregnancyTracking> {
   int weekNo = 0;
   var duedate;
 
-  // _PregnancyTracking({
-  //   required this.weekNo,
-  //   required this.babyHeight,
-  //   required this.babyWeight,
-  //   required this.babyPicture,
-  // });
-
   toJson(DocumentSnapshot doc) {
     return {
       "weekNo": doc.id,
@@ -81,16 +74,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
       var data = subCollectionRef.docs.first.data() as Map;
       duedate = data['DueDate'];
       var cWeek = getCurrentWeek(duedate.toDate());
-      // print("due date is ${duedate.toDate()}");
-
-      // if (mounted) {
-      // setState(() {
       print("scrolling to " + (cWeek - 1).toString());
-      // _scrollController.animateToItem(cWeek - 1,
-      //     duration: Duration(milliseconds: 500), curve: Curves.linear);
-      //selected = cWeek - 1;
-      //   });
-      // }
       return cWeek;
     } else {
       return -1;
@@ -100,17 +84,6 @@ class _PregnancyTracking extends State<PregnancyTracking> {
   int getCurrentWeek(var duedate) {
     var today = DateTime.now();
     final difference = duedate.difference(today).inDays / 7;
-    //print("current week is " + difference.round()).toString();
-    // if (mounted) {
-    //   setState(() {
-
-    // if (true) {
-    //   _scrollController.animateToItem(myCurrWeek - 1,
-    //       duration: Duration(milliseconds: 500), curve: Curves.linear);
-    //   print("scrolling to " + (myCurrWeek - 1).toString());
-    // }
-    //   });
-    // }
     int ans = 40 - (difference.round() as int);
     return ans;
   }
@@ -118,7 +91,6 @@ class _PregnancyTracking extends State<PregnancyTracking> {
   int row = 40;
   int col = 4;
 
-  // List<List<String>> allWeeks = <List<String>>[];
   var allWeeks = List<List>.generate(
       40, (i) => List<dynamic>.generate(4, (index) => null, growable: false),
       growable: false);
@@ -139,32 +111,8 @@ class _PregnancyTracking extends State<PregnancyTracking> {
         allWeeks[int.parse(doc.id) - 1] = (eachWeek);
       }
     });
-    // print(allWeeks);
-    // print(allWeeks.length);
   }
 
-  // getWeek() async {
-  //   //final QuerySnapshot snapshot = await firestore.get();
-
-  //   firestore.doc((selected + 1).toString()).get().then((DocumentSnapshot doc) {
-  //     setState(() {
-  //       babyPicture = doc['image'].toString();
-  //       babyHeight = doc['height'].toString();
-  //       babyWeight = doc['weight'].toString();
-  //     });
-  //     print(doc['weight'].toString());
-  //     print(doc['height'].toString());
-  //     print(doc['image'].toString());
-
-  //     // setState(() {
-  //     // weeks = snapshot.docs;
-  //     //});
-  //   });
-  // }
-
-  // jumptoIndex(int cWeek) {
-  //   _scrollController.jumpToItem(cWeek - 1);
-  // }
   handleScroll(int x) {
     setState(() {
       selected = x;
@@ -179,31 +127,16 @@ class _PregnancyTracking extends State<PregnancyTracking> {
 
   @override
   Widget build(BuildContext context) {
-    // getAllWeeks();
-    //getDueDate();
-    // getCurrentWeek();
     return FutureBuilder(
         future: myFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasError) {
-              // print("snapshot is null");
               return Container();
             } //end if
             else if (snapshot.hasData) {
               if (currentWeekProgress <= 308 && snapshot.data != -1) {
                 data = snapshot.data;
-                // _scrollController.animateToItem(data - 1,
-                //     duration: Duration(milliseconds: 500), curve: Curves.linear);
-
-                // Extracting data from snapshot object
-
-                // print("DATA is " + data.toString());
-                // if (data == null) {
-                //   _scrollController = FixedExtentScrollController(initialItem: 0);
-                // } else {
-
-                // }
                 return Scaffold(
                   body: Stack(
                     children: [
@@ -242,11 +175,12 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                                 0, 10, 0, 0),
                                             child: ElevatedButton(
                                               style: ElevatedButton.styleFrom(
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              40)),
                                                   backgroundColor:
-                                                      Appcolors.blackColor
-                                                  // fixedSize: const Size(100, 50),
-                                                  // shape: const CircleBorder(),
-                                                  ),
+                                                      Appcolors.blackColor),
                                               child: Text("End Pregnancy"),
                                               onPressed: () async {
                                                 showDialog<void>(
@@ -256,106 +190,113 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                                   builder:
                                                       (BuildContext contextx) {
                                                     return AlertDialog(
-                                                      // <-- SEE HERE
-                                                      content:
-                                                          const SingleChildScrollView(
-                                                        child: ListBody(
+                                                      contentPadding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 10,
+                                                              vertical: 15),
+                                                      content: SizedBox(
+                                                        height: 130,
+                                                        child: Column(
                                                           children: <Widget>[
                                                             Center(
-                                                              child: Text(
-                                                                'Are you sure you want to \nend your pregnancy?',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
+                                                              child: Padding(
+                                                                padding: EdgeInsets
+                                                                    .only(
+                                                                        top: 10,
+                                                                        bottom:
+                                                                            30),
+                                                                child: Text(
+                                                                  'Are you sure you want to end your pregnancy journey?',
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center,
+                                                                ),
                                                               ),
+                                                            ),
+                                                            Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: <Widget>[
+                                                                Container(
+                                                                  padding: EdgeInsets
+                                                                      .symmetric(
+                                                                          horizontal:
+                                                                              5),
+                                                                  height: 45.0,
+                                                                  child: Center(
+                                                                    child:
+                                                                        ElevatedButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                      },
+                                                                      style: ElevatedButton
+                                                                          .styleFrom(
+                                                                        backgroundColor:
+                                                                            blackColor,
+                                                                        shape: RoundedRectangleBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(40)),
+                                                                        padding: const EdgeInsets.fromLTRB(
+                                                                            30,
+                                                                            15,
+                                                                            30,
+                                                                            15),
+                                                                      ),
+                                                                      child:
+                                                                          const Text(
+                                                                        "No",
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Container(
+                                                                  padding: EdgeInsets
+                                                                      .symmetric(
+                                                                          horizontal:
+                                                                              5),
+                                                                  height: 45.0,
+                                                                  child: Center(
+                                                                    child:
+                                                                        ElevatedButton(
+                                                                      onPressed:
+                                                                          () async {
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                        await end();
+                                                                      },
+                                                                      style: ElevatedButton
+                                                                          .styleFrom(
+                                                                        backgroundColor: Theme.of(context)
+                                                                            .colorScheme
+                                                                            .error,
+                                                                        shape: RoundedRectangleBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(40)),
+                                                                        padding: const EdgeInsets.only(
+                                                                            left:
+                                                                                30,
+                                                                            top:
+                                                                                15,
+                                                                            right:
+                                                                                30,
+                                                                            bottom:
+                                                                                15),
+                                                                      ),
+                                                                      child:
+                                                                          const Text(
+                                                                        "Yes",
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
                                                             ),
                                                           ],
                                                         ),
                                                       ),
-                                                      actions: <Widget>[
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      15),
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              Expanded(
-                                                                child:
-                                                                    ElevatedButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator.of(
-                                                                            context)
-                                                                        .pop();
-                                                                  },
-                                                                  style: ElevatedButton
-                                                                      .styleFrom(
-                                                                    backgroundColor:
-                                                                        blackColor,
-                                                                    shape: RoundedRectangleBorder(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(40)),
-                                                                    padding: const EdgeInsets
-                                                                            .only(
-                                                                        left:
-                                                                            30,
-                                                                        top: 15,
-                                                                        right:
-                                                                            30,
-                                                                        bottom:
-                                                                            15),
-                                                                  ),
-                                                                  child:
-                                                                      const Text(
-                                                                    "Cancel",
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              const SizedBox(
-                                                                width: 20,
-                                                              ),
-                                                              Expanded(
-                                                                child:
-                                                                    ElevatedButton(
-                                                                  onPressed:
-                                                                      () async {
-                                                                    Navigator.pop(
-                                                                        context);
-                                                                    await end();
-                                                                  },
-                                                                  style: ElevatedButton
-                                                                      .styleFrom(
-                                                                    backgroundColor:
-                                                                        Appcolors
-                                                                            .redColor,
-                                                                    shape: RoundedRectangleBorder(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(40)),
-                                                                    padding: const EdgeInsets
-                                                                            .only(
-                                                                        left:
-                                                                            30,
-                                                                        top: 15,
-                                                                        right:
-                                                                            30,
-                                                                        bottom:
-                                                                            15),
-                                                                  ),
-                                                                  child:
-                                                                      const Text(
-                                                                    "yes",
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
                                                     );
                                                   },
                                                 );
@@ -375,15 +316,10 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                     physics: BouncingScrollPhysics(
                                         parent:
                                             AlwaysScrollableScrollPhysics()),
-                                    // useMagnifier: true,
-                                    // magnification: 1.15,
                                     onSelectedItemChanged: (x) {
                                       setState(() {
                                         selected = x;
                                       });
-                                      // print("WEEK" + (selected + 1).toString());
-                                      //getWeek();
-                                      // getDueDate();
                                     },
                                     controller: _scrollController,
                                     itemExtent: itemWidth,
@@ -790,32 +726,6 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const SizedBox(height: 20),
-                      // Container(
-                      //   padding: const EdgeInsets
-                      //       .all(
-                      //       15),
-                      //   decoration: const BoxDecoration(
-                      //     shape: BoxShape
-                      //         .circle,
-                      //     color: green,
-                      //     //color: pinkColor,
-                      //     // border: Border.all(
-                      //     //   width: 1.3,
-                      //     //   color: Colors.black,
-                      //     // ),
-                      //   ),
-                      //   child: const Icon(
-                      //     Icons
-                      //         .check,
-                      //     color: Color
-                      //         .fromRGBO(
-                      //         255,
-                      //         255,
-                      //         255,
-                      //         1),
-                      //     size: 35,
-                      //   ),
-                      // ),
                       Image.asset(
                         "assets/images/end.jpeg",
                         height: 60,
@@ -823,20 +733,17 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                       const SizedBox(height: 25),
 
                       // Done
-                      Padding(
-                        padding: const EdgeInsets.only(left: 0),
-                        child: Center(
-                          child: const Text(
-                            "I admire your bravery\nEnding a journey is heartfelt.",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 0, 0, 0),
-                              fontSize: 15,
-                              fontFamily: 'Urbanist',
-                              fontWeight: FontWeight.w400,
-                              // height: 1.30,
-                              // letterSpacing: -0.28,
-                            ),
+                      Center(
+                        child: const Text(
+                          "I admire your bravery\nEnding a journey is heartfelt.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 0, 0, 0),
+                            fontSize: 15,
+                            fontFamily: 'Urbanist',
+                            fontWeight: FontWeight.w400,
+                            // height: 1.30,
+                            // letterSpacing: -0.28,
                           ),
                         ),
                       ),
@@ -856,9 +763,10 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (_) => NewBornInfo(
-                                            babyId: babyId!,
-                                          )),
+                                    builder: (_) => NewBornInfo(
+                                      babyId: babyId!,
+                                    ),
+                                  ),
                                 );
                               }
                             },
@@ -866,8 +774,8 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                               backgroundColor: blackColor,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(40)),
-                              padding: const EdgeInsets.only(
-                                  left: 70, top: 15, right: 70, bottom: 15),
+                              padding:
+                                  const EdgeInsets.fromLTRB(70, 15, 70, 15),
                             ),
                             child: const Text(
                               "OK",
