@@ -1,4 +1,4 @@
-// ignore_for_file: camel_case_types, prefer_const_literals_to_create_immutables, prefer_const_constructors, use_key_in_widget_constructors, unnecessary_const, unnecessary_new, prefer_final_fields, avoid_print, no_leading_underscores_for_local_identifiers, file_names,
+// ignore_for_file: avoid_print
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -52,9 +52,9 @@ class _addAppointmentState extends State<addAppointment> {
     DateTime notifTime;
 
     DateTime currentTime = DateTime.now();
-    Duration oneDay = Duration(days: 1);
-    Duration twoHours = Duration(hours: 2);
-    Duration fiveSeconds = Duration(seconds: 5);
+    Duration oneDay = const Duration(days: 1);
+    Duration twoHours = const Duration(hours: 2);
+    Duration fiveSeconds = const Duration(seconds: 5);
 
     if (apptTime.isAfter(currentTime.add(oneDay))) {
       notifTime = apptTime.subtract(oneDay);
@@ -134,11 +134,11 @@ class _addAppointmentState extends State<addAppointment> {
   var startFormat = Jiffy.now().format(pattern: "hh:mm a");
   var endFormat = Jiffy.now().format(pattern: "hh:mm a");
   var errorMessage = "";
-  DateTime _minDate = DateTime.now();
-  DateTime _minTime = DateTime.now();
+  final DateTime _minDate = DateTime.now();
+  final DateTime _minTime = DateTime.now();
   DateTime today = DateTime.now();
 
-  static const _scopes = const [
+  static const _scopes = [
     CalendarApi.calendarScope
   ]; //scope to CREATE EVENT / CALENDAR in Google calendar
 
@@ -146,7 +146,7 @@ class _addAppointmentState extends State<addAppointment> {
   //     "3982098128-rlts9furpv5as6ob6885ifd4l88760pa.apps.googleusercontent.com",
   //     ""); //ClientID Object
 
-  GoogleSignIn _googleSignIn = GoogleSignIn(
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
     // Optional clientId
     // clientId: 'your-client_id.apps.googleusercontent.com',
     scopes: _scopes,
@@ -172,7 +172,7 @@ class _addAppointmentState extends State<addAppointment> {
         }
       }
       if (exists == false) {
-        Calendar preggoCalendar = new Calendar(summary: "Preggo Calendar");
+        Calendar preggoCalendar = Calendar(summary: "Preggo Calendar");
         googleCalendarApi.calendars.insert(preggoCalendar);
         for (CalendarListEntry entry in items) {
           if (entry.summary == "Preggo Calendar") {
@@ -292,7 +292,7 @@ class _addAppointmentState extends State<addAppointment> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                           ],
                         ),
                       ),
@@ -330,7 +330,7 @@ class _addAppointmentState extends State<addAppointment> {
 
     Color timeColor = timeRed
         ? Theme.of(context).colorScheme.error
-        : Color.fromARGB(255, 0, 0, 0);
+        : const Color.fromARGB(255, 0, 0, 0);
     var textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontSize: 12.0,
           color: Theme.of(context).colorScheme.error,
@@ -363,12 +363,13 @@ class _addAppointmentState extends State<addAppointment> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
             content: SizedBox(
               height: 130,
               child: Column(
                 children: <Widget>[
-                  Center(
+                  const Center(
                     child: Padding(
                       padding: EdgeInsets.only(top: 10, bottom: 30),
                       child: Text(
@@ -381,7 +382,7 @@ class _addAppointmentState extends State<addAppointment> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 5),
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
                         height: 45.0,
                         child: Center(
                           child: ElevatedButton(
@@ -402,7 +403,7 @@ class _addAppointmentState extends State<addAppointment> {
                         ),
                       ),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 5),
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
                         height: 45.0,
                         child: Center(
                           child: ElevatedButton(
@@ -439,7 +440,7 @@ class _addAppointmentState extends State<addAppointment> {
       resizeToAvoidBottomInset: true,
       body: Column(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 35,
           ),
           Container(
@@ -452,7 +453,7 @@ class _addAppointmentState extends State<addAppointment> {
               ),
             ),
           ),
-          Text(
+          const Text(
             "Add a new appointment",
             style: TextStyle(
               color: Color(0xFFD77D7C),
@@ -463,7 +464,7 @@ class _addAppointmentState extends State<addAppointment> {
               letterSpacing: -0.28,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 15,
           ),
           Expanded(
@@ -472,16 +473,17 @@ class _addAppointmentState extends State<addAppointment> {
                 horizontal: 18.0,
                 vertical: 0.0,
               ),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color(0xFFFFFFFF),
                 borderRadius: BorderRadius.vertical(
                   top: Radius.circular(80.0),
                 ),
               ),
               child: SingleChildScrollView(
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 child: Container(
-                  margin: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -493,9 +495,9 @@ class _addAppointmentState extends State<addAppointment> {
                             children: [
                               Container(
                                 //Appointment name label
-                                margin: EdgeInsets.only(top: 30, left: 5),
+                                margin: const EdgeInsets.only(top: 30, left: 5),
                                 alignment: Alignment.centerLeft,
-                                child: Text(
+                                child: const Text(
                                   "Appointment Name",
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
@@ -517,12 +519,12 @@ class _addAppointmentState extends State<addAppointment> {
                                   controller: _apptNameController,
                                   maxLength: 25,
                                   decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.symmetric(
+                                    contentPadding: const EdgeInsets.symmetric(
                                         vertical: 15.0, horizontal: 15),
                                     focusedErrorBorder: OutlineInputBorder(
                                       gapPadding: 0.5,
                                       borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide(
+                                      borderSide: const BorderSide(
                                         width: 0.50,
                                         color: Color.fromRGBO(255, 100, 100, 1),
                                       ),
@@ -530,7 +532,7 @@ class _addAppointmentState extends State<addAppointment> {
                                     errorBorder: OutlineInputBorder(
                                       gapPadding: 0.5,
                                       borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide(
+                                      borderSide: const BorderSide(
                                         width: 0.50,
                                         color: Color.fromRGBO(255, 100, 100, 1),
                                       ),
@@ -538,7 +540,7 @@ class _addAppointmentState extends State<addAppointment> {
                                     enabledBorder: OutlineInputBorder(
                                       gapPadding: 0.5,
                                       borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide(
+                                      borderSide: const BorderSide(
                                         width: 0.50,
                                         color:
                                             Color.fromARGB(255, 221, 225, 232),
@@ -547,14 +549,14 @@ class _addAppointmentState extends State<addAppointment> {
                                     focusedBorder: OutlineInputBorder(
                                       // gapPadding: 100,
                                       borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide(
+                                      borderSide: const BorderSide(
                                         width: 0.50,
                                         color:
                                             Color.fromARGB(255, 221, 225, 232),
                                       ),
                                     ),
                                     filled: true,
-                                    fillColor: Color(0xFFF7F8F9),
+                                    fillColor: const Color(0xFFF7F8F9),
                                   ),
                                   validator: (value) {
                                     if (value!.trim().isEmpty) {
@@ -572,9 +574,9 @@ class _addAppointmentState extends State<addAppointment> {
                               ),
                               Container(
                                 //hospital name label
-                                margin: EdgeInsets.only(left: 5),
+                                margin: const EdgeInsets.only(left: 5),
                                 alignment: Alignment.centerLeft,
-                                child: Text(
+                                child: const Text(
                                   "Hospital Name",
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
@@ -598,12 +600,12 @@ class _addAppointmentState extends State<addAppointment> {
                                   controller: _hospitalController,
                                   maxLength: 25,
                                   decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.symmetric(
+                                    contentPadding: const EdgeInsets.symmetric(
                                         vertical: 15.0, horizontal: 15),
                                     focusedErrorBorder: OutlineInputBorder(
                                       gapPadding: 0.5,
                                       borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide(
+                                      borderSide: const BorderSide(
                                         width: 0.50,
                                         color: Color.fromRGBO(255, 100, 100, 1),
                                       ),
@@ -611,7 +613,7 @@ class _addAppointmentState extends State<addAppointment> {
                                     errorBorder: OutlineInputBorder(
                                       gapPadding: 0.5,
                                       borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide(
+                                      borderSide: const BorderSide(
                                         width: 0.50,
                                         color: Color.fromRGBO(255, 100, 100, 1),
                                       ),
@@ -619,7 +621,7 @@ class _addAppointmentState extends State<addAppointment> {
                                     enabledBorder: OutlineInputBorder(
                                       gapPadding: 0.5,
                                       borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide(
+                                      borderSide: const BorderSide(
                                         width: 0.50,
                                         color:
                                             Color.fromARGB(255, 221, 225, 232),
@@ -628,14 +630,14 @@ class _addAppointmentState extends State<addAppointment> {
                                     focusedBorder: OutlineInputBorder(
                                       // gapPadding: 100,
                                       borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide(
+                                      borderSide: const BorderSide(
                                         width: 0.50,
                                         color:
                                             Color.fromARGB(255, 221, 225, 232),
                                       ),
                                     ),
                                     filled: true,
-                                    fillColor: Color(0xFFF7F8F9),
+                                    fillColor: const Color(0xFFF7F8F9),
                                   ),
                                   validator: (value) {
                                     if (value!.trim().isEmpty) {
@@ -653,9 +655,9 @@ class _addAppointmentState extends State<addAppointment> {
                               ), //end of hospital name text field
                               Container(
                                 //doctor name label
-                                margin: EdgeInsets.only(left: 5),
+                                margin: const EdgeInsets.only(left: 5),
                                 alignment: Alignment.centerLeft,
-                                child: Text(
+                                child: const Text(
                                   "Doctor's Name",
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
@@ -679,12 +681,12 @@ class _addAppointmentState extends State<addAppointment> {
                                   controller: _drController,
                                   maxLength: 25,
                                   decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.symmetric(
+                                    contentPadding: const EdgeInsets.symmetric(
                                         vertical: 15.0, horizontal: 15),
                                     focusedErrorBorder: OutlineInputBorder(
                                       gapPadding: 0.5,
                                       borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide(
+                                      borderSide: const BorderSide(
                                         width: 0.50,
                                         color: Color.fromRGBO(255, 100, 100, 1),
                                       ),
@@ -692,7 +694,7 @@ class _addAppointmentState extends State<addAppointment> {
                                     errorBorder: OutlineInputBorder(
                                       gapPadding: 0.5,
                                       borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide(
+                                      borderSide: const BorderSide(
                                         width: 0.50,
                                         color: Color.fromRGBO(255, 100, 100, 1),
                                       ),
@@ -700,7 +702,7 @@ class _addAppointmentState extends State<addAppointment> {
                                     enabledBorder: OutlineInputBorder(
                                       gapPadding: 0.5,
                                       borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide(
+                                      borderSide: const BorderSide(
                                         width: 0.50,
                                         color:
                                             Color.fromARGB(255, 221, 225, 232),
@@ -709,14 +711,14 @@ class _addAppointmentState extends State<addAppointment> {
                                     focusedBorder: OutlineInputBorder(
                                       // gapPadding: 100,
                                       borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide(
+                                      borderSide: const BorderSide(
                                         width: 0.50,
                                         color:
                                             Color.fromARGB(255, 221, 225, 232),
                                       ),
                                     ),
                                     filled: true,
-                                    fillColor: Color(0xFFF7F8F9),
+                                    fillColor: const Color(0xFFF7F8F9),
                                   ),
                                   validator: (value) {
                                     if (value!.trim().isEmpty) {
@@ -733,7 +735,7 @@ class _addAppointmentState extends State<addAppointment> {
                                 ),
                               ), //end of dr name text field
                               Container(
-                                margin: EdgeInsets.only(top: 10),
+                                margin: const EdgeInsets.only(top: 10),
                                 child: _DatePickerItem(
                                   children: <Widget>[
                                     const Text(
@@ -812,10 +814,10 @@ class _addAppointmentState extends State<addAppointment> {
                                 ),
                               ),
                               Container(
-                                margin: EdgeInsets.symmetric(vertical: 0),
+                                margin: const EdgeInsets.symmetric(vertical: 0),
                                 child: _DatePickerItem(
                                   children: <Widget>[
-                                    Text(
+                                    const Text(
                                       'Start Time',
                                       style: TextStyle(
                                         color: Color.fromARGB(255, 0, 0, 0),
@@ -886,10 +888,10 @@ class _addAppointmentState extends State<addAppointment> {
                                 ),
                               ),
                               Container(
-                                margin: EdgeInsets.symmetric(vertical: 0),
+                                margin: const EdgeInsets.symmetric(vertical: 0),
                                 child: _DatePickerItem(
                                   children: <Widget>[
-                                    Row(
+                                    const Row(
                                       children: [
                                         Text(
                                           'End Time',
@@ -965,7 +967,7 @@ class _addAppointmentState extends State<addAppointment> {
                               ),
                               Container(
                                 alignment: Alignment.centerLeft,
-                                margin: EdgeInsets.only(top: 5),
+                                margin: const EdgeInsets.only(top: 5),
                                 child: Text(errorMessage, style: textStyle),
                               ),
                               Padding(
@@ -1048,8 +1050,7 @@ class _addAppointmentState extends State<addAppointment> {
                                         event.description =
                                             _drController.text.trim();
 
-                                        EventDateTime start =
-                                            new EventDateTime();
+                                        EventDateTime start = EventDateTime();
                                         // start.date = date; //setting start time
                                         start.dateTime = startTime;
                                         start.timeZone = DateTime.now()
@@ -1067,7 +1068,7 @@ class _addAppointmentState extends State<addAppointment> {
                                                 DateTime.now().timeZoneName);
                                         // event.start!.date = date;
 
-                                        EventDateTime end = new EventDateTime();
+                                        EventDateTime end = EventDateTime();
                                         // end.date = date; //setting end time
                                         end.timeZone = DateTime.now()
                                             .timeZoneName; //local timezone
@@ -1109,13 +1110,13 @@ class _addAppointmentState extends State<addAppointment> {
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(40)),
-                                    padding: EdgeInsets.only(
+                                    padding: const EdgeInsets.only(
                                         left: 85,
                                         top: 15,
                                         right: 85,
                                         bottom: 15),
                                   ),
-                                  child: Text(
+                                  child: const Text(
                                     "Add Appointment",
                                   ),
                                 ),
