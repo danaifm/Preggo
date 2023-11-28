@@ -439,7 +439,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             decoration: BoxDecoration(color: Colors.grey[200]),
                             child: const Center(
                                 child: Text(
-                              "Sign Out",
+                              "...",
                               style: TextStyle(
                                   color: pinkColor,
                                   fontWeight: FontWeight.bold,
@@ -671,7 +671,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     width: 10,
                                   ),
                                   Text(
-                                    "Delete Acount",
+                                    "Delete Account",
                                     style: TextStyle(
                                         fontSize: 16, color: Colors.red),
                                   ),
