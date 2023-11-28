@@ -437,7 +437,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             decoration: BoxDecoration(color: Colors.grey[200]),
                             child: const Center(
                                 child: Text(
-                              "...",
+                              "...", 
                               style: TextStyle(
                                   color: pinkColor,
                                   fontWeight: FontWeight.bold,
@@ -488,7 +488,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   bottom: 15),
                                             ),
                                             child: const Text(
-                                              "Cancel",
+                                              " Cancel  ",
                                             ),
                                           ),
                                           const SizedBox(
