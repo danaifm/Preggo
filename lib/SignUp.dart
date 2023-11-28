@@ -534,7 +534,6 @@ class _SignUpState extends State<SignUp> {
                                     'email': _emailController.text
                                         .toLowerCase()
                                         .trim(),
-                                    'admin': '0'
                                   };
                                   FirebaseFirestore.instance
                                       .collection('users/')
