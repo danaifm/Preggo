@@ -635,7 +635,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   .deleteAccount();
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.red,
+                                              backgroundColor:Theme.of(context)
+                                                                            .colorScheme
+                                                                            .error,
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(
