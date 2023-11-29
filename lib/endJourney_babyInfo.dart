@@ -95,6 +95,7 @@ class _babyInformationEndJourney extends State<BabyInformationEndJourney> {
         } else {
           imagePath = 'assets/images/unknownBaby.png';
         }
+        
 
         return Container(
           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
@@ -298,6 +299,20 @@ class _babyInformationEndJourney extends State<BabyInformationEndJourney> {
           imagePath = 'assets/images/babygirl.png';
         } else {
           imagePath = 'assets/images/unknownBaby.png';
+        }
+
+        String finalWeight = '';
+        if (weight == "") {
+          finalWeight = weight;
+        } else {
+          finalWeight = '$weight kg';
+        }
+
+        String finalHeight = '';
+        if (height == "") {
+          finalHeight = height;
+        } else {
+          finalHeight = '$height kg';
         }
 
         return Container(
@@ -569,7 +584,7 @@ class _babyInformationEndJourney extends State<BabyInformationEndJourney> {
                     ),
                   ),
                   Text(
-                    '$height cm',
+                    finalHeight,
                     style: TextStyle(
                       color: pinkColor,
                       fontSize: 21,
@@ -609,7 +624,7 @@ class _babyInformationEndJourney extends State<BabyInformationEndJourney> {
                     ),
                   ),
                   Text(
-                    '$weight kg',
+                    finalWeight,
                     style: TextStyle(
                       color: pinkColor,
                       fontSize: 21,
