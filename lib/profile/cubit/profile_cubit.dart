@@ -207,7 +207,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       var response = await FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser!.uid)
-          .collection("pregnancyInfo")
+          .collection("pregnancyInfo").orderBy("DueDate",descending: true)
           .get();
       log('+++++++++++++++++++++++++++++');
       log(response.toString());

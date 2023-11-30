@@ -407,7 +407,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   child: Row(
                                     children: [
                                       Image.asset(
-                                        'assets/images/person.png',
+                                        babyData[index].gender == "Girl"
+                                            ? 'assets/images/baby-girl.png'
+                                            : babyData[index].gender == "Boy"
+                                                ? "assets/images/babyBoy.png"
+                                                : "assets/images/baby.png",
                                         height: 25,
                                         width: 25,
                                       ),
@@ -437,7 +441,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             decoration: BoxDecoration(color: Colors.grey[200]),
                             child: const Center(
                                 child: Text(
-                              "...", 
+                              "...",
                               style: TextStyle(
                                   color: pinkColor,
                                   fontWeight: FontWeight.bold,
@@ -486,7 +490,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   top: 15,
                                                   right: 30,
                                                   bottom: 15),
- 
                                             ),
                                             child: const Text(
                                               " Cancel  ",
@@ -532,8 +535,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             },
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: Theme.of(context)
-                                                                            .colorScheme
-                                                                            .error,
+                                                  .colorScheme
+                                                  .error,
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(
@@ -635,9 +638,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   .deleteAccount();
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor:Theme.of(context)
-                                                                            .colorScheme
-                                                                            .error,
+                                              backgroundColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .error,
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(
