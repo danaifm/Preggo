@@ -382,7 +382,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) => const pregnancyTapped(),
+                                      builder: (_) => pregnancyTapped(
+                                          babyData[index].gender),
                                       settings: RouteSettings(
                                           arguments: babyData[index].id),
                                     ),
