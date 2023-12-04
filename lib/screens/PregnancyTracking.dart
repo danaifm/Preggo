@@ -416,7 +416,7 @@ class _PregnancyTracking extends State<PregnancyTracking> {
                                       children: [
                                         Icon(
                                           Icons.straighten,
-                                          color: Appcolors.tealcolor,
+                                          color:  Color.fromARGB(255, 163, 39, 39),
                                         ),
                                         Text(
                                           allWeeks[selected][0],
