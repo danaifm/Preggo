@@ -95,7 +95,6 @@ class _babyInformationEndJourney extends State<BabyInformationEndJourney> {
         } else {
           imagePath = 'assets/images/unknownBaby.png';
         }
-        
 
         return Container(
           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
@@ -676,165 +675,141 @@ class _babyInformationEndJourney extends State<BabyInformationEndJourney> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (ended == 'false') {
-          //PREGNANCY NOT ENDED -> ROUTE TO PROFILE PAGE
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => NavBar(),
-            ),
-          );
-        } else {
-          //PREGNANCY ENDED -> PREGNANCY TAPPED PAGE (BABY INFO, APPOINTMENT HISTORY, WEIGHT HISTORY)
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => pregnancyTapped(),
-              settings: RouteSettings(arguments: pregnancyId),
-            ),
-          );
-        }
-
-        return false;
-      },
-      child: Scaffold(
-        backgroundColor: backGroundPink,
-        body: Stack(
-          children: [
-            Column(
-              children: [
-                SizedBox(
-                  height: 40,
-                ),
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => NavBar(),
-                          ),
-                        );
-                      },
-                      icon: const Icon(
-                        Icons.arrow_back,
-                        color: Colors.black,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      "Baby's Information",
-                      style: TextStyle(
-                        color: Color(0xFFD77D7C),
-                        fontSize: 32,
-                        fontFamily: 'Urbanist',
-                        fontWeight: FontWeight.w600,
-                        height: 1.30,
-                        letterSpacing: -0.28,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Expanded(
-                  child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 18.0,
-                        vertical: 0.0,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(50.0),
-                        ),
-                      ),
-                      child: SingleChildScrollView(
-                        padding: EdgeInsets.only(top: 15),
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 25,
-                            ),
-                            FutureBuilder<Widget>(
-                              future: getBabyInfo(pregnancyId),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<Widget> snapshot) {
-                                if (snapshot.hasData) {
-                                  return snapshot.data!;
-                                }
-
-                                return Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 100, vertical: 250),
-                                  child: Align(
-                                      alignment: Alignment.center,
-                                      child: CircularProgressIndicator(
-                                        color: pinkColor,
-                                        strokeWidth: 3,
-                                      )),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      )),
-                ),
-              ],
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: EdgeInsets.only(bottom: 65),
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (ended == 'false') {
-                      //PREGNANCY NOT ENDED -> ROUTE TO EDIT PREGNANCY INFO PAGE
+    return Scaffold(
+      backgroundColor: backGroundPink,
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              SizedBox(
+                height: 40,
+              ),
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => editPregnancyInfo(),
-                          settings: RouteSettings(arguments: pregnancyId),
+                          builder: (context) => NavBar(),
                         ),
-                      ).then(onGoBack);
-                    } else {
-                      //PREGNANCY ENDED -> ROUTE TO EDIT NEWBORN INFO PAGE
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditNewBornInfo(),
-                          settings: RouteSettings(arguments: pregnancyId),
-                        ),
-                      ).then(onGoBack);
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: blackColor,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(45)),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 80, vertical: 15)),
-                  child: const Text(
-                    "Edit Baby's Information",
+                      );
+                    },
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    "Baby's Information",
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Color(0xFFD77D7C),
+                      fontSize: 32,
                       fontFamily: 'Urbanist',
                       fontWeight: FontWeight.w600,
                       height: 1.30,
                       letterSpacing: -0.28,
                     ),
                   ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Expanded(
+                child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18.0,
+                      vertical: 0.0,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(50.0),
+                      ),
+                    ),
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.only(top: 15),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 25,
+                          ),
+                          FutureBuilder<Widget>(
+                            future: getBabyInfo(pregnancyId),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<Widget> snapshot) {
+                              if (snapshot.hasData) {
+                                return snapshot.data!;
+                              }
+
+                              return Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 100, vertical: 250),
+                                child: Align(
+                                    alignment: Alignment.center,
+                                    child: CircularProgressIndicator(
+                                      color: pinkColor,
+                                      strokeWidth: 3,
+                                    )),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    )),
+              ),
+            ],
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 65),
+              child: ElevatedButton(
+                onPressed: () {
+                  if (ended == 'false') {
+                    //PREGNANCY NOT ENDED -> ROUTE TO EDIT PREGNANCY INFO PAGE
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => editPregnancyInfo(),
+                        settings: RouteSettings(arguments: pregnancyId),
+                      ),
+                    ).then(onGoBack);
+                  } else {
+                    //PREGNANCY ENDED -> ROUTE TO EDIT NEWBORN INFO PAGE
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditNewBornInfo(),
+                        settings: RouteSettings(arguments: pregnancyId),
+                      ),
+                    ).then(onGoBack);
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: blackColor,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(45)),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 80, vertical: 15)),
+                child: const Text(
+                  "Edit Baby's Information",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                    height: 1.30,
+                    letterSpacing: -0.28,
+                  ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

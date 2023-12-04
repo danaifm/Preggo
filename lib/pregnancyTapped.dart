@@ -6,8 +6,10 @@ import 'package:preggo/baby_information.dart';
 import 'appointmentHistory.dart';
 import 'colors.dart';
 
+// ignore: must_be_immutable
 class pregnancyTapped extends StatefulWidget {
-  const pregnancyTapped({super.key});
+  String gender;
+  pregnancyTapped(this.gender, {super.key});
 
   @override
   _pregnancyTapped createState() => _pregnancyTapped();
@@ -23,6 +25,15 @@ class _pregnancyTapped extends State<pregnancyTapped> {
   @override
   Widget build(BuildContext context) {
     var babyID = ModalRoute.of(context)?.settings.arguments as String;
+    String imagePath = '';
+    if (widget.gender == 'Boy') {
+      imagePath = 'assets/images/babydetails.png';
+    } else if (widget.gender == 'Girl') {
+      imagePath = 'assets/images/babygirl.png';
+    } else {
+      imagePath = 'assets/images/unknownBaby.png';
+    }
+
     return Scaffold(
       backgroundColor: backGroundPink,
       resizeToAvoidBottomInset: true,
@@ -111,7 +122,7 @@ class _pregnancyTapped extends State<pregnancyTapped> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Image.asset(
-                                  "assets/images/babydetails.png",
+                                  imagePath,
                                   height: 100,
                                 ),
                                 RichText(

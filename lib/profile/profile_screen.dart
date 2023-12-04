@@ -383,13 +383,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   print('baby id is ${babyData[index].id}');
                                   if (babyData[index].ended == "true") {
                                     Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => const pregnancyTapped(),
-                                        settings: RouteSettings(
-                                            arguments: babyData[index].id),
-                                      ),
-                                    );
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => pregnancyTapped(
+                                              babyData[index].gender),
+                                          settings: RouteSettings(
+                                            arguments: babyData[index].id,
+                                          ),
+                                        ));
                                   } else {
                                     Navigator.push(
                                       context,
